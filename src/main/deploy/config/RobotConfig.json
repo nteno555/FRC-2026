@@ -1,0 +1,12 @@
+{
+  "coastDriveWhenDisabled" : false,
+  "disableHardwareUpdates" : false,
+  "enableVisionWhenDisabled" : true,
+  "checkFaults" : true,
+  "visionPipelineWhenDisabled" : 0,
+  "motorOutputMultiplier" : 1.0,
+  "shootWhileMoving" : true,
+  "enabledServices" : [],
+  "enabledSubsystems" : ["drive", "lighting", "vision", "climber",  "funnel", "elevator", "arm", "effector"],
+  "isTuning": false
+}
