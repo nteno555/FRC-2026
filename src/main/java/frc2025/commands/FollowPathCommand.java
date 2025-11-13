@@ -175,16 +175,12 @@ public class FollowPathCommand extends Command {
         if(!useTimeout) {
             // check reef side to side distance
             Translation2d translation = currentPose.getTranslation().minus(endPose.getTranslation());
-            Translation2d strafe = translation.plus(RobotState.getInstance().getReefDepthVector());
             double rotationDistance = Math.abs(currentPose.getRotation().minus(endPose.getRotation()).getDegrees());
-            //rotationDistance = 0;
             Logger.recordOutput("Vision/alignDistance", translation.getNorm());
             Logger.recordOutput("Drive/targetPose", endPose);
 
             //return (translation.getNorm() < 0.05 && strafe.getNorm() < 0.02 && rotationDistance < 2);
             double velocity = Math.pow(driveSubsystem.getRobotRelativeSpeeds().vxMetersPerSecond, 2) + Math.pow(driveSubsystem.getRobotRelativeSpeeds().vyMetersPerSecond, 2);
-            velocity = Math.sqrt(velocity);
-            double angularVelocity = driveSubsystem.getRobotRelativeSpeeds().omegaRadiansPerSecond;
             return (translationDone && rotationDistance < 3) && this.timer.hasElapsed(trajectory.getTotalTimeSeconds());// && velocity < 0.02 && angularVelocity < 0.1;
         }
         return this.timer.hasElapsed(trajectory.getTotalTimeSeconds() + 0.2);

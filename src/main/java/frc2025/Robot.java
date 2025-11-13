@@ -22,9 +22,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc2025.subsystems.elevator.ElevatorIO;
-import frc2025.subsystems.elevator.ElevatorIOReal;
-import frc2025.subsystems.elevator.ElevatorSubsystem;
 import org.json.JSONObject;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -49,7 +46,6 @@ public class Robot extends LoggedRobot {
 
 	@Override
 	public void robotPeriodic() {
-
 		CommandScheduler.getInstance().run();
 		robotContainer.periodic();
 	}
