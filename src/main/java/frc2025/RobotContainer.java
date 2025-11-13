@@ -7,7 +7,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-//import frc2025.commands.AutoScoreCommands;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveIOReal;
 import frc2025.subsystems.drive.DriveIOSim;
@@ -26,9 +25,6 @@ import java.util.function.Supplier;
 import static frc2025.subsystems.drive.DriveConstants.*;
 
 public class RobotContainer {
-    /*private final XboxController operatorXboxController = new XboxController(1);
-	private final XboxController driverXboxController = new XboxController(0);
-	private final Keyboard operatorKeyboard = new Keyboard(2);*/
     public static final double DEAD_BAND_DRIVER = 0.1;
     public static final double DEAD_BAND_OPERATOR = 0.1;
     private final CommandXboxController driverXboxController = new CommandXboxController(0);
@@ -50,7 +46,7 @@ public class RobotContainer {
     }
 
     public void periodic() {
-        int y = 0;//operatorKeyboard.getCleanY();
+        int y = 0;
     }
 
     private void createSubsystems() {
