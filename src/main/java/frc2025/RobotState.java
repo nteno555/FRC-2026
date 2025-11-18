@@ -25,6 +25,12 @@ public class RobotState {
     private double alignDist;
     private double speed;
 
+    private double modAngle(double angle) {
+        if(angle > Math.PI) return angle - 2*Math.PI;
+        return angle;
+    }
+
+
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
     }
@@ -57,60 +63,20 @@ public class RobotState {
     public Pose2d getVisionPose() { return visionPoseEstimator.getLatestPose(); }
     public Pose2d getSwervePose() { return swervePose; }
 
-    public double getReefDepth() {
-        AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
-        double minDepth = 999999;
-        double minDist = 99999;
-        for(var tag: layout.getTags()) {
-            Pose2d tagPose = tag.pose.toPose2d();
-            Translation2d robotToTag = visionPose.getTranslation().minus(tagPose.getTranslation());
-            Vector<N2> translation = VecBuilder.fill(robotToTag.getX(), robotToTag.getY());
-            Vector<N2> heading = VecBuilder.fill(Math.cos(tagPose.getRotation().getRadians()), Math.sin(tagPose.getRotation().getRadians()));
-            double dist = robotToTag.getNorm();
-            if(dist < minDist) {
-                minDist = dist;
-                minDepth = translation.projection(heading).norm();
-            }
-        }
-        Logger.recordOutput("Vision/reefDepth", minDepth);
-        return minDepth;
-    }
-
-    public Translation2d getReefDepthVector() {
-        AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
-        Translation2d minVector = new Translation2d();
-        double minDepth = 999999;
-        for(var tag: layout.getTags()) {
-            Pose2d tagPose = tag.pose.toPose2d();
-            Translation2d robotToTag = visionPose.getTranslation().minus(tagPose.getTranslation());
-            Vector<N2> translation = VecBuilder.fill(robotToTag.getX(), robotToTag.getY());
-            Vector<N2> heading = VecBuilder.fill(Math.cos(visionPose.getRotation().getRadians()), Math.sin(visionPose.getRotation().getRadians()));
-
-            Vector<N2> vec = translation.projection(heading);
-            if(vec.norm() < minDepth) {
-                minDepth = vec.norm();
-                minVector = new Translation2d(vec.get(0), vec.get(1));
-            }
-        }
-        Logger.recordOutput("Vision/reefDepth", minDepth);
-        return minVector;
-    }
-
-    public double getNetDepth() {
-        double netX = FieldConstants.blueNetPos.getX();
-        if(Alliance.get()) netX = FieldConstants.redNetPos.getX();
-
-        double res = netX - visionPose.getX();
-        if(Alliance.get()) res = res * -1;
-        return res;
+    public double getAngleToTarget() {
+        Pose2d robotPose = RobotState.getInstance().getVisionPose();
+        Pose2d targetPose = Alliance.get() ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
+        double angleToTarget = Math.atan2(
+                targetPose.getY() - robotPose.getY(),
+                targetPose.getX() - robotPose.getX()
+        ) + robotPose.getRotation().getRadians();
+        return modAngle(angleToTarget);
     }
 
     public void setAlignDist(double alignDist) {
         this.alignDist = alignDist;
     }
-
     public double getAlignDist() { return this.alignDist; }
-
     public void setSpeed(double speed) { this.speed = speed; }
     public double getSpeed() { return this.speed; }
 }

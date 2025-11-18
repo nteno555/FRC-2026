@@ -26,7 +26,6 @@ import frc2025.Robot;
 import frc2025.RobotState;
 import frc2025.subsystems.vision.VisionIO;
 import frc2025.subsystems.vision.VisionPoseEstimator;
-import frc2025.util.AlignPathBuilder;
 import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
 
@@ -66,6 +65,7 @@ public class DriveSubsystem extends SubsystemBase {
         RobotState.getInstance().setSpeed(speed);
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);
         Logger.recordOutput("Vision/swervePose", RobotState.getInstance().getSwervePose());
+        Logger.recordOutput("Drive/angleToTarget", RobotState.getInstance().getAngleToTarget());
         Logger.processInputs("RealOutputs/Drive", inputs);
     }
 

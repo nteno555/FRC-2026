@@ -14,7 +14,6 @@ import frc2025.subsystems.drive.DriveSubsystem;
 import frc2025.subsystems.vision.VisionIOReal;
 import frc2025.subsystems.vision.VisionIOSim;
 import frc2025.subsystems.vision.VisionSubsystem;
-import frc2025.util.AlignPathBuilder;
 import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
 
@@ -40,7 +39,6 @@ public class RobotContainer {
     public RobotContainer() {
         createSubsystems();
         configureBindings();
-        AlignPathBuilder.initialize();
         autos = new Autos(driveSubsystem);
         autoCommand = autos.Taxi();
     }
