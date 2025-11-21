@@ -9,15 +9,11 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc2025.config.SubsystemConstants;
 
 public class ShooterIOReal implements ShooterIO {
-    private TalonFX upperFlywheel = new TalonFX(0, "rio"); // Placeholders
     private TalonFX lowerFlywheel = new TalonFX(0, "rio"); // Placeholders
 
     @SuppressWarnings("removal")
     public ShooterIOReal() {
-        upperFlywheel.getConfigurator().apply(new TalonFXConfiguration());
 		lowerFlywheel.getConfigurator().apply(new TalonFXConfiguration());
-
-		upperFlywheel.setNeutralMode(NeutralModeValue.Coast);
 		lowerFlywheel.setNeutralMode(NeutralModeValue.Coast);
 
 		var upperConfig = new TalonFXConfiguration();
@@ -45,27 +41,21 @@ public class ShooterIOReal implements ShooterIO {
 		lowerConfig.CurrentLimits.StatorCurrentLimit = 100;
 		lowerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
-		upperFlywheel.getConfigurator().apply(upperConfig, 0.050);
 		lowerFlywheel.getConfigurator().apply(lowerConfig, 0.050);
-		lowerFlywheel.setInverted(true);
-		upperFlywheel.setInverted(true);
     }
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
-        inputs.upperVoltage = upperFlywheel.getMotorVoltage().getValueAsDouble();
         inputs.lowerVoltage = lowerFlywheel.getMotorVoltage().getValueAsDouble();
     }
     
     @Override
     public void setVoltage(double voltage) {
-        upperFlywheel.setControl(new VoltageOut(voltage));
         lowerFlywheel.setControl(new VoltageOut(voltage));
     }
 
     @Override
     public void setSpeed(double speed) {
-        upperFlywheel.setControl(new VelocityVoltage(speed));
         lowerFlywheel.setControl(new VelocityVoltage(speed));
     }
 }
