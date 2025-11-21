@@ -15,4 +15,21 @@ public class SubsystemConstants {
     public static double lowerP = 0.5;
     public static double lowerI = 0.0;
     public static double lowerD = 0.0;
+
+    public static double pivotkS = 0.67;
+    public static double pivotkV = 0.67;
+    public static double pivotkP = 0.67;
+    public static double pivotkI = 0.67;
+    public static double pivotkD = 0.67;
+    public static double pivotCruiseVelocity = 100;
+    public static double pivotAcceleration = 200;
+    public static double pivotJerk = 7000;
+    public static double pivotSupplyCurrentLimit = 40;
+    public static double pivotStatorCurrentLimit = 40;
+    public static double pivotPeakForwardTorqueCurrent = 40;
+    public static double pivotPeakReverseTorqueCurrent = 40;
+    public static double pivotTorqueNeutralDeadband = 1;
+    public static double pivotRotationsPerDegree = 0.208333333333;
+    public static double pivotkGFactor = 0.25;
+    public static double pivotZeroOffsetDegrees = 20;
 }
