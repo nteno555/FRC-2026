@@ -11,6 +11,9 @@ import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveIOReal;
 import frc2025.subsystems.drive.DriveIOSim;
 import frc2025.subsystems.drive.DriveSubsystem;
+import frc2025.subsystems.indexer.IndexerIOReal;
+import frc2025.subsystems.indexer.IndexerIOSim;
+import frc2025.subsystems.indexer.IndexerSubsystem;
 import frc2025.subsystems.vision.VisionIOReal;
 import frc2025.subsystems.vision.VisionIOSim;
 import frc2025.subsystems.vision.VisionSubsystem;
@@ -32,6 +35,7 @@ public class RobotContainer {
 
     DriveSubsystem driveSubsystem;
     VisionSubsystem visionSubsystem;
+    IndexerSubsystem indexerSubsystem;
     Autos autos;
     Command autoCommand;
     private boolean tuning = false;
@@ -52,9 +56,11 @@ public class RobotContainer {
         if(RobotBase.isReal()) {
             driveSubsystem = new DriveSubsystem(new DriveIOReal(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOReal());
+            indexerSubsystem = new IndexerSubsystem(new IndexerIOReal());
         } else {
              driveSubsystem = new DriveSubsystem(new DriveIOSim(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
              visionSubsystem = new VisionSubsystem(new VisionIOSim());
+             indexerSubsystem = new IndexerSubsystem(new IndexerIOSim());
          }
 
     }
