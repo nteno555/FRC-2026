@@ -9,12 +9,12 @@ import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 public class IndexerIOReal implements IndexerIO {
-    private final TalonFX endEffectorMaster = new TalonFX(12, "rio");
+    private final TalonFX indexer = new TalonFX(12, "rio");
     private final CANrange canRange = new CANrange(15);
-    private double wantedVoltage = 0.0;
+    // private double wantedVoltage = 0.0;
 
     public IndexerIOReal() {
-        endEffectorMaster.getConfigurator().apply(new TalonFXConfiguration());
+        indexer.getConfigurator().apply(new TalonFXConfiguration());
 
         var talonFXConfigs = new TalonFXConfiguration();
         
@@ -29,8 +29,8 @@ public class IndexerIOReal implements IndexerIO {
         configTorque.TorqueNeutralDeadband = 1;
 
 
-        endEffectorMaster.getConfigurator().apply(talonFXConfigs, 0.050);
-        endEffectorMaster.getConfigurator().apply(configTorque, 0.05);
+        indexer.getConfigurator().apply(talonFXConfigs, 0.050);
+        indexer.getConfigurator().apply(configTorque, 0.05);
 
     }
 
@@ -49,21 +49,20 @@ public class IndexerIOReal implements IndexerIO {
     public void updateInputs(IndexerIOInputs inputs) {
         // TODO: not sure if this is needed
         inputs.canRangeDistance = canRange.getDistance().getValueAsDouble();
-        inputs.voltage = endEffectorMaster.getMotorVoltage().getValueAsDouble();
-        inputs.current = endEffectorMaster.getTorqueCurrent().getValueAsDouble();
+        inputs.voltage = indexer.getMotorVoltage().getValueAsDouble();
+        inputs.current = indexer.getTorqueCurrent().getValueAsDouble();
 
-        //endEffectorMaster.setControl(createControlRequest(wantedVoltage, true));
-        //Logger.recordOutput("EndEffector/wantedVoltage", wantedVoltage);
+        //Logger.recordOutput("Indexer/wantedVoltage", wantedVoltage);
     }
 
     @Override
     public void setSpeed(double speed) {
-        endEffectorMaster.setControl(createControlRequest(speed, false));
+        indexer.setControl(createControlRequest(speed, false));
     }
 
     @Override
     public void setVoltage(double voltage) {
-        endEffectorMaster.setControl(createControlRequest(voltage, true));
+        indexer.setControl(createControlRequest(voltage, true));
         //wantedVoltage = voltage;
     }
 }

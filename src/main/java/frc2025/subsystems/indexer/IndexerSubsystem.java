@@ -23,7 +23,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        Logger.processInputs("RealOutputs/EndEffector", inputs);
+        Logger.processInputs("RealOutputs/Indexer", inputs);
         io.updateInputs(inputs);
     }
 
