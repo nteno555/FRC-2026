@@ -32,4 +32,5 @@ public class SubsystemConstants {
     public static double pivotRotationsPerDegree = 0.208333333333;
     public static double pivotkGFactor = 0.25;
     public static double pivotZeroOffsetDegrees = 20;
+    public static double pivotIntakePosition = 15;
 }

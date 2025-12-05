@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc2025.commands.SuperstructureCommands;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveIOReal;
 import frc2025.subsystems.drive.DriveIOSim;
@@ -14,6 +15,15 @@ import frc2025.subsystems.drive.DriveSubsystem;
 import frc2025.subsystems.indexer.IndexerIOReal;
 import frc2025.subsystems.indexer.IndexerIOSim;
 import frc2025.subsystems.indexer.IndexerSubsystem;
+import frc2025.subsystems.intake.IntakeIOReal;
+import frc2025.subsystems.intake.IntakeIOSim;
+import frc2025.subsystems.intake.IntakeSubsystem;
+import frc2025.subsystems.pivot.PivotIOReal;
+import frc2025.subsystems.pivot.PivotIOSim;
+import frc2025.subsystems.pivot.PivotSubsystem;
+import frc2025.subsystems.shooter.ShooterIOReal;
+import frc2025.subsystems.shooter.ShooterIOSim;
+import frc2025.subsystems.shooter.ShooterSubsystem;
 import frc2025.subsystems.vision.VisionIOReal;
 import frc2025.subsystems.vision.VisionIOSim;
 import frc2025.subsystems.vision.VisionSubsystem;
@@ -36,6 +46,10 @@ public class RobotContainer {
     DriveSubsystem driveSubsystem;
     VisionSubsystem visionSubsystem;
     IndexerSubsystem indexerSubsystem;
+    IntakeSubsystem intakeSubsystem;
+    PivotSubsystem pivotSubsystem;
+    ShooterSubsystem shooterSubsystem;
+
     Autos autos;
     Command autoCommand;
     private boolean tuning = false;
@@ -48,7 +62,6 @@ public class RobotContainer {
     }
 
     public void periodic() {
-        int y = 0;
     }
 
     private void createSubsystems() {
@@ -57,13 +70,43 @@ public class RobotContainer {
             driveSubsystem = new DriveSubsystem(new DriveIOReal(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOReal());
             indexerSubsystem = new IndexerSubsystem(new IndexerIOReal());
+            intakeSubsystem = new IntakeSubsystem(new IntakeIOReal());
+            pivotSubsystem = new PivotSubsystem(new PivotIOReal());
+            shooterSubsystem = new ShooterSubsystem(new ShooterIOReal());
         } else {
-             driveSubsystem = new DriveSubsystem(new DriveIOSim(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
-             visionSubsystem = new VisionSubsystem(new VisionIOSim());
-             indexerSubsystem = new IndexerSubsystem(new IndexerIOSim());
-         }
-
+            driveSubsystem = new DriveSubsystem(new DriveIOSim(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
+            visionSubsystem = new VisionSubsystem(new VisionIOSim());
+            indexerSubsystem = new IndexerSubsystem(new IndexerIOSim());
+            intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
+            pivotSubsystem = new PivotSubsystem(new PivotIOSim());
+            shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
+        }
     }
+
+    public DriveSubsystem getDrive() {
+        return driveSubsystem;
+    }
+
+    public IndexerSubsystem getIndexer() {
+        return indexerSubsystem;
+    }
+
+    public IntakeSubsystem getIntake() {
+        return intakeSubsystem;
+    }
+
+    public PivotSubsystem getPivot() {
+        return pivotSubsystem;
+    }
+
+    public ShooterSubsystem getShooter() {
+        return shooterSubsystem;
+    }
+
+    public VisionSubsystem getVision() {
+        return visionSubsystem;
+    }
+
     private void configureBindings() {
         driveSubsystem.setDefaultCommand(
                 driveSubsystem.driveTeleop(
@@ -86,6 +129,14 @@ public class RobotContainer {
                 driveSubsystem.resetOdometry(new Pose2d());
             }
         }));
+
+        indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0));
+        intakeSubsystem.setDefaultCommand(intakeSubsystem.setVoltage(() -> 0.0));
+
+        driverXboxController.leftBumper()
+                .whileTrue(SuperstructureCommands.intakePieceCommand(this));
+
+
     }
 
 
