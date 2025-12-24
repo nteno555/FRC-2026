@@ -71,7 +71,7 @@ public class RobotContainer {
     private void createSubsystems() {
         // github slack bot please work
         if(RobotBase.isReal()) {
-            driveSubsystem = new DriveSubsystem(new DriveIOReal(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
+            driveSubsystem = new DriveSubsystem(new DriveIOReal(DrivetrainConstants, ModuleLocations, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOReal());
             indexerSubsystem = new IndexerSubsystem(new IndexerIOReal());
             intakeSubsystem = new IntakeSubsystem(new IntakeIOReal());
