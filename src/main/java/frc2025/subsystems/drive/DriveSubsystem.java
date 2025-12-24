@@ -2,6 +2,7 @@ package frc2025.subsystems.drive;
 
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveModule;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -16,17 +17,20 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc2025.Robot;
 import frc2025.RobotState;
 import frc2025.subsystems.vision.VisionIO;
 import frc2025.subsystems.vision.VisionPoseEstimator;
 import frc2025.util.Alliance;
+import frc2025.util.SwerveSysidVoltageRequest;
 import org.littletonrobotics.junction.Logger;
 
 import java.sql.Driver;
@@ -34,6 +38,8 @@ import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
 import static frc2025.subsystems.drive.DriveConstants.kMaxAngularVelocity;
 import static frc2025.subsystems.drive.DriveConstants.kSpeedAt12VoltsMps;
 
@@ -112,6 +118,10 @@ public class DriveSubsystem extends SubsystemBase {
         });
     }
 
+    public LegacySwerveModule[] getSwerveModules() {
+        return io.getModules();
+    }
+
     public void resetOdometry(Pose2d position) {
         io.resetOdometry(position);
         RobotState.getInstance().rezero(position);
@@ -148,4 +158,53 @@ public class DriveSubsystem extends SubsystemBase {
         return currentSpeeds.plus(wantedAccel.times(dt));
     }
 
+    // characterization
+
+    private SwerveSysidVoltageRequest driveVoltageRequest = new SwerveSysidVoltageRequest(true);
+
+	private SysIdRoutine m_driveSysIdRoutine =
+			new SysIdRoutine(
+					new SysIdRoutine.Config(),
+					new SysIdRoutine.Mechanism(
+							(Voltage volts) -> this.io.setControl(driveVoltageRequest.withVoltage(volts.in(Volts))),
+							null,
+							this));
+
+	private SwerveSysidVoltageRequest steerVoltageRequest = new SwerveSysidVoltageRequest(false);
+
+	private SysIdRoutine m_steerSysIdRoutine =
+			new SysIdRoutine(
+					new SysIdRoutine.Config(),
+					new SysIdRoutine.Mechanism(
+							(Voltage volts) -> this.io.setControl(steerVoltageRequest.withVoltage(volts.in(Volts))),
+							null,
+							this));
+
+	private SysIdRoutine m_slipSysIdRoutine =
+			new SysIdRoutine(
+					new SysIdRoutine.Config(Volts.of(0.25).per(Seconds.of(1).unit()), null, null),
+					new SysIdRoutine.Mechanism(
+							(Voltage volts) -> this.io.setControl(driveVoltageRequest.withVoltage(volts.in(Volts))),
+							null,
+							this));
+
+	public Command runDriveQuasiTest(SysIdRoutine.Direction direction) {
+		return m_driveSysIdRoutine.quasistatic(direction);
+	}
+
+	public Command runDriveDynamicTest(SysIdRoutine.Direction direction) {
+		return m_driveSysIdRoutine.dynamic(direction);
+	}
+
+	public Command runSteerQuasiTest(SysIdRoutine.Direction direction) {
+		return m_steerSysIdRoutine.quasistatic(direction);
+	}
+
+	public Command runSteerDynamicTest(SysIdRoutine.Direction direction) {
+		return m_steerSysIdRoutine.dynamic(direction);
+	}
+
+	public Command runDriveSlipTest() {
+		return m_slipSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
+	}
 }

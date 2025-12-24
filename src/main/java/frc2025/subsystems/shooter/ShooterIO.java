@@ -7,6 +7,7 @@ public interface ShooterIO {
     public class ShooterIOInputs {
         double upperVoltage;
         double lowerVoltage;
+        double upperVelocityRPM;
     }
     
     public void setSpeed(double speed);
