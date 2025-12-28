@@ -1,8 +1,10 @@
 package frc2025.subsystems.drive;
 
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveModule;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -53,7 +55,7 @@ public class DriveSubsystem extends SubsystemBase {
     DriveIO io;
     DriveIOInputsAutoLogged inputs = new DriveIOInputsAutoLogged();
     private ChassisSpeeds wantedSpeeds = new ChassisSpeeds(0, 0, 0);
-    private final LegacySwerveRequest.ApplyChassisSpeeds request = new LegacySwerveRequest.ApplyChassisSpeeds().withDriveRequestType(LegacySwerveModule.DriveRequestType.Velocity);
+    private final SwerveRequest.ApplyRobotSpeeds request = new SwerveRequest.ApplyRobotSpeeds().withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
     private double prevTimestamp = 0;
 
     public DriveSubsystem(DriveIO io) {
@@ -64,8 +66,14 @@ public class DriveSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         io.setControl(request.withSpeeds(applyAccelLimits()));
-        RobotState.getInstance().addDriveData(inputs.odometryTimestamp, inputs.odometryTwist);
-        RobotState.getInstance().setSwervePose(inputs.swervePoseMeters);
+        /*RobotState.getInstance().addDriveData(inputs.odometryTimestamp, inputs.odometryTwist);
+        RobotState.getInstance().setSwervePose(inputs.swervePoseMeters);*/
+
+        if(RobotState.getInstance().getHasNewVisionUpdate()) {
+            io.addVisionMeasurement(RobotState.getInstance().getLastVisionUpdate());
+        }
+        Pose2d currentPose = io.samplePoseAt(Utils.getCurrentTimeSeconds()).get();
+        RobotState.getInstance().setVisionPose(currentPose);
 
         double speed = Math.sqrt(Math.pow(inputs.currentChassisSpeeds.vxMetersPerSecond, 2) + Math.pow(inputs.currentChassisSpeeds.vyMetersPerSecond, 2));
         RobotState.getInstance().setSpeed(speed);
@@ -118,13 +126,12 @@ public class DriveSubsystem extends SubsystemBase {
         });
     }
 
-    public LegacySwerveModule[] getSwerveModules() {
+    public SwerveModule[] getSwerveModules() {
         return io.getModules();
     }
 
     public void resetOdometry(Pose2d position) {
         io.resetOdometry(position);
-        RobotState.getInstance().rezero(position);
     }
 
     public static RobotConfig getPPConfig() {

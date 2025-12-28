@@ -1,6 +1,7 @@
 package frc2025.subsystems.drive;
 
 import com.ctre.phoenix.Util;
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
@@ -37,19 +38,11 @@ import frc2025.subsystems.vision.VisionPoseEstimator;
 import java.util.List;
 
 public class DriveIOReal extends SwerveDrivetrain implements DriveIO{
-    private final Translation2d[] moduleLocations;
-    private final Pigeon2 pigeon2;
-    //    private final SwerveModule[] modules;
-    //VisionPoseEstimator visionPoseEstimator;
-    private RobotState robotState;
     private double[] lastModulePositionsMeters = new double[] { 0.0, 0.0, 0.0, 0.0 };
     private Rotation2d lastGyroYaw = null;
 
-    public DriveIOReal(SwerveDrivetrainConstants driveTrainConstants, Translation2d[] moduleLocations, SwerveModuleConstants... modules) {
+    public DriveIOReal(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(TalonFX::new, TalonFX::new, CANcoder::new, driveTrainConstants, modules);
-        this.moduleLocations = moduleLocations;
-        this.robotState = RobotState.getInstance();
-        this.pigeon2 = new Pigeon2(6741); // supposed to be CAN ID
     }
 
 
@@ -57,7 +50,7 @@ public class DriveIOReal extends SwerveDrivetrain implements DriveIO{
     public void updateInputs(DriveIOInputs inputs) {
         var state = getState();
         inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
-        inputs.swervePoseMeters = robotState.getVisionPose();
+        inputs.swervePoseMeters = (Pose2d) samplePoseAt(Utils.getCurrentTimeSeconds()).get();
 
         SwerveModulePosition[] wheelDeltas = new SwerveModulePosition[4];
         for (int i = 0; i < 4; i++) {
@@ -67,45 +60,34 @@ public class DriveIOReal extends SwerveDrivetrain implements DriveIO{
             lastModulePositionsMeters[i] = state.ModulePositions[i].distanceMeters;
         }
         var twist = getKinematics().toTwist2d(wheelDeltas);
-        Rotation2d gyroYaw = Rotation2d.fromRadians(pigeon2.getYaw().getValue().in(Units.Radians));
+        Rotation2d gyroYaw = Rotation2d.fromRadians(getPigeon2().getYaw().getValue().in(Units.Radians));
         if (lastGyroYaw != null) {
             twist = new Twist2d(twist.dx, twist.dy, gyroYaw.minus(lastGyroYaw).getRadians());
         }
         lastGyroYaw = gyroYaw;
-        //visionPoseEstimator.addDriveData(Timer.getFPGATimestamp(), new Twist2d(twist.dx, twist.dy, twist.dtheta));
-        //inputs.visionPoseMeters = visionPoseEstimator.getLatestPose();
         inputs.odometryTwist = twist;
         inputs.odometryTimestamp = Timer.getFPGATimestamp();
     }
 
     @Override
     public void resetOdometry(Pose2d pose) {
-        //visionPoseEstimator.resetPose(pose);
-        robotState.setSwervePose(pose);
-        lastGyroYaw = pigeon2.getRotation2d();
-        /*if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-            setOperatorPerspectiveForward(new Rotation2d(Math.PI));
-        } else {
-            setOperatorPerspectiveForward(new Rotation2d(0));
-        }*/
-    }
-
-    @Override
-    public void setControl(SwerveRequest request) {
-        this.setControl(request);
+        resetPose(pose);
     }
 
     @Override
     public void addVisionMeasurement(List<VisionPoseEstimator.TimestampedVisionUpdate> updates) {
-        //visionPoseEstimator.addVisionData(updates);
+        for (var update: updates) {
+            addVisionMeasurement(update.pose(), update.timestamp(), update.stdDevs());
+        }
     }
 
     @Override
     public Translation2d[] getModulePositions() {
-        return moduleLocations;
+        return getModuleLocations();
     }
 
-    private void configureDriveCurrentLimits(double limit, double timeout, SwerveModuleConstants[] moduleConstants) {
+
+    /*private void configureDriveCurrentLimits(double limit, double timeout, SwerveModuleConstants[] moduleConstants) {
         SwerveModule[] modules = getModules();
         for (int i = 0; modules.length > i; i++) {
             TalonFX driveMotor = (TalonFX) modules[i].getDriveMotor();
@@ -144,5 +126,5 @@ public class DriveIOReal extends SwerveDrivetrain implements DriveIO{
             config.apply(limiterConfigs);
             config.apply(configTorque);
         }
-    }
+    }*/
 }

@@ -3,6 +3,9 @@ package frc2025.subsystems.drive;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain;
+import com.ctre.phoenix6.swerve.SwerveModule;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -16,8 +19,9 @@ import frc2025.subsystems.vision.VisionPoseEstimator;
 import org.littletonrobotics.junction.AutoLog;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface DriveIO {
+public interface DriveIO{
     @AutoLog
     public class DriveIOInputs {
         public ChassisSpeeds currentChassisSpeeds = new ChassisSpeeds(0, 0, 0);
@@ -28,8 +32,9 @@ public interface DriveIO {
 
     public void updateInputs(DriveIOInputs inputs);
     public void resetOdometry(Pose2d pose);
-    public void setControl(LegacySwerveRequest request);
+    public void setControl(SwerveRequest request);
     public void addVisionMeasurement(List<VisionPoseEstimator.TimestampedVisionUpdate> update);
     public Translation2d[] getModulePositions();
-    public LegacySwerveModule[] getModules();
+    public SwerveModule[] getModules();
+    public Optional<Pose2d> samplePoseAt(double timestamp);
 }

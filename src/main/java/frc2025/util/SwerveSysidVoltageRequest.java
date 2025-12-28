@@ -5,8 +5,11 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain;
+import com.ctre.phoenix6.swerve.SwerveModule;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 
-public class SwerveSysidVoltageRequest implements LegacySwerveRequest {
+public class SwerveSysidVoltageRequest implements SwerveRequest {
     private final MotionMagicVoltage m_motionMagicControl = new MotionMagicVoltage(0).withEnableFOC(false).withFeedForward(0).withOverrideBrakeDurNeutral(false).withSlot(0);
     private final VoltageOut m_voltageOutControl = new VoltageOut(0.0);
 
@@ -32,7 +35,7 @@ public class SwerveSysidVoltageRequest implements LegacySwerveRequest {
     }
 
     @Override
-    public StatusCode apply(LegacySwerveControlRequestParameters legacySwerveControlRequestParameters, LegacySwerveModule... legacySwerveModules) {
+    public StatusCode apply(SwerveDrivetrain.SwerveControlParameters legacySwerveControlRequestParameters, SwerveModule... legacySwerveModules) {
         for (var module : legacySwerveModules)
         {
             if (m_driveType) {

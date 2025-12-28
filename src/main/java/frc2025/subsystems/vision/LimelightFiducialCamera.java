@@ -40,18 +40,18 @@ public class LimelightFiducialCamera {
         fiducial.fiducialID = LimelightHelpers.getFiducialID(name);
 
         LimelightHelpers.PoseEstimate poseEstimate;
-        boolean usingMt1 = true;
-        //poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
-        poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
+//        boolean usingMt1 = true;
+        poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
+//        poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
 
         if(poseEstimate == null) return;
         if(poseEstimate.tagCount == 0) return;
         if(RobotState.getInstance().getSwervePose() == null) return;
 
-        if(poseEstimate.avgTagDist > 1) {
-            poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
-            usingMt1 = false;
-        }
+//        if(poseEstimate.avgTagDist > 1) {
+//            poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
+//            usingMt1 = false;
+//        }
 
 
         Pose2d pose = poseEstimate.pose;
@@ -78,10 +78,10 @@ public class LimelightFiducialCamera {
         if (Math.abs(pose.getRotation().minus(RobotState.getInstance().getVisionPose().getRotation()).getRadians()) > 0.3) reject = true;
 
         Vector<N3> distStdDevs;
-        if(usingMt1)
-            distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 4.0, Math.pow(leastDistance, 2) / 4.0, Math.pow(leastDistance, 2) / 100000.0);
-        else
-            distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 4.0, Math.pow(leastDistance, 2) / 4.0, 99999);
+//        if(usingMt1)
+//            distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 4.0, Math.pow(leastDistance, 2) / 4.0, Math.pow(leastDistance, 2) / 100000.0);
+//        else
+        distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 4.0, Math.pow(leastDistance, 2) / 4.0, 99999);
 
         VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
                 poseEstimate.timestampSeconds, pose, distStdDevs
