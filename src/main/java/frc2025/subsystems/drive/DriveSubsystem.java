@@ -42,8 +42,8 @@ import java.util.function.Supplier;
 
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
-import static frc2025.subsystems.drive.DriveConstants.kMaxAngularVelocity;
-import static frc2025.subsystems.drive.DriveConstants.kSpeedAt12VoltsMps;
+//import static frc2025.subsystems.drive.DriveConstants.kMaxAngularVelocity;
+//import static frc2025.subsystems.drive.DriveConstants.kSpeedAt12VoltsMps;
 
 public class DriveSubsystem extends SubsystemBase {
     public static final double FORWARD_ACCEL_MAX = 30.0; // with all mechs down

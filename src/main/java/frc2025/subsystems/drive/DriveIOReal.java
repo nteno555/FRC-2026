@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc2025.RobotState;
 import frc2025.subsystems.vision.VisionIO;
 import frc2025.subsystems.vision.VisionPoseEstimator;
+import org.littletonrobotics.junction.Logger;
 
 
 import java.util.List;
@@ -67,6 +68,9 @@ public class DriveIOReal extends SwerveDrivetrain implements DriveIO{
         lastGyroYaw = gyroYaw;
         inputs.odometryTwist = twist;
         inputs.odometryTimestamp = Timer.getFPGATimestamp();
+
+        Logger.recordOutput("Drive/SwerveModuleStates", getState().ModuleStates);
+        Logger.recordOutput("Drive/SwerveModuleStatesWanted", getState().ModuleTargets);
     }
 
     @Override

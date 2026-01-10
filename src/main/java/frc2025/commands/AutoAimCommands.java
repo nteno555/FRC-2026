@@ -3,6 +3,7 @@ package frc2025.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc2025.RobotContainer;
 import frc2025.RobotState;
@@ -12,13 +13,18 @@ import frc2025.subsystems.drive.DriveSubsystem;
 import frc2025.subsystems.pivot.PivotSubsystem;
 import frc2025.util.Alliance;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static frc2025.RobotContainer.DEAD_BAND_DRIVER;
+import static frc2025.RobotContainer.handleDeadBand;
+import static frc2025.subsystems.drive.DriveConstants.kSpeedAt12Volts;
+
 public class AutoAimCommands {
     private static double modAngle(double angle) {
         if(angle > Math.PI) return angle - 2*Math.PI;
         return angle;
     }
 
-    public static Command driveAutoAim(RobotContainer robotContainer) {
+    public static Command driveAutoAim(RobotContainer robotContainer, boolean useDriver) {
         PIDController angleController = new PIDController(1, 0.0, 0.0);
         angleController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -32,11 +38,19 @@ public class AutoAimCommands {
                     );
                     double angularVelocity = angleController.calculate(modAngle(robotPose.getRotation().getRadians()), modAngle(angleToTarget));
 
-                    return new ChassisSpeeds(
-                            0.0,
-                            0.0,
-                            angularVelocity
-                    );
+                    if(useDriver) {
+                        return new ChassisSpeeds(
+                                handleDeadBand(robotContainer.getDriverLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                                handleDeadBand(robotContainer.getDriverLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                                angularVelocity
+                        );
+                    } else {
+                        return new ChassisSpeeds(
+                                0,
+                                0,
+                                angularVelocity
+                        );
+                    }
                 }
         );
     }
@@ -59,9 +73,9 @@ public class AutoAimCommands {
         });
     }
 
-    public static Command spinUpAndAutoAimCommand(RobotContainer robotContainer) {
+    public static Command spinUpAndAutoAimCommand(RobotContainer robotContainer, boolean useDriver) {
         return shooterAutoSpinUp(robotContainer)
-                .alongWith(driveAutoAim(robotContainer))
+                .alongWith(driveAutoAim(robotContainer, useDriver))
                 .alongWith(pivotAutoAim(robotContainer));
     }
 }

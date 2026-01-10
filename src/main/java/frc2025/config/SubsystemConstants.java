@@ -51,4 +51,6 @@ public class SubsystemConstants {
     public static double intakekGFactor = 0.0;
     public static double intakeZeroOffsetDegrees = 20;
     public static double intakeDeployPosition = 15;
+
+    public static double kMaxShootVelocity = 1;
 }

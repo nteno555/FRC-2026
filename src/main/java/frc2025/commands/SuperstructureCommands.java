@@ -18,9 +18,7 @@ public class SuperstructureCommands {
     }
 
     public static Command intakePieceCommand(RobotContainer robotContainer) {
-        return pivotSetpointCommand(robotContainer, SubsystemConstants.pivotIntakePosition)
-                .andThen(robotContainer.getIndexer().setVoltage(() -> 0.0))
-                .andThen(robotContainer.getIntake().setVoltage(() -> 6.0));
+        return robotContainer.getIntake().setVoltage(() -> 6.0);
     }
 
     public static Command shootCommand(RobotContainer robotContainer) {

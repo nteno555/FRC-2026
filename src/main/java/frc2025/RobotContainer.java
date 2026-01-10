@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static frc2025.subsystems.drive.DriveConstants.*;
 
 public class RobotContainer {
@@ -114,13 +115,13 @@ public class RobotContainer {
         driveSubsystem.setDefaultCommand(
                 driveSubsystem.driveTeleop(
                         () -> {
-                            return (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12VoltsMps;
+                            return (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond);
                         },
                         () -> {
-                            return (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12VoltsMps;
+                            return (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond);
                         },
                         () -> {
-                            return (DriveSubsystem.slowmode ? 0.75 : 1.0) * -handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * kMaxAngularVelocity;
+                            return (DriveSubsystem.slowmode ? 0.75 : 1.0) * -handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2;
                         }
                 )
         );
@@ -140,11 +141,15 @@ public class RobotContainer {
                 .whileTrue(SuperstructureCommands.intakePieceCommand(this));
 
         driverXboxController.leftTrigger()
-                .whileTrue(AutoAimCommands.spinUpAndAutoAimCommand(this));
+                .whileTrue(AutoAimCommands.spinUpAndAutoAimCommand(this, true));
         driverXboxController.rightTrigger()
                 .whileTrue(
-                        new WaitUntilCommand(() -> shooterSubsystem.getShotReady())
-                                .andThen(SuperstructureCommands.shootCommand(this)));
+                        new WaitUntilCommand(() -> {
+                            double vx = driveSubsystem.getFieldRelativeSpeeds().vxMetersPerSecond;
+                            double vy = driveSubsystem.getFieldRelativeSpeeds().vyMetersPerSecond;
+                            double velocity = Math.hypot(vx, vy);
+                            return shooterSubsystem.getShotReady() && velocity < SubsystemConstants.kMaxShootVelocity;
+                        }).andThen(SuperstructureCommands.shootCommand(this)));
 
 
         tuningController.a()
@@ -185,6 +190,14 @@ public class RobotContainer {
 			return (Math.abs(value) > Math.abs(deadBand)) ? value : 0.0;
 		}
 	}
+
+    public double getDriverLeftY() {
+        return driverXboxController.getLeftY();
+    }
+
+    public double getDriverLeftX() {
+        return driverXboxController.getLeftX();
+    }
 
     public void autoInit() {
         autoCommand.schedule();
