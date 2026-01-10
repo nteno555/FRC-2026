@@ -3,6 +3,7 @@ package frc2025.subsystems.intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.function.Supplier;
@@ -35,19 +36,32 @@ public class IntakeSubsystem extends SubsystemBase {
         });
     }
 
+
     public Command setIntake(Supplier<Boolean> intake){
         return this.run(() -> {
             usingVoltage = false;
-            if(intake.get()) io.setSpeed(0.3);
-            else io.setSpeed(0);
+            if(intake.get()) {
+                io.setPosition(SubsystemConstants.intakeDeployPosition, usingVoltage);
+                io.setSpeed(0.3);
+            }
+            else {
+                io.setSpeed(0);
+                io.setPosition(0, usingVoltage);
+            }
         });
     }
 
     public Command setOuttake(Supplier<Boolean> intake){
         return this.run(() -> {
             usingVoltage = false;
-            if(intake.get()) io.setSpeed(-0.3);
-            else io.setSpeed(0);
+            if(intake.get()) {
+                io.setPosition(SubsystemConstants.intakeDeployPosition, usingVoltage);
+                io.setSpeed(-0.3);
+            }
+            else {
+                io.setSpeed(0);
+                io.setPosition(0, usingVoltage);
+            }
         });
     }
 

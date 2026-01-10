@@ -145,7 +145,12 @@ public class RobotContainer {
                 .whileTrue(
                         new WaitUntilCommand(() -> shooterSubsystem.getShotReady())
                                 .andThen(SuperstructureCommands.shootCommand(this)));
-
+        driverXboxController.rightBumper()
+                .whileTrue(
+                        new WaitUntilCommand(() -> (driveSubsystem.getInstantaneousSpeed() < SubsystemConstants.minShootSpeed))
+//                                .andThen(autoAimCommands.andrewFanCommand())
+                                .andThen()
+                );
 
         tuningController.a()
                 .whileTrue(driveSubsystem.runDriveQuasiTest(SysIdRoutine.Direction.kForward));

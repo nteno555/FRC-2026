@@ -214,4 +214,9 @@ public class DriveSubsystem extends SubsystemBase {
 	public Command runDriveSlipTest() {
 		return m_slipSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
 	}
+
+    public double getInstantaneousSpeed() {
+        double speedSquared = Math.pow(getRobotRelativeSpeeds().vxMetersPerSecond, 2) + Math.pow(getRobotRelativeSpeeds().vyMetersPerSecond, 2);
+        return Math.sqrt(speedSquared);
+    }
 }

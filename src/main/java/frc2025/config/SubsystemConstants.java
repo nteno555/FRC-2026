@@ -15,6 +15,7 @@ public class SubsystemConstants {
     public static double lowerP = 0.5;
     public static double lowerI = 0.0;
     public static double lowerD = 0.0;
+    public static double minShootSpeed = 8.88888; //paly robotics!!!!!!!:)))
 
     public static double pivotkS = 0.67;
     public static double pivotkV = 0.67;

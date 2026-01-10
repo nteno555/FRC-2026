@@ -60,6 +60,7 @@ public class IntakeIOReal implements IntakeIO {
                     .withLimitReverseMotion(false);
         }
     }
+
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
         inputs.voltage = intakeRoller.getMotorVoltage().getValueAsDouble();
@@ -68,16 +69,15 @@ public class IntakeIOReal implements IntakeIO {
 
     @Override
     public void setSpeed(double speed) {
-        if (speed == 0.0) intakeDeploy.setControl(createDeployControlRequest(0.0, false));
-        else intakeDeploy.setControl(createDeployControlRequest(SubsystemConstants.intakeDeployPosition, false));
         intakeRoller.setControl(createControlRequest(speed,false));
+    }
+
+    public void setPosition(double position, boolean useVoltage) {
+        intakeDeploy.setControl(createDeployControlRequest(position, useVoltage));
     }
 
     @Override
     public void setVoltage(double voltage) {
-        if (voltage == 0.0) intakeDeploy.setControl(createDeployControlRequest(0.0, true));
-        else intakeDeploy.setControl(createDeployControlRequest(SubsystemConstants.intakeDeployPosition, true));
         intakeRoller.setControl(createControlRequest(voltage,true));
     }
-
 }
