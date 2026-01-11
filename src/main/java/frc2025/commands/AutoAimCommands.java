@@ -78,4 +78,48 @@ public class AutoAimCommands {
                 .alongWith(driveAutoAim(robotContainer, useDriver))
                 .alongWith(pivotAutoAim(robotContainer));
     }
+
+    public static double shootingWhileMoving(RobotContainer robotContainer, ShooterTreeMap treeMap) {
+        Pose2d currentPose = RobotState.getInstance().getVisionPose();
+        
+        double dx = FieldConstants.goalPose.getX() - currentPose.getX();
+        double dy = FieldConstants.goalPose.getY() - currentPose.getY();
+        double currentDistance = Math.hypot(dx, dy);  
+        
+
+        ChassisSpeeds velocity = ChassisSpeeds.fromRobotRelativeSpeeds(
+            robotContainer.getDrive().getRobotRelativeSpeeds(),
+            currentPose.getRotation()
+        );
+        
+        double angleToTarget = Math.atan2(dy, dx);
+        
+
+        double vx = velocity.vxMetersPerSecond;
+        double vy = velocity.vyMetersPerSecond;
+        double velocityTowardsGoal = vx * Math.cos(angleToTarget) + vy * Math.sin(angleToTarget);
+
+        double effectiveDistance = currentDistance;
+        for (int i = 0; i < 5; i++) {
+            double flightTime = treeMap.tofTreeMap.getInterpolated(effectiveDistance);
+            double movement = velocityTowardsGoal * flightTime;
+            effectiveDistance = currentDistance + movement;
+        }
+        
+        return effectiveDistance;
+    }
+
+    public static Command shootingWhileMovingCommand(RobotContainer robotContainer, ShooterTreeMap treeMap) {
+        return driveAutoAim(robotContainer, false).alongWith(
+            robotContainer.getPivot().setPosition(() -> {
+                double effectiveDistance = shootingWhileMoving(robotContainer, treeMap);
+                return treeMap.pivotTreeMap.getInterpolated(effectiveDistance);
+            }).alongWith(
+                robotContainer.getShooter().setSpeed(() -> {
+                    double effectiveDistance = shootingWhileMoving(robotContainer, treeMap);
+                    return treeMap.upperWheelTreeMap.getInterpolated(effectiveDistance);
+                })
+            )
+        );
+    }
 }
