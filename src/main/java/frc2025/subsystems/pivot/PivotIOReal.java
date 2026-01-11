@@ -53,7 +53,7 @@ public class PivotIOReal implements PivotIO {
         pivotMaster.getConfigurator().apply(talonFXConfigs);
         pivotMaster.getConfigurator().apply(configTorque);
 
-        pivotMaster.setInverted(true);
+        //pivotMaster.setInverted(true);
         pivotMaster.setNeutralMode(NeutralModeValue.Brake);
     }
 

@@ -7,10 +7,10 @@ public class IntakeIOSim implements IntakeIO {
     public void updateInputs(IntakeIOInputs inputs) {
         inputs.current = 0;
         if(voltage<0){
-            inputs.canRangeDistance = 999999;
+            //inputs.canRangeDistance = 999999;
         }
         if(voltage>0){
-            inputs.canRangeDistance = 0;
+            //inputs.canRangeDistance = 0;
             inputs.current=9999;
         }
         inputs.voltage = voltage;
