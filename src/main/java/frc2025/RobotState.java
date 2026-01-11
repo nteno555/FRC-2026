@@ -1,19 +1,9 @@
 package frc2025;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Twist2d;
-import edu.wpi.first.math.numbers.N2;
 import frc2025.config.FieldConstants;
 import frc2025.subsystems.vision.VisionPoseEstimator;
 import frc2025.util.Alliance;
-import org.littletonrobotics.junction.Logger;
 
 import java.util.List;
 
@@ -59,7 +49,7 @@ public class RobotState {
 
     public double getAngleToTarget() {
         Pose2d robotPose = RobotState.getInstance().getVisionPose();
-        Pose2d targetPose = Alliance.get() ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
+        Pose2d targetPose = Alliance.get() ? FieldConstants.redHubPos : FieldConstants.blueHubPos;
         double angleToTarget = Math.atan2(
                 targetPose.getY() - robotPose.getY(),
                 targetPose.getX() - robotPose.getX()

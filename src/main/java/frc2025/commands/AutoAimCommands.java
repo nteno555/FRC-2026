@@ -3,14 +3,11 @@ package frc2025.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc2025.RobotContainer;
 import frc2025.RobotState;
 import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
-import frc2025.subsystems.drive.DriveSubsystem;
-import frc2025.subsystems.pivot.PivotSubsystem;
 import frc2025.util.Alliance;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -31,7 +28,7 @@ public class AutoAimCommands {
         return robotContainer.getDrive().driveFieldRelative(
                 () -> {
                     Pose2d robotPose = RobotState.getInstance().getVisionPose();
-                    Pose2d targetPose = Alliance.get() ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
+                    Pose2d targetPose = Alliance.get() ? FieldConstants.redHubPos : FieldConstants.blueHubPos;
                     double angleToTarget = Math.atan2(
                             targetPose.getY() - robotPose.getY(),
                             targetPose.getX() - robotPose.getX()
@@ -58,7 +55,7 @@ public class AutoAimCommands {
     public static Command pivotAutoAim(RobotContainer robotContainer) {
         return robotContainer.getPivot().setPosition(() -> {
             Pose2d robotPose = RobotState.getInstance().getVisionPose();
-            Pose2d targetPose = Alliance.get() ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
+            Pose2d targetPose = Alliance.get() ? FieldConstants.redHubPos : FieldConstants.blueHubPos;
             double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
             return ShooterTreeMap.getInstance().pivotTreeMap.getInterpolated(dist);
         });
@@ -67,7 +64,7 @@ public class AutoAimCommands {
     public static Command shooterAutoSpinUp(RobotContainer robotContainer) {
         return robotContainer.getShooter().setSpeed(() -> {
             Pose2d robotPose = RobotState.getInstance().getVisionPose();
-            Pose2d targetPose = Alliance.get() ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
+            Pose2d targetPose = Alliance.get() ? FieldConstants.redHubPos : FieldConstants.blueHubPos;
             double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
             return ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist);
         });
