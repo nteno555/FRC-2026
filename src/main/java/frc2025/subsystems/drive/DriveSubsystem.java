@@ -55,7 +55,11 @@ public class DriveSubsystem extends SubsystemBase {
     DriveIO io;
     DriveIOInputsAutoLogged inputs = new DriveIOInputsAutoLogged();
     private ChassisSpeeds wantedSpeeds = new ChassisSpeeds(0, 0, 0);
-    private final SwerveRequest.ApplyRobotSpeeds request = new SwerveRequest.ApplyRobotSpeeds().withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
+    private final SwerveRequest.ApplyRobotSpeeds request = new SwerveRequest.ApplyRobotSpeeds()
+            .withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
+            .withSteerRequestType(SwerveModule.SteerRequestType.Position);
+    //private final SwerveRequest.ApplyRobotSpeeds request1 = new SwerveRequest.ApplyRobotSpeeds();
+    //private final SwerveRequest.RobotCentric request1 = new SwerveRequest.RobotCentric();
     private double prevTimestamp = 0;
 
     public DriveSubsystem(DriveIO io) {
@@ -65,7 +69,8 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        io.setControl(request.withSpeeds(applyAccelLimits()));
+        //io.setControl(request.withSpeeds(applyAccelLimits()));
+        io.setControl(request.withSpeeds(wantedSpeeds));
         /*RobotState.getInstance().addDriveData(inputs.odometryTimestamp, inputs.odometryTwist);
         RobotState.getInstance().setSwervePose(inputs.swervePoseMeters);*/
 
@@ -81,6 +86,11 @@ public class DriveSubsystem extends SubsystemBase {
         Logger.recordOutput("Vision/swervePose", RobotState.getInstance().getSwervePose());
         Logger.recordOutput("Drive/angleToTarget", RobotState.getInstance().getAngleToTarget());
         Logger.processInputs("RealOutputs/Drive", inputs);
+
+        //ChassisSpeeds testSpeeds = new ChassisSpeeds(0, 0, 0);
+        //SwerveRequest testRequest = request.withSpeeds(testSpeeds);
+        //SwerveRequest testRequest2 = request.withSpeeds(testSpeeds);
+        //Logger.recordOutput("Drive/testRequestStates", testRequest)
     }
 
     public void applyChassisSpeeds(ChassisSpeeds speeds) {
