@@ -26,6 +26,7 @@ public class RobotState {
     private double speed;
     private List<VisionPoseEstimator.TimestampedVisionUpdate> lastVisionUpdate;
     private boolean hasNewVisionUpdate = false;
+    private Pose2d hubVirtualPose;
 
     private double modAngle(double angle) {
         if(angle > Math.PI) return angle - 2*Math.PI;
@@ -88,4 +89,7 @@ public class RobotState {
     public boolean getHasNewVisionUpdate() {
         return this.hasNewVisionUpdate;
     }
+
+    public void setHubVirtualPose(Pose2d pose) { hubVirtualPose = pose; }
+    public Pose2d getHubVirtualPose() { return hubVirtualPose; }
 }

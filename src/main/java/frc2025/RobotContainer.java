@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc2025.commands.AutoAimCommands;
 import frc2025.commands.SuperstructureCommands;
 import frc2025.commands.WheelRadiusCharacterizationCommand;
+import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveIOReal;
 import frc2025.subsystems.drive.DriveIOSim;
@@ -131,16 +132,8 @@ public class RobotContainer {
         //indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0));
         intakeSubsystem.setDefaultCommand(intakeSubsystem.setVoltage(() -> 0.0));
 
-        driverXboxController.leftBumper()
-                        .whileTrue(shooterSubsystem.setSpeed(() -> 2400.0))
-                                .whileFalse(shooterSubsystem.setSpeed(() -> 0.0));
-
         driverXboxController.leftTrigger()
-                        .whileTrue(shooterSubsystem.setVoltage(() -> 6.0))
-                                .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
-
-        //driverXboxController.leftTrigger()
-         //       .whileTrue(AutoAimCommands.autoAimCommand(this, true));
+               .whileTrue(AutoAimCommands.autoAimWhileMovingCommand(this, ShooterTreeMap.getInstance()));
         driverXboxController.rightTrigger()
                 .whileTrue(
                         new WaitUntilCommand(() -> {
@@ -150,7 +143,16 @@ public class RobotContainer {
                             return shooterSubsystem.getShotReady() && velocity < SubsystemConstants.kMaxShootVelocity;
                         }).andThen(SuperstructureCommands.shootCommand(this)));
 
-        driverXboxController.rightBumper()
+
+        testSystemsController.leftBumper()
+                        .whileTrue(shooterSubsystem.setSpeed(() -> 2400.0))
+                                .whileFalse(shooterSubsystem.setSpeed(() -> 0.0));
+
+        testSystemsController.leftTrigger()
+                        .whileTrue(shooterSubsystem.setVoltage(() -> 6.0))
+                                .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
+
+        testSystemsController.rightBumper()
                         .whileTrue(indexerSubsystem.setVoltage(() -> -3.5))
                                 .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
 
