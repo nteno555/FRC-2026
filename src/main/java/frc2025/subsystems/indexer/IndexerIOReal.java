@@ -9,7 +9,7 @@ import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 public class IndexerIOReal implements IndexerIO {
-    private final TalonFX indexer = new TalonFX(12, "rio");
+    private final TalonFX indexer = new TalonFX(14, "rio");
     private final CANrange canRange = new CANrange(15);
     // private double wantedVoltage = 0.0;
 

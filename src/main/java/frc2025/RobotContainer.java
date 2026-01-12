@@ -128,14 +128,19 @@ public class RobotContainer {
             }
         }));
 
-        indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0));
+        //indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0));
         intakeSubsystem.setDefaultCommand(intakeSubsystem.setVoltage(() -> 0.0));
 
         driverXboxController.leftBumper()
-                .whileTrue(SuperstructureCommands.intakePieceCommand(this));
+                        .whileTrue(shooterSubsystem.setSpeed(() -> 2400.0))
+                                .whileFalse(shooterSubsystem.setSpeed(() -> 0.0));
 
         driverXboxController.leftTrigger()
-                .whileTrue(AutoAimCommands.autoAimCommand(this, true));
+                        .whileTrue(shooterSubsystem.setVoltage(() -> 6.0))
+                                .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
+
+        //driverXboxController.leftTrigger()
+         //       .whileTrue(AutoAimCommands.autoAimCommand(this, true));
         driverXboxController.rightTrigger()
                 .whileTrue(
                         new WaitUntilCommand(() -> {
@@ -144,6 +149,10 @@ public class RobotContainer {
                             double velocity = Math.hypot(vx, vy);
                             return shooterSubsystem.getShotReady() && velocity < SubsystemConstants.kMaxShootVelocity;
                         }).andThen(SuperstructureCommands.shootCommand(this)));
+
+        driverXboxController.rightBumper()
+                        .whileTrue(indexerSubsystem.setVoltage(() -> -3.5))
+                                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
 
 
         tuningController.a()

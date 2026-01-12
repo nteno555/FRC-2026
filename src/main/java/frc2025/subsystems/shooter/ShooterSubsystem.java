@@ -27,6 +27,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public Command setVoltage(Supplier<Double> voltage) {
         return this.run(() -> {
+            Logger.recordOutput("Shooter/wantedVoltage", voltage.get());
             usingVoltage = true;
             wantedVoltage = voltage.get();
             io.setVoltage(voltage.get());

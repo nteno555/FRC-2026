@@ -18,8 +18,8 @@ import org.littletonrobotics.junction.Logger;
 import frc2025.config.SubsystemConstants;
 
 public class ShooterIONEO implements ShooterIO {
-    private final SparkMax shooterMaster = new SparkMax(67, SparkLowLevel.MotorType.kBrushless);
-    private final SparkMax shooterSlave = new SparkMax(68, SparkLowLevel.MotorType.kBrushless);
+    private final SparkMax shooterMaster = new SparkMax(11, SparkLowLevel.MotorType.kBrushless);
+    private final SparkMax shooterSlave = new SparkMax(12, SparkLowLevel.MotorType.kBrushless);
     private final SparkClosedLoopController shooterController = shooterMaster.getClosedLoopController();
     private final RelativeEncoder shooterEncoder = shooterMaster.getEncoder();
 
@@ -37,16 +37,17 @@ public class ShooterIONEO implements ShooterIO {
                 .d(0)
                 .outputRange(-1, 1)
                 // Set PID values for velocity control in slot 1
-                .p(0.0001, ClosedLoopSlot.kSlot1)
+                .p(0.002, ClosedLoopSlot.kSlot1)
                 .i(0, ClosedLoopSlot.kSlot1)
                 .d(0, ClosedLoopSlot.kSlot1)
                 .velocityFF(1.0 / 5767, ClosedLoopSlot.kSlot1)
                 .outputRange(-1, 1, ClosedLoopSlot.kSlot1);
         shooterMaster.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+        shooterSlave.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
-        SparkMaxConfig slaveConfig = new SparkMaxConfig();
-        slaveConfig.follow(shooterMaster.getDeviceId());
-        shooterSlave.configure(slaveConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+        //SparkMaxConfig slaveConfig = new SparkMaxConfig();
+        //slaveConfig.follow(shooterMaster.getDeviceId());
+        //shooterSlave.configure(slaveConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
 
@@ -54,8 +55,10 @@ public class ShooterIONEO implements ShooterIO {
     public void updateInputs(ShooterIOInputs inputs) {
         inputs.lowerVoltage = shooterMaster.getBusVoltage();
 
-        Logger.recordOutput("Shooter/voltage", shooterMaster.getBusVoltage());
-        Logger.recordOutput("Shooter/current", shooterMaster.getOutputCurrent());
+        Logger.recordOutput("Shooter/masterVoltage", shooterMaster.getBusVoltage());
+        Logger.recordOutput("Shooter/masterSpeed", shooterEncoder.getVelocity());
+        Logger.recordOutput("Shooter/slaveVoltage", shooterSlave.getBusVoltage());
+        Logger.recordOutput("Shooter/masterCurrent", shooterMaster.getOutputCurrent());
     }
 
 
@@ -66,6 +69,8 @@ public class ShooterIONEO implements ShooterIO {
 
     @Override
     public void setVoltage(double voltage) {
+        Logger.recordOutput("Shooter/ioWantedVoltage", voltage);
         shooterMaster.setVoltage(voltage);
+        shooterSlave.setVoltage(voltage);
     }
 }
