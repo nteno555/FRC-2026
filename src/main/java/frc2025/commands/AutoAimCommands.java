@@ -3,14 +3,11 @@ package frc2025.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc2025.RobotContainer;
 import frc2025.RobotState;
 import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
-import frc2025.subsystems.drive.DriveSubsystem;
-import frc2025.subsystems.pivot.PivotSubsystem;
 import frc2025.util.Alliance;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -73,7 +70,7 @@ public class AutoAimCommands {
         });
     }
 
-    public static Command spinUpAndAutoAimCommand(RobotContainer robotContainer, boolean useDriver) {
+    public static Command autoAimCommand(RobotContainer robotContainer, boolean useDriver) {
         return shooterAutoSpinUp(robotContainer)
                 .alongWith(driveAutoAim(robotContainer, useDriver))
                 .alongWith(pivotAutoAim(robotContainer));
@@ -109,7 +106,7 @@ public class AutoAimCommands {
         return effectiveDistance;
     }
 
-    public static Command shootingWhileMovingCommand(RobotContainer robotContainer, ShooterTreeMap treeMap) {
+    public static Command autoAimWhileMovingCommand(RobotContainer robotContainer, ShooterTreeMap treeMap) {
         return driveAutoAim(robotContainer, false).alongWith(
             robotContainer.getPivot().setPosition(() -> {
                 double effectiveDistance = shootingWhileMoving(robotContainer, treeMap);

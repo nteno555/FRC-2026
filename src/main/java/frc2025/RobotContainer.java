@@ -1,6 +1,5 @@
 package frc2025;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -21,21 +20,16 @@ import frc2025.subsystems.indexer.IndexerSubsystem;
 import frc2025.subsystems.intake.IntakeIOReal;
 import frc2025.subsystems.intake.IntakeIOSim;
 import frc2025.subsystems.intake.IntakeSubsystem;
-import frc2025.subsystems.pivot.PivotIOReal;
+import frc2025.subsystems.pivot.PivotIONEO;
 import frc2025.subsystems.pivot.PivotIOSim;
 import frc2025.subsystems.pivot.PivotSubsystem;
-import frc2025.subsystems.shooter.ShooterIOReal;
+import frc2025.subsystems.shooter.ShooterIONEO;
 import frc2025.subsystems.shooter.ShooterIOSim;
 import frc2025.subsystems.shooter.ShooterSubsystem;
 import frc2025.subsystems.vision.VisionIOReal;
 import frc2025.subsystems.vision.VisionIOSim;
 import frc2025.subsystems.vision.VisionSubsystem;
 import frc2025.util.Alliance;
-import org.littletonrobotics.junction.Logger;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Supplier;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static frc2025.subsystems.drive.DriveConstants.*;
@@ -75,8 +69,8 @@ public class RobotContainer {
             visionSubsystem = new VisionSubsystem(new VisionIOReal());
             indexerSubsystem = new IndexerSubsystem(new IndexerIOReal());
             intakeSubsystem = new IntakeSubsystem(new IntakeIOReal());
-            pivotSubsystem = new PivotSubsystem(new PivotIOReal());
-            shooterSubsystem = new ShooterSubsystem(new ShooterIOReal());
+            pivotSubsystem = new PivotSubsystem(new PivotIONEO());
+            shooterSubsystem = new ShooterSubsystem(new ShooterIONEO());
         } else {
             driveSubsystem = new DriveSubsystem(new DriveIOSim(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOSim());
@@ -141,7 +135,7 @@ public class RobotContainer {
                 .whileTrue(SuperstructureCommands.intakePieceCommand(this));
 
         driverXboxController.leftTrigger()
-                .whileTrue(AutoAimCommands.spinUpAndAutoAimCommand(this, true));
+                .whileTrue(AutoAimCommands.autoAimCommand(this, true));
         driverXboxController.rightTrigger()
                 .whileTrue(
                         new WaitUntilCommand(() -> {
