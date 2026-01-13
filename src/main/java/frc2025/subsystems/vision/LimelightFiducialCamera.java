@@ -26,11 +26,11 @@ public class LimelightFiducialCamera {
         LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getVisionPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     }
     public void updateSide() {
-        if(!Alliance.get()) {
+        /*if(!Alliance.get()) {
             LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{17, 18, 19, 20, 21, 22});
         } else {
             LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{6, 7, 8, 9, 10, 11});
-        }
+        }*/
     }
     public void updatePose() {
         updateSide();
@@ -41,12 +41,14 @@ public class LimelightFiducialCamera {
 
         LimelightHelpers.PoseEstimate poseEstimate;
 //        boolean usingMt1 = true;
-        poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
-//        poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
+        //poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
+        poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
 
         if(poseEstimate == null) return;
         if(poseEstimate.tagCount == 0) return;
         if(RobotState.getInstance().getSwervePose() == null) return;
+
+        Logger.recordOutput("Vision/mt1Pose", poseEstimate.pose);
 
 //        if(poseEstimate.avgTagDist > 1) {
 //            poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);

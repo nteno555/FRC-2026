@@ -3,13 +3,7 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "Coral-Score",
-    "Coral-Score",
-    "Debug Paths",
-    "Prealign-Score",
-    "Score-Coral",
-    "Score-Coral-New",
-    "Start-Score"
+    "test paths"
   ],
   "autoFolders": [],
   "defaultMaxVel": 5.0,

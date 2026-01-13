@@ -130,7 +130,7 @@ public class RobotContainer {
         }));
 
         //indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0));
-        intakeSubsystem.setDefaultCommand(intakeSubsystem.setVoltage(() -> 0.0));
+        //intakeSubsystem.setDefaultCommand(intakeSubsystem.setVoltage(() -> 0.0));
 
         driverXboxController.leftTrigger()
                .whileTrue(AutoAimCommands.autoAimWhileMovingCommand(this, ShooterTreeMap.getInstance()));
@@ -153,8 +153,12 @@ public class RobotContainer {
                                 .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
         testSystemsController.rightBumper()
-                        .whileTrue(indexerSubsystem.setVoltage(() -> -3.5))
+                        .whileTrue(indexerSubsystem.setVoltage(() -> -1.5))
                                 .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
+
+        testSystemsController.rightTrigger()
+                        .whileTrue(intakeSubsystem.setVoltage(() -> 12.0))
+                                .whileFalse(intakeSubsystem.setVoltage(() -> 0.0));
 
 
         tuningController.a()
