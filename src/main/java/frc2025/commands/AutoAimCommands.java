@@ -11,6 +11,7 @@ import frc2025.RobotState;
 import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
 import frc2025.util.Alliance;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.function.Supplier;
 
@@ -21,36 +22,47 @@ import static frc2025.subsystems.drive.DriveConstants.kSpeedAt12Volts;
 
 public class AutoAimCommands {
     private static double modAngle(double angle) {
+        angle = angle % (2*Math.PI);
         if(angle > Math.PI) return angle - 2*Math.PI;
+        if(angle < -Math.PI) return angle + 2*Math.PI;
         return angle;
     }
 
     public static Command driveAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, boolean useDriver) {
-        PIDController angleController = new PIDController(1, 0.0, 0.0);
-        angleController.enableContinuousInput(-Math.PI, Math.PI);
 
         return robotContainer.getDrive().driveFieldRelative(
                 () -> {
+                    PIDController angleController = new PIDController(8, 0.0, 0.0);
+                    angleController.enableContinuousInput(-Math.PI, Math.PI);
+
                     Pose2d robotPose = RobotState.getInstance().getVisionPose();
                     Pose2d targetPose = targetPoseSupplier.get();
+
 
                     double angleToTarget = Math.atan2(
                             targetPose.getY() - robotPose.getY(),
                             targetPose.getX() - robotPose.getX()
                     );
                     double angularVelocity = angleController.calculate(modAngle(robotPose.getRotation().getRadians()), modAngle(angleToTarget));
+                    //double angularVelocity = angleController.calculate(modAngle(robotPose.getRotation().getRadians()), 0);
+
+                    Logger.recordOutput("Drive/hubTargetPose", targetPose);
+//                    Logger.recordOutput("Drive/angleToTarget", modAngle(angleToTarget));
+//                    Logger.recordOutput("Drive/angleToTargetUnmodded", angleToTarget);
+                    Logger.recordOutput("Drive/robotRotation", modAngle(robotPose.getRotation().getRadians()));
+                    Logger.recordOutput("Drive/robotRotationUnmodded", robotPose.getRotation().getRadians());
 
                     if(useDriver) {
                         return new ChassisSpeeds(
                                 handleDeadBand(robotContainer.getDriverLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
                                 handleDeadBand(robotContainer.getDriverLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                                angularVelocity
+                                -angularVelocity
                         );
                     } else {
                         return new ChassisSpeeds(
                                 0,
                                 0,
-                                angularVelocity
+                                -angularVelocity
                         );
                     }
                 }
@@ -84,27 +96,27 @@ public class AutoAimCommands {
     // calculate the virtual pose of the hub
     public static Pose2d calculateShootingWhileMoving(RobotContainer robotContainer, ShooterTreeMap treeMap) {
         Pose2d currentPose = RobotState.getInstance().getVisionPose();
-        Pose2d targetPose = Alliance.get() ? FieldConstants.blueNetPos : FieldConstants.redNetPos;
-
-        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
-            robotContainer.getDrive().getRobotRelativeSpeeds(),
-            currentPose.getRotation()
-        );
-        Translation2d velocity = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
-
-        for (int i = 0; i < 5; i++) {
-            double dx = targetPose.getX() - currentPose.getX();
-            double dy = targetPose.getY() - currentPose.getY();
-            double distance = Math.hypot(dx, dy);
-
-            double flightTime = treeMap.tofTreeMap.getInterpolated(distance);
-
-            targetPose = new Pose2d(
-                targetPose.getX() - velocity.getX() * flightTime,
-                targetPose.getY() - velocity.getY() * flightTime,
-                targetPose.getRotation()
-            );
-        }
+        Pose2d targetPose = Alliance.get() ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
+//
+//        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
+//            robotContainer.getDrive().getRobotRelativeSpeeds(),
+//            currentPose.getRotation()
+//        );
+//        Translation2d velocity = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+//
+//        for (int i = 0; i < 5; i++) {
+//            double dx = targetPose.getX() - currentPose.getX();
+//            double dy = targetPose.getY() - currentPose.getY();
+//            double distance = Math.hypot(dx, dy);
+//
+//            double flightTime = treeMap.tofTreeMap.getInterpolated(distance);
+//
+//            targetPose = new Pose2d(
+//                targetPose.getX() - velocity.getX() * flightTime,
+//                targetPose.getY() - velocity.getY() * flightTime,
+//                targetPose.getRotation()
+//            );
+//        }
 
         return targetPose;
     }

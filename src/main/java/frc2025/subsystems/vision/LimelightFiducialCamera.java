@@ -44,9 +44,10 @@ public class LimelightFiducialCamera {
         //poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
         poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
 
+        Logger.recordOutput("Vision/heartbeatBeforeNullcheck", Math.random());
+
         if(poseEstimate == null) return;
         if(poseEstimate.tagCount == 0) return;
-        if(RobotState.getInstance().getSwervePose() == null) return;
 
         Logger.recordOutput("Vision/mt1Pose", poseEstimate.pose);
 
@@ -80,17 +81,16 @@ public class LimelightFiducialCamera {
         if (Math.abs(pose.getRotation().minus(RobotState.getInstance().getVisionPose().getRotation()).getRadians()) > 0.3) reject = true;
 
         Vector<N3> distStdDevs;
-//        if(usingMt1)
-//            distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 4.0, Math.pow(leastDistance, 2) / 4.0, Math.pow(leastDistance, 2) / 100000.0);
-//        else
-        distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 4.0, Math.pow(leastDistance, 2) / 4.0, 99999);
+
+        distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 10.0, Math.pow(leastDistance, 2) / 10.0, 99999);
 
         VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
                 poseEstimate.timestampSeconds, pose, distStdDevs
         );
-        Logger.recordOutput("Vision/ReefAlignPose_" + name, poseEstimate.pose);
+        Logger.recordOutput("Vision/VisionPose_" + name, poseEstimate.pose);
 
         if(!reject) {
+            Logger.recordOutput("Vision/notRejectedHeartbeat_" + name, Math.random());
             RobotState.getInstance().addVisionData(List.of(update));
         }
     }

@@ -75,6 +75,7 @@ public class DriveSubsystem extends SubsystemBase {
         RobotState.getInstance().setSwervePose(inputs.swervePoseMeters);*/
 
         if(RobotState.getInstance().getHasNewVisionUpdate()) {
+            Logger.recordOutput("Drive/fuseVisionHeartbeat", Math.random());
             io.addVisionMeasurement(RobotState.getInstance().getLastVisionUpdate());
         }
         Pose2d currentPose = io.samplePoseAt(Utils.getCurrentTimeSeconds()).get();
@@ -83,8 +84,8 @@ public class DriveSubsystem extends SubsystemBase {
         double speed = Math.sqrt(Math.pow(inputs.currentChassisSpeeds.vxMetersPerSecond, 2) + Math.pow(inputs.currentChassisSpeeds.vyMetersPerSecond, 2));
         RobotState.getInstance().setSpeed(speed);
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);
-        Logger.recordOutput("Vision/swervePose", RobotState.getInstance().getSwervePose());
-        Logger.recordOutput("Drive/angleToTarget", RobotState.getInstance().getAngleToTarget());
+        //Logger.recordOutput("Vision/swervePose", RobotState.getInstance().getSwervePose());
+        //Logger.recordOutput("Drive/angleToTarget", RobotState.getInstance().getAngleToTarget());
         Logger.processInputs("RealOutputs/Drive", inputs);
 
         //ChassisSpeeds testSpeeds = new ChassisSpeeds(0, 0, 0);

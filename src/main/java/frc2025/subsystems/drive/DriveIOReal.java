@@ -81,7 +81,13 @@ public class DriveIOReal extends SwerveDrivetrain implements DriveIO{
     @Override
     public void addVisionMeasurement(List<VisionPoseEstimator.TimestampedVisionUpdate> updates) {
         for (var update: updates) {
-            addVisionMeasurement(update.pose(), update.timestamp(), update.stdDevs());
+            Logger.recordOutput("Drive/addVisionMeasurementHeartbeat2", Math.random());
+            Logger.recordOutput("Drive/visionUpdatePose", update.pose());
+            Logger.recordOutput("Drive/visionUpdateTimestamp", update.timestamp());
+            Logger.recordOutput("Drive/currentTimestamp", Utils.getCurrentTimeSeconds());
+
+            double timestamp = Utils.fpgaToCurrentTime(update.timestamp());
+            addVisionMeasurement(update.pose(), timestamp, update.stdDevs());
         }
     }
 
