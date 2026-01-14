@@ -17,7 +17,6 @@ public class VisionSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.recordOutput("Vision/visionPose", RobotState.getInstance().getVisionPose());
-        Logger.recordOutput("Vision/swervePose", RobotState.getInstance().getSwervePose());
 
     }
 }

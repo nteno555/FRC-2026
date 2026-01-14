@@ -1,42 +1,23 @@
 package frc2025.subsystems.drive;
 
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule;
-import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
-import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc2025.Robot;
 import frc2025.RobotState;
-import frc2025.subsystems.vision.VisionIO;
-import frc2025.subsystems.vision.VisionPoseEstimator;
 import frc2025.util.Alliance;
 import frc2025.util.SwerveSysidVoltageRequest;
 import org.littletonrobotics.junction.Logger;
 
-import java.sql.Driver;
-import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -74,10 +55,13 @@ public class DriveSubsystem extends SubsystemBase {
         /*RobotState.getInstance().addDriveData(inputs.odometryTimestamp, inputs.odometryTwist);
         RobotState.getInstance().setSwervePose(inputs.swervePoseMeters);*/
 
-        if(RobotState.getInstance().getHasNewVisionUpdate()) {
+        //if(RobotState.getInstance().getHasNewVisionUpdate()) {
+        if(RobotState.getInstance().getVisionUpdates().size() > 0) {
             Logger.recordOutput("Drive/fuseVisionHeartbeat", Math.random());
-            io.addVisionMeasurement(RobotState.getInstance().getLastVisionUpdate());
+            io.addVisionMeasurement(RobotState.getInstance().getVisionUpdates());
+            RobotState.getInstance().clearVisionUpdates();
         }
+
         Pose2d currentPose = io.samplePoseAt(Utils.getCurrentTimeSeconds()).get();
         RobotState.getInstance().setVisionPose(currentPose);
 
@@ -174,6 +158,12 @@ public class DriveSubsystem extends SubsystemBase {
         prevTimestamp = Timer.getFPGATimestamp();
 
         return currentSpeeds.plus(wantedAccel.times(dt));
+    }
+
+    public ChassisSpeeds getTeleopSpeeds(double x, double y, double omega) {
+        Translation2d translation = new Translation2d(x, y);
+        if(!Alliance.get()) translation = translation.times(-1);
+        return new ChassisSpeeds(translation.getX(), translation.getY(), omega);
     }
 
     // characterization

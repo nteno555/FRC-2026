@@ -109,15 +109,9 @@ public class RobotContainer {
     private void configureBindings() {
         driveSubsystem.setDefaultCommand(
                 driveSubsystem.driveTeleop(
-                        () -> {
-                            return (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond);
-                        },
-                        () -> {
-                            return (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond);
-                        },
-                        () -> {
-                            return (DriveSubsystem.slowmode ? 0.75 : 1.0) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2;
-                        }
+                        () -> (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (DriveSubsystem.slowmode ? 0.75 : 1.0) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
                 )
         );
 
@@ -133,7 +127,16 @@ public class RobotContainer {
         //intakeSubsystem.setDefaultCommand(intakeSubsystem.setVoltage(() -> 0.0));
 
         driverXboxController.leftTrigger()
-               .whileTrue(AutoAimCommands.autoAimWhileMovingCommand(this, ShooterTreeMap.getInstance()));
+               .whileTrue(
+                       AutoAimCommands.autoAimWhileMovingCommand(
+                               this,
+                               ShooterTreeMap.getInstance(),
+                               () -> driveSubsystem.getTeleopSpeeds(
+                                       (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                                       (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                                       (DriveSubsystem.slowmode ? 0.75 : 1.0) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
+                               ))
+               );
         driverXboxController.rightTrigger()
                 .whileTrue(
                         new WaitUntilCommand(() -> {
@@ -142,6 +145,9 @@ public class RobotContainer {
                             double velocity = Math.hypot(vx, vy);
                             return shooterSubsystem.getShotReady() && velocity < SubsystemConstants.kMaxShootVelocity;
                         }).andThen(SuperstructureCommands.shootCommand(this)));
+        driverXboxController.b().onTrue(new InstantCommand(() -> {
+            RobotState.getInstance().setShuttling(!RobotState.getInstance().getShuttling());
+        }));
 
 
         testSystemsController.leftBumper()
