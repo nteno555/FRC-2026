@@ -16,8 +16,8 @@ public class ShooterTreeMap {
         lowerWheelTreeMap.put(0.0, 1000.0);
         lowerWheelTreeMap.put(10.0, 2000.0);
 
-        tofTreeMap.put(0.0, 0.2);
-        tofTreeMap.put(10.0, 0.7);
+        tofTreeMap.put(0.0, 1.0);
+        tofTreeMap.put(10.0, 3.0);
     }
 
     public static ShooterTreeMap getInstance() {

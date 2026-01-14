@@ -32,7 +32,7 @@ public class AutoAimCommands {
 
         return robotContainer.getDrive().driveFieldRelative(
                 () -> {
-                    PIDController angleController = new PIDController(8, 0.0, 0.0);
+                    PIDController angleController = new PIDController(5, 0.0, 0.0);
                     angleController.enableContinuousInput(-Math.PI, Math.PI);
 
                     Pose2d robotPose = RobotState.getInstance().getVisionPose();
@@ -97,28 +97,29 @@ public class AutoAimCommands {
     public static Pose2d calculateShootingWhileMoving(RobotContainer robotContainer, ShooterTreeMap treeMap) {
         Pose2d currentPose = RobotState.getInstance().getVisionPose();
         Pose2d targetPose = Alliance.get() ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
-//
-//        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
-//            robotContainer.getDrive().getRobotRelativeSpeeds(),
-//            currentPose.getRotation()
-//        );
-//        Translation2d velocity = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
-//
-//        for (int i = 0; i < 5; i++) {
-//            double dx = targetPose.getX() - currentPose.getX();
-//            double dy = targetPose.getY() - currentPose.getY();
-//            double distance = Math.hypot(dx, dy);
-//
-//            double flightTime = treeMap.tofTreeMap.getInterpolated(distance);
-//
-//            targetPose = new Pose2d(
-//                targetPose.getX() - velocity.getX() * flightTime,
-//                targetPose.getY() - velocity.getY() * flightTime,
-//                targetPose.getRotation()
-//            );
-//        }
+        Pose2d virtualPose = targetPose;
 
-        return targetPose;
+        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
+            robotContainer.getDrive().getRobotRelativeSpeeds(),
+            currentPose.getRotation()
+        );
+        Translation2d velocity = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+
+        for (int i = 0; i < 5; i++) {
+            double dx = virtualPose.getX() - currentPose.getX();
+            double dy = virtualPose.getY() - currentPose.getY();
+            double distance = Math.hypot(dx, dy);
+
+            double flightTime = treeMap.tofTreeMap.getInterpolated(distance);
+
+            virtualPose = new Pose2d(
+                targetPose.getX() + velocity.getX() * flightTime,
+                targetPose.getY() + velocity.getY() * flightTime,
+                targetPose.getRotation()
+            );
+        }
+
+        return virtualPose;
     }
 
     public static Command autoAimWhileMovingCommand(RobotContainer robotContainer, ShooterTreeMap treeMap) {
