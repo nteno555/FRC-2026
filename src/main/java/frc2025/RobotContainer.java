@@ -133,15 +133,19 @@ public class RobotContainer {
         //intakeSubsystem.setDefaultCommand(intakeSubsystem.setVoltage(() -> 0.0));
 
         driverXboxController.leftTrigger()
-               .whileTrue(AutoAimCommands.autoAimWhileMovingCommand(this, ShooterTreeMap.getInstance()));
-        driverXboxController.rightTrigger()
-                .whileTrue(
-                        new WaitUntilCommand(() -> {
-                            double vx = driveSubsystem.getFieldRelativeSpeeds().vxMetersPerSecond;
-                            double vy = driveSubsystem.getFieldRelativeSpeeds().vyMetersPerSecond;
-                            double velocity = Math.hypot(vx, vy);
-                            return shooterSubsystem.getShotReady() && velocity < SubsystemConstants.kMaxShootVelocity;
-                        }).andThen(SuperstructureCommands.shootCommand(this)));
+               .whileTrue(AutoAimCommands.autoAimWhileMovingCommand(this, ShooterTreeMap.getInstance()))
+               .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
+        // driverXboxController.rightTrigger()
+        //         .whileTrue(
+        //                 new WaitUntilCommand(() -> {
+        //                     double vx = driveSubsystem.getFieldRelativeSpeeds().vxMetersPerSecond;
+        //                     double vy = driveSubsystem.getFieldRelativeSpeeds().vyMetersPerSecond;
+        //                     double velocity = Math.hypot(vx, vy);
+        //                     return shooterSubsystem.getShotReady() && velocity < SubsystemConstants.kMaxShootVelocity;
+        //                 }).andThen(SuperstructureCommands.shootCommand(this)));
+        driverXboxController.rightBumper().whileTrue(
+            indexerSubsystem.setVoltage(() -> -1.5))
+            .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
 
 
         testSystemsController.leftBumper()
