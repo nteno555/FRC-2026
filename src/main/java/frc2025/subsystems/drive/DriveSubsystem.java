@@ -225,4 +225,11 @@ public class DriveSubsystem extends SubsystemBase {
 	public Command runDriveSlipTest() {
 		return m_slipSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
 	}
+
+    public Translation2d getVisionVelocity() {
+        double currentTime = Utils.getCurrentTimeSeconds();
+        Pose2d currentPose = io.samplePoseAt(currentTime).get();
+        Pose2d previousPose = io.samplePoseAt(currentTime - 0.02).get();
+        return currentPose.minus(previousPose).div(0.02).getTranslation();
+    }
 }
