@@ -34,23 +34,28 @@ public class SubsystemConstants {
     public static double pivotZeroOffsetDegrees = 20;
     public static double pivotIntakePosition = 15;
 
-    public static double intakekS = 0.67;
-    public static double intakekV = 0.67;
-    public static double intakekP = 0.67;
-    public static double intakekI = 0.67;
-    public static double intakekD = 0.67;
-    public static double intakeCruiseVelocity = 100;
-    public static double intakeAcceleration = 200;
-    public static double intakeJerk = 7000;
-    public static double intakeSupplyCurrentLimit = 40;
-    public static double intakeStatorCurrentLimit = 40;
-    public static double intakePeakForwardTorqueCurrent = 40;
-    public static double intakePeakReverseTorqueCurrent = 40;
-    public static double intakeTorqueNeutralDeadband = 1;
     public static double intakeRotationsPerDegree = 0.208333333333;
     public static double intakekGFactor = 0.0;
     public static double intakeZeroOffsetDegrees = 20;
     public static double intakeDeployPosition = 15;
+
+    public static double turretkS = 0.67;
+    public static double turretkV = 0.67;
+    public static double turretkP = 0.67;
+    public static double turretkI = 0.67;
+    public static double turretkD = 0.67;
+    public static double turretkGFactor = 0.25;
+    public static double turretCruiseVelocity = 100;
+    public static double turretAcceleration = 200;
+    public static double turretJerk = 7000;
+    public static double turretSupplyCurrentLimit = 40;
+    public static double turretStatorCurrentLimit = 40;
+    public static double turretPeakForwardTorqueCurrent = 40;
+    public static double turretPeakReverseTorqueCurrent = 40;
+    public static double turretTorqueNeutralDeadband = 1;
+    public static double turretRotationsPerDegree = 0.208333333333;
+    public static double turretZeroOffsetDegrees = 20;
+
 
     public static double kMaxShootVelocity = 1;
 }
