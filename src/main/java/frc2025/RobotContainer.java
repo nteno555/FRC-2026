@@ -109,8 +109,8 @@ public class RobotContainer {
     private void configureBindings() {
         driveSubsystem.setDefaultCommand(
                 driveSubsystem.driveTeleop(
-                        () -> (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                        () -> (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (DriveSubsystem.slowmode ? 0.5 : 1.0) * -handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (DriveSubsystem.slowmode ? 0.5 : 1.0) * -handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
                         () -> (DriveSubsystem.slowmode ? 0.75 : 1.0) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
                 )
         );
@@ -126,9 +126,14 @@ public class RobotContainer {
         //indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0));
         //intakeSubsystem.setDefaultCommand(intakeSubsystem.setVoltage(() -> 0.0));
 
-        driverXboxController.rightBumper().whileTrue(
+        driverXboxController.rightTrigger().whileTrue(
             indexerSubsystem.setVoltage(() -> -1.5))
-            .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
+            .whileFalse(indexerSubsystem.setVoltage(() -> 0.5));
+
+        driverXboxController.povLeft().whileTrue(
+                        intakeSubsystem.setVoltage(() -> 7.0))
+                .whileFalse(intakeSubsystem.setVoltage(() -> 0.0));
+
 
         driverXboxController.leftTrigger()
                .whileTrue(
@@ -136,8 +141,8 @@ public class RobotContainer {
                                this,
                                ShooterTreeMap.getInstance(),
                                () -> driveSubsystem.getTeleopSpeeds(
-                                       (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                                       (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                                       (DriveSubsystem.slowmode ? 0.5 : 1.0) * -handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                                       (DriveSubsystem.slowmode ? 0.5 : 1.0) * -handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
                                        (DriveSubsystem.slowmode ? 0.75 : 1.0) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
                                ))
                ).whileFalse(shooterSubsystem.setVoltage(() -> 0.0));

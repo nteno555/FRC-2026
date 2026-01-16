@@ -118,6 +118,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void resetOdometry(Pose2d position) {
         io.resetOdometry(position);
+        RobotState.getInstance().rezero(position);
     }
 
     public static RobotConfig getPPConfig() {
