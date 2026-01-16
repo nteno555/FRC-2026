@@ -31,7 +31,6 @@ public class IndexerIOReal implements IndexerIO {
 
         indexer.getConfigurator().apply(talonFXConfigs, 0.050);
         indexer.getConfigurator().apply(configTorque, 0.05);
-
     }
 
 

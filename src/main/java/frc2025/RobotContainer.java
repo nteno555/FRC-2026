@@ -110,10 +110,10 @@ public class RobotContainer {
         driveSubsystem.setDefaultCommand(
                 driveSubsystem.driveTeleop(
                         () -> {
-                            return (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond);
+                            return -(DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond);
                         },
                         () -> {
-                            return (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond);
+                            return -(DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond);
                         },
                         () -> {
                             return (DriveSubsystem.slowmode ? 0.75 : 1.0) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2;
@@ -129,7 +129,7 @@ public class RobotContainer {
             }
         }));
 
-        //indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0));
+//        indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.5));
         //intakeSubsystem.setDefaultCommand(intakeSubsystem.setVoltage(() -> 0.0));
 
         driverXboxController.leftTrigger()
@@ -143,10 +143,13 @@ public class RobotContainer {
         //                     double velocity = Math.hypot(vx, vy);
         //                     return shooterSubsystem.getShotReady() && velocity < SubsystemConstants.kMaxShootVelocity;
         //                 }).andThen(SuperstructureCommands.shootCommand(this)));
-        driverXboxController.rightBumper().whileTrue(
+        driverXboxController.rightTrigger().whileTrue(
             indexerSubsystem.setVoltage(() -> -1.5))
-            .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
+            .whileFalse(indexerSubsystem.setVoltage(() -> 0.5));
 
+        driverXboxController.povLeft().whileTrue(
+                intakeSubsystem.setVoltage(() -> 7.0))
+                .whileFalse(intakeSubsystem.setVoltage(() -> 0.0));
 
         testSystemsController.leftBumper()
                         .whileTrue(shooterSubsystem.setSpeed(() -> 2400.0))

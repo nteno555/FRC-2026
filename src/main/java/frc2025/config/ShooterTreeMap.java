@@ -15,8 +15,13 @@ public class ShooterTreeMap {
 
         lowerWheelTreeMap.put(0.0, 1100.0);
         lowerWheelTreeMap.put(1.0, 1300.0);
-        lowerWheelTreeMap.put(3.0, 1600.0);
-        lowerWheelTreeMap.put(5.0, 2200.0);
+        lowerWheelTreeMap.put(2.5, 1750.0);
+        lowerWheelTreeMap.put(3.0, 1900.0);
+//        lowerWheelTreeMap.put(2.8, 1600.0);
+//        lowerWheelTreeMap.put(3.1, 1800.0);
+        lowerWheelTreeMap.put(4.0, 2300.0);
+        lowerWheelTreeMap.put(4.2, 2500.0);
+        lowerWheelTreeMap.put(5.0, 3000.0);
 
         tofTreeMap.put(0.0, 1.0);
         tofTreeMap.put(1.0, 1.0);

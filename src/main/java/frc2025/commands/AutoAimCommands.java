@@ -54,8 +54,8 @@ public class AutoAimCommands {
 
                     if(useDriver) {
                         return new ChassisSpeeds(
-                                handleDeadBand(robotContainer.getDriverLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                                handleDeadBand(robotContainer.getDriverLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                                -handleDeadBand(robotContainer.getDriverLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                                -handleDeadBand(robotContainer.getDriverLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
                                 -angularVelocity
                         );
                     } else {
@@ -74,7 +74,9 @@ public class AutoAimCommands {
             Pose2d robotPose = RobotState.getInstance().getVisionPose();
             Pose2d targetPose = targetPoseSupplier.get();
             double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
-            return ShooterTreeMap.getInstance().pivotTreeMap.getInterpolated(dist);
+            double wantedRPM = ShooterTreeMap.getInstance().pivotTreeMap.getInterpolated(dist);
+            Logger.recordOutput("Pivot/wantedRPM", wantedRPM);
+            return wantedRPM;
         });
     }
 
@@ -83,7 +85,9 @@ public class AutoAimCommands {
             Pose2d robotPose = RobotState.getInstance().getVisionPose();
             Pose2d targetPose = targetPoseSupplier.get();
             double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
-            return ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist);
+            double wantedRPM =  ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist);
+            Logger.recordOutput("Shooter/wantedRPM", wantedRPM);
+            return wantedRPM;
         });
     }
 

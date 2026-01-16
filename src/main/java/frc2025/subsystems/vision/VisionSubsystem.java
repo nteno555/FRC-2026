@@ -19,5 +19,7 @@ public class VisionSubsystem extends SubsystemBase {
         Logger.recordOutput("Vision/visionPose", RobotState.getInstance().getVisionPose());
         Logger.recordOutput("Vision/swervePose", RobotState.getInstance().getSwervePose());
 
+        double distToGoal = Math.hypot((RobotState.getInstance().getVisionPose().getX() - 11.913), (RobotState.getInstance().getVisionPose().getY() - 4.018));
+        Logger.recordOutput("Vision/distToGoal", distToGoal);
     }
 }
