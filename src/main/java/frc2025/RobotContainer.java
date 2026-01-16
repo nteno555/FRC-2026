@@ -57,7 +57,7 @@ public class RobotContainer {
     public RobotContainer() {
         createSubsystems();
         configureBindings();
-        autos = new Autos(driveSubsystem);
+        autos = new Autos(this);
         autoCommand = autos.Taxi();
     }
 
