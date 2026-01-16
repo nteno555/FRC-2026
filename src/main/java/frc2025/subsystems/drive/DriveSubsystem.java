@@ -60,8 +60,8 @@ public class DriveSubsystem extends SubsystemBase {
             RobotState.getInstance().clearVisionUpdates();
         }
 
-        Pose2d currentPose = io.samplePoseAt(Utils.getCurrentTimeSeconds()).get();
-        RobotState.getInstance().setVisionPoseBuiltin(currentPose);
+        //Pose2d currentPose = io.samplePoseAt(Utils.getCurrentTimeSeconds()).get();
+        //RobotState.getInstance().setVisionPoseBuiltin(currentPose);
 
         double speed = Math.sqrt(Math.pow(inputs.currentChassisSpeeds.vxMetersPerSecond, 2) + Math.pow(inputs.currentChassisSpeeds.vyMetersPerSecond, 2));
         RobotState.getInstance().setSpeed(speed);

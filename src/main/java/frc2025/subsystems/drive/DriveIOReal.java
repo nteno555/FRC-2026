@@ -51,7 +51,7 @@ public class DriveIOReal extends SwerveDrivetrain implements DriveIO{
     public void updateInputs(DriveIOInputs inputs) {
         var state = getState();
         inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
-        inputs.swervePoseMeters = (Pose2d) samplePoseAt(Utils.getCurrentTimeSeconds()).get();
+        //inputs.swervePoseMeters = (Pose2d) samplePoseAt(Utils.getCurrentTimeSeconds()).get();
 
         SwerveModulePosition[] wheelDeltas = new SwerveModulePosition[4];
         for (int i = 0; i < 4; i++) {

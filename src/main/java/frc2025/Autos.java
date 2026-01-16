@@ -22,9 +22,9 @@ import java.util.function.Supplier;
 
 public class Autos {
     private DriveSubsystem drive;
-    private static Pose2d HIGH_START = new Pose2d(3.516, 5.941, Rotation2d.fromDegrees(180));
-    private static Pose2d MID_START = new Pose2d(3.516, 4.092, Rotation2d.fromDegrees(180));
-    private static Pose2d LOW_START = new Pose2d(3.516, 2.112, Rotation2d.fromDegrees(180));
+    private static Pose2d HIGH_START = new Pose2d(3.516, 5.941, Rotation2d.fromDegrees(0));
+    private static Pose2d MID_START = new Pose2d(3.516, 4.092, Rotation2d.fromDegrees(0));
+    private static Pose2d LOW_START = new Pose2d(3.516, 2.112, Rotation2d.fromDegrees(0));
     private static Pose2d HighDriveback = new Pose2d(3.000, 5.941, new Rotation2d(0));
     private static Pose2d MidDriveback = new Pose2d(3.000, 4.092, new Rotation2d(0));
     private static Pose2d LowDriveback = new Pose2d(3.000, 2.112, new Rotation2d(0));
@@ -38,7 +38,8 @@ public class Autos {
     }
 
     public Command autoScore(Pose2d pose) {
-        Command score = AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> pose)
+        Command score = //AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> pose)
+            AutoAimCommands.autoAimCommand(robotContainer, () -> pose, () -> new ChassisSpeeds(0,0,0))
                 .andThen(
                         new WaitUntilCommand(() -> {
                             double vx = drive.getFieldRelativeSpeeds().vxMetersPerSecond;
@@ -48,6 +49,21 @@ public class Autos {
                         })
                                 .andThen(SuperstructureCommands.shootCommand(robotContainer)));
         return score;
+    }
+
+
+    private Command intakePath(String pathName) {
+        PathPlannerPath path;
+        try {
+            path = PathPlannerPath.fromPathFile(pathName);
+        } catch (IOException | ParseException e) {
+            System.out.println("BAD PATH BAD PATH BAD PATH");
+            return null;
+        }
+
+        PathPlannerPath finalPath = path;
+        return new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true)
+                .andThen(new WaitCommand(0.2));
     }
 
     private Command intake(int startingID, int endingID) {
@@ -86,8 +102,9 @@ public class Autos {
     }
     public Command LowShootPreload() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(LOW_START))
-                .andThen(intake(0, 6))
-                .andThen(autoScore(new Pose2d(3.000, 4.092, new Rotation2d(0))));
+                //.andThen(intake(0, 6))
+                .andThen(intakePath("Mid-Driveback"))
+                .andThen(autoScore(RobotState.getInstance().getTargetPose()));
         return auto;
     }
 

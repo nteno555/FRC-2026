@@ -19,10 +19,11 @@ public class RobotState {
     private double speed;
     private List<VisionPoseEstimator.TimestampedVisionUpdate> visionUpdates = new ArrayList<>();
 
-    private boolean shuttling = false;
+    private boolean shuttling;
 
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
+        shuttling = false;
     }
 
     public static RobotState getInstance() {
@@ -68,21 +69,26 @@ public class RobotState {
         return this.shuttling;
     }
     public Pose2d getTargetPose() {
-        if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-            if(shuttling) {
+        var alliance = DriverStation.Alliance.Red;
+        if(DriverStation.getAlliance().isPresent()) {
+            alliance = DriverStation.getAlliance().get();
+        }
+
+        if(alliance == DriverStation.Alliance.Red) {
+            if(!shuttling) {
                 return FieldConstants.redNetPos;
             } else {
-                if(visionPoseBuiltin.getY() > FieldConstants.yHalfLine) {
+                if(visionPoseEstimator.getLatestPose().getY() > FieldConstants.yHalfLine) {
                     return FieldConstants.redShuttlePosUpper;
                 } else {
                     return FieldConstants.redShuttlePosLower;
                 }
             }
         } else {
-            if(shuttling) {
+            if(!shuttling) {
                 return FieldConstants.blueNetPos;
             } else {
-                if(visionPoseBuiltin.getY() > FieldConstants.yHalfLine) {
+                if(visionPoseEstimator.getLatestPose().getY() > FieldConstants.yHalfLine) {
                     return FieldConstants.blueShuttlePosUpper;
                 } else {
                     return FieldConstants.blueShuttlePosLower;
