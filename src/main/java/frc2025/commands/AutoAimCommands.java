@@ -5,20 +5,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc2025.RobotContainer;
 import frc2025.RobotState;
-import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
-import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.function.Supplier;
-
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static frc2025.RobotContainer.DEAD_BAND_DRIVER;
-import static frc2025.RobotContainer.handleDeadBand;
-import static frc2025.subsystems.drive.DriveConstants.kSpeedAt12Volts;
 
 public class AutoAimCommands {
     private static double modAngle(double angle) {
@@ -28,8 +20,7 @@ public class AutoAimCommands {
         return angle;
     }
 
-    public static Command driveAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, boolean useDriver) {
-
+    public static Command driveAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {
         return robotContainer.getDrive().driveFieldRelative(
                 () -> {
                     PIDController angleController = new PIDController(5, 0.0, 0.0);
@@ -44,27 +35,16 @@ public class AutoAimCommands {
                             targetPose.getX() - robotPose.getX()
                     );
                     double angularVelocity = angleController.calculate(modAngle(robotPose.getRotation().getRadians()), modAngle(angleToTarget));
-                    //double angularVelocity = angleController.calculate(modAngle(robotPose.getRotation().getRadians()), 0);
 
                     Logger.recordOutput("Drive/hubTargetPose", targetPose);
-//                    Logger.recordOutput("Drive/angleToTarget", modAngle(angleToTarget));
-//                    Logger.recordOutput("Drive/angleToTargetUnmodded", angleToTarget);
                     Logger.recordOutput("Drive/robotRotation", modAngle(robotPose.getRotation().getRadians()));
                     Logger.recordOutput("Drive/robotRotationUnmodded", robotPose.getRotation().getRadians());
 
-                    if(useDriver) {
-                        return new ChassisSpeeds(
-                                handleDeadBand(robotContainer.getDriverLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                                handleDeadBand(robotContainer.getDriverLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                                -angularVelocity
-                        );
-                    } else {
-                        return new ChassisSpeeds(
-                                0,
-                                0,
-                                -angularVelocity
-                        );
-                    }
+                    return new ChassisSpeeds(
+                            unlockedSpeeds.get().vxMetersPerSecond,
+                            unlockedSpeeds.get().vyMetersPerSecond,
+                            -angularVelocity
+                    );
                 }
         );
     }
@@ -87,17 +67,17 @@ public class AutoAimCommands {
         });
     }
 
-    public static Command autoAimCommand(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, boolean useDriver) {
+    public static Command autoAimCommand(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {
         return shooterAutoSpinUp(robotContainer, targetPoseSupplier)
-                .alongWith(driveAutoAim(robotContainer, targetPoseSupplier, useDriver))
+                .alongWith(driveAutoAim(robotContainer, targetPoseSupplier, unlockedSpeeds))
                 .alongWith(pivotAutoAim(robotContainer, targetPoseSupplier));
     }
 
     // calculate the virtual pose of the hub
-    public static Pose2d calculateShootingWhileMoving(RobotContainer robotContainer, ShooterTreeMap treeMap) {
+    public static Pose2d calculateShootingWhileMoving(RobotContainer robotContainer, ShooterTreeMap treeMap, Pose2d realTargetPose) {
         Pose2d currentPose = RobotState.getInstance().getVisionPose();
-        Pose2d targetPose = Alliance.get() ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
-        Pose2d virtualPose = targetPose;
+        //Pose2d targetPose = Alliance.get() ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
+        Pose2d virtualPose = realTargetPose;
 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
             robotContainer.getDrive().getRobotRelativeSpeeds(),
@@ -113,16 +93,19 @@ public class AutoAimCommands {
             double flightTime = treeMap.tofTreeMap.getInterpolated(distance);
 
             virtualPose = new Pose2d(
-                targetPose.getX() + velocity.getX() * flightTime,
-                targetPose.getY() + velocity.getY() * flightTime,
-                targetPose.getRotation()
+                realTargetPose.getX() + velocity.getX() * flightTime,
+                realTargetPose.getY() + velocity.getY() * flightTime,
+                realTargetPose.getRotation()
             );
         }
 
         return virtualPose;
     }
 
-    public static Command autoAimWhileMovingCommand(RobotContainer robotContainer, ShooterTreeMap treeMap) {
-        return autoAimCommand(robotContainer, () -> calculateShootingWhileMoving(robotContainer, treeMap), true);
+    public static Command autoAimWhileMovingCommand(RobotContainer robotContainer, ShooterTreeMap treeMap, Supplier<ChassisSpeeds> unlockedSpeeds) {
+        return autoAimCommand(
+                robotContainer,
+                () -> calculateShootingWhileMoving(robotContainer, treeMap, RobotState.getInstance().getTargetPose()),
+                unlockedSpeeds);
     }
 }

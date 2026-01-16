@@ -1,42 +1,23 @@
 package frc2025.subsystems.drive;
 
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule;
-import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
-import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc2025.Robot;
 import frc2025.RobotState;
-import frc2025.subsystems.vision.VisionIO;
-import frc2025.subsystems.vision.VisionPoseEstimator;
 import frc2025.util.Alliance;
 import frc2025.util.SwerveSysidVoltageRequest;
 import org.littletonrobotics.junction.Logger;
 
-import java.sql.Driver;
-import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -58,8 +39,6 @@ public class DriveSubsystem extends SubsystemBase {
     private final SwerveRequest.ApplyRobotSpeeds request = new SwerveRequest.ApplyRobotSpeeds()
             .withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
             .withSteerRequestType(SwerveModule.SteerRequestType.Position);
-    //private final SwerveRequest.ApplyRobotSpeeds request1 = new SwerveRequest.ApplyRobotSpeeds();
-    //private final SwerveRequest.RobotCentric request1 = new SwerveRequest.RobotCentric();
     private double prevTimestamp = 0;
 
     public DriveSubsystem(DriveIO io) {
@@ -71,27 +50,23 @@ public class DriveSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
         //io.setControl(request.withSpeeds(applyAccelLimits()));
         io.setControl(request.withSpeeds(wantedSpeeds));
-        /*RobotState.getInstance().addDriveData(inputs.odometryTimestamp, inputs.odometryTwist);
-        RobotState.getInstance().setSwervePose(inputs.swervePoseMeters);*/
+        RobotState.getInstance().addDriveData(inputs.odometryTimestamp, inputs.odometryTwist);
+        /*RobotState.getInstance().setSwervePose(inputs.swervePoseMeters);*/
 
-        if(RobotState.getInstance().getHasNewVisionUpdate()) {
+        //if(RobotState.getInstance().getHasNewVisionUpdate()) {
+        if(RobotState.getInstance().getVisionUpdates().size() > 0) {
             Logger.recordOutput("Drive/fuseVisionHeartbeat", Math.random());
-            io.addVisionMeasurement(RobotState.getInstance().getLastVisionUpdate());
+            io.addVisionMeasurement(RobotState.getInstance().getVisionUpdates());
+            RobotState.getInstance().clearVisionUpdates();
         }
+
         Pose2d currentPose = io.samplePoseAt(Utils.getCurrentTimeSeconds()).get();
-        RobotState.getInstance().setVisionPose(currentPose);
+        RobotState.getInstance().setVisionPoseBuiltin(currentPose);
 
         double speed = Math.sqrt(Math.pow(inputs.currentChassisSpeeds.vxMetersPerSecond, 2) + Math.pow(inputs.currentChassisSpeeds.vyMetersPerSecond, 2));
         RobotState.getInstance().setSpeed(speed);
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);
-        //Logger.recordOutput("Vision/swervePose", RobotState.getInstance().getSwervePose());
-        //Logger.recordOutput("Drive/angleToTarget", RobotState.getInstance().getAngleToTarget());
         Logger.processInputs("RealOutputs/Drive", inputs);
-
-        //ChassisSpeeds testSpeeds = new ChassisSpeeds(0, 0, 0);
-        //SwerveRequest testRequest = request.withSpeeds(testSpeeds);
-        //SwerveRequest testRequest2 = request.withSpeeds(testSpeeds);
-        //Logger.recordOutput("Drive/testRequestStates", testRequest)
     }
 
     public void applyChassisSpeeds(ChassisSpeeds speeds) {
@@ -174,6 +149,12 @@ public class DriveSubsystem extends SubsystemBase {
         prevTimestamp = Timer.getFPGATimestamp();
 
         return currentSpeeds.plus(wantedAccel.times(dt));
+    }
+
+    public ChassisSpeeds getTeleopSpeeds(double x, double y, double omega) {
+        Translation2d translation = new Translation2d(x, y);
+        if(!Alliance.get()) translation = translation.times(-1);
+        return new ChassisSpeeds(translation.getX(), translation.getY(), omega);
     }
 
     // characterization

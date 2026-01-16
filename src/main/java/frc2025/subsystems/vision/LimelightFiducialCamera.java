@@ -5,10 +5,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.wpilibj.DriverStation;
 import frc2025.RobotState;
-import frc2025.subsystems.vision.LimelightHelpers;
-import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.List;
