@@ -1,6 +1,9 @@
 package frc2025.config;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import frc2025.util.InterpolatingTreeMap;
 
 
@@ -53,4 +56,6 @@ public class SubsystemConstants {
     public static double intakeDeployPosition = 15;
 
     public static double kMaxShootVelocity = 1;
+
+    public static Translation2d shooterToCenterPose = new Translation2d(0.0, -0.2);
 }

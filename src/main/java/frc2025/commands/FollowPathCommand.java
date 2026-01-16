@@ -84,7 +84,7 @@ public class FollowPathCommand extends Command {
         Logger.recordOutput("Drive/PathFollowingError", dist);
 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                desiredStateFlipped.plus(new ChassisSpeeds(-xFeedback, -yFeedback, omegaFeedback)),
+                desiredState.fieldSpeeds.plus(new ChassisSpeeds(xFeedback, yFeedback, omegaFeedback)),
                 currentPose.getRotation()
         );
 

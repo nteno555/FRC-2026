@@ -26,19 +26,18 @@ public class AutoAimCommands {
                     PIDController angleController = new PIDController(5, 0.0, 0.0);
                     angleController.enableContinuousInput(-Math.PI, Math.PI);
 
-                    Pose2d robotPose = RobotState.getInstance().getVisionPose();
+                    Pose2d shooterPose = RobotState.getInstance().getVisionShooterPose();
                     Pose2d targetPose = targetPoseSupplier.get();
 
-
                     double angleToTarget = Math.atan2(
-                            targetPose.getY() - robotPose.getY(),
-                            targetPose.getX() - robotPose.getX()
+                            targetPose.getY() - shooterPose.getY(),
+                            targetPose.getX() - shooterPose.getX()
                     );
-                    double angularVelocity = angleController.calculate(modAngle(robotPose.getRotation().getRadians()), modAngle(angleToTarget));
+                    double angularVelocity = angleController.calculate(modAngle(shooterPose.getRotation().getRadians()), modAngle(angleToTarget));
 
                     Logger.recordOutput("Drive/hubTargetPose", targetPose);
-                    Logger.recordOutput("Drive/robotRotation", modAngle(robotPose.getRotation().getRadians()));
-                    Logger.recordOutput("Drive/robotRotationUnmodded", robotPose.getRotation().getRadians());
+                    Logger.recordOutput("Drive/robotRotation", modAngle(shooterPose.getRotation().getRadians()));
+                    Logger.recordOutput("Drive/robotRotationUnmodded", shooterPose.getRotation().getRadians());
 
                     return new ChassisSpeeds(
                             unlockedSpeeds.get().vxMetersPerSecond,

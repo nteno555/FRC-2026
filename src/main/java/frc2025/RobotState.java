@@ -3,9 +3,11 @@ package frc2025;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc2025.config.FieldConstants;
+import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.vision.VisionPoseEstimator;
 
 import java.util.ArrayList;
@@ -38,6 +40,16 @@ public class RobotState {
 
     public Pose2d getVisionPose() {
         return visionPoseEstimator.getLatestPose();
+    }
+
+    public Pose2d getVisionShooterPose() {
+        Pose2d visionPose = visionPoseEstimator.getLatestPose();
+        Translation2d vec = SubsystemConstants.shooterToCenterPose.rotateBy(visionPose.getRotation());
+        return new Pose2d(
+                visionPose.getX() + vec.getX(),
+                visionPose.getY() + vec.getY(),
+                visionPose.getRotation()
+        );
     }
 
     public void setSpeed(double speed) { this.speed = speed; }

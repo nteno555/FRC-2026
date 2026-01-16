@@ -1,6 +1,7 @@
 package frc2025.subsystems.vision;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc2025.Robot;
 import frc2025.RobotState;
 import org.littletonrobotics.junction.Logger;
 
@@ -16,6 +17,7 @@ public class VisionSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.recordOutput("Vision/visionPose", RobotState.getInstance().getVisionPose());
+        Logger.recordOutput("Vision/shooterVisionPose", RobotState.getInstance().getVisionShooterPose());
         Logger.recordOutput("Vision/visionPoseBuiltin", RobotState.getInstance().getVisionPoseBuiltin());
 
     }
