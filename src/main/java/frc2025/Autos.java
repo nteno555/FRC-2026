@@ -111,7 +111,7 @@ public class Autos {
     public Command HighShootClimb() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
                 .andThen(intake(2, 6))
-                .andThen(autoScore(HighDriveback))
+                .andThen(autoScore(RobotState.getInstance().getVisionPose()))
                 .andThen(intake(7, 4));
         return auto;
 
@@ -119,10 +119,10 @@ public class Autos {
     public Command HighShootIntakeClimb() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
                 .andThen(intake(2, 6))
-                .andThen(autoScore(HighDriveback))
+                .andThen(autoScore(RobotState.getInstance().getVisionPose()))
                 .andThen(intake(7, 3).alongWith(intakeCommand()))
                 .andThen(intake(3, 7))
-                .andThen(autoScore(HighDriveback))
+                .andThen(autoScore(RobotState.getInstance().getVisionPose()))
                 .andThen(intake(7, 4));
         return auto;
     }

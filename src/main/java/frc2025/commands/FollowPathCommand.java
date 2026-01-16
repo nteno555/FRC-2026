@@ -79,7 +79,7 @@ public class FollowPathCommand extends Command {
                 desiredState.fieldSpeeds.vxMetersPerSecond * -1,
                 desiredState.fieldSpeeds.vyMetersPerSecond * -1,
                 desiredState.fieldSpeeds.omegaRadiansPerSecond
-        )
+        );
 
         Logger.recordOutput("Drive/PathFollowingError", dist);
 
