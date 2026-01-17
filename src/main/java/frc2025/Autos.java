@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc2025.commands.AutoAimCommands;
 import frc2025.commands.FollowPathCommand;
 import frc2025.commands.SuperstructureCommands;
+import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveSubsystem;
 import frc2025.util.Alliance;
@@ -25,9 +26,6 @@ public class Autos {
     private static Pose2d HIGH_START = new Pose2d(3.516, 5.941, Rotation2d.fromDegrees(0));
     private static Pose2d MID_START = new Pose2d(3.445, 4.092, Rotation2d.fromDegrees(0));
     private static Pose2d LOW_START = new Pose2d(3.516, 2.112, Rotation2d.fromDegrees(0));
-    private static Pose2d HighDriveback = new Pose2d(3.000, 5.941, new Rotation2d(0));
-    private static Pose2d MidDriveback = new Pose2d(3.000, 4.092, new Rotation2d(0));
-    private static Pose2d LowDriveback = new Pose2d(3.000, 2.112, new Rotation2d(0));
 
     public static Pose2d startPose = HIGH_START;
     private RobotContainer robotContainer;
@@ -73,28 +71,6 @@ public class Autos {
     }
 
 
-    private Command intake(int startingID, int endingID) {
-        /* 0: Low, 1: Mid, 2: High, 3: Depot, 4: Climb, 5: Neutral, 6: Driveback, 7: HighDriveback, 8: MidDriveback, 9: LowDriveback, 10: Station*/
-        String[] positions = {"Low", "Mid", "High", "Depot", "Climb", "Neutral", "Driveback", "HighDriveback", "MidDriveback", "LowDriveback", "Station"};
-        String pathName = positions[startingID] + "-" + positions[endingID];
-
-        PathPlannerPath path;
-        try {
-            path = PathPlannerPath.fromPathFile(pathName);
-        } catch (IOException | ParseException e) {
-            System.out.println("BAD PATH BAD PATH BAD PATH");
-            return null;
-        }
-
-        PathPlannerPath finalPath = path;
-        return new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true)
-                .andThen(new WaitCommand(0.2));
-    }
-
-//    public Command intakeCommand() {
-//        return robotContainer.getIntake().setVoltage(() -> 5.0);
-//    }
-
     private Pose2d mirrorPose(Pose2d pose) {
         Translation2d translation = pose.getTranslation();
         return new Pose2d(translation.getX(), FlippingUtil.fieldSizeY - translation.getY(), pose.getRotation().times(-1));
@@ -107,6 +83,7 @@ public class Autos {
             return pose;
         };
     }
+
     public Command LowShootPreload() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(LOW_START))
                 .andThen(intakePath("Low-Driveback"))
@@ -117,6 +94,20 @@ public class Autos {
     public Command MidShootPreload() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
                 .andThen(intakePath("Mid-Driveback"))
+                .andThen(autoScore(RobotState.getInstance().getTargetPose()));
+        return auto;
+    }
+
+    public Command MidShootWhileMoving() {
+        Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
+                .andThen(intakePath("Mid-Driveback"))
+                .alongWith(AutoAimCommands.autoAimWhileMovingCommand(robotContainer, ShooterTreeMap.getInstance(), () -> drive.getFieldRelativeSpeeds()));
+        return auto;
+    }
+
+    public Command HighShootPreload() {
+        Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
+                .andThen(intakePath("High-Driveback"))
                 .andThen(autoScore(RobotState.getInstance().getTargetPose()));
         return auto;
     }
@@ -132,14 +123,15 @@ public class Autos {
 
     public Command HighShootClimb() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
-                .andThen(autoScore(RobotState.getInstance().getVisionPose()));
+                .andThen(autoScore(RobotState.getInstance().getTargetPose()))
+                .andThen(intakePath("HighDriveback-Climb"));
         return auto;
 
     }
     public Command HighShootIntakeClimb() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
-                .andThen(autoScore(RobotState.getInstance().getVisionPose()))
-                .andThen(autoScore(RobotState.getInstance().getVisionPose()));
+                .andThen(autoScore(RobotState.getInstance().getTargetPose()))
+                .andThen(autoScore(RobotState.getInstance().getTargetPose()));
         return auto;
     }
 
