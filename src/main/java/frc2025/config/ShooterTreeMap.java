@@ -1,6 +1,9 @@
 package frc2025.config;
 
+import java.util.ArrayList;
+
 import frc2025.util.InterpolatingTreeMap;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ShooterTreeMap {
     private static ShooterTreeMap instance;
@@ -8,7 +11,7 @@ public class ShooterTreeMap {
     public InterpolatingTreeMap upperWheelTreeMap = new InterpolatingTreeMap();
     public InterpolatingTreeMap lowerWheelTreeMap = new InterpolatingTreeMap();
     public InterpolatingTreeMap tofTreeMap = new InterpolatingTreeMap();
-
+    
     public ShooterTreeMap() {
         pivotTreeMap.put(0.0, 15.0);
         pivotTreeMap.put(10.0, 5.0);
@@ -22,6 +25,9 @@ public class ShooterTreeMap {
         tofTreeMap.put(0.0, 1.0);
         tofTreeMap.put(1.0, 1.0);
         tofTreeMap.put(2.0, 1.0);
+        updateDashboardMap();
+        SmartDashboard.putString("Tuning/lowerWheelTree Map", lowerWheelTreeMap.toString());
+
     }
 
     public static ShooterTreeMap getInstance() {
@@ -30,4 +36,22 @@ public class ShooterTreeMap {
         }
         return getInstance();
     }
+
+    public void addShot(double dist, double RPM) {
+         lowerWheelTreeMap.put(dist, RPM);
+         updateDashboardMap();
+    }
+
+    public void removeShot(double dist) {
+        if (lowerWheelTreeMap.containsKey(dist)) {
+            
+            lowerWheelTreeMap.remove(dist);
+            updateDashboardMap();
+        }
+    }
+
+    private void updateDashboardMap() {
+        SmartDashboard.putString("Tuning/lowerWheelTree Map", lowerWheelTreeMap.toString());
+    }
 }
+
