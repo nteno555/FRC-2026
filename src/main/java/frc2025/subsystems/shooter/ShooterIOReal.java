@@ -1,6 +1,10 @@
 package frc2025.subsystems.shooter;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.ControlRequest;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -9,44 +13,59 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc2025.config.SubsystemConstants;
 
 public class ShooterIOReal implements ShooterIO {
-    private TalonFX lowerFlywheel = new TalonFX(0, "rio"); // Placeholders
+    private TalonFX lowerFlywheel = new TalonFX(18, "Awesome Sauce"); // Placeholders
 
     @SuppressWarnings("removal")
     public ShooterIOReal() {
 		lowerFlywheel.getConfigurator().apply(new TalonFXConfiguration());
 		lowerFlywheel.setNeutralMode(NeutralModeValue.Coast);
 
-		var upperConfig = new TalonFXConfiguration();
+		//var upperConfig = new TalonFXConfiguration();
 		var lowerConfig = new TalonFXConfiguration();
 
-		upperConfig.CurrentLimits.SupplyCurrentLimit = 40;
-		upperConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-		upperConfig.CurrentLimits.StatorCurrentLimit = 100;
-		upperConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+		// upperConfig.CurrentLimits.SupplyCurrentLimit = 40;
+		// upperConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+		// upperConfig.CurrentLimits.StatorCurrentLimit = 100;
+		// upperConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
-        upperConfig.Slot0.kS = SubsystemConstants.upperS;
-        upperConfig.Slot0.kV = SubsystemConstants.upperV;
-        upperConfig.Slot0.kP = SubsystemConstants.upperP;
-        upperConfig.Slot0.kI = SubsystemConstants.upperI;
-        upperConfig.Slot0.kD = SubsystemConstants.upperD;
+        // upperConfig.Slot0.kS = SubsystemConstants.upperS;
+        // upperConfig.Slot0.kV = SubsystemConstants.upperV;
+        // upperConfig.Slot0.kP = SubsystemConstants.upperP;
+        // upperConfig.Slot0.kI = SubsystemConstants.upperI;
+        // upperConfig.Slot0.kD = SubsystemConstants.upperD;
 
         lowerConfig.Slot0.kS = SubsystemConstants.lowerS;
         lowerConfig.Slot0.kV = SubsystemConstants.lowerV;
+        lowerConfig.Slot0.kA = SubsystemConstants.lowerA;
         lowerConfig.Slot0.kP = SubsystemConstants.lowerP;
         lowerConfig.Slot0.kI = SubsystemConstants.lowerI;
         lowerConfig.Slot0.kD = SubsystemConstants.lowerD;
+
+        var motionMagicConfigs = lowerConfig.MotionMagic;
+        motionMagicConfigs.MotionMagicAcceleration = 400; // Target acceleration of 400 rps/s (0.25 seconds to max)
+        motionMagicConfigs.MotionMagicJerk = 4000; // Target jerk of 4000 rps/s/s (0.1 seconds)
+
 
 		lowerConfig.CurrentLimits.SupplyCurrentLimit = 40;
 		lowerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 		lowerConfig.CurrentLimits.StatorCurrentLimit = 100;
 		lowerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
+        
+
 		lowerFlywheel.getConfigurator().apply(lowerConfig, 0.050);
+        lowerFlywheel.setNeutralMode(NeutralModeValue.Brake);
+    }
+
+    private ControlRequest createControlRequest(double rpm) {
+        return new VelocityVoltage(rpm);
+       // return new MotionMagicVelocityVoltage(rpm);
     }
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
         inputs.lowerVoltage = lowerFlywheel.getMotorVoltage().getValueAsDouble();
+        Logger.recordOutput("Shooter/lowerflywheelvel",lowerFlywheel.getVelocity().getValueAsDouble());
     }
     
     @Override
@@ -56,6 +75,11 @@ public class ShooterIOReal implements ShooterIO {
 
     @Override
     public void setSpeed(double speed) {
-        lowerFlywheel.setControl(new VelocityVoltage(speed));
+        //var controlRequest = createControlRequest(speed);
+        VelocityVoltage controlRequest = new VelocityVoltage(speed);
+        Logger.recordOutput("Shooter/controlRequestVelocity", controlRequest.Velocity);
+        
+        //Logger.recordOutput("Shooter/controlRequestVoltage", controlRequest.)
+        lowerFlywheel.setControl(controlRequest);
     }
 }

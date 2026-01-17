@@ -1,6 +1,7 @@
 package frc2025.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc2025.Robot;
 import frc2025.RobotState;

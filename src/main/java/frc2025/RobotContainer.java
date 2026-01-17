@@ -37,6 +37,7 @@ import frc2025.subsystems.pivot.PivotIONEO;
 import frc2025.subsystems.pivot.PivotIOSim;
 import frc2025.subsystems.pivot.PivotSubsystem;
 import frc2025.subsystems.shooter.ShooterIONEO;
+import frc2025.subsystems.shooter.ShooterIOReal;
 import frc2025.subsystems.shooter.ShooterIOSim;
 import frc2025.subsystems.shooter.ShooterSubsystem;
 import frc2025.subsystems.vision.VisionIOReal;
@@ -86,7 +87,7 @@ public class RobotContainer {
             indexerSubsystem = new IndexerSubsystem(new IndexerIOReal());
             intakeSubsystem = new IntakeSubsystem(new IntakeIOReal());
             pivotSubsystem = new PivotSubsystem(new PivotIONEO());
-            shooterSubsystem = new ShooterSubsystem(new ShooterIONEO());
+            shooterSubsystem = new ShooterSubsystem(new ShooterIOReal());
         } else {
             driveSubsystem = new DriveSubsystem(new DriveIOSim(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOSim());
@@ -150,21 +151,20 @@ public class RobotContainer {
             }
         }));
 
-        SmartDashboard.putNumber("Tuning/Input Distance", 0.0);
-        SmartDashboard.putNumber("Tuning/Input RPM", 0.0);
+
+
+        
+        SmartDashboard.putNumber("Tuning/Distance", 0.0);
+        SmartDashboard.putNumber("Tuning/RPM", 0.0);
 
         SmartDashboard.putData("Tuning/Add Point", new InstantCommand(() -> {
-            double dist = SmartDashboard.getNumber("Tuning/Input Distance", 0.0);
-            double rpm = SmartDashboard.getNumber("Tuning/Input RPM", 0.0);
+            double dist = SmartDashboard.getNumber("Tuning/Distance", 0.0);
+            double rpm = SmartDashboard.getNumber("Tuning/RPM", 0.0);
 
-            ShooterTreeMap.getInstance().addShot(dist, rpm);
+            ShooterTreeMap.getInstance().addShot(dist,rpm);
+            //SmartDashboard.putString("Tuning/lowerWheelTree Map", ShooterTreeMap.getInstance().lowerWheelTreeMap.toString());
 
         }).ignoringDisable(true));
-
-        SmartDashboard.putNumber("Tuning/Shooter RPM", 0.0);
-        driverXboxController.rightBumper()
-                .whileTrue(shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/Shooter RPM", 0.0)))
-                .whileFalse(shooterSubsystem.setSpeed(() -> 0.0));
 
 //        SmartDashboard.putNumber("Tuning/Remove Distance", 0.0);
 //
