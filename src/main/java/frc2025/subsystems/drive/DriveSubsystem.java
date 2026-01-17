@@ -82,7 +82,7 @@ public class DriveSubsystem extends SubsystemBase {
         return this.applyChassisSpeedsCommand(() -> {
             return ChassisSpeeds.fromFieldRelativeSpeeds(
                             chassisSpeedsSupplier.get(),
-                            inputs.swervePoseMeters.getRotation());
+                            RobotState.getInstance().getVisionPose().getRotation());
         });
     }
 

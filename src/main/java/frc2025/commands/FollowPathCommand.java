@@ -58,6 +58,7 @@ public class FollowPathCommand extends Command {
         this.timer.restart();
 
         Logger.recordOutput("Drive/followPathEnd", new Pose2d(path.getPathPoses().get(path.getPathPoses().size()-1).getTranslation(), path.getGoalEndState().rotation()));
+        //Logger.recordOutput("Drive/path", path.getPathPoses());
     }
 
     @Override
@@ -78,13 +79,13 @@ public class FollowPathCommand extends Command {
         ChassisSpeeds desiredStateFlipped = new ChassisSpeeds(
                 desiredState.fieldSpeeds.vxMetersPerSecond * -1,
                 desiredState.fieldSpeeds.vyMetersPerSecond * -1,
-                desiredState.fieldSpeeds.omegaRadiansPerSecond
+                desiredState.fieldSpeeds.omegaRadiansPerSecond * -1
         );
 
         Logger.recordOutput("Drive/PathFollowingError", dist);
 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                desiredState.fieldSpeeds.plus(new ChassisSpeeds(xFeedback, yFeedback, omegaFeedback)),
+                desiredStateFlipped.plus(new ChassisSpeeds(-xFeedback, -yFeedback, -omegaFeedback)),
                 currentPose.getRotation()
         );
 

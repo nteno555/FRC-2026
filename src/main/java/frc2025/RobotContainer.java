@@ -58,7 +58,7 @@ public class RobotContainer {
         createSubsystems();
         configureBindings();
         autos = new Autos(this);
-        autoCommand = autos.LowShootPreload();
+        autoCommand = autos.MidShootIntake();
     }
 
     public void periodic() {

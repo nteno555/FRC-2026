@@ -7,13 +7,13 @@
     "Depot-Driveback",
     "Driveback-Depot",
     "Driveback-Station",
-    "Station-Driveback",
     "Start-Climb",
     "Start-Depot",
     "Start-Driveback",
     "Start-Neutral",
     "Start-Station",
-    "Station-Climb"
+    "Station-Climb",
+    "Station-Driveback"
   ],
   "autoFolders": [],
   "defaultMaxVel": 5.0,

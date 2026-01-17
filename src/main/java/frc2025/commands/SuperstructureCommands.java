@@ -22,6 +22,6 @@ public class SuperstructureCommands {
     }
 
     public static Command shootCommand(RobotContainer robotContainer) {
-        return robotContainer.getIndexer().setVoltage(() -> 6.0);
+        return robotContainer.getIndexer().setVoltage(() -> -3.0);
     }
 }

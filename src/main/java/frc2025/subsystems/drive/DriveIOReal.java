@@ -63,7 +63,7 @@ public class DriveIOReal extends SwerveDrivetrain implements DriveIO{
         var twist = getKinematics().toTwist2d(wheelDeltas);
         Rotation2d gyroYaw = Rotation2d.fromRadians(getPigeon2().getYaw().getValue().in(Units.Radians));
         if (lastGyroYaw != null) {
-            twist = new Twist2d(twist.dx, twist.dy, gyroYaw.minus(lastGyroYaw).getRadians());
+            twist = new Twist2d(-twist.dx, -twist.dy, gyroYaw.minus(lastGyroYaw).getRadians());
         }
         lastGyroYaw = gyroYaw;
         inputs.odometryTwist = twist;
