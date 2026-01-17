@@ -1,17 +1,27 @@
 package frc2025;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static frc2025.subsystems.drive.DriveConstants.BackLeft;
+import static frc2025.subsystems.drive.DriveConstants.BackRight;
+import static frc2025.subsystems.drive.DriveConstants.DrivetrainConstants;
+import static frc2025.subsystems.drive.DriveConstants.FrontLeft;
+import static frc2025.subsystems.drive.DriveConstants.FrontRight;
+import static frc2025.subsystems.drive.DriveConstants.kSpeedAt12Volts;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc2025.commands.AutoAimCommands;
-import frc2025.commands.SuperstructureCommands;
 import frc2025.commands.WheelRadiusCharacterizationCommand;
 import frc2025.config.ShooterTreeMap;
-import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveIOReal;
 import frc2025.subsystems.drive.DriveIOSim;
 import frc2025.subsystems.drive.DriveSubsystem;
@@ -32,9 +42,6 @@ import frc2025.subsystems.vision.VisionIOSim;
 import frc2025.subsystems.vision.VisionSubsystem;
 import frc2025.util.Alliance;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static frc2025.subsystems.drive.DriveConstants.*;
-
 public class RobotContainer {
     public static final double DEAD_BAND_DRIVER = 0.1;
     public static final double DEAD_BAND_OPERATOR = 0.1;
@@ -42,6 +49,7 @@ public class RobotContainer {
     private final CommandXboxController operatorXboxController = new CommandXboxController(1);
     private final CommandXboxController testSystemsController = new CommandXboxController(2);
     private final CommandXboxController tuningController = new CommandXboxController(3);
+    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
     DriveSubsystem driveSubsystem;
     VisionSubsystem visionSubsystem;
@@ -58,7 +66,8 @@ public class RobotContainer {
         createSubsystems();
         configureBindings();
         autos = new Autos(this);
-        autoCommand = autos.LowShootPreload();
+        configureAutoCommands();
+        //autoCommand = autos.LowShootPreload();
     }
 
     public void periodic() {
@@ -80,6 +89,18 @@ public class RobotContainer {
             pivotSubsystem = new PivotSubsystem(new PivotIOSim());
             shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
         }
+    }
+
+    public void configureAutoCommands(){
+        autoChooser.setDefaultOption("Do nothing", null);
+
+        autoChooser.addOption("LowShootPreload", autos.LowShootPreload());
+        autoChooser.addOption("HighShootClimb", autos.HighShootClimb());
+        autoChooser.addOption("HighShootIntakeClimb", autos.HighShootIntakeClimb());
+        autoChooser.addOption("Taxi", autos.Taxi());
+
+        SmartDashboard.putData("Auto Chooser", autoChooser);
+        
     }
 
     public DriveSubsystem getDrive() {
@@ -122,6 +143,26 @@ public class RobotContainer {
                 driveSubsystem.resetOdometry(new Pose2d());
             }
         }));
+
+        SmartDashboard.putNumber("Tuning/Input Distance", 0.0);
+        SmartDashboard.putNumber("Tuning/Input RPM", 0.0);
+
+        SmartDashboard.putData("Tuning/Add Point", new InstantCommand(() -> {
+            double dist = SmartDashboard.getNumber("Tuning/Input Distance", 0.0);
+            double rpm = SmartDashboard.getNumber("Tuning/Input RPM", 0.0);
+            
+            ShooterTreeMap.getInstance().addShot(dist, rpm);
+            
+        }).ignoringDisable(true));
+        
+        SmartDashboard.putNumber("Tuning/Remove Distance", 0.0);
+
+        SmartDashboard.putData("Tuning/Remove Point", new InstantCommand(() -> {
+            double dist = SmartDashboard.getNumber("Tuning/Remove Distance", 0.0);
+            
+            ShooterTreeMap.getInstance().removeShot(dist);
+            
+        }).ignoringDisable(true));
 
         //indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0));
         //intakeSubsystem.setDefaultCommand(intakeSubsystem.setVoltage(() -> 0.0));
@@ -224,6 +265,7 @@ public class RobotContainer {
     }
 
     public void autoInit() {
+        autoCommand = autoChooser.getSelected();
         CommandScheduler.getInstance().schedule(autoCommand);
     }
 
