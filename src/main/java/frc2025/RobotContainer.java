@@ -161,14 +161,19 @@ public class RobotContainer {
 
         }).ignoringDisable(true));
 
-        SmartDashboard.putNumber("Tuning/Remove Distance", 0.0);
+        SmartDashboard.putNumber("Tuning/Shooter RPM", 0.0);
+        driverXboxController.rightBumper()
+                .whileTrue(shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/Shooter RPM", 0.0)))
+                .whileFalse(shooterSubsystem.setSpeed(() -> 0.0));
 
-        SmartDashboard.putData("Tuning/Remove Point", new InstantCommand(() -> {
-            double dist = SmartDashboard.getNumber("Tuning/Remove Distance", 0.0);
-
-            ShooterTreeMap.getInstance().removeShot(dist);
-
-        }).ignoringDisable(true));
+//        SmartDashboard.putNumber("Tuning/Remove Distance", 0.0);
+//
+//        SmartDashboard.putData("Tuning/Remove Point", new InstantCommand(() -> {
+//            double dist = SmartDashboard.getNumber("Tuning/Remove Distance", 0.0);
+//
+//            ShooterTreeMap.getInstance().removeShot(dist);
+//
+//        }).ignoringDisable(true));
 
         //indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0));
         //intakeSubsystem.setDefaultCommand(intakeSubsystem.setVoltage(() -> 0.0));

@@ -50,7 +50,7 @@ public class AutoAimCommands {
 
     public static Command pivotAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier) {
         return robotContainer.getPivot().setPosition(() -> {
-            Pose2d robotPose = RobotState.getInstance().getVisionPose();
+            Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
             Pose2d targetPose = targetPoseSupplier.get();
             double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
             return ShooterTreeMap.getInstance().pivotTreeMap.getInterpolated(dist);
@@ -59,7 +59,7 @@ public class AutoAimCommands {
 
     public static Command shooterAutoSpinUp(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier) {
         return robotContainer.getShooter().setSpeed(() -> {
-            Pose2d robotPose = RobotState.getInstance().getVisionPose();
+            Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
             Pose2d targetPose = targetPoseSupplier.get();
             double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
             return ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist);
