@@ -179,7 +179,7 @@ public class RobotContainer {
         //intakeSubsystem.setDefaultCommand(intakeSubsystem.setVoltage(() -> 0.0));
 
         driverXboxController.rightTrigger().whileTrue(
-            indexerSubsystem.setVoltage(() -> -1.5))
+            indexerSubsystem.setVoltage(() -> -3.5))
             .whileFalse(indexerSubsystem.setVoltage(() -> 0.5));
 
         driverXboxController.povLeft().whileTrue(
@@ -200,7 +200,8 @@ public class RobotContainer {
                ).whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
         driverXboxController.rightBumper()
-                .whileTrue(shooterSubsystem.setSpeed(() -> -45.0))
+                //.whileTrue(shooterSubsystem.setSpeed(() -> -45.0))
+                .whileTrue(shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/RPM", 0.67)))
                 .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 //        driverXboxController.rightTrigger()
 //                .whileTrue(
