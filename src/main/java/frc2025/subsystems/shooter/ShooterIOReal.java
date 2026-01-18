@@ -43,9 +43,9 @@ public class ShooterIOReal implements ShooterIO {
         motionMagicConfigs.MotionMagicJerk = 4000; // Target jerk of 4000 rps/s/s (0.1 seconds)
 
 
-		lowerConfig.CurrentLimits.SupplyCurrentLimit = 40;
+		lowerConfig.CurrentLimits.SupplyCurrentLimit = 100;
 		lowerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-		lowerConfig.CurrentLimits.StatorCurrentLimit = 100;
+		lowerConfig.CurrentLimits.StatorCurrentLimit = 200;
 		lowerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
         
