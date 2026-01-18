@@ -198,6 +198,10 @@ public class RobotContainer {
                                        (DriveSubsystem.slowmode ? 0.75 : 1.0) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
                                ))
                ).whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
+
+        driverXboxController.rightBumper()
+                .whileTrue(shooterSubsystem.setSpeed(() -> -45.0))
+                .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 //        driverXboxController.rightTrigger()
 //                .whileTrue(
 //                        new WaitUntilCommand(() -> {
@@ -227,6 +231,9 @@ public class RobotContainer {
                         .whileTrue(intakeSubsystem.setVoltage(() -> 12.0))
                                 .whileFalse(intakeSubsystem.setVoltage(() -> 0.0));
 
+        tuningController.rightBumper()
+                        .whileTrue(shooterSubsystem.setVoltage(() -> 3.0))
+                .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
         tuningController.a()
                 .whileTrue(driveSubsystem.runDriveQuasiTest(SysIdRoutine.Direction.kForward));
@@ -246,8 +253,8 @@ public class RobotContainer {
                 .whileTrue(driveSubsystem.runSteerDynamicTest(SysIdRoutine.Direction.kReverse));
         tuningController.leftBumper()
                 .whileTrue(driveSubsystem.runDriveSlipTest());
-        tuningController.rightBumper()
-                .whileTrue(new WheelRadiusCharacterizationCommand(driveSubsystem));
+//        tuningController.rightBumper()
+//                .whileTrue(new WheelRadiusCharacterizationCommand(driveSubsystem));
 
     }
 

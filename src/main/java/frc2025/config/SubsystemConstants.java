@@ -13,12 +13,12 @@ public class SubsystemConstants {
     public static double upperP = 0.5;
     public static double upperI = 0.0;
     public static double upperD =  0.0;
-    public static double lowerS = 0.36;
+    public static double lowerS = 0.10;
     public static double lowerV = 0.127;
     public static double lowerA = 0.01;
-    public static double lowerP = 0.03;
-    public static double lowerI = 0.0;
-    public static double lowerD = 0.02;
+    public static double lowerP = 0.15;
+    public static double lowerI = 0.03;
+    public static double lowerD = 0.05;
 
     public static double pivotkS = 0.67;
     public static double pivotkV = 0.67;

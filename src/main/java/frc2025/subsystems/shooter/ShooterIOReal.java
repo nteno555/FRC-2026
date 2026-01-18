@@ -13,7 +13,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc2025.config.SubsystemConstants;
 
 public class ShooterIOReal implements ShooterIO {
-    private TalonFX lowerFlywheel = new TalonFX(18, "Awesome Sauce"); // Placeholders
+    private TalonFX lowerFlywheel = new TalonFX(18, "rio"); // Placeholders
 
     @SuppressWarnings("removal")
     public ShooterIOReal() {
@@ -54,7 +54,7 @@ public class ShooterIOReal implements ShooterIO {
         
 
 		lowerFlywheel.getConfigurator().apply(lowerConfig, 0.050);
-        lowerFlywheel.setNeutralMode(NeutralModeValue.Brake);
+        lowerFlywheel.setNeutralMode(NeutralModeValue.Coast);
     }
 
     private ControlRequest createControlRequest(double rpm) {
