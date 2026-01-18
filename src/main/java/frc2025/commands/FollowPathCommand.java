@@ -96,12 +96,13 @@ public class FollowPathCommand extends Command {
                 currentPose.getY(), desiredState.pose.getY());
         double omegaFeedback = rotationPID.calculate(
                 currentPose.getRotation().getRadians(), desiredState.pose.getRotation().getRadians());
+        
+        Pose2d virtualTarget = null;
 
         if (shootWhileMove) {
-            Pose2d virtualTarget = AutoAimCommands.calculateShootingWhileMoving(
+            virtualTarget = AutoAimCommands.calculateShootingWhileMoving(
                     robotContainer, ShooterTreeMap.getInstance(), RobotState.getInstance().getTargetPose()
             );
-
             double angleToTarget = Math.atan2(virtualTarget.getY() - currentPose.getY(), virtualTarget.getX() - currentPose.getX());
             omegaFeedback = rotationPID.calculate(currentPose.getRotation().getRadians(), angleToTarget);
         }
@@ -122,11 +123,11 @@ public class FollowPathCommand extends Command {
 
         driveSubsystem.applyChassisSpeeds(chassisSpeeds);
 
-        if (shootWhileMove) {
+        if (shootWhileMove && virtualTarget != null) {
+            Pose2d finalTarget = virtualTarget;
             robotContainer.getShooter().setSpeed(() -> {
                 Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
-                Pose2d targetPose = (Alliance.get()) ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
-                double distance = robotPose.getTranslation().getDistance(targetPose.getTranslation());
+                double distance = robotPose.getTranslation().getDistance(finalTarget.getTranslation());
                 return ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(distance);
             });
             if (robotContainer.getShooter().getShotReady()) {
