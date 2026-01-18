@@ -6,9 +6,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import frc2025.commands.AutoAimCommands;
 import frc2025.commands.FollowPathCommand;
 import frc2025.commands.SuperstructureCommands;
@@ -53,6 +51,21 @@ public class Autos {
         return score;
     }
 
+    private Command intakeSWM(String pathName) {
+        PathPlannerPath path;
+        try {
+            path = PathPlannerPath.fromPathFile(pathName);
+        } catch (IOException | ParseException e) {
+            System.out.println("BAD PATH BAD PATH BAD PATH");
+            return null;
+        }
+
+        PathPlannerPath finalPath = path;
+
+        return
+                new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true, true, robotContainer)
+                        .andThen(new WaitCommand(0.2));
+    }
 
     private Command intakePath(String pathName) {
         PathPlannerPath path;
@@ -100,8 +113,7 @@ public class Autos {
 
     public Command MidShootWhileMoving() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
-                .andThen(intakePath("Mid-Driveback"))
-                .alongWith(AutoAimCommands.autoAimWhileMovingCommand(robotContainer, ShooterTreeMap.getInstance(), () -> drive.getFieldRelativeSpeeds()));
+                .andThen(intakeSWM("Mid-Driveback"));
         return auto;
     }
 

@@ -72,7 +72,7 @@ public class RobotContainer {
         createSubsystems();
         configureBindings();
         autos = new Autos(this);
-        autoCommand = autos.MidShootIntake();
+        autoCommand = autos.MidShootPreload();
         configureAutoCommands();
         //autoCommand = autos.LowShootPreload();
     }
@@ -85,7 +85,7 @@ public class RobotContainer {
             driveSubsystem = new DriveSubsystem(new DriveIOReal(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOReal());
             indexerSubsystem = new IndexerSubsystem(new IndexerIOReal());
-            intakeSubsystem = new IntakeSubsystem(new IntakeIOReal());
+            intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
             pivotSubsystem = new PivotSubsystem(new PivotIONEO());
             shooterSubsystem = new ShooterSubsystem(new ShooterIOReal());
         } else {

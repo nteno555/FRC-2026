@@ -7,10 +7,15 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc2025.RobotContainer;
 import frc2025.RobotState;
+import frc2025.config.FieldConstants;
+import frc2025.config.ShooterTreeMap;
 import frc2025.subsystems.drive.DriveSubsystem;
+import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.function.Supplier;
@@ -31,6 +36,9 @@ public class FollowPathCommand extends Command {
     private boolean useTimeout = false;
     private double distanceThresh = 0.15;
 
+    private boolean shootWhileMove = false;
+    private RobotContainer robotContainer;
+
     public FollowPathCommand(DriveSubsystem drive, Supplier<PathPlannerPath> pathSupplier, Supplier<Boolean> flip, boolean useTimeout) {
         this.pathSupplier = pathSupplier;
         this.driveSubsystem = drive;
@@ -42,6 +50,21 @@ public class FollowPathCommand extends Command {
 
         addRequirements(this.driveSubsystem);
         this.useTimeout = useTimeout;
+    }
+
+    public FollowPathCommand(DriveSubsystem drive, Supplier<PathPlannerPath> pathSupplier, Supplier<Boolean> flip, boolean useTimeout, boolean shootWhileMove, RobotContainer robotContainer) {
+        this.pathSupplier = pathSupplier;
+        this.driveSubsystem = drive;
+        this.flip = flip;
+
+        translationPID = new PIDController(3, 0, 0);
+        rotationPID = new PIDController(3, 0, 0);
+        rotationPID.enableContinuousInput(-Math.PI, Math.PI);
+
+        addRequirements(this.driveSubsystem);
+        this.useTimeout = useTimeout;
+        this.shootWhileMove = shootWhileMove;
+        this.robotContainer = robotContainer;
     }
 
     @Override
@@ -74,7 +97,15 @@ public class FollowPathCommand extends Command {
         double omegaFeedback = rotationPID.calculate(
                 currentPose.getRotation().getRadians(), desiredState.pose.getRotation().getRadians());
 
-        double dist = Math.sqrt(Math.pow(currentPose.getX() - desiredState.pose.getX(), 2) + Math.pow(currentPose.getY() - desiredState.pose.getY(), 2));
+        if (shootWhileMove) {
+            Pose2d virtualTarget = AutoAimCommands.calculateShootingWhileMoving(
+                    robotContainer, ShooterTreeMap.getInstance(), RobotState.getInstance().getTargetPose()
+            );
+
+            double angleToTarget = Math.atan2(virtualTarget.getY() - currentPose.getY(), virtualTarget.getX() - currentPose.getX());
+            omegaFeedback = rotationPID.calculate(currentPose.getRotation().getRadians(), angleToTarget);
+        }
+            double dist = Math.sqrt(Math.pow(currentPose.getX() - desiredState.pose.getX(), 2) + Math.pow(currentPose.getY() - desiredState.pose.getY(), 2));
 
         ChassisSpeeds desiredStateFlipped = new ChassisSpeeds(
                 desiredState.fieldSpeeds.vxMetersPerSecond * -1,
@@ -90,6 +121,18 @@ public class FollowPathCommand extends Command {
         );
 
         driveSubsystem.applyChassisSpeeds(chassisSpeeds);
+
+        if (shootWhileMove) {
+            robotContainer.getShooter().setSpeed(() -> {
+                Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
+                Pose2d targetPose = (Alliance.get()) ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
+                double distance = robotPose.getTranslation().getDistance(targetPose.getTranslation());
+                return ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(distance);
+            });
+            if (robotContainer.getShooter().getShotReady()) {
+                robotContainer.getIndexer().setVoltage(() -> -1.5);
+            }
+        }
     }
 
     @Override
