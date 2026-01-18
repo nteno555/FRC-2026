@@ -61,6 +61,11 @@ public class ShooterIONEO implements ShooterIO {
         Logger.recordOutput("Shooter/masterCurrent", shooterMaster.getOutputCurrent());
     }
 
+    @Override
+    public void setPercentOutput(double percentOutput) {
+        return;
+    }
+
 
     @Override
     public void setSpeed(double speed) {

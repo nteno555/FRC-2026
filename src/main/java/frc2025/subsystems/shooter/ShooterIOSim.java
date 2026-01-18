@@ -2,6 +2,7 @@ package frc2025.subsystems.shooter;
 
 public class ShooterIOSim implements ShooterIO {
     private double voltage;
+    private double percentOutput;
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
@@ -17,5 +18,8 @@ public class ShooterIOSim implements ShooterIO {
     public void setVoltage(double voltage) {
         this.voltage = voltage;
     }
+
+    @Override
+    public void setPercentOutput(double percentOutput) {this.percentOutput = percentOutput;}
 }
 

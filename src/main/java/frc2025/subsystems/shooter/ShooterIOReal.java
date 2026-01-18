@@ -1,12 +1,9 @@
 package frc2025.subsystems.shooter;
 
+import com.ctre.phoenix6.controls.*;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.ControlRequest;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -71,6 +68,11 @@ public class ShooterIOReal implements ShooterIO {
     @Override
     public void setVoltage(double voltage) {
         lowerFlywheel.setControl(new VoltageOut(voltage));
+    }
+
+    @Override
+    public void setPercentOutput(double percentOutput) {
+        lowerFlywheel.setControl(new DutyCycleOut(percentOutput));
     }
 
     @Override

@@ -11,6 +11,7 @@ public class ShooterSubsystem extends SubsystemBase {
     double wantedVelocity = 0.0;
     double wantedVoltage = 0.0;
     boolean usingVoltage = false;
+    double wantedPercentOutput = 0.0;
     ShooterIO io;
     ShooterIOInputsAutoLogged inputs;
 
@@ -41,6 +42,16 @@ public class ShooterSubsystem extends SubsystemBase {
             wantedVelocity = speed.get();
             io.setSpeed(speed.get());
         });
+    }
+
+    public Command setPercentOutput(Supplier<Double> percentOutput) {
+        return this.run( () -> {
+            Logger.recordOutput("Shooter/percentOutput", percentOutput.get());
+            usingVoltage = false;
+            wantedPercentOutput = percentOutput.get();
+            io.setPercentOutput(percentOutput.get());
+            }
+        );
     }
 
     public double getUpperVelocity() {

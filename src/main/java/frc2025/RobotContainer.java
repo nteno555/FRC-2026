@@ -199,6 +199,10 @@ public class RobotContainer {
                                ))
                ).whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
+        driverXboxController.y().whileTrue(
+                shooterSubsystem.setPercentOutput(() -> -0.6)
+        ).whileFalse(shooterSubsystem.setPercentOutput(() -> 0.0));
+
         driverXboxController.rightBumper()
                 .whileTrue(shooterSubsystem.setSpeed(() -> -45.0))
                 .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
