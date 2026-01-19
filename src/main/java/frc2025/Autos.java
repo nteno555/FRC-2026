@@ -54,7 +54,7 @@ public class Autos {
     }
 
 
-    private Command intakePath(String pathName) {
+    private Command intakePath(String pathName, boolean shootWhileMove) {
         PathPlannerPath path;
         try {
             path = PathPlannerPath.fromPathFile(pathName);
@@ -65,7 +65,7 @@ public class Autos {
 
         PathPlannerPath finalPath = path;
 
-        return new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true)
+        return new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true, shootWhileMove, robotContainer)
                 .alongWith(robotContainer.getIntake().setVoltage(() -> 5.0))
                 .andThen(new WaitCommand(0.2));
     }
@@ -75,6 +75,7 @@ public class Autos {
         Translation2d translation = pose.getTranslation();
         return new Pose2d(translation.getX(), FlippingUtil.fieldSizeY - translation.getY(), pose.getRotation().times(-1));
     }
+
     private Supplier<Pose2d> startPoseSupplier(Pose2d pose) {
         return () -> {
             if (Alliance.get()) {
@@ -86,37 +87,37 @@ public class Autos {
 
     public Command LowShootPreload() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(LOW_START))
-                .andThen(intakePath("Low-Driveback"))
+                .andThen(intakePath("Low-Driveback", false))
                 .andThen(autoScore(RobotState.getInstance().getTargetPose()));
         return auto;
     }
 
     public Command MidShootPreload() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
-                .andThen(intakePath("Mid-Driveback"))
+                .andThen(intakePath("Mid-Driveback", false))
                 .andThen(autoScore(RobotState.getInstance().getTargetPose()));
         return auto;
     }
 
     public Command MidShootWhileMoving() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
-                .andThen(intakePath("Mid-Driveback"))
-                .alongWith(AutoAimCommands.autoAimWhileMovingCommand(robotContainer, ShooterTreeMap.getInstance(), () -> drive.getFieldRelativeSpeeds()));
+                .andThen(intakePath("Mid-SWM1", false))
+                .andThen(intakePath("Mid-SWM2", true));
         return auto;
     }
 
     public Command HighShootPreload() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
-                .andThen(intakePath("High-Driveback"))
+                .andThen(intakePath("High-Driveback", false))
                 .andThen(autoScore(RobotState.getInstance().getTargetPose()));
         return auto;
     }
 
     public Command MidShootIntake() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
-                .andThen(intakePath("Mid-Driveback"))
+                .andThen(intakePath("Mid-Driveback", false))
                 .andThen(autoScore(RobotState.getInstance().getTargetPose()))
-                .andThen(intakePath("MidDriveback-Depot"))
+                .andThen(intakePath("MidDriveback-Depot", false))
                 .andThen(autoScore(RobotState.getInstance().getTargetPose()));
         return auto;
     }
@@ -124,7 +125,7 @@ public class Autos {
     public Command HighShootClimb() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
                 .andThen(autoScore(RobotState.getInstance().getTargetPose()))
-                .andThen(intakePath("HighDriveback-Climb"));
+                .andThen(intakePath("HighDriveback-Climb", false));
         return auto;
 
     }

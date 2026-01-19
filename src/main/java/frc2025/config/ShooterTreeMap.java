@@ -16,9 +16,10 @@ public class ShooterTreeMap {
         pivotTreeMap.put(0.0, 15.0);
         pivotTreeMap.put(10.0, 5.0);
 
-        lowerWheelTreeMap.put(2.1, -32.0);
-        lowerWheelTreeMap.put(3.0, -38.0);
-        lowerWheelTreeMap.put(4.0, -45.0);
+        lowerWheelTreeMap.put(2.1, -51.2);
+        lowerWheelTreeMap.put(3.0, -60.8);
+        lowerWheelTreeMap.put(4.0, -72.0);
+        lowerWheelTreeMap.put(5.0, -88.0);
 //        lowerWheelTreeMap.put()
 
         tofTreeMap.put(0.0, 1.0);

@@ -1,5 +1,7 @@
 package frc2025.subsystems.shooter;
 
+import org.littletonrobotics.junction.Logger;
+
 public class ShooterIOSim implements ShooterIO {
     private double voltage;
     private double percentOutput;
@@ -11,6 +13,7 @@ public class ShooterIOSim implements ShooterIO {
 
     @Override
     public void setSpeed(double speed) {
+        Logger.recordOutput("Shooter/simAutoSpeed", speed);
         voltage = speed;
     }
 

@@ -12,7 +12,7 @@ import frc2025.config.SubsystemConstants;
 
 public class IntakeIOReal implements IntakeIO {
     //    private final TalonFX intakeDeploy = new TalonFX(67, "rio");
-    private final TalonFX intakeRoller = new TalonFX(41,"rio");
+    private final TalonFX intakeRoller = new TalonFX(11,"rio");
     private double wantedVoltage = 0.0;
     public IntakeIOReal(){
 //        intakeDeploy.getConfigurator().apply(new TalonFXConfiguration());

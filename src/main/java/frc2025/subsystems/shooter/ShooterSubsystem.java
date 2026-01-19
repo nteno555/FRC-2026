@@ -44,6 +44,10 @@ public class ShooterSubsystem extends SubsystemBase {
         });
     }
 
+    public ShooterIO getIO() {
+        return io;
+    }
+
     public Command setPercentOutput(Supplier<Double> percentOutput) {
         return this.run( () -> {
             Logger.recordOutput("Shooter/percentOutput", percentOutput.get());
@@ -61,6 +65,6 @@ public class ShooterSubsystem extends SubsystemBase {
         return wantedVelocity;
     }
     public boolean getShotReady() {
-        return Math.abs(wantedVelocity - inputs.upperVelocityRPM) < 100.0;
+        return Math.abs(wantedVelocity - inputs.upperVelocityRPM) < 50.0;
     }
 }

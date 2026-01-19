@@ -72,7 +72,7 @@ public class RobotContainer {
         createSubsystems();
         configureBindings();
         autos = new Autos(this);
-        autoCommand = autos.MidShootIntake();
+        autoCommand = autos.MidShootPreload();
         configureAutoCommands();
         //autoCommand = autos.LowShootPreload();
     }
@@ -102,6 +102,7 @@ public class RobotContainer {
         autoChooser.setDefaultOption("Do nothing", null);
 
         autoChooser.addOption("LowShootPreload", autos.LowShootPreload());
+        autoChooser.addOption("MidShootPreload", autos.MidShootPreload());
         autoChooser.addOption("HighShootClimb", autos.HighShootClimb());
         autoChooser.addOption("HighShootIntakeClimb", autos.HighShootIntakeClimb());
         autoChooser.addOption("Taxi", autos.Taxi());
@@ -179,7 +180,7 @@ public class RobotContainer {
         //intakeSubsystem.setDefaultCommand(intakeSubsystem.setVoltage(() -> 0.0));
 
         driverXboxController.rightTrigger().whileTrue(
-            indexerSubsystem.setVoltage(() -> -1.5))
+            indexerSubsystem.setVoltage(() -> -2.0))
             .whileFalse(indexerSubsystem.setVoltage(() -> 0.5));
 
         driverXboxController.povLeft().whileTrue(
@@ -199,12 +200,12 @@ public class RobotContainer {
                                ))
                ).whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
-        driverXboxController.y().whileTrue(
-                shooterSubsystem.setPercentOutput(() -> -0.6)
-        ).whileFalse(shooterSubsystem.setPercentOutput(() -> 0.0));
+//        driverXboxController.y().whileTrue(
+//                shooterSubsystem.setPercentOutput(() -> -0.6)
+//        ).whileFalse(shooterSubsystem.setPercentOutput(() -> 0.0));
 
         driverXboxController.rightBumper()
-                .whileTrue(shooterSubsystem.setSpeed(() -> -45.0))
+                .whileTrue(shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/RPM", 0.0)))
                 .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 //        driverXboxController.rightTrigger()
 //                .whileTrue(
@@ -287,7 +288,8 @@ public class RobotContainer {
     }
 
     public void autoInit() {
-        autoCommand = autoChooser.getSelected();
+//        autoCommand = autoChooser.getSelected();
+        autoCommand = autos.MidShootWhileMoving();
         CommandScheduler.getInstance().schedule(autoCommand);
     }
 

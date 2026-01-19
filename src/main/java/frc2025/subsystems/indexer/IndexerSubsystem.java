@@ -65,6 +65,10 @@ public class IndexerSubsystem extends SubsystemBase {
         });
     }
 
+    public IndexerIO getIO() {
+        return io;
+    }
+
     public boolean getHasPiece() {
         return hasPieceTrigger.getAsBoolean();
     }
