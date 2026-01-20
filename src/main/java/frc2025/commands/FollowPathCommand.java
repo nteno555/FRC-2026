@@ -118,17 +118,6 @@ public class FollowPathCommand extends Command {
                 currentPose.getRotation()
         );
 
-
-        double wantedSpeed;
-        if (shootWhileMove) {
-            Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
-            double distance = robotPose.getTranslation().getDistance(virtualTarget.getTranslation());
-            wantedSpeed = ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(distance);
-            robotContainer.getShooter().getIO().setSpeed(wantedSpeed);
-            if (robotContainer.getShooter().getIO().getShotReady(wantedSpeed)) robotContainer.getIndexer().getIO().setVoltage(-3.0);
-        }
-        else {wantedSpeed = 0.0;}
-
         driveSubsystem.applyChassisSpeeds(chassisSpeeds);
 
     }

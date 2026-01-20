@@ -11,6 +11,7 @@ import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.vision.VisionPoseEstimator;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,5 +146,6 @@ public class RobotState {
         }
 
         shootingWhileMovingVirtualPose = virtualPose;
+        Logger.recordOutput("Vision/shootingWhileMovingVirtualPose", shootingWhileMovingVirtualPose);
     }
 }

@@ -23,6 +23,7 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         Logger.processInputs("RealOutputs/Shooter", inputs);
+        Logger.recordOutput("Shooter/shotReady", getShotReady());
         io.updateInputs(this.inputs);
     }
 
@@ -59,12 +60,12 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public double getUpperVelocity() {
-        return inputs.upperVelocityRPM;
+        return inputs.lowerVelocityRPM;
     }
     public double getUpperWantedVelocity() {
         return wantedVelocity;
     }
     public boolean getShotReady() {
-        return Math.abs(wantedVelocity - inputs.upperVelocityRPM) < 10.0;
+        return Math.abs(wantedVelocity - inputs.lowerVelocityRPM) < 3.0;
     }
 }

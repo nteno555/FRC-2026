@@ -7,7 +7,7 @@ public interface ShooterIO {
     public class ShooterIOInputs {
         double upperVoltage;
         double lowerVoltage;
-        double upperVelocityRPM;
+        double lowerVelocityRPM;
         double percentOutput;
     }
     

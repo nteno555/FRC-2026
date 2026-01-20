@@ -289,11 +289,14 @@ public class RobotContainer {
 
     public void autoInit() {
 //        autoCommand = autoChooser.getSelected();
-        autoCommand = autos.MidShootWhileMoving();
+        autoCommand = autos.MidDepotShootWhileMoving();
         CommandScheduler.getInstance().schedule(autoCommand);
     }
 
     public void teleopInit() {
+        shooterSubsystem.setVoltage(() -> 0.0);
+        indexerSubsystem.setVoltage(() -> 0.0);
+        intakeSubsystem.setVoltage(() -> 0.0);
         autoCommand.cancel();
     }
 }

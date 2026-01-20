@@ -16,14 +16,21 @@ public class ShooterTreeMap {
         pivotTreeMap.put(0.0, 15.0);
         pivotTreeMap.put(10.0, 5.0);
 
+        lowerWheelTreeMap.put(1.5, -45.4);
         lowerWheelTreeMap.put(2.1, -51.2);
         lowerWheelTreeMap.put(3.0, -60.8);
         lowerWheelTreeMap.put(4.0, -72.0);
         lowerWheelTreeMap.put(5.0, -88.0);
 //        lowerWheelTreeMap.put()
 
-        tofTreeMap.put(0.0, 1.0);
-        tofTreeMap.put(5.0, 1.0);
+        tofTreeMap.put(0.0, 0.5);
+        tofTreeMap.put(1.0, 1.0);
+        tofTreeMap.put(2.0, 1.2);
+        tofTreeMap.put(3.0, 1.3);
+        tofTreeMap.put(4.0, 1.37);
+        tofTreeMap.put(5.0, 1.42);
+        tofTreeMap.put(6.0, 1.55);
+        tofTreeMap.put(10.0, 2.0);
         updateDashboardMap();
         SmartDashboard.putString("Tuning/lowerWheelTree Map", lowerWheelTreeMap.toString());
 

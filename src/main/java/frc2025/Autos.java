@@ -55,11 +55,22 @@ public class Autos {
     }
 
     public Command autoSpinUp(Supplier<Pose2d> robotPose) {
-        double distance = robotPose.get().getTranslation().getDistance(RobotState.getInstance().getShootingWhileMovingVirtualPose().getTranslation());
-        double wantedSpeed = ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(distance);
-        return robotContainer.getShooter().setSpeed(() -> wantedSpeed);
+        return robotContainer.getShooter().setSpeed(() -> {
+            double distance = robotPose.get().getTranslation().getDistance(RobotState.getInstance().getShootingWhileMovingVirtualPose().getTranslation());
+            double wantedSpeed = ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(distance);
+            return wantedSpeed;
+        });
     }
 
+    public Command autoIndex() {
+        return robotContainer.getIndexer().setSpeed(() -> {
+            if(robotContainer.getShooter().getShotReady()) {
+                return -3.0;
+            } else {
+                return 0.0;
+            }
+        });
+    }
 
     private Command intakePath(String pathName, boolean shootWhileMove) {
         PathPlannerPath path;
@@ -110,12 +121,29 @@ public class Autos {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
                 .andThen(
                         autoSpinUp(() -> RobotState.getInstance().getVisionPose())
+                                .alongWith(autoIndex())
                                 .alongWith(
-                    intakePath("Mid-SWM1", false)
-                    .andThen(intakePath("Mid-SWM2", true))
-                    .andThen(() -> {
-                        if (robotContainer.getIndexer().getHasPiece()) {autoScore(RobotState.getInstance().getVisionPose());}
-                    })
+                                        intakePath("Mid-SWM1", true)
+                                                .andThen(intakePath("Mid-SWM2", true))
+//                                                .andThen(() -> {
+//                                                    if (robotContainer.getIndexer().getHasPiece()) {autoScore(RobotState.getInstance().getVisionPose());}
+//                                                })
+                                )
+                );
+        return auto;
+    }
+
+    public Command MidDepotShootWhileMoving() {
+        Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
+                .andThen(
+                        autoSpinUp(() -> RobotState.getInstance().getVisionPose())
+                                .alongWith(autoIndex())
+                                .alongWith(
+                                        intakePath("Mid-Depot", true)
+                                                .andThen(intakePath("Depot-Mid", true))
+//                                                .andThen(() -> {
+//                                                    if (robotContainer.getIndexer().getHasPiece()) {autoScore(RobotState.getInstance().getVisionPose());}
+//                                                })
                                 )
                 );
         return auto;
