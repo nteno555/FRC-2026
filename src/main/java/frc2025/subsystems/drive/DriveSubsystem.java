@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc2025.Robot;
 import frc2025.RobotState;
 import frc2025.util.Alliance;
 import frc2025.util.SwerveSysidVoltageRequest;
@@ -65,6 +66,8 @@ public class DriveSubsystem extends SubsystemBase {
 
         double speed = Math.sqrt(Math.pow(inputs.currentChassisSpeeds.vxMetersPerSecond, 2) + Math.pow(inputs.currentChassisSpeeds.vyMetersPerSecond, 2));
         RobotState.getInstance().setSpeed(speed);
+        RobotState.getInstance().setRobotRelativeSpeeds(inputs.currentChassisSpeeds);
+        RobotState.getInstance().updateShootingWhileMovingVirtualPose();
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);
         Logger.processInputs("RealOutputs/Drive", inputs);
     }

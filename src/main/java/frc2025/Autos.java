@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc2025.commands.AutoAimCommands;
 import frc2025.commands.FollowPathCommand;
 import frc2025.commands.SuperstructureCommands;
+import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveSubsystem;
@@ -51,6 +52,12 @@ public class Autos {
                                                 .alongWith(new WaitCommand(2.0))
                                 );
         return score;
+    }
+
+    public Command autoSpinUp(Supplier<Pose2d> robotPose) {
+        double distance = robotPose.get().getTranslation().getDistance(RobotState.getInstance().getShootingWhileMovingVirtualPose().getTranslation());
+        double wantedSpeed = ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(distance);
+        return robotContainer.getShooter().setSpeed(() -> wantedSpeed);
     }
 
 
@@ -101,8 +108,16 @@ public class Autos {
 
     public Command MidShootWhileMoving() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
-                .andThen(intakePath("Mid-SWM1", false))
-                .andThen(intakePath("Mid-SWM2", true));
+                .andThen(
+                        autoSpinUp(() -> RobotState.getInstance().getVisionPose())
+                                .alongWith(
+                    intakePath("Mid-SWM1", false)
+                    .andThen(intakePath("Mid-SWM2", true))
+                    .andThen(() -> {
+                        if (robotContainer.getIndexer().getHasPiece()) {autoScore(RobotState.getInstance().getVisionPose());}
+                    })
+                                )
+                );
         return auto;
     }
 

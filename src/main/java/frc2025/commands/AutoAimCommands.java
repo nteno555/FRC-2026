@@ -73,38 +73,38 @@ public class AutoAimCommands {
     }
 
     // calculate the virtual pose of the hub
-    public static Pose2d calculateShootingWhileMoving(RobotContainer robotContainer, ShooterTreeMap treeMap, Pose2d realTargetPose) {
-        Pose2d currentPose = RobotState.getInstance().getVisionPose();
-        //Pose2d targetPose = Alliance.get() ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
-        Pose2d virtualPose = realTargetPose;
-
-        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
-            robotContainer.getDrive().getRobotRelativeSpeeds(),
-            currentPose.getRotation()
-        );
-        Translation2d velocity = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
-
-        for (int i = 0; i < 5; i++) {
-            double dx = virtualPose.getX() - currentPose.getX();
-            double dy = virtualPose.getY() - currentPose.getY();
-            double distance = Math.hypot(dx, dy);
-
-            double flightTime = treeMap.tofTreeMap.getInterpolated(distance);
-
-            virtualPose = new Pose2d(
-                realTargetPose.getX() + velocity.getX() * flightTime,
-                realTargetPose.getY() + velocity.getY() * flightTime,
-                realTargetPose.getRotation()
-            );
-        }
-
-        return virtualPose;
-    }
+//    public static Pose2d calculateShootingWhileMoving(RobotContainer robotContainer, ShooterTreeMap treeMap, Pose2d realTargetPose) {
+//        Pose2d currentPose = RobotState.getInstance().getVisionPose();
+//        //Pose2d targetPose = Alliance.get() ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
+//        Pose2d virtualPose = realTargetPose;
+//
+//        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
+//            robotContainer.getDrive().getRobotRelativeSpeeds(),
+//            currentPose.getRotation()
+//        );
+//        Translation2d velocity = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+//
+//        for (int i = 0; i < 5; i++) {
+//            double dx = virtualPose.getX() - currentPose.getX();
+//            double dy = virtualPose.getY() - currentPose.getY();
+//            double distance = Math.hypot(dx, dy);
+//
+//            double flightTime = treeMap.tofTreeMap.getInterpolated(distance);
+//
+//            virtualPose = new Pose2d(
+//                realTargetPose.getX() + velocity.getX() * flightTime,
+//                realTargetPose.getY() + velocity.getY() * flightTime,
+//                realTargetPose.getRotation()
+//            );
+//        }
+//
+//        return virtualPose;
+//    }
 
     public static Command autoAimWhileMovingCommand(RobotContainer robotContainer, ShooterTreeMap treeMap, Supplier<ChassisSpeeds> unlockedSpeeds) {
         return autoAimCommand(
                 robotContainer,
-                () -> calculateShootingWhileMoving(robotContainer, treeMap, RobotState.getInstance().getTargetPose()),
+                () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
                 unlockedSpeeds);
     }
 }

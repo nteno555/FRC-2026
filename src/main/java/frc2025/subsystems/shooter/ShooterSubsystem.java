@@ -65,6 +65,6 @@ public class ShooterSubsystem extends SubsystemBase {
         return wantedVelocity;
     }
     public boolean getShotReady() {
-        return Math.abs(wantedVelocity - inputs.upperVelocityRPM) < 50.0;
+        return Math.abs(wantedVelocity - inputs.upperVelocityRPM) < 10.0;
     }
 }

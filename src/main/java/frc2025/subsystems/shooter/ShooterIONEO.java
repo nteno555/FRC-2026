@@ -66,6 +66,11 @@ public class ShooterIONEO implements ShooterIO {
         return;
     }
 
+    @Override
+    public boolean getShotReady(double wantedSpeed) {
+        return false;
+    }
+
 
     @Override
     public void setSpeed(double speed) {

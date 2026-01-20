@@ -84,4 +84,10 @@ public class ShooterIOReal implements ShooterIO {
         //Logger.recordOutput("Shooter/controlRequestVoltage", controlRequest.)
         lowerFlywheel.setControl(controlRequest);
     }
+
+    @Override
+    public boolean getShotReady(double wantedSpeed) {
+        Logger.recordOutput("Shooter/getVelocityValAsDouble", lowerFlywheel.getVelocity().getValueAsDouble());
+        return Math.abs(lowerFlywheel.getVelocity().getValueAsDouble() - wantedSpeed) < 20.0;
+    }
 }

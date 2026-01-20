@@ -72,6 +72,13 @@ public class FollowPathCommand extends Command {
         //Logger.recordOutput("Drive/path", path.getPathPoses());
     }
 
+    private double modAngle(double angle) {
+        angle = angle % (2*Math.PI);
+        if(angle > Math.PI) return angle - 2*Math.PI;
+        if(angle < -Math.PI) return angle + 2*Math.PI;
+        return angle;
+    }
+
     @Override
     public void execute() {
         double currentTime = this.timer.get();
@@ -88,26 +95,26 @@ public class FollowPathCommand extends Command {
         Pose2d virtualTarget;
 
         if (shootWhileMove) {
-            virtualTarget = AutoAimCommands.calculateShootingWhileMoving(
-                    robotContainer, ShooterTreeMap.getInstance(), RobotState.getInstance().getTargetPose()
-            );
+            virtualTarget = RobotState.getInstance().getShootingWhileMovingVirtualPose();
             double angleToTarget = Math.atan2(virtualTarget.getY() - currentPose.getY(), virtualTarget.getX() - currentPose.getX());
-            omegaFeedback = rotationPID.calculate(currentPose.getRotation().getRadians(), angleToTarget);
+            omegaFeedback = rotationPID.calculate(modAngle(currentPose.getRotation().getRadians()), modAngle(angleToTarget));
         }
         else {virtualTarget = null;}
+
+        Logger.recordOutput("Drive/autoVirtualTarget", virtualTarget);
 
         double dist = Math.sqrt(Math.pow(currentPose.getX() - desiredState.pose.getX(), 2) + Math.pow(currentPose.getY() - desiredState.pose.getY(), 2));
 
         ChassisSpeeds desiredStateFlipped = new ChassisSpeeds(
-                desiredState.fieldSpeeds.vxMetersPerSecond * -1,
-                desiredState.fieldSpeeds.vyMetersPerSecond * -1,
-                desiredState.fieldSpeeds.omegaRadiansPerSecond * -1
+                desiredState.fieldSpeeds.vxMetersPerSecond * -1.0,
+                desiredState.fieldSpeeds.vyMetersPerSecond * -1.0,
+                omegaFeedback * -1
         );
 
         Logger.recordOutput("Drive/PathFollowingError", dist);
 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                desiredStateFlipped.plus(new ChassisSpeeds(-xFeedback, -yFeedback, -omegaFeedback)),
+                desiredStateFlipped.plus(new ChassisSpeeds(xFeedback * -1.0, yFeedback * -1.0, -omegaFeedback)),
                 currentPose.getRotation()
         );
 
@@ -118,7 +125,7 @@ public class FollowPathCommand extends Command {
             double distance = robotPose.getTranslation().getDistance(virtualTarget.getTranslation());
             wantedSpeed = ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(distance);
             robotContainer.getShooter().getIO().setSpeed(wantedSpeed);
-            if (robotContainer.getShooter().getShotReady()) robotContainer.getIndexer().getIO().setVoltage(-3.0);
+            if (robotContainer.getShooter().getIO().getShotReady(wantedSpeed)) robotContainer.getIndexer().getIO().setVoltage(-3.0);
         }
         else {wantedSpeed = 0.0;}
 

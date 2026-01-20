@@ -5,8 +5,10 @@ import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc2025.config.FieldConstants;
+import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.vision.VisionPoseEstimator;
 
@@ -20,8 +22,10 @@ public class RobotState {
     private VisionPoseEstimator visionPoseEstimator;
     private double speed;
     private List<VisionPoseEstimator.TimestampedVisionUpdate> visionUpdates = new ArrayList<>();
+    private ChassisSpeeds robotRelativeSpeeds;
 
     private boolean shuttling;
+    private Pose2d shootingWhileMovingVirtualPose;
 
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
@@ -32,6 +36,11 @@ public class RobotState {
         if(instance == null) instance = new RobotState();
         return instance;
     }
+
+    public void setRobotRelativeSpeeds(ChassisSpeeds speeds) { robotRelativeSpeeds = speeds; }
+    public ChassisSpeeds getRobotRelativeSpeeds() {return robotRelativeSpeeds;}
+
+    public Pose2d getShootingWhileMovingVirtualPose() {return shootingWhileMovingVirtualPose;}
 
     public void setVisionPoseBuiltin(Pose2d visionPoseBuiltin) {
         this.visionPoseBuiltin = visionPoseBuiltin;
@@ -107,5 +116,34 @@ public class RobotState {
                 }
             }
         }
+    }
+
+    public void updateShootingWhileMovingVirtualPose() {
+        Pose2d currentPose = RobotState.getInstance().getVisionPose();
+        //Pose2d targetPose = Alliance.get() ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
+        Pose2d realTargetPose = getTargetPose();
+        Pose2d virtualPose = getTargetPose();
+
+        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
+                robotRelativeSpeeds,
+                currentPose.getRotation()
+        );
+        Translation2d velocity = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+
+        for (int i = 0; i < 5; i++) {
+            double dx = virtualPose.getX() - currentPose.getX();
+            double dy = virtualPose.getY() - currentPose.getY();
+            double distance = Math.hypot(dx, dy);
+
+            double flightTime = ShooterTreeMap.getInstance().tofTreeMap.getInterpolated(distance);
+
+            virtualPose = new Pose2d(
+                    realTargetPose.getX() + velocity.getX() * flightTime,
+                    realTargetPose.getY() + velocity.getY() * flightTime,
+                    realTargetPose.getRotation()
+            );
+        }
+
+        shootingWhileMovingVirtualPose = virtualPose;
     }
 }
