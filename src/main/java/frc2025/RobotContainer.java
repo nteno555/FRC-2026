@@ -20,10 +20,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc2025.commands.AutoAimCommands;
-import frc2025.commands.SuperstructureCommands;
-import frc2025.commands.WheelRadiusCharacterizationCommand;
 import frc2025.config.ShooterTreeMap;
-import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveIOReal;
 import frc2025.subsystems.drive.DriveIOSim;
 import frc2025.subsystems.drive.DriveSubsystem;
@@ -33,10 +30,9 @@ import frc2025.subsystems.indexer.IndexerSubsystem;
 import frc2025.subsystems.intake.IntakeIOReal;
 import frc2025.subsystems.intake.IntakeIOSim;
 import frc2025.subsystems.intake.IntakeSubsystem;
-import frc2025.subsystems.pivot.PivotIONEO;
+import frc2025.subsystems.pivot.PivotIOReal;
 import frc2025.subsystems.pivot.PivotIOSim;
 import frc2025.subsystems.pivot.PivotSubsystem;
-import frc2025.subsystems.shooter.ShooterIONEO;
 import frc2025.subsystems.shooter.ShooterIOReal;
 import frc2025.subsystems.shooter.ShooterIOSim;
 import frc2025.subsystems.shooter.ShooterSubsystem;
@@ -44,9 +40,6 @@ import frc2025.subsystems.vision.VisionIOReal;
 import frc2025.subsystems.vision.VisionIOSim;
 import frc2025.subsystems.vision.VisionSubsystem;
 import frc2025.util.Alliance;
-
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static frc2025.subsystems.drive.DriveConstants.*;
 
 public class RobotContainer {
     public static final double DEAD_BAND_DRIVER = 0.1;
@@ -86,7 +79,7 @@ public class RobotContainer {
             visionSubsystem = new VisionSubsystem(new VisionIOReal());
             indexerSubsystem = new IndexerSubsystem(new IndexerIOReal());
             intakeSubsystem = new IntakeSubsystem(new IntakeIOReal());
-            pivotSubsystem = new PivotSubsystem(new PivotIONEO());
+            pivotSubsystem = new PivotSubsystem(new PivotIOReal());
             shooterSubsystem = new ShooterSubsystem(new ShooterIOReal());
         } else {
             driveSubsystem = new DriveSubsystem(new DriveIOSim(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
