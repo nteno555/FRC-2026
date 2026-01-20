@@ -1,6 +1,7 @@
 package frc2025.commands;
 
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.pathplanner.lib.path.EventMarker;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
@@ -19,6 +20,7 @@ import frc2025.subsystems.drive.DriveSubsystem;
 import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import static frc2025.subsystems.drive.DriveSubsystem.getPPConfig;
@@ -29,6 +31,8 @@ public class FollowPathCommand extends Command {
     private final Supplier<PathPlannerPath> pathSupplier;
     private PathPlannerPath path;
     private PathPlannerTrajectory trajectory;
+    private List<EventMarker> eventMarkers;
+    private double stopAimTime;
 
     private PIDController rotationPID;
 
@@ -53,6 +57,7 @@ public class FollowPathCommand extends Command {
         this.useTimeout = useTimeout;
         this.shootWhileMove = shootWhileMove;
         this.robotContainer = robotContainer;
+        this.stopAimTime = 1000.0;
     }
 
     @Override
@@ -68,6 +73,12 @@ public class FollowPathCommand extends Command {
                 driveSubsystem.getRobotRelativeSpeeds(), RobotState.getInstance().getVisionPose().getRotation(), getPPConfig());
         this.timer.restart();
 
+        this.eventMarkers = path.getEventMarkers();
+        for (EventMarker marker: eventMarkers) {
+            if (marker.triggerName().equals("noAim")) {
+                this.stopAimTime = trajectory.getTotalTimeSeconds() * marker.position();
+            }
+        }
         Logger.recordOutput("Drive/followPathEnd", new Pose2d(path.getPathPoses().get(path.getPathPoses().size()-1).getTranslation(), path.getGoalEndState().rotation()));
         //Logger.recordOutput("Drive/path", path.getPathPoses());
     }
@@ -82,6 +93,9 @@ public class FollowPathCommand extends Command {
     @Override
     public void execute() {
         double currentTime = this.timer.get();
+
+        if (currentTime >= stopAimTime) {this.shootWhileMove = false;}
+
         PathPlannerTrajectoryState desiredState = trajectory.sample(currentTime);
         var currentPose = RobotState.getInstance().getVisionPose();
 
@@ -99,6 +113,7 @@ public class FollowPathCommand extends Command {
             double angleToTarget = Math.atan2(virtualTarget.getY() - currentPose.getY(), virtualTarget.getX() - currentPose.getX());
             omegaFeedback = rotationPID.calculate(modAngle(currentPose.getRotation().getRadians()), modAngle(angleToTarget));
         }
+
         else {virtualTarget = null;}
 
         Logger.recordOutput("Drive/autoVirtualTarget", virtualTarget);
