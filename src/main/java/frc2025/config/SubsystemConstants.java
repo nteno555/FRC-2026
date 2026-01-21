@@ -11,12 +11,12 @@ public class SubsystemConstants {
     public static double flywheelI = 0.0;
     public static double flywheelD = 0.0;
 
-    public static double pivotkS = 0.05;
-    public static double pivotkV = 0.12;
+    public static double pivotkS = 0.00;
+    public static double pivotkV = 0.05;
     public static double pivotkA = 0.00;
-    public static double pivotkP = 0.00;
-    public static double pivotkI = 0.03;
-    public static double pivotkD = 0.0;
+    public static double pivotkP = 0.04;
+    public static double pivotkI = 0.00;
+    public static double pivotkD = 0.02;
     public static double pivotCruiseVelocity = 100;
     public static double pivotAcceleration = 200;
     public static double pivotJerk = 7000;

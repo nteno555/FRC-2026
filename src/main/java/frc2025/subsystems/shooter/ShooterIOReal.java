@@ -11,8 +11,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc2025.config.SubsystemConstants;
 
 public class ShooterIOReal implements ShooterIO {
-    private TalonFX flywheelMaster = new TalonFX(18, "rio");
-    private TalonFX flywheelSlave = new TalonFX(12345, "rio");
+    private TalonFX flywheelMaster = new TalonFX(13, "rio");
+    private TalonFX flywheelSlave = new TalonFX(17, "rio");
 
     public ShooterIOReal() {
 		flywheelMaster.getConfigurator().apply(new TalonFXConfiguration());

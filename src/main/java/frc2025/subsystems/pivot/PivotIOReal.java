@@ -21,7 +21,7 @@ import org.littletonrobotics.junction.Logger;
 import frc2025.config.SubsystemConstants;
 
 public class PivotIOReal implements PivotIO {
-    private final TalonFX pivotMaster = new TalonFX(67, "rio");
+    private final TalonFX pivotMaster = new TalonFX(0, "rio");
 
     public PivotIOReal() {
         pivotMaster.getConfigurator().apply(new TalonFXConfiguration());
