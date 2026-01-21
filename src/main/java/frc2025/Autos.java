@@ -1,5 +1,6 @@
 package frc2025;
 
+import com.pathplanner.lib.path.EventMarker;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -20,6 +21,8 @@ import frc2025.util.Alliance;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class Autos {
