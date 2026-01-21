@@ -1,0 +1,100 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.786928102846499,
+        "y": 4.592663896348742
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.1678159880461525,
+        "y": 5.815188534771956
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.523788273564092,
+        "y": 5.818529546101888
+      },
+      "prevControl": {
+        "x": 5.9557596718117045,
+        "y": 5.8590614776611325
+      },
+      "nextControl": {
+        "x": 3.1520447282627124,
+        "y": 5.779702363126703
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.5562805331194847,
+        "y": 3.9664416068748194
+      },
+      "prevControl": {
+        "x": 3.3701634080674916,
+        "y": 5.861456774676287
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6648700914884869,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 1.3507221422697369,
+      "rotationDegrees": -90.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.5708105144310625,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 240.0,
+        "maxAngularAcceleration": 360.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "stop auto aim",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": 1.5000113553779075,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 240.0,
+    "maxAngularAcceleration": 360.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "Neutral-Climb",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

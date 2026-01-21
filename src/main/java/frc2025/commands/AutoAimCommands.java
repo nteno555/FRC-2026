@@ -29,10 +29,11 @@ public class AutoAimCommands {
                     Pose2d shooterPose = RobotState.getInstance().getVisionShooterPose();
                     Pose2d targetPose = targetPoseSupplier.get();
 
-                    double angleToTarget = Math.atan2(
+                    /*double angleToTarget = Math.atan2(
                             targetPose.getY() - shooterPose.getY(),
                             targetPose.getX() - shooterPose.getX()
-                    );
+                    );*/
+                    double angleToTarget = RobotState.getInstance().getAngleToVirtualTarget();
                     double angularVelocity = angleController.calculate(modAngle(shooterPose.getRotation().getRadians()), modAngle(angleToTarget));
 
                     Logger.recordOutput("Drive/hubTargetPose", targetPose);
@@ -106,5 +107,18 @@ public class AutoAimCommands {
                 robotContainer,
                 () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
                 unlockedSpeeds);
+    }
+
+
+    public static Command autoIndex(RobotContainer robotContainer) {
+        return robotContainer.getIndexer().setSpeed(() -> {
+            if(robotContainer.getShooter().getShotReady() && robotContainer.getDrive().getShotReady()) {
+                Logger.recordOutput("Indexer/ready", true);
+                return -3.0;
+            } else {
+                Logger.recordOutput("Indexer/ready", false);
+                return 0.0;
+            }
+        });
     }
 }

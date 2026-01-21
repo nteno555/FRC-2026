@@ -2,6 +2,7 @@ package frc2025.subsystems.shooter;
 
 import java.util.function.Supplier;
 
+import frc2025.RobotState;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,6 +26,7 @@ public class ShooterSubsystem extends SubsystemBase {
         Logger.processInputs("RealOutputs/Shooter", inputs);
         Logger.recordOutput("Shooter/shotReady", getShotReady());
         io.updateInputs(this.inputs);
+        RobotState.getInstance().setShooterReady(getShotReady());
     }
 
     public Command setVoltage(Supplier<Double> voltage) {

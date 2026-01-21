@@ -24,9 +24,14 @@ public class RobotState {
     private double speed;
     private List<VisionPoseEstimator.TimestampedVisionUpdate> visionUpdates = new ArrayList<>();
     private ChassisSpeeds robotRelativeSpeeds;
+    private double angleToVirtualTarget;
 
     private boolean shuttling;
     private Pose2d shootingWhileMovingVirtualPose;
+
+    private boolean driveShotReady;
+    private boolean shooterReady;
+    private boolean hoodReady;
 
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
@@ -121,7 +126,6 @@ public class RobotState {
 
     public void updateShootingWhileMovingVirtualPose() {
         Pose2d currentPose = RobotState.getInstance().getVisionPose();
-        //Pose2d targetPose = Alliance.get() ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
         Pose2d realTargetPose = getTargetPose();
         Pose2d virtualPose = getTargetPose();
 
@@ -146,6 +150,21 @@ public class RobotState {
         }
 
         shootingWhileMovingVirtualPose = virtualPose;
+
+        Pose2d shooterPose = getVisionShooterPose();
+        angleToVirtualTarget = Math.atan2(
+                virtualPose.getY() - shooterPose.getY(),
+                virtualPose.getX() - shooterPose.getX()
+        );
         Logger.recordOutput("Vision/shootingWhileMovingVirtualPose", shootingWhileMovingVirtualPose);
     }
+
+    public double getAngleToVirtualTarget() {
+        return angleToVirtualTarget;
+    }
+
+    public void setDriveShotReady(boolean ready) { driveShotReady = ready; }
+    public boolean getDriveShotReady() { return driveShotReady; }
+    public void setShooterReady(boolean ready) { shooterReady = ready; }
+    public boolean getShooterReady() { return shooterReady; }
 }

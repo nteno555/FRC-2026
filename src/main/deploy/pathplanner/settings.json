@@ -5,8 +5,10 @@
   "pathFolders": [
     "Depot-Climb",
     "Depot-Driveback",
+    "Depot-Neutral",
     "Driveback-Depot",
     "Driveback-Station",
+    "Neutral-Climb",
     "SWM Testing",
     "Start-Climb",
     "Start-Depot",

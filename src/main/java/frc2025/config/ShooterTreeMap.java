@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class ShooterTreeMap {
     private static ShooterTreeMap instance;
     public  InterpolatingTreeMap pivotTreeMap = new InterpolatingTreeMap();
-    public  InterpolatingTreeMap upperWheelTreeMap = new InterpolatingTreeMap();
     public  InterpolatingTreeMap lowerWheelTreeMap = new InterpolatingTreeMap();
     public  InterpolatingTreeMap tofTreeMap = new InterpolatingTreeMap();
     
@@ -23,14 +22,23 @@ public class ShooterTreeMap {
         lowerWheelTreeMap.put(5.0, -88.0);
 //        lowerWheelTreeMap.put()
 
-        tofTreeMap.put(0.0, 0.5);
-        tofTreeMap.put(1.0, 1.0);
-        tofTreeMap.put(2.0, 1.2);
-        tofTreeMap.put(3.0, 1.3);
-        tofTreeMap.put(4.0, 1.37);
-        tofTreeMap.put(5.0, 1.42);
-        tofTreeMap.put(6.0, 1.55);
-        tofTreeMap.put(10.0, 2.0);
+        //tofTreeMap.put(0.0, 0.0);
+
+        tofTreeMap.put(2.0, 1.0);
+//        tofTreeMap.put(0.5, 0.7);
+//        tofTreeMap.put(1.0, 1.0);
+//        tofTreeMap.put(3.0, 1.0);
+//        tofTreeMap.put(2.0, 1.2);
+//        tofTreeMap.put(3.0, 1.25);
+//        tofTreeMap.put(4.0, 1.28);
+//        tofTreeMap.put(5.0, 1.30);
+//        tofTreeMap.put(6.0, 1.31);
+        tofTreeMap.put(10.0, 1.0);
+//        double tofAt2 = 0.6;
+//        for(double k = 0; k <= 10; k += 0.1) {
+//            tofTreeMap.put(k, tofAt2 * Math.pow(k / 2.0, 0.5) + 0.2);
+//        }
+
         updateDashboardMap();
         SmartDashboard.putString("Tuning/lowerWheelTree Map", lowerWheelTreeMap.toString());
 

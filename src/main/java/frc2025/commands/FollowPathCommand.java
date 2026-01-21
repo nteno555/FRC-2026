@@ -1,6 +1,7 @@
 package frc2025.commands;
 
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.pathplanner.lib.path.EventMarker;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
@@ -19,6 +20,7 @@ import frc2025.subsystems.drive.DriveSubsystem;
 import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import static frc2025.subsystems.drive.DriveSubsystem.getPPConfig;
@@ -29,6 +31,7 @@ public class FollowPathCommand extends Command {
     private final Supplier<PathPlannerPath> pathSupplier;
     private PathPlannerPath path;
     private PathPlannerTrajectory trajectory;
+    private List<EventMarker> eventMarkers;
 
     private PIDController rotationPID;
 
@@ -64,6 +67,8 @@ public class FollowPathCommand extends Command {
         if(this.flip.get())
             path = path.flipPath();
 
+        this.eventMarkers = path.getEventMarkers();
+
         trajectory = path.generateTrajectory(
                 driveSubsystem.getRobotRelativeSpeeds(), RobotState.getInstance().getVisionPose().getRotation(), getPPConfig());
         this.timer.restart();
@@ -94,9 +99,23 @@ public class FollowPathCommand extends Command {
 
         Pose2d virtualTarget;
 
-        if (shootWhileMove) {
+        double pathProgress = currentTime / trajectory.getTotalTimeSeconds() * (path.getWaypoints().size() - 1);
+        boolean autoAimOverride = true;
+        for(EventMarker marker : eventMarkers) {
+            if(marker.triggerName().equals("stop auto aim") && pathProgress >= marker.position() && pathProgress <= marker.endPosition()) {
+                autoAimOverride = false;
+                break;
+            }
+        }
+
+        Logger.recordOutput("Drive/pathProgress", pathProgress);
+        Logger.recordOutput("Drive/autoAimOverride", autoAimOverride);
+
+        //if (shootWhileMove) {
+        if(autoAimOverride) {
             virtualTarget = RobotState.getInstance().getShootingWhileMovingVirtualPose();
-            double angleToTarget = Math.atan2(virtualTarget.getY() - currentPose.getY(), virtualTarget.getX() - currentPose.getX());
+            //double angleToTarget = Math.atan2(virtualTarget.getY() - currentPose.getY(), virtualTarget.getX() - currentPose.getX());
+            double angleToTarget = RobotState.getInstance().getAngleToVirtualTarget();
             omegaFeedback = rotationPID.calculate(modAngle(currentPose.getRotation().getRadians()), modAngle(angleToTarget));
         }
         else {virtualTarget = null;}

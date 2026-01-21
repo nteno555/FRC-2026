@@ -36,10 +36,9 @@ public class LimelightFiducialCamera {
         fiducial.ta = LimelightHelpers.getTA(name);
         fiducial.fiducialID = LimelightHelpers.getFiducialID(name);
 
-        LimelightHelpers.PoseEstimate poseEstimate;
-//        boolean usingMt1 = true;
-        //poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
-        poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
+        boolean usingMt1 = true;
+        LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
+        //LimelightHelpers.PoseEstimate poseEstimateMt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
 
         Logger.recordOutput("Vision/heartbeatBeforeNullcheck", Math.random());
 
@@ -48,7 +47,7 @@ public class LimelightFiducialCamera {
 
         Logger.recordOutput("Vision/mt1Pose", poseEstimate.pose);
 
-//        if(poseEstimate.avgTagDist > 1) {
+//        if(poseEstimate.avgTagDist > 2) {
 //            poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
 //            usingMt1 = false;
 //        }
@@ -79,8 +78,12 @@ public class LimelightFiducialCamera {
 
         Vector<N3> distStdDevs;
 
-        //distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 5.0, Math.pow(leastDistance, 2) / 5.0, 99999);
-        distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 5.0, Math.pow(leastDistance, 2) / 5.0, Math.pow(leastDistance, 2) / 5.0);
+        if(usingMt1) {
+            distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 5.0, Math.pow(leastDistance, 2) / 5.0, Math.pow(leastDistance, 2) / 10000.0);
+            //distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 5.0, Math.pow(leastDistance, 2) / 5.0, 999999);
+        } else {
+            distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 5.0, Math.pow(leastDistance, 2) / 5.0, 999999);
+        }
 
         VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
                 poseEstimate.timestampSeconds, pose, distStdDevs

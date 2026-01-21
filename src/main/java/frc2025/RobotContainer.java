@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc2025.commands.AutoAimCommands;
@@ -72,7 +73,6 @@ public class RobotContainer {
         createSubsystems();
         configureBindings();
         autos = new Autos(this);
-        autoCommand = autos.MidShootPreload();
         configureAutoCommands();
         //autoCommand = autos.LowShootPreload();
     }
@@ -153,32 +153,6 @@ public class RobotContainer {
         }));
 
 
-
-        
-        SmartDashboard.putNumber("Tuning/Distance", 0.0);
-        SmartDashboard.putNumber("Tuning/RPM", 0.0);
-
-        SmartDashboard.putData("Tuning/Add Point", new InstantCommand(() -> {
-            double dist = SmartDashboard.getNumber("Tuning/Distance", 0.0);
-            double rpm = SmartDashboard.getNumber("Tuning/RPM", 0.0);
-
-            ShooterTreeMap.getInstance().addShot(dist,rpm);
-            //SmartDashboard.putString("Tuning/lowerWheelTree Map", ShooterTreeMap.getInstance().lowerWheelTreeMap.toString());
-
-        }).ignoringDisable(true));
-
-//        SmartDashboard.putNumber("Tuning/Remove Distance", 0.0);
-//
-//        SmartDashboard.putData("Tuning/Remove Point", new InstantCommand(() -> {
-//            double dist = SmartDashboard.getNumber("Tuning/Remove Distance", 0.0);
-//
-//            ShooterTreeMap.getInstance().removeShot(dist);
-//
-//        }).ignoringDisable(true));
-
-        //indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0));
-        //intakeSubsystem.setDefaultCommand(intakeSubsystem.setVoltage(() -> 0.0));
-
         driverXboxController.rightTrigger().whileTrue(
             indexerSubsystem.setVoltage(() -> -2.0))
             .whileFalse(indexerSubsystem.setVoltage(() -> 0.5));
@@ -200,21 +174,15 @@ public class RobotContainer {
                                ))
                ).whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
-//        driverXboxController.y().whileTrue(
-//                shooterSubsystem.setPercentOutput(() -> -0.6)
-//        ).whileFalse(shooterSubsystem.setPercentOutput(() -> 0.0));
 
-        driverXboxController.rightBumper()
-                .whileTrue(shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/RPM", 0.0)))
-                .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
-//        driverXboxController.rightTrigger()
+
+        driverXboxController.rightTrigger()
 //                .whileTrue(
-//                        new WaitUntilCommand(() -> {
-//                            double vx = driveSubsystem.getFieldRelativeSpeeds().vxMetersPerSecond;
-//                            double vy = driveSubsystem.getFieldRelativeSpeeds().vyMetersPerSecond;
-//                            double velocity = Math.hypot(vx, vy);
-//                            return shooterSubsystem.getShotReady() && velocity < SubsystemConstants.kMaxShootVelocity;
-//                        }).andThen(SuperstructureCommands.shootCommand(this)));
+//                        new WaitUntilCommand(() -> shooterSubsystem.getShotReady())
+//                                .andThen(indexerSubsystem.setVoltage(() -> 3.0)))
+                .whileTrue(AutoAimCommands.autoIndex(this))
+                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
+
         driverXboxController.b().onTrue(new InstantCommand(() -> {
             RobotState.getInstance().setShuttling(!RobotState.getInstance().getShuttling());
         }));
@@ -261,6 +229,11 @@ public class RobotContainer {
 //        tuningController.rightBumper()
 //                .whileTrue(new WheelRadiusCharacterizationCommand(driveSubsystem));
 
+        SmartDashboard.putNumber("Tuning/RPM", 0.0);
+        tuningController.rightBumper()
+                .whileTrue(shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/RPM", 0.0)))
+                .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
+
     }
 
 
@@ -294,9 +267,10 @@ public class RobotContainer {
     }
 
     public void teleopInit() {
+        //autoCommand.cancel();
+        CommandScheduler.getInstance().cancel(autoCommand);
         shooterSubsystem.setVoltage(() -> 0.0);
         indexerSubsystem.setVoltage(() -> 0.0);
         intakeSubsystem.setVoltage(() -> 0.0);
-        autoCommand.cancel();
     }
 }

@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.2930769230769226,
-        "y": 5.42227191413238
+        "x": 1.5503199700249568,
+        "y": 5.447264147158023
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.283,
-        "y": 4.092
+        "x": 2.991767989547165,
+        "y": 3.998283730966074
       },
       "prevControl": {
-        "x": 1.9745438282647583,
-        "y": 4.513649373881932
+        "x": 1.8098942017731845,
+        "y": 5.221827895553024
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 1.0,
-    "maxAcceleration": 2.0,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 240.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,
@@ -48,7 +48,7 @@
   "folder": "Depot-Driveback",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": false
 }

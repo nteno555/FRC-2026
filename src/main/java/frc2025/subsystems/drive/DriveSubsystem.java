@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc2025.Robot;
 import frc2025.RobotState;
 import frc2025.util.Alliance;
 import frc2025.util.SwerveSysidVoltageRequest;
@@ -64,12 +63,16 @@ public class DriveSubsystem extends SubsystemBase {
         //Pose2d currentPose = io.samplePoseAt(Utils.getCurrentTimeSeconds()).get();
         //RobotState.getInstance().setVisionPoseBuiltin(currentPose);
 
+        //RobotState.getInstance().setDriveAcceleration(io.)
+
         double speed = Math.sqrt(Math.pow(inputs.currentChassisSpeeds.vxMetersPerSecond, 2) + Math.pow(inputs.currentChassisSpeeds.vyMetersPerSecond, 2));
         RobotState.getInstance().setSpeed(speed);
         RobotState.getInstance().setRobotRelativeSpeeds(inputs.currentChassisSpeeds);
         RobotState.getInstance().updateShootingWhileMovingVirtualPose();
+        RobotState.getInstance().setDriveShotReady(getShotReady());
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);
         Logger.processInputs("RealOutputs/Drive", inputs);
+        Logger.recordOutput("Vision/autoAimAngleError", Math.toDegrees(RobotState.getInstance().getVisionPose().getRotation().getRadians() - RobotState.getInstance().getAngleToVirtualTarget()));
     }
 
     public void applyChassisSpeeds(ChassisSpeeds speeds) {
@@ -159,6 +162,12 @@ public class DriveSubsystem extends SubsystemBase {
         Translation2d translation = new Translation2d(x, y);
         if(!Alliance.get()) translation = translation.times(-1);
         return new ChassisSpeeds(translation.getX(), translation.getY(), omega);
+    }
+
+    public boolean getShotReady() {
+        double angleToVirtualTarget = RobotState.getInstance().getAngleToVirtualTarget();
+        double robotAngle = RobotState.getInstance().getVisionPose().getRotation().getRadians();
+        return Math.abs(angleToVirtualTarget - robotAngle) < Math.toRadians(5.0);
     }
 
     // characterization
