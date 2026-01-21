@@ -49,8 +49,11 @@ public class ShooterIOReal implements ShooterIO {
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
-        inputs.lowerVoltage = flywheelMaster.getMotorVoltage().getValueAsDouble();
-        inputs.lowerVelocityRPM = flywheelMaster.getVelocity().getValueAsDouble();
+        inputs.masterVoltage = flywheelMaster.getMotorVoltage().getValueAsDouble();
+        inputs.masterVelocityRPM = flywheelMaster.getVelocity().getValueAsDouble();
+
+        inputs.slaveVoltage = flywheelSlave.getMotorVoltage().getValueAsDouble();
+        inputs.slaveVelocityRPM = flywheelSlave.getVelocity().getValueAsDouble();
         Logger.recordOutput("Shooter/lowerflywheelvel",flywheelMaster.getVelocity().getValueAsDouble());
     }
     

@@ -11,11 +11,11 @@ import com.ctre.phoenix6.hardware.TalonFX;
 public class IndexerIOReal implements IndexerIO {
     private final TalonFX indexer = new TalonFX(21, "rio");
     private final TalonFX tower = new TalonFX(1, "rio");
-    private final CANrange canRange = new CANrange(15);
     // private double wantedVoltage = 0.0;
 
     public IndexerIOReal() {
         indexer.getConfigurator().apply(new TalonFXConfiguration());
+        tower.getConfigurator().apply(new TalonFXConfiguration());
 
         var indexerConfigs = new TalonFXConfiguration();
         
@@ -63,10 +63,10 @@ public class IndexerIOReal implements IndexerIO {
     @Override
     public void updateInputs(IndexerIOInputs inputs) {
         // TODO: not sure if this is needed
-        inputs.canRangeDistance = canRange.getDistance().getValueAsDouble();
-        inputs.voltage = indexer.getMotorVoltage().getValueAsDouble();
-        inputs.current = indexer.getTorqueCurrent().getValueAsDouble();
-
+        inputs.indexerVoltage = indexer.getMotorVoltage().getValueAsDouble();
+        inputs.indexerCurrent = indexer.getTorqueCurrent().getValueAsDouble();
+        inputs.towerVoltage = tower.getMotorVoltage().getValueAsDouble();
+        inputs.towerCurrent = tower.getTorqueCurrent().getValueAsDouble();
         //Logger.recordOutput("Indexer/wantedVoltage", wantedVoltage);
     }
 

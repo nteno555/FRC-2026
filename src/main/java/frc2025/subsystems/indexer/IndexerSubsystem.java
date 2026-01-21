@@ -15,7 +15,7 @@ public class IndexerSubsystem extends SubsystemBase {
     IndexerIO io;
     IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
     boolean usingVoltage = false;
-    private Trigger hasPieceTrigger = (new Trigger(() -> {return inputs.current > 28;})).debounce(0.1);
+    private Trigger hasPieceTrigger = (new Trigger(() -> {return inputs.indexerCurrent > 28;})).debounce(0.1);
 
     public IndexerSubsystem(IndexerIO io) {
         this.io = io;

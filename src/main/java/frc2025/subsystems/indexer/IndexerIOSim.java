@@ -5,15 +5,15 @@ public class IndexerIOSim implements IndexerIO{
 
     @Override
     public void updateInputs(IndexerIOInputs inputs) {
-        inputs.current = 0;
-        if (voltage < 0) {
-            inputs.canRangeDistance = 999999;
-        }
+        inputs.indexerCurrent = 0;
+        inputs.towerCurrent = 0;
+
         if(voltage > 0) {
-            inputs.canRangeDistance = 0;
-            inputs.current = 9999;
+            inputs.indexerCurrent = 9999;
+            inputs.towerCurrent = 9999;
         }
-        inputs.voltage = voltage;
+        inputs.indexerVoltage = voltage;
+        inputs.towerVoltage = voltage;
     }
 
     @Override

@@ -5,9 +5,10 @@ import org.littletonrobotics.junction.AutoLog;
 public interface IndexerIO {
     @AutoLog
     public static class IndexerIOInputs {
-        double canRangeDistance;
-        double voltage;
-        double current;
+        double indexerVoltage;
+        double indexerCurrent;
+        double towerVoltage;
+        double towerCurrent;
     }
 
     public void updateInputs(IndexerIOInputs inputs); // is this needed?

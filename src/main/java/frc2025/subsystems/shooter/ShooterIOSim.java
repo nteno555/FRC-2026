@@ -8,7 +8,7 @@ public class ShooterIOSim implements ShooterIO {
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
-        inputs.lowerVoltage = voltage;
+        inputs.masterVoltage = voltage;
     }
 
     @Override
