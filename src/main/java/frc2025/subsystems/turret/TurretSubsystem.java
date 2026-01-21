@@ -15,7 +15,7 @@ public class TurretSubsystem extends SubsystemBase {
 
     public TurretSubsystem(TurretIO io) {
         this.io = io;
-        io.rezero(0);
+        io.rezero();
     }
 
     @Override
@@ -53,7 +53,7 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     public Command rezero() {
-        return this.run(() -> io.rezero(0.0));
+        return this.run(() -> io.rezero());
     }
 
     public Command setFixed() {

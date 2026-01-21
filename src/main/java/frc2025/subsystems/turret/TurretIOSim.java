@@ -42,5 +42,5 @@ public class TurretIOSim implements TurretIO{
     }
 
     @Override
-    public void rezero(double position) {}
+    public void rezero() {}
 }

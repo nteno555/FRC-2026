@@ -74,6 +74,13 @@ public class SubsystemConstants {
     public static double turretZeroOffsetDegrees = 20;
     public static double turretRotationsPerRadian = turretRotationsPerDegree * (180/Math.PI);
 
+
+    public static double throughBoreZero1 = 0.879;
+    public static double throughBoreZero2 = 0.205;
+    public static double throughBoreRatio1 = 3.7058823529;
+    public static double throughBoreRatio2 = 3.0;
+
+
     public static double kMaxShootVelocity = 1;
 
     public static Translation2d shooterToCenterPose = new Translation2d(0.0, -0.2);

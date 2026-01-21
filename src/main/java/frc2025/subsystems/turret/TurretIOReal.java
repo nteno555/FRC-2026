@@ -8,11 +8,14 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class TurretIOReal implements TurretIO{
     private final TalonFX turretMotor = new TalonFX(15, "rio");
+    private final DutyCycleEncoder throughBore1 = new DutyCycleEncoder(2);
+    private final DutyCycleEncoder throughBore2 = new DutyCycleEncoder(3);
 
     public TurretIOReal() {
         turretMotor.getConfigurator().apply(new TalonFXConfiguration());
@@ -92,8 +95,18 @@ public class TurretIOReal implements TurretIO{
     }
 
     @Override
-    public void rezero(double radians) {
-        double position = radians * SubsystemConstants.turretRotationsPerRadian;
-        turretMotor.setPosition(position);
+    public void rezero() {
+        double tb1RotToRad = (Math.PI*2) / SubsystemConstants.throughBoreRatio1;
+        double tb2RotToRad = (Math.PI*2) / SubsystemConstants.throughBoreRatio2;
+        double smallestPos1 = ((throughBore1.get() - SubsystemConstants.throughBoreZero1 + 1) % 1) * tb1RotToRad;
+        double smallestPos2 = ((1 - throughBore2.get() - SubsystemConstants.throughBoreZero2 + 1) % 1) * tb2RotToRad;
+        double epsilon = 5;
+
+        while(Math.abs(smallestPos1 - smallestPos2) > epsilon) { 
+            if(smallestPos1 < smallestPos2) smallestPos1 += tb1RotToRad;
+            else smallestPos2 += tb2RotToRad;
+        }
+
+        turretMotor.setPosition(- 1 * smallestPos1 * SubsystemConstants.turretRotationsPerRadian);
     }
 }
