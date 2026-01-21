@@ -10,18 +10,19 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 public class IndexerIOReal implements IndexerIO {
     private final TalonFX indexer = new TalonFX(14, "rio");
+    private final TalonFX tower = new TalonFX(201, "rio");
     private final CANrange canRange = new CANrange(15);
     // private double wantedVoltage = 0.0;
 
     public IndexerIOReal() {
         indexer.getConfigurator().apply(new TalonFXConfiguration());
 
-        var talonFXConfigs = new TalonFXConfiguration();
+        var indexerConfigs = new TalonFXConfiguration();
         
-        talonFXConfigs.CurrentLimits.SupplyCurrentLimit = 40;
-        talonFXConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
-        talonFXConfigs.CurrentLimits.StatorCurrentLimit = 40;
-        talonFXConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+        indexerConfigs.CurrentLimits.SupplyCurrentLimit = 40;
+        indexerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
+        indexerConfigs.CurrentLimits.StatorCurrentLimit = 40;
+        indexerConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
 
         TorqueCurrentConfigs configTorque =  new TorqueCurrentConfigs();
         configTorque.PeakForwardTorqueCurrent = 40;
@@ -29,8 +30,22 @@ public class IndexerIOReal implements IndexerIO {
         configTorque.TorqueNeutralDeadband = 1;
 
 
-        indexer.getConfigurator().apply(talonFXConfigs, 0.050);
+        var towerConfigs = new TalonFXConfiguration();
+
+        towerConfigs.CurrentLimits.SupplyCurrentLimit = 40;
+        towerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
+        towerConfigs.CurrentLimits.StatorCurrentLimit = 40;
+        towerConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+
+        TorqueCurrentConfigs towerConfigTorque =  new TorqueCurrentConfigs();
+        towerConfigTorque.PeakForwardTorqueCurrent = 40;
+        towerConfigTorque.PeakReverseTorqueCurrent = 40;
+        towerConfigTorque.TorqueNeutralDeadband = 1;
+
+        indexer.getConfigurator().apply(indexerConfigs, 0.050);
         indexer.getConfigurator().apply(configTorque, 0.05);
+        tower.getConfigurator().apply(towerConfigs, 0.050);
+        tower.getConfigurator().apply(towerConfigTorque, 0.05);
 
     }
 
@@ -58,11 +73,13 @@ public class IndexerIOReal implements IndexerIO {
     @Override
     public void setSpeed(double speed) {
         indexer.setControl(createControlRequest(speed, false));
+        tower.setControl(createControlRequest(speed, false));
     }
 
     @Override
     public void setVoltage(double voltage) {
         indexer.setControl(createControlRequest(voltage, true));
+        tower.setControl(createControlRequest(voltage, false));
         //wantedVoltage = voltage;
     }
 }
