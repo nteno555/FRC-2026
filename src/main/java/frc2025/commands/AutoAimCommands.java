@@ -49,6 +49,51 @@ public class AutoAimCommands {
         );
     }
 
+    public static Command turretAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {
+        Pose2d robotPose = RobotState.getInstance().getVisionPose();
+        Pose2d shooterPose = RobotState.getInstance().getVisionShooterPose();
+        Pose2d targetPose = targetPoseSupplier.get();
+        
+        double absoluteAngleToTarget = Math.atan2(
+                targetPose.getY() - shooterPose.getY(),
+                targetPose.getX() - shooterPose.getX()
+        );
+        
+        double robotAngle = robotPose.getRotation().getRadians();
+        double wantedAngle = modAngle(absoluteAngleToTarget - robotAngle);
+        
+        double currentAngle = robotContainer.getTurret().getRealAngleRadians();
+
+        double clampedAngle = clampTurretAngle(wantedAngle, currentAngle);
+        
+
+        return robotContainer.getTurret().setPosition(() -> clampedAngle);
+
+    }
+    
+    public static double clampTurretAngle(double wantedAngle, double currentAngle) {
+        double min_angle = Math.PI * -2;
+        double max_angle = Math.PI * 2;
+
+        double[] candidates = {wantedAngle, wantedAngle + 2*Math.PI, wantedAngle - 2*Math.PI};
+    
+        double bestAngle = currentAngle;  
+        double minDistance = 9999999.0;
+        
+        for (double candidate : candidates) {
+            if (candidate >= min_angle && candidate <= max_angle) {
+                double distance = Math.abs(candidate - currentAngle);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    bestAngle = candidate;
+                }
+            }
+        }
+
+        return bestAngle;
+
+    }
+
     public static Command pivotAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier) {
         return robotContainer.getPivot().setPosition(() -> {
             Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();

@@ -37,6 +37,9 @@ import frc2025.subsystems.pivot.PivotSubsystem;
 import frc2025.subsystems.shooter.ShooterIOReal;
 import frc2025.subsystems.shooter.ShooterIOSim;
 import frc2025.subsystems.shooter.ShooterSubsystem;
+import frc2025.subsystems.turret.TurretIOReal;
+import frc2025.subsystems.turret.TurretIOSim;
+import frc2025.subsystems.turret.TurretSubsystem;
 import frc2025.subsystems.vision.VisionIOReal;
 import frc2025.subsystems.vision.VisionIOSim;
 import frc2025.subsystems.vision.VisionSubsystem;
@@ -60,6 +63,7 @@ public class RobotContainer {
     IntakeSubsystem intakeSubsystem;
     PivotSubsystem pivotSubsystem;
     ShooterSubsystem shooterSubsystem;
+    TurretSubsystem turretSubsystem;
 
     Autos autos;
     Command autoCommand;
@@ -85,6 +89,7 @@ public class RobotContainer {
             intakeSubsystem = new IntakeSubsystem(new IntakeIOReal());
             pivotSubsystem = new PivotSubsystem(new PivotIOReal());
             shooterSubsystem = new ShooterSubsystem(new ShooterIOReal());
+            turretSubsystem = new TurretSubsystem(new TurretIOReal());
         } else {
             driveSubsystem = new DriveSubsystem(new DriveIOSim(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOSim());
@@ -92,6 +97,7 @@ public class RobotContainer {
             intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
             pivotSubsystem = new PivotSubsystem(new PivotIOSim());
             shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
+            turretSubsystem = new TurretSubsystem(new TurretIOSim());
         }
     }
 
@@ -131,6 +137,10 @@ public class RobotContainer {
 
     public VisionSubsystem getVision() {
         return visionSubsystem;
+    }
+
+    public TurretSubsystem getTurret() {
+        return turretSubsystem;
     }
 
     private void configureBindings() {

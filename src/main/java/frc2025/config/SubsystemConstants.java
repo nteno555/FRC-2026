@@ -48,6 +48,31 @@ public class SubsystemConstants {
     public static double intakeZeroOffsetDegrees = 20;
     public static double intakeDeployPosition = 15;
 
+    public static double turretkS = 0.67;
+    public static double turretkV = 0.67;
+    public static double turretkP = 0.67;
+    public static double turretkI = 0.67;
+    public static double turretkD = 0.67;
+    public static double turretkGFactor = 0.25;
+    public static double turretCruiseVelocity = 100;
+    public static double turretAcceleration = 200;
+    public static double turretJerk = 7000;
+    public static double turretSupplyCurrentLimit = 40;
+    public static double turretStatorCurrentLimit = 40;
+    public static double turretPeakForwardTorqueCurrent = 40;
+    public static double turretPeakReverseTorqueCurrent = 40;
+    public static double turretTorqueNeutralDeadband = 1;
+    public static double turretRotationsPerDegree = 0.208333333333;
+    public static double turretZeroOffsetDegrees = 20;
+    public static double turretRotationsPerRadian = turretRotationsPerDegree * (180/Math.PI);
+
+
+    public static double throughBoreZero1 = 0.879;
+    public static double throughBoreZero2 = 0.205;
+    public static double throughBoreRatio1 = 3.7058823529;
+    public static double throughBoreRatio2 = 3.0;
+
+
     public static double kMaxShootVelocity = 1;
 
     public static Translation2d shooterToCenterPose = new Translation2d(0.0, -0.2);
