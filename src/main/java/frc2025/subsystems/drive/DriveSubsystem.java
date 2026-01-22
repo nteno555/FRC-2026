@@ -41,6 +41,9 @@ public class DriveSubsystem extends SubsystemBase {
             .withSteerRequestType(SwerveModule.SteerRequestType.Position);
     private double prevTimestamp = 0;
 
+    private ChassisSpeeds prevFieldSpeeds = new ChassisSpeeds();
+    private double prevTime = Timer.getFPGATimestamp();
+
     public DriveSubsystem(DriveIO io) {
         this.io = io;
     }
@@ -59,6 +62,8 @@ public class DriveSubsystem extends SubsystemBase {
             io.addVisionMeasurement(RobotState.getInstance().getVisionUpdates());
             RobotState.getInstance().clearVisionUpdates();
         }
+
+        setAcceleration();
 
         //Pose2d currentPose = io.samplePoseAt(Utils.getCurrentTimeSeconds()).get();
         //RobotState.getInstance().setVisionPoseBuiltin(currentPose);
@@ -225,5 +230,22 @@ public class DriveSubsystem extends SubsystemBase {
         Pose2d currentPose = io.samplePoseAt(currentTime).get();
         Pose2d previousPose = io.samplePoseAt(currentTime - 0.02).get();
         return currentPose.minus(previousPose).div(0.02).getTranslation();
+    }
+
+    public void setAcceleration() {
+        double currentTime = Timer.getFPGATimestamp();
+        double dt = currentTime - prevTime;
+
+        ChassisSpeeds currentFieldSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(inputs.currentChassisSpeeds, inputs.swervePoseMeters.getRotation());
+        
+        if (dt > 0.02) { 
+            double xAccel = (currentFieldSpeeds.vxMetersPerSecond - prevFieldSpeeds.vxMetersPerSecond) / dt;
+            double yAccel = (currentFieldSpeeds.vyMetersPerSecond - prevFieldSpeeds.vyMetersPerSecond) / dt;
+
+            RobotState.getInstance().setRobotAcceleration(new Translation2d(xAccel, yAccel));
+
+            prevFieldSpeeds = currentFieldSpeeds;
+            prevTime = currentTime;
+        }
     }
 }

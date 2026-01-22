@@ -25,6 +25,7 @@ public class RobotState {
     private List<VisionPoseEstimator.TimestampedVisionUpdate> visionUpdates = new ArrayList<>();
     private ChassisSpeeds robotRelativeSpeeds;
     private double angleToVirtualTarget;
+    private Translation2d robotAcceleration = new Translation2d();
 
     private boolean shuttling;
     private Pose2d shootingWhileMovingVirtualPose;
@@ -143,8 +144,8 @@ public class RobotState {
             double flightTime = ShooterTreeMap.getInstance().tofTreeMap.getInterpolated(distance);
 
             virtualPose = new Pose2d(
-                    realTargetPose.getX() + velocity.getX() * flightTime,
-                    realTargetPose.getY() + velocity.getY() * flightTime,
+                    realTargetPose.getX() + velocity.getX() * flightTime + 0.5 * robotAcceleration.getX() * Math.pow(flightTime,2),
+                    realTargetPose.getY() + velocity.getY() * flightTime + 0.5 * robotAcceleration.getY() * Math.pow(flightTime,2),
                     realTargetPose.getRotation()
             );
         }
@@ -157,6 +158,10 @@ public class RobotState {
                 virtualPose.getX() - shooterPose.getX()
         );
         Logger.recordOutput("Vision/shootingWhileMovingVirtualPose", shootingWhileMovingVirtualPose);
+    }
+
+    public void setRobotAcceleration(Translation2d robotAcceleration) {
+        this.robotAcceleration = robotAcceleration;
     }
 
     public double getAngleToVirtualTarget() {
