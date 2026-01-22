@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.spark.config.SoftLimitConfig;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.ControlRequest;
@@ -21,7 +22,7 @@ import org.littletonrobotics.junction.Logger;
 import frc2025.config.SubsystemConstants;
 
 public class PivotIOReal implements PivotIO {
-    private final TalonFX pivotMaster = new TalonFX(67, "rio");
+    private final TalonFX pivotMaster = new TalonFX(0, "rio");
 
     public PivotIOReal() {
         pivotMaster.getConfigurator().apply(new TalonFXConfiguration());
@@ -45,6 +46,13 @@ public class PivotIOReal implements PivotIO {
         talonFXConfigs.CurrentLimits.StatorCurrentLimit = SubsystemConstants.pivotStatorCurrentLimit;
         talonFXConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
 
+        var softLimitConfig = talonFXConfigs.SoftwareLimitSwitch;
+        // Pbot hood has a 1:9 ratio
+        softLimitConfig.ForwardSoftLimitThreshold = 10;
+        softLimitConfig.ReverseSoftLimitThreshold = 0; 
+        softLimitConfig.ForwardSoftLimitEnable = true;
+        softLimitConfig.ReverseSoftLimitEnable = true;
+
         TorqueCurrentConfigs configTorque =  new TorqueCurrentConfigs();
         configTorque.PeakForwardTorqueCurrent = SubsystemConstants.pivotPeakForwardTorqueCurrent;
         configTorque.PeakReverseTorqueCurrent = SubsystemConstants.pivotPeakReverseTorqueCurrent;
@@ -52,6 +60,7 @@ public class PivotIOReal implements PivotIO {
 
         pivotMaster.getConfigurator().apply(talonFXConfigs);
         pivotMaster.getConfigurator().apply(configTorque);
+        pivotMaster.getConfigurator().apply(softLimitConfig);
 
         //pivotMaster.setInverted(true);
         pivotMaster.setNeutralMode(NeutralModeValue.Brake);
@@ -92,9 +101,10 @@ public class PivotIOReal implements PivotIO {
 
     @Override
     public void setPosition(double position) {
-        Logger.recordOutput("Pivot/setPositionPosition", position);
+        Logger.recordOutput("Pivot/wantedPosition", position);
         pivotMaster.setControl(createControlRequest(position, false));
     }
+
 
     @Override
     public void setVoltage(double voltage) {

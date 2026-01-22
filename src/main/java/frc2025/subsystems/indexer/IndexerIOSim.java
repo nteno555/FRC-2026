@@ -5,24 +5,24 @@ public class IndexerIOSim implements IndexerIO{
 
     @Override
     public void updateInputs(IndexerIOInputs inputs) {
-        inputs.current = 0;
-        if (voltage < 0) {
-            inputs.canRangeDistance = 999999;
-        }
+        inputs.indexerCurrent = 0;
+        inputs.towerCurrent = 0;
+
         if(voltage > 0) {
-            inputs.canRangeDistance = 0;
-            inputs.current = 9999;
+            inputs.indexerCurrent = 9999;
+            inputs.towerCurrent = 9999;
         }
-        inputs.voltage = voltage;
+        inputs.indexerVoltage = voltage;
+        inputs.towerVoltage = voltage;
     }
 
     @Override
-    public void setSpeed(double speed) {
-        voltage = speed;
+    public void setSpeed(double indexerSpeed, double towerSpeed) {
+        voltage = indexerSpeed;
     }
 
     @Override
-    public void setVoltage(double voltage) {
-        this.voltage = voltage;
+    public void setVoltage(double indexerVoltage, double towerVoltage) {
+        this.voltage = indexerVoltage;
     }
 }

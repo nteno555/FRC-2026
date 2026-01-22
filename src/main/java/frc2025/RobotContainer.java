@@ -21,10 +21,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc2025.commands.AutoAimCommands;
-import frc2025.commands.SuperstructureCommands;
-import frc2025.commands.WheelRadiusCharacterizationCommand;
 import frc2025.config.ShooterTreeMap;
-import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveIOReal;
 import frc2025.subsystems.drive.DriveIOSim;
 import frc2025.subsystems.drive.DriveSubsystem;
@@ -34,10 +31,9 @@ import frc2025.subsystems.indexer.IndexerSubsystem;
 import frc2025.subsystems.intake.IntakeIOReal;
 import frc2025.subsystems.intake.IntakeIOSim;
 import frc2025.subsystems.intake.IntakeSubsystem;
-import frc2025.subsystems.pivot.PivotIONEO;
+import frc2025.subsystems.pivot.PivotIOReal;
 import frc2025.subsystems.pivot.PivotIOSim;
 import frc2025.subsystems.pivot.PivotSubsystem;
-import frc2025.subsystems.shooter.ShooterIONEO;
 import frc2025.subsystems.shooter.ShooterIOReal;
 import frc2025.subsystems.shooter.ShooterIOSim;
 import frc2025.subsystems.shooter.ShooterSubsystem;
@@ -73,6 +69,7 @@ public class RobotContainer {
         createSubsystems();
         configureBindings();
         autos = new Autos(this);
+        autoCommand = autos.MidShootPreload();
         configureAutoCommands();
         //autoCommand = autos.LowShootPreload();
     }
@@ -86,7 +83,7 @@ public class RobotContainer {
             visionSubsystem = new VisionSubsystem(new VisionIOReal());
             indexerSubsystem = new IndexerSubsystem(new IndexerIOReal());
             intakeSubsystem = new IntakeSubsystem(new IntakeIOReal());
-            pivotSubsystem = new PivotSubsystem(new PivotIONEO());
+            pivotSubsystem = new PivotSubsystem(new PivotIOReal());
             shooterSubsystem = new ShooterSubsystem(new ShooterIOReal());
         } else {
             driveSubsystem = new DriveSubsystem(new DriveIOSim(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
@@ -139,9 +136,9 @@ public class RobotContainer {
     private void configureBindings() {
         driveSubsystem.setDefaultCommand(
                 driveSubsystem.driveTeleop(
-                        () -> (DriveSubsystem.slowmode ? 0.5 : 1.0) * -handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                        () -> (DriveSubsystem.slowmode ? 0.5 : 1.0) * -handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                        () -> (DriveSubsystem.slowmode ? 0.75 : 1.0) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
+                        () -> (0.3) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (0.3) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (0.3) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
                 )
         );
 
@@ -154,9 +151,37 @@ public class RobotContainer {
         }));
 
 
+
+        
+        SmartDashboard.putNumber("Tuning/Distance", 0.0);
+        SmartDashboard.putNumber("Tuning/RPM", 0.0);
+        SmartDashboard.putNumber("Tuning/pivotPosition", 0.0);
+
+        SmartDashboard.putData("Tuning/Add Point", new InstantCommand(() -> {
+            double dist = SmartDashboard.getNumber("Tuning/Distance", 0.0);
+            double rpm = SmartDashboard.getNumber("Tuning/RPM", 0.0);
+            double pivotPos = SmartDashboard.getNumber("Tuning/pivotPosition", 0.0);
+
+            ShooterTreeMap.getInstance().addShot(dist,rpm);
+            //SmartDashboard.putString("Tuning/lowerWheelTree Map", ShooterTreeMap.getInstance().lowerWheelTreeMap.toString());
+
+        }).ignoringDisable(true));
+
+//        SmartDashboard.putNumber("Tuning/Remove Distance", 0.0);
+//
+//        SmartDashboard.putData("Tuning/Remove Point", new InstantCommand(() -> {
+//            double dist = SmartDashboard.getNumber("Tuning/Remove Distance", 0.0);
+//
+//            ShooterTreeMap.getInstance().removeShot(dist);
+//
+//        }).ignoringDisable(true));
+
+        //indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0));
+        //intakeSubsystem.setDefaultCommand(intakeSubsystem.setVoltage(() -> 0.0));
+
         driverXboxController.rightTrigger().whileTrue(
-            indexerSubsystem.setVoltage(() -> -2.0))
-            .whileFalse(indexerSubsystem.setVoltage(() -> 0.5));
+            indexerSubsystem.setVoltage(() -> -6.0, () -> -12.0))
+            .whileFalse(indexerSubsystem.setVoltage(() -> 0.5, () -> 0.0));
 
         driverXboxController.povLeft().whileTrue(
                         intakeSubsystem.setVoltage(() -> 7.0))
@@ -169,20 +194,18 @@ public class RobotContainer {
                                this,
                                ShooterTreeMap.getInstance(),
                                () -> driveSubsystem.getTeleopSpeeds(
-                                       (DriveSubsystem.slowmode ? 0.5 : 1.0) * -handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                                       (DriveSubsystem.slowmode ? 0.5 : 1.0) * -handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                                       (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                                       (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
                                        (DriveSubsystem.slowmode ? 0.75 : 1.0) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
                                ))
                ).whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
+               driverXboxController.povRight().whileTrue(pivotSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/pivotPosition", 0.0)));
 
 
         driverXboxController.rightTrigger()
-//                .whileTrue(
-//                        new WaitUntilCommand(() -> shooterSubsystem.getShotReady())
-//                                .andThen(indexerSubsystem.setVoltage(() -> 3.0)))
                 .whileTrue(AutoAimCommands.autoIndex(this))
-                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
+                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
 
         driverXboxController.b().onTrue(new InstantCommand(() -> {
             RobotState.getInstance().setShuttling(!RobotState.getInstance().getShuttling());
@@ -198,8 +221,8 @@ public class RobotContainer {
                                 .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
         testSystemsController.rightBumper()
-                        .whileTrue(indexerSubsystem.setVoltage(() -> -1.5))
-                                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
+                        .whileTrue(indexerSubsystem.setVoltage(() -> -1.5, () -> -1.5))
+                                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
 
         testSystemsController.rightTrigger()
                         .whileTrue(intakeSubsystem.setVoltage(() -> 12.0))
@@ -272,7 +295,7 @@ public class RobotContainer {
         CommandScheduler.getInstance().cancel(autoCommand);
         RobotState.getInstance().setShuttling(false);
         shooterSubsystem.setVoltage(() -> 0.0);
-        indexerSubsystem.setVoltage(() -> 0.0);
+        indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0);
         intakeSubsystem.setVoltage(() -> 0.0);
     }
 }

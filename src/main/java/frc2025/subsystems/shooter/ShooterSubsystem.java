@@ -62,12 +62,12 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public double getUpperVelocity() {
-        return inputs.lowerVelocityRPM;
+        return inputs.masterVelocityRPM;
     }
     public double getUpperWantedVelocity() {
         return wantedVelocity;
     }
     public boolean getShotReady() {
-        return Math.abs(wantedVelocity - inputs.lowerVelocityRPM) < 3.0;
+        return Math.abs(wantedVelocity - inputs.masterVelocityRPM) < 3.0;
     }
 }

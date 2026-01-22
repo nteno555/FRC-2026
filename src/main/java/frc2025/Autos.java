@@ -1,5 +1,6 @@
 package frc2025;
 
+import com.pathplanner.lib.path.EventMarker;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -18,6 +19,8 @@ import frc2025.util.Alliance;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class Autos {
@@ -57,6 +60,12 @@ public class Autos {
     public Command autoIndex() {
         return robotContainer.getIndexer().setSpeed(() -> {
             if(RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady()) {
+                return -3.0;
+            } else {
+                return 0.0;
+            }
+        }, () -> {
+            if(robotContainer.getShooter().getShotReady()) {
                 return -3.0;
             } else {
                 return 0.0;
