@@ -131,8 +131,8 @@ public class RobotContainer {
     private void configureBindings() {
         driveSubsystem.setDefaultCommand(
                 driveSubsystem.driveTeleop(
-                        () -> (0.3) * -handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                        () -> (0.3) * -handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (0.3) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (0.3) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
                         () -> (0.3) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
                 )
         );
@@ -150,10 +150,12 @@ public class RobotContainer {
         
         SmartDashboard.putNumber("Tuning/Distance", 0.0);
         SmartDashboard.putNumber("Tuning/RPM", 0.0);
+        SmartDashboard.putNumber("Tuning/pivotPosition", 0.0);
 
         SmartDashboard.putData("Tuning/Add Point", new InstantCommand(() -> {
             double dist = SmartDashboard.getNumber("Tuning/Distance", 0.0);
             double rpm = SmartDashboard.getNumber("Tuning/RPM", 0.0);
+            double pivotPos = SmartDashboard.getNumber("Tuning/pivotPosition", 0.0);
 
             ShooterTreeMap.getInstance().addShot(dist,rpm);
             //SmartDashboard.putString("Tuning/lowerWheelTree Map", ShooterTreeMap.getInstance().lowerWheelTreeMap.toString());
@@ -187,13 +189,13 @@ public class RobotContainer {
                                this,
                                ShooterTreeMap.getInstance(),
                                () -> driveSubsystem.getTeleopSpeeds(
-                                       (DriveSubsystem.slowmode ? 0.5 : 1.0) * -handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                                       (DriveSubsystem.slowmode ? 0.5 : 1.0) * -handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                                       (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                                       (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
                                        (DriveSubsystem.slowmode ? 0.75 : 1.0) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
                                ))
                ).whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
-               driverXboxController.povRight().whileTrue(pivotSubsystem.setPosition(() -> 5.0));
+               driverXboxController.povRight().whileTrue(pivotSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/pivotPosition", 0.0)));
             //    .whileFalse(pivotSubsystem.setPosition(() -> 0.0));
 
 //        driverXboxController.y().whileTrue(

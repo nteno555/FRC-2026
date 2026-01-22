@@ -25,7 +25,7 @@ public class SubsystemConstants {
     public static double pivotPeakForwardTorqueCurrent = 40;
     public static double pivotPeakReverseTorqueCurrent = 40;
     public static double pivotTorqueNeutralDeadband = 1;
-    public static double pivotRotationsPerDegree = 0.20;
+    public static double pivotRotationsPerDegree = 0.4558;
     public static double pivotkGFactor = 0.05;
     public static double pivotZeroOffsetDegrees = 1;
 

@@ -13,15 +13,19 @@ public class ShooterTreeMap {
     public  InterpolatingTreeMap tofTreeMap = new InterpolatingTreeMap();
     
     public ShooterTreeMap() {
-        pivotTreeMap.put(0.0, 15.0);
-        pivotTreeMap.put(10.0, 5.0);
+        pivotTreeMap.put(1.2, 0.0);
+        pivotTreeMap.put(1.5, 0.0);
+        pivotTreeMap.put(2.0, 0.0);
+        pivotTreeMap.put(2.66, 1.0);
+        pivotTreeMap.put(3.0, 1.5);
+        pivotTreeMap.put(4.9, -33.0);
 
-        lowerWheelTreeMap.put(1.5, -45.4);
-        lowerWheelTreeMap.put(2.1, -51.2);
-        lowerWheelTreeMap.put(3.0, -60.8);
-        lowerWheelTreeMap.put(4.0, -72.0);
-        lowerWheelTreeMap.put(5.0, -88.0);
-//        lowerWheelTreeMap.put()
+        lowerWheelTreeMap.put(1.2, -22.0);
+        lowerWheelTreeMap.put(1.5, -23.0);
+        lowerWheelTreeMap.put(2.0, -25.0);
+        lowerWheelTreeMap.put(2.66, -26.0);
+        lowerWheelTreeMap.put(3.0, -28.0);
+        lowerWheelTreeMap.put(4.9, -33.0);
 
         tofTreeMap.put(0.0, 0.5);
         tofTreeMap.put(1.0, 1.0);
