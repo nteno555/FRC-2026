@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc2025.commands.AutoAimCommands;
 import frc2025.commands.FollowPathCommand;
 import frc2025.commands.SuperstructureCommands;
@@ -31,23 +32,17 @@ public class Autos {
     public Autos(RobotContainer robotContainer) {
         this.robotContainer = robotContainer;
         this.drive = robotContainer.getDrive();
+        RobotState.getInstance().setShuttling(false);
     }
 
     public Command autoScore(Pose2d pose) {
         Command score = //AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> pose)
             AutoAimCommands.autoAimCommand(robotContainer, () -> pose, () -> new ChassisSpeeds(0,0,0))
-//                .andThen(
-//                        new WaitUntilCommand(() -> {
-//                            double vx = drive.getFieldRelativeSpeeds().vxMetersPerSecond;
-//                            double vy = drive.getFieldRelativeSpeeds().vyMetersPerSecond;
-//                            double velocity = Math.hypot(vx, vy);
-//                            return robotContainer.shooterSubsystem.getShotReady() && velocity < SubsystemConstants.kMaxShootVelocity;
-//                        })
-                    .withTimeout(2.0)
-                                .andThen(
-                                        SuperstructureCommands.shootCommand(robotContainer)
-                                                .alongWith(new WaitCommand(2.0))
-                                );
+               .andThen(new WaitUntilCommand(() -> {
+                           return RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady();
+                       }).andThen(
+                                    robotContainer.getIndexer().setVoltage(() -> -3.0)
+                                ));
         return score;
     }
 
@@ -198,6 +193,23 @@ public class Autos {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
                 .andThen(autoScore(RobotState.getInstance().getTargetPose()))
                 .andThen(autoScore(RobotState.getInstance().getTargetPose()));
+        return auto;
+    }
+
+    public Command LowShuttleAuto() {
+        RobotState.getInstance().setShuttling(true);
+        Command auto = drive.resetOdometryCommand(startPoseSupplier(LOW_START))
+                    .andThen(autoScore(RobotState.getInstance().getTargetPose()))
+
+                    .andThen(intakePath("Low-Neutral", false))
+
+                    .andThen(autoSpinUp(() -> RobotState.getInstance().getVisionPose())
+                            .alongWith(autoIndex())
+                                .alongWith(
+                                    intakePath("Neutral-Driveback", true)
+                                            .andThen(finalAutoAim())
+                                )
+                    );
         return auto;
     }
 

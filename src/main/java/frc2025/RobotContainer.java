@@ -105,6 +105,7 @@ public class RobotContainer {
         autoChooser.addOption("MidShootPreload", autos.MidShootPreload());
         autoChooser.addOption("HighShootClimb", autos.HighShootClimb());
         autoChooser.addOption("HighShootIntakeClimb", autos.HighShootIntakeClimb());
+        autoChooser.addOption("LowShuttleAuto", autos.LowShuttleAuto());
         autoChooser.addOption("Taxi", autos.Taxi());
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -269,6 +270,7 @@ public class RobotContainer {
     public void teleopInit() {
         //autoCommand.cancel();
         CommandScheduler.getInstance().cancel(autoCommand);
+        RobotState.getInstance().setShuttling(false);
         shooterSubsystem.setVoltage(() -> 0.0);
         indexerSubsystem.setVoltage(() -> 0.0);
         intakeSubsystem.setVoltage(() -> 0.0);
