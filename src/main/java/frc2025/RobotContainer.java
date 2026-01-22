@@ -173,7 +173,7 @@ public class RobotContainer {
         //intakeSubsystem.setDefaultCommand(intakeSubsystem.setVoltage(() -> 0.0));
 
         driverXboxController.rightTrigger().whileTrue(
-            indexerSubsystem.setVoltage(() -> -10.0, () -> -12.0))
+            indexerSubsystem.setVoltage(() -> -6.0, () -> -12.0))
             .whileFalse(indexerSubsystem.setVoltage(() -> 0.5, () -> 0.0));
 
         driverXboxController.povLeft().whileTrue(
@@ -192,6 +192,9 @@ public class RobotContainer {
                                        (DriveSubsystem.slowmode ? 0.75 : 1.0) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
                                ))
                ).whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
+
+               driverXboxController.povRight().whileTrue(pivotSubsystem.setPosition(() -> 5.0));
+            //    .whileFalse(pivotSubsystem.setPosition(() -> 0.0));
 
 //        driverXboxController.y().whileTrue(
 //                shooterSubsystem.setPercentOutput(() -> -0.6)

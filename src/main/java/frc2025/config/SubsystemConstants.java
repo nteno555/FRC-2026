@@ -12,22 +12,22 @@ public class SubsystemConstants {
     public static double flywheelD = 0.0;
 
     public static double pivotkS = 0.00;
-    public static double pivotkV = 0.05;
+    public static double pivotkV = 0.134;
     public static double pivotkA = 0.00;
-    public static double pivotkP = 0.04;
+    public static double pivotkP = 0.05;
     public static double pivotkI = 0.00;
-    public static double pivotkD = 0.02;
-    public static double pivotCruiseVelocity = 100;
-    public static double pivotAcceleration = 200;
-    public static double pivotJerk = 7000;
+    public static double pivotkD = 0.00;
+    public static double pivotCruiseVelocity = 10;
+    public static double pivotAcceleration = 20;
+    public static double pivotJerk = 700;
     public static double pivotSupplyCurrentLimit = 40;
     public static double pivotStatorCurrentLimit = 40;
     public static double pivotPeakForwardTorqueCurrent = 40;
     public static double pivotPeakReverseTorqueCurrent = 40;
     public static double pivotTorqueNeutralDeadband = 1;
-    public static double pivotRotationsPerDegree = 0.208333333333;
-    public static double pivotkGFactor = 0.25;
-    public static double pivotZeroOffsetDegrees = 20;
+    public static double pivotRotationsPerDegree = 0.20;
+    public static double pivotkGFactor = 0.05;
+    public static double pivotZeroOffsetDegrees = 1;
 
     public static double intakekS = 0.05;
     public static double intakekV = 0.12;
