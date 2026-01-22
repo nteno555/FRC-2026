@@ -72,6 +72,12 @@ public class Autos {
             } else {
                 return 0.0;
             }
+        }, () -> {
+            if(robotContainer.getShooter().getShotReady()) {
+                return -3.0;
+            } else {
+                return 0.0;
+            }
         });
     }
 

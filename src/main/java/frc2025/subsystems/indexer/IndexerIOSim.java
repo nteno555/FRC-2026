@@ -17,12 +17,12 @@ public class IndexerIOSim implements IndexerIO{
     }
 
     @Override
-    public void setSpeed(double speed) {
-        voltage = speed;
+    public void setSpeed(double indexerSpeed, double towerSpeed) {
+        voltage = indexerSpeed;
     }
 
     @Override
-    public void setVoltage(double voltage) {
-        this.voltage = voltage;
+    public void setVoltage(double indexerVoltage, double towerVoltage) {
+        this.voltage = indexerVoltage;
     }
 }

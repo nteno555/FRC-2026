@@ -173,8 +173,8 @@ public class RobotContainer {
         //intakeSubsystem.setDefaultCommand(intakeSubsystem.setVoltage(() -> 0.0));
 
         driverXboxController.rightTrigger().whileTrue(
-            indexerSubsystem.setVoltage(() -> -2.0))
-            .whileFalse(indexerSubsystem.setVoltage(() -> 0.5));
+            indexerSubsystem.setVoltage(() -> -10.0, () -> -12.0))
+            .whileFalse(indexerSubsystem.setVoltage(() -> 0.5, () -> 0.0));
 
         driverXboxController.povLeft().whileTrue(
                         intakeSubsystem.setVoltage(() -> 7.0))
@@ -222,8 +222,8 @@ public class RobotContainer {
                                 .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
         testSystemsController.rightBumper()
-                        .whileTrue(indexerSubsystem.setVoltage(() -> -1.5))
-                                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
+                        .whileTrue(indexerSubsystem.setVoltage(() -> -1.5, () -> -1.5))
+                                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
 
         testSystemsController.rightTrigger()
                         .whileTrue(intakeSubsystem.setVoltage(() -> 12.0))
@@ -288,7 +288,7 @@ public class RobotContainer {
 
     public void teleopInit() {
         shooterSubsystem.setVoltage(() -> 0.0);
-        indexerSubsystem.setVoltage(() -> 0.0);
+        indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0);
         intakeSubsystem.setVoltage(() -> 0.0);
         autoCommand.cancel();
     }

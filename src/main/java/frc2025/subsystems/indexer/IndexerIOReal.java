@@ -71,15 +71,17 @@ public class IndexerIOReal implements IndexerIO {
     }
 
     @Override
-    public void setSpeed(double speed) {
-        indexer.setControl(createControlRequest(speed, false));
-        tower.setControl(createControlRequest(speed, false));
+    public void setSpeed(double indexerSpeed, double towerSpeed) {
+        indexer.setControl(createControlRequest(indexerSpeed, false));
+        tower.setControl(createControlRequest(towerSpeed, false));
     }
 
     @Override
-    public void setVoltage(double voltage) {
-        indexer.setControl(createControlRequest(voltage, true));
-        tower.setControl(createControlRequest(voltage, false));
+    public void setVoltage(double indexerVoltage, double towerVoltage) {
+        indexer.setControl(createControlRequest(indexerVoltage, true));
+        tower.setControl(createControlRequest(towerVoltage, false));
         //wantedVoltage = voltage;
     }
+
+
 }
