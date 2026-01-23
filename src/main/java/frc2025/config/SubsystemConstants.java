@@ -29,15 +29,15 @@ public class SubsystemConstants {
     public static double pivotkGFactor = 0.05;
     public static double pivotZeroOffsetDegrees = 1;
 
-    public static double intakekS = 0.05;
+    public static double intakekS = 0.00;
     public static double intakekV = 0.12;
     public static double intakekA = 0.0;
     public static double intakekP = 0.05;
     public static double intakekI = 0.0;
     public static double intakekD = 0.0;
-    public static double intakeCruiseVelocity = 100;
-    public static double intakeAcceleration = 200;
-    public static double intakeJerk = 7000;
+    public static double intakeCruiseVelocity = 10;
+    public static double intakeAcceleration = 20;
+    public static double intakeJerk = 700;
     public static double intakeSupplyCurrentLimit = 40;
     public static double intakeStatorCurrentLimit = 40;
     public static double intakePeakForwardTorqueCurrent = 40;

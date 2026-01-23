@@ -1,7 +1,10 @@
 package frc2025.subsystems.intake;
 
+import frc2025.config.SubsystemConstants;
+
 public class IntakeIOSim implements IntakeIO {
     private double voltage;
+    private double position;
 
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
@@ -24,5 +27,15 @@ public class IntakeIOSim implements IntakeIO {
     @Override
     public void setVoltage(double voltage) {
         this.voltage = voltage;
+    }
+
+    @Override
+    public void setDeployPosition() {
+        this.position = SubsystemConstants.intakeDeployPosition;
+    }
+
+    @Override
+    public void setZeroPosition() {
+        this.position = 0.0;
     }
 }

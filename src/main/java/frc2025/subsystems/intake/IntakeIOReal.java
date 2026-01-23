@@ -71,25 +71,28 @@ public class IntakeIOReal implements IntakeIO {
         inputs.position = intakeDeploy.getPosition().getValueAsDouble() * SubsystemConstants.intakeRotationsPerMeter;
         Logger.recordOutput("Intake/positionRotations", intakeDeploy.getPosition().getValue().in(Units.Rotations));
         Logger.recordOutput("Intake/positionMeters", inputs.position);
-        Logger.recordOutput("Elevator/voltage", inputs.voltage);
+        Logger.recordOutput("Intake/voltage", inputs.voltage);
     }
 
     @Override
     public void setSpeed(double speed) {
         intakeRoller.setControl(new DutyCycleOut(speed));
-        if (speed == 0.0) intakeDeploy.setControl(createControlRequest(0.0, false));
-        else {
-            intakeDeploy.setControl(createControlRequest(SubsystemConstants.intakeDeployPosition, false));
-        }
+    }
+
+    @Override
+    public void setDeployPosition() {
+        intakeDeploy.setControl(createControlRequest(SubsystemConstants.intakeDeployPosition, false));
+    }
+
+    @Override
+    public void setZeroPosition() {
+        intakeDeploy.setControl(createControlRequest(0.0, false));
     }
 
     @Override
     public void setVoltage(double voltage) {
         intakeRoller.setControl(new VoltageOut(voltage));
         if (voltage == 0.0) intakeDeploy.setControl(createControlRequest(0.0, true));
-        else {
-            intakeDeploy.setControl(createControlRequest(SubsystemConstants.intakeDeployPosition, true));
-        }
     }
 
 }

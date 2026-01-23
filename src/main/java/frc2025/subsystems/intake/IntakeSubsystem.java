@@ -24,30 +24,56 @@ public class IntakeSubsystem extends SubsystemBase {
     public Command setSpeed(Supplier<Double> speed){
         return this.run(() -> {
             usingVoltage = false;
-            io.setSpeed(speed.get());
+            if (speed.get() == 0.0) {
+                io.setZeroPosition();
+                io.setSpeed(0.0);
+            }
+            else {
+                io.setSpeed(speed.get());
+                io.setDeployPosition();
+            }
         });
     }
 
     public Command setVoltage(Supplier<Double> voltage){
         return this.runOnce(() -> {
             usingVoltage = true;
-            io.setVoltage(voltage.get());
+            if (voltage.get() == 0.0) {
+                io.setZeroPosition();
+                io.setVoltage(0.0);
+            }
+            else {
+                io.setDeployPosition();
+                io.setVoltage(voltage.get());
+            }
         });
     }
 
     public Command setIntake(Supplier<Boolean> intake){
         return this.run(() -> {
             usingVoltage = false;
-            if(intake.get()) io.setSpeed(0.3);
-            else io.setSpeed(0);
+            if(intake.get()) {
+                io.setSpeed(0.3);
+                io.setDeployPosition();
+            }
+            else {
+                io.setZeroPosition();
+                io.setSpeed(0);
+            }
         });
     }
 
     public Command setOuttake(Supplier<Boolean> intake){
         return this.run(() -> {
             usingVoltage = false;
-            if(intake.get()) io.setSpeed(-0.3);
-            else io.setSpeed(0);
+            if(intake.get()) {
+                io.setDeployPosition();
+                io.setSpeed(-0.3);
+            }
+            else {
+                io.setZeroPosition();
+                io.setSpeed(0);
+            }
         });
     }
 
