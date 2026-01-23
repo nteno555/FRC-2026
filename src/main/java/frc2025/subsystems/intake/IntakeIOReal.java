@@ -1,18 +1,16 @@
 package frc2025.subsystems.intake;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
-import com.ctre.phoenix6.controls.ControlRequest;
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.units.Units;
 import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class IntakeIOReal implements IntakeIO {
-    private final TalonFX intakeDeploy = new TalonFX(67, "rio");
+    private final TalonFX intakeDeployMaster = new TalonFX(67, "rio");
+    private final TalonFX intakeDeploySlave = new TalonFX(68, "rio");
     private final TalonFX intakeRoller = new TalonFX(11,"rio");
 
     public IntakeIOReal() {
@@ -35,7 +33,7 @@ public class IntakeIOReal implements IntakeIO {
         slot0.kS = SubsystemConstants.intakekS;
         slot0.kV = SubsystemConstants.intakekV;
         slot0.kA = SubsystemConstants.intakekA;
-        slot0.kG = SubsystemConstants.intakekGFactor;
+        slot0.kG = SubsystemConstants.intakekG;
         slot0.kP = SubsystemConstants.intakekP;
         slot0.kI = SubsystemConstants.intakekI;
         slot0.kD = SubsystemConstants.intakekD;
@@ -45,20 +43,21 @@ public class IntakeIOReal implements IntakeIO {
         deployConfigs.MotionMagic.MotionMagicJerk = SubsystemConstants.intakeJerk;
 
         intakeRoller.getConfigurator().apply(rollerConfigs);
-        intakeDeploy.getConfigurator().apply(deployConfigs);
+        intakeDeployMaster.getConfigurator().apply(deployConfigs);
+        intakeDeploySlave.getConfigurator().apply(deployConfigs);
+
+        intakeDeploySlave.setControl(new Follower(intakeDeployMaster.getDeviceID(), MotorAlignmentValue.Opposed));
     }
 
-    private ControlRequest createControlRequest(double targetMeters, boolean useVoltage) {
-        double intakePositionRotations = targetMeters * SubsystemConstants.intakeRotationsPerMeter + SubsystemConstants.intakeZeroOffsetDegrees;
+    private ControlRequest createControlRequest(double target, boolean useVoltage) {
 //        double voltageFF = -SubsystemConstants.intakekGFactor *
 //                Math.sin(intakePositionDegrees * Math.PI/180);
 
         if (useVoltage) {
-            return new VoltageOut(targetMeters);
+            return new VoltageOut(target);
         } else {
-            return new MotionMagicVoltage(intakePositionRotations)
+            return new MotionMagicVoltage(target)
                     .withEnableFOC(true)
-//                    .withFeedForward(voltageFF)
                     .withSlot(0)
                     .withOverrideBrakeDurNeutral(true)
                     .withLimitForwardMotion(false)
@@ -68,8 +67,8 @@ public class IntakeIOReal implements IntakeIO {
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
         inputs.voltage = intakeRoller.getMotorVoltage().getValue().in(Units.Volts);
-        inputs.position = intakeDeploy.getPosition().getValueAsDouble() * SubsystemConstants.intakeRotationsPerMeter;
-        Logger.recordOutput("Intake/positionRotations", intakeDeploy.getPosition().getValue().in(Units.Rotations));
+        inputs.position = intakeDeployMaster.getPosition().getValueAsDouble();
+        Logger.recordOutput("Intake/positionRotations", intakeDeployMaster.getPosition().getValue().in(Units.Rotations));
         Logger.recordOutput("Intake/positionMeters", inputs.position);
         Logger.recordOutput("Intake/voltage", inputs.voltage);
     }
@@ -81,18 +80,18 @@ public class IntakeIOReal implements IntakeIO {
 
     @Override
     public void setDeployPosition() {
-        intakeDeploy.setControl(createControlRequest(SubsystemConstants.intakeDeployPosition, false));
+        intakeDeployMaster.setControl(createControlRequest(SubsystemConstants.intakeDeployPosition, false));
     }
 
     @Override
     public void setZeroPosition() {
-        intakeDeploy.setControl(createControlRequest(0.0, false));
+        intakeDeployMaster.setControl(createControlRequest(0.0, false));
     }
 
     @Override
     public void setVoltage(double voltage) {
         intakeRoller.setControl(new VoltageOut(voltage));
-        if (voltage == 0.0) intakeDeploy.setControl(createControlRequest(0.0, true));
+        if (voltage == 0.0) intakeDeployMaster.setControl(createControlRequest(0.0, true));
     }
 
 }

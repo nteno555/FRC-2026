@@ -44,7 +44,7 @@ public class SubsystemConstants {
     public static double intakePeakReverseTorqueCurrent = 40;
     public static double intakeTorqueNeutralDeadband = 1;
     public static double intakeRotationsPerMeter = 0.208333333333;
-    public static double intakekGFactor = 0.0;
+    public static double intakekG = 0.0;
     public static double intakeZeroOffsetDegrees = 20;
     public static double intakeDeployPosition = 15;
 
