@@ -38,7 +38,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Rotation",
+      "name": "stop auto aim",
       "waypointRelativePos": 0.6999999999999987,
       "endWaypointRelativePos": 0.9952380952380941,
       "command": null

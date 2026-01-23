@@ -44,7 +44,7 @@ public class Autos {
                .andThen(new WaitUntilCommand(() -> {
                            return RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady();
                        }).andThen(
-                                    robotContainer.getIndexer().setVoltage(() -> -3.0)
+                                    robotContainer.getIndexer().setVoltage(() -> -3.0, () -> -3.0)
                                 ));
         return score;
     }

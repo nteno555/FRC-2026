@@ -119,6 +119,13 @@ public class AutoAimCommands {
                 Logger.recordOutput("Indexer/ready", false);
                 return 0.0;
             }
-        });
+        }, () -> {if(robotContainer.getShooter().getShotReady() && robotContainer.getDrive().getShotReady()) {
+                Logger.recordOutput("Tower/ready", true);
+                return -3.0;
+            } else {
+                Logger.recordOutput("Tower/ready", false);
+                return 0.0;
+            }}
+        );
     }
 }
