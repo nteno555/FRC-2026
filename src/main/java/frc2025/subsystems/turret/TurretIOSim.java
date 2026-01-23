@@ -43,4 +43,14 @@ public class TurretIOSim implements TurretIO{
 
     @Override
     public void rezero() {}
+
+    @Override
+    public double toRadians(double position) {
+        return 0;
+    }
+
+    @Override
+    public double toRotations(double radians) {
+        return 0;
+    }
 }

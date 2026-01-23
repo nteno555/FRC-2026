@@ -3,6 +3,7 @@ package frc2025.subsystems.turret;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc2025.RobotState;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.function.Supplier;
@@ -24,6 +25,38 @@ public class TurretSubsystem extends SubsystemBase {
         Logger.recordOutput("Turret/setpoint", setpoint);
         if(DriverStation.isDisabled()) {setpoint = inputs.positionTicks;}
         io.updateInputs(inputs);
+    }
+
+    public Command setPositionFieldRelative(Supplier<Double> positionRadians) {
+        return setPositionSafe(() -> {
+            return positionRadians.get() - RobotState.getInstance().getVisionPose().getRotation().getRadians();
+        });
+    }
+
+    public Command setPositionSafe(Supplier<Double> positionRadians) {
+        return this.run(() -> {
+            double minAngle = Math.PI * -2;
+            double maxAngle = Math.PI * 2;
+
+            double[] candidates = {positionRadians.get(), positionRadians.get() + 2*Math.PI, positionRadians.get() - 2*Math.PI};
+
+            double bestAngle = positionRadians.get();
+            double minDistance = 9999999.0;
+
+            for (double candidate : candidates) {
+                if (candidate >= minAngle && candidate <= maxAngle) {
+                    double distance = Math.abs(candidate - inputs.positionRadians);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        bestAngle = candidate;
+                    }
+                }
+            }
+
+            setpoint = io.toRotations(bestAngle);
+            usingVoltage = false;
+            io.setPosition(setpoint);
+        });
     }
 
     public Command setPosition(Supplier<Double> position) {
@@ -64,6 +97,5 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     public double getPosition() { return inputs.positionTicks; }
-    public double getRealAngle() { return inputs.positionDegreesReal; }
-    public double getRealAngleRadians() { return inputs.positionRadiansReal; }
+    public double getPositionRadians() { return inputs.positionRadians; }
 }

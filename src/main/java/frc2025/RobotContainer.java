@@ -207,7 +207,9 @@ public class RobotContainer {
                                        (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
                                        (DriveSubsystem.slowmode ? 0.5 : 1.0) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
                                        (DriveSubsystem.slowmode ? 0.75 : 1.0) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
-                               ))
+                               ),
+                               true
+                       )
                ).whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
                driverXboxController.povRight().whileTrue(pivotSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/pivotPosition", 0.0)));

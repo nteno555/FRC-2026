@@ -48,21 +48,19 @@ public class TurretIOReal implements TurretIO{
         turretMotor.setNeutralMode(NeutralModeValue.Brake);
     }
 
-    private double toDegree(double rotations) {
-        return 1/SubsystemConstants.pivotRotationsPerDegree*rotations;
+    public double toRadians(double position) {
+        return 1/SubsystemConstants.turretRotationsPerRadian * position;
+    }
+    public double toRotations(double radians) {
+        return SubsystemConstants.turretRotationsPerRadian * radians;
     }
 
     private ControlRequest createControlRequest(double targetValue, boolean useVoltage) {
-        double pivotPositionDegrees = toDegree(turretMotor.getPosition().getValue().in(Units.Rotation)) + SubsystemConstants.turretZeroOffsetDegrees;
-        double voltageFF = -SubsystemConstants.turretkGFactor *
-                Math.sin(pivotPositionDegrees * Math.PI/180);
-
         if (useVoltage) {
             return new VoltageOut(targetValue);
         } else {
             return new MotionMagicVoltage(targetValue)
                     .withEnableFOC(true)
-                    .withFeedForward(voltageFF)
                     .withSlot(0)
                     .withOverrideBrakeDurNeutral(true)
                     .withLimitForwardMotion(false)
@@ -74,9 +72,7 @@ public class TurretIOReal implements TurretIO{
     @Override
     public void updateInputs(TurretIOInputs inputs) {
         inputs.positionTicks = turretMotor.getPosition().getValue().in(Units.Rotation);
-        inputs.positionDegrees = toDegree(inputs.positionTicks);
-        inputs.positionDegreesReal = inputs.positionDegrees + SubsystemConstants.turretZeroOffsetDegrees;
-        inputs.positionRadiansReal = inputs.positionDegrees * (Math.PI/180);
+        inputs.positionRadians = toRadians(inputs.positionTicks);
 
         Logger.recordOutput("Turret/voltage", turretMotor.getMotorVoltage().getValue().in(Units.Volts));
         Logger.recordOutput("Turret/current", turretMotor.getSupplyCurrent().getValue().in(Units.Amp));

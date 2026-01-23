@@ -40,11 +40,11 @@ public class Autos {
 
     public Command autoScore(Pose2d pose) {
         Command score = //AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> pose)
-            AutoAimCommands.autoAimCommand(robotContainer, () -> pose, () -> new ChassisSpeeds(0,0,0))
+            AutoAimCommands.autoAimCommand(robotContainer, () -> pose, () -> new ChassisSpeeds(0,0,0), true)
                .andThen(new WaitUntilCommand(() -> {
                            return RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady();
                        }).andThen(
-                                    robotContainer.getIndexer().setVoltage(() -> -3.0)
+                                    robotContainer.getIndexer().setVoltage(() -> -3.0, () -> -3.0)
                                 ));
         return score;
     }
@@ -160,8 +160,10 @@ public class Autos {
     public Command MidDepotShootWhileMoving() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
                 .andThen(
-                        autoSpinUp(() -> RobotState.getInstance().getVisionPose())
+                        //autoSpinUp(() -> RobotState.getInstance().getVisionPose())
+                        //AutoAimCommands.
                                 //.alongWith(autoIndex())
+                                AutoAimCommands.autoAimWhileMovingCommand(robotContainer, ShooterTreeMap.getInstance(), () -> new ChassisSpeeds(0,0,0), true)
                                 .alongWith(AutoAimCommands.autoIndex(robotContainer))
                                 .alongWith(
                                         intakePath("Mid-Depot", true)

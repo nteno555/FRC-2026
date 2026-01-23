@@ -7,11 +7,14 @@ public interface TurretIO {
         double positionTicks;
         double positionDegrees;
         double positionDegreesReal;
-        double positionRadiansReal;
+        double positionRadians;
     }
 
     public void updateInputs(TurretIOInputs inputs);
     public void setPosition(double position);
     public void setVoltage(double voltage);
     public void rezero();
+
+    public double toRadians(double position);
+    public double toRotations(double radians);
 }
