@@ -50,5 +50,5 @@ public class SubsystemConstants {
 
     public static double kMaxShootVelocity = 1;
 
-    public static Translation2d shooterToCenterPose = new Translation2d(0.0, -0.2);
+    public static Translation2d shooterToCenterPose = new Translation2d(0.0, -0.1);
 }
