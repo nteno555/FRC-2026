@@ -114,11 +114,11 @@ public class AutoAimCommands {
         return robotContainer.getIndexer().setSpeed(() -> {
             if(robotContainer.getShooter().getShotReady() && robotContainer.getDrive().getShotReady()) {
                 Logger.recordOutput("Indexer/ready", true);
-                return -3.0;
+                return -1.5;
             } else {
                 Logger.recordOutput("Indexer/ready", false);
                 return 0.0;
             }
-        });
+        }, () -> -12.0);
     }
 }

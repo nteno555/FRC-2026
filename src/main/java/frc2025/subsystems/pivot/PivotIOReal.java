@@ -73,19 +73,25 @@ public class PivotIOReal implements PivotIO {
 
     private ControlRequest createControlRequest(double targetValue, boolean useVoltage) {
         double pivotPositionDegrees = toDegree(pivotMaster.getPosition().getValue().in(Units.Rotation)) + SubsystemConstants.pivotZeroOffsetDegrees;
-        double voltageFF = -SubsystemConstants.pivotkGFactor *
-                Math.sin(pivotPositionDegrees * Math.PI/180);
+//        double voltageFF = -SubsystemConstants.pivotkGFactor *
+//                Math.sin(pivotPositionDegrees * Math.PI/180);
+        double voltageFF = SubsystemConstants.pivotFF;
+        if(targetValue < pivotMaster.getPosition().getValueAsDouble()) {
+            voltageFF = -voltageFF;
+        }
 
         if (useVoltage) {
             return new VoltageOut(targetValue);
         } else {
-            return new MotionMagicVoltage(targetValue)
-                    .withEnableFOC(true)
-                    .withFeedForward(voltageFF)
-                    .withSlot(0)
-                    .withOverrideBrakeDurNeutral(true)
-                    .withLimitForwardMotion(false)
-                    .withLimitReverseMotion(false);
+//            return new MotionMagicVoltage(targetValue)
+//                    .withEnableFOC(true)
+//                    //.withFeedForward(voltageFF)
+//                    .withSlot(0)
+//                    .withOverrideBrakeDurNeutral(true)
+//                    .withLimitForwardMotion(false)
+//                    .withLimitReverseMotion(false);
+            return new PositionVoltage(targetValue)
+                    .withFeedForward(voltageFF);
         }
     }
 

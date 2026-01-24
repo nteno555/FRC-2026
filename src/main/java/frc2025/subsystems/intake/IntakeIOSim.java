@@ -30,8 +30,16 @@ public class IntakeIOSim implements IntakeIO {
     }
 
     @Override
+    public void setDeployVoltage(double voltage) {}
+
+    @Override
     public void setDeployPosition(double position) {
         this.position = position;
+    }
+
+    @Override
+    public void rezero(double position) {
+        //this.position = position;
     }
 
 //    @Override

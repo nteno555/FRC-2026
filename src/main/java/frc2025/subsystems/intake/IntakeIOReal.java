@@ -112,4 +112,14 @@ public class IntakeIOReal implements IntakeIO {
 //        if (voltage == 0.0) intakeDeployMaster.setControl(createControlRequest(0.0, true));
     }
 
+    @Override
+    public void setDeployVoltage(double voltage) {
+        intakeDeployMaster.setControl(new VoltageOut(voltage));
+    }
+
+    @Override
+    public void rezero(double position) {
+        intakeDeployMaster.setPosition(position);
+    }
+
 }

@@ -14,10 +14,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc2025.commands.AutoAimCommands;
@@ -207,12 +204,27 @@ public class RobotContainer {
 
 
         driverXboxController.rightTrigger()
-                .whileTrue(AutoAimCommands.autoIndex(this))
+                .whileTrue(indexerSubsystem.setVoltage(() -> -6.0, () -> -5.0))
                 .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
 
         driverXboxController.b().onTrue(new InstantCommand(() -> {
             RobotState.getInstance().setShuttling(!RobotState.getInstance().getShuttling());
         }));
+
+        driverXboxController.rightBumper().whileTrue(
+                shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/RPM", 0.0))
+        ).whileFalse(shooterSubsystem.setSpeed(() -> 0.0));
+//        driverXboxController.y().onTrue(
+//                        pivotSubsystem.setVoltage(() -> -0.5))
+//                .onFalse(pivotSubsystem.rezero()
+//                        .andThen(pivotSubsystem.setVoltage(() -> 0.0)));
+        driverXboxController.x().onTrue(
+                intakeSubsystem.setDeployVoltage(() -> 2.0))
+                        .onFalse(intakeSubsystem.rezero()
+                                .andThen(intakeSubsystem.setDeployVoltage(() -> 0.0)));
+//                        .raceWith(new WaitCommand(2.0))
+//                        .andThen(intakeSubsystem.rezero())
+//        ).onFalse(;
 
         //testSystemsController.a()
          //               .whileTrue(inta)

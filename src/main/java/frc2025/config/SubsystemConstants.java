@@ -5,20 +5,21 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 public class SubsystemConstants {
     public static double flywheelS = 0.00;
-    public static double flywheelV = 0.14;
+    public static double flywheelV = 0.127;
     public static double flywheelA = 0.00;
     public static double flywheelP = 0.05;
     public static double flywheelI = 0.0;
     public static double flywheelD = 0.0;
 
-    public static double pivotkS = 0.00;
-    public static double pivotkV = 0.134;
+    public static double pivotFF = 0.271;
+    public static double pivotkS = 0.0;
+    public static double pivotkV = 0.12;
     public static double pivotkA = 0.00;
-    public static double pivotkP = 0.05;
-    public static double pivotkI = 0.00;
+    public static double pivotkP = 2.0;
+    public static double pivotkI = 0.0;
     public static double pivotkD = 0.00;
-    public static double pivotCruiseVelocity = 10;
-    public static double pivotAcceleration = 20;
+    public static double pivotCruiseVelocity = 20;
+    public static double pivotAcceleration = 40;
     public static double pivotJerk = 700;
     public static double pivotSupplyCurrentLimit = 40;
     public static double pivotStatorCurrentLimit = 40;
