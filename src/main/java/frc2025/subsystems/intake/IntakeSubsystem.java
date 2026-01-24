@@ -57,7 +57,7 @@ public class IntakeSubsystem extends SubsystemBase {
         return this.run(() -> {
             usingVoltage = false;
             if(intake.get()) {
-                io.setVoltage(10.0);
+                io.setVoltage(5.0);
                 io.setDeployPosition(SubsystemConstants.intakeDeployPosition);
             }
             else {
@@ -88,7 +88,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public Command rezero() {
-        return this.run(() -> io.rezero(0.0));
+        return this.runOnce(() -> io.rezero(0.0));
     }
 
     public boolean getHasPiece(){

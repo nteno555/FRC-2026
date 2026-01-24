@@ -33,7 +33,7 @@ public class SubsystemConstants {
     public static double intakekS = 0.00;
     public static double intakekV = 0.175;
     public static double intakekA = 0.0;
-    public static double intakekP = 2.0;
+    public static double intakekP = 1.0;
     public static double intakekI = 0.0;
     public static double intakekD = 0.0;
     public static double intakeCruiseVelocity = 10;
