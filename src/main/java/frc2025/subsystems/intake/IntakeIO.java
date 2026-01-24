@@ -12,6 +12,6 @@ public interface IntakeIO {
     public void updateInputs(IntakeIOInputs inputs);
     public void setSpeed(double speed);
     public void setVoltage(double voltage);
-    public void setDeployPosition();
-    public void setZeroPosition();
+    public void setDeployPosition(double position);
+//    public void setZeroPosition();
 }

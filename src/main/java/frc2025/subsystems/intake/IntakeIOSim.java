@@ -30,12 +30,12 @@ public class IntakeIOSim implements IntakeIO {
     }
 
     @Override
-    public void setDeployPosition() {
-        this.position = SubsystemConstants.intakeDeployPosition;
+    public void setDeployPosition(double position) {
+        this.position = position;
     }
 
-    @Override
-    public void setZeroPosition() {
-        this.position = 0.0;
-    }
+//    @Override
+//    public void setZeroPosition() {
+//        this.position = 0.0;
+//    }
 }

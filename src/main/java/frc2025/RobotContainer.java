@@ -60,6 +60,7 @@ public class RobotContainer {
     Autos autos;
     Command autoCommand;
     private boolean tuning = false;
+    private boolean wantIntake = false;
 
     public RobotContainer() {
         createSubsystems();
@@ -147,6 +148,7 @@ public class RobotContainer {
 
 
 
+
         
         SmartDashboard.putNumber("Tuning/Distance", 0.0);
         SmartDashboard.putNumber("Tuning/RPM", 0.0);
@@ -179,8 +181,9 @@ public class RobotContainer {
             .whileFalse(indexerSubsystem.setVoltage(() -> 0.5, () -> 0.0));
 
         driverXboxController.povLeft().whileTrue(
-                        intakeSubsystem.setVoltage(() -> 7.0))
-                .whileFalse(intakeSubsystem.setVoltage(() -> 0.0));
+                new InstantCommand(() -> wantIntake = !wantIntake)
+                        .andThen(intakeSubsystem.setIntaking(() -> wantIntake))
+        );
 
 
         driverXboxController.leftTrigger()
@@ -217,6 +220,8 @@ public class RobotContainer {
             RobotState.getInstance().setShuttling(!RobotState.getInstance().getShuttling());
         }));
 
+        //testSystemsController.a()
+         //               .whileTrue(inta)
 
         testSystemsController.leftBumper()
                         .whileTrue(shooterSubsystem.setSpeed(() -> 2400.0))

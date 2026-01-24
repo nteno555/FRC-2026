@@ -64,6 +64,7 @@ public class PivotIOReal implements PivotIO {
 
         //pivotMaster.setInverted(true);
         pivotMaster.setNeutralMode(NeutralModeValue.Brake);
+        rezero(0.0);
     }
 
     private double toDegree(double rotations) {

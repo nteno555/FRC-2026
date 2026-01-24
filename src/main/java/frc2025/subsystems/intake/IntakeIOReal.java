@@ -4,25 +4,26 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.Units;
 import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class IntakeIOReal implements IntakeIO {
-    private final TalonFX intakeDeployMaster = new TalonFX(67, "rio");
-    private final TalonFX intakeDeploySlave = new TalonFX(68, "rio");
-    private final TalonFX intakeRoller = new TalonFX(11,"rio");
+    private final TalonFX intakeDeployMaster = new TalonFX(15, "rio");
+    private final TalonFX intakeDeploySlave = new TalonFX(16, "rio");
+    private final TalonFX intakeRoller = new TalonFX(42,"rio");
 
     public IntakeIOReal() {
         var rollerConfigs = new TalonFXConfiguration();
 
-        rollerConfigs.CurrentLimits.SupplyCurrentLimit = 40;
+        rollerConfigs.CurrentLimits.SupplyCurrentLimit = 100;
         rollerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
-        rollerConfigs.CurrentLimits.StatorCurrentLimit = 40;
+        rollerConfigs.CurrentLimits.StatorCurrentLimit = 200;
         rollerConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
 
-        rollerConfigs.TorqueCurrent.PeakForwardTorqueCurrent = 40;
-        rollerConfigs.TorqueCurrent.PeakReverseTorqueCurrent = -40;
+        rollerConfigs.TorqueCurrent.PeakForwardTorqueCurrent = 100;
+        rollerConfigs.TorqueCurrent.PeakReverseTorqueCurrent = -100;
         rollerConfigs.TorqueCurrent.TorqueNeutralDeadband = 1;
 
         var deployConfigs = new TalonFXConfiguration();
@@ -42,28 +43,35 @@ public class IntakeIOReal implements IntakeIO {
         deployConfigs.MotionMagic.MotionMagicAcceleration = SubsystemConstants.intakeAcceleration;
         deployConfigs.MotionMagic.MotionMagicJerk = SubsystemConstants.intakeJerk;
 
+
         intakeRoller.getConfigurator().apply(rollerConfigs);
         intakeDeployMaster.getConfigurator().apply(deployConfigs);
         intakeDeploySlave.getConfigurator().apply(deployConfigs);
 
+        intakeDeployMaster.setNeutralMode(NeutralModeValue.Brake);
+        intakeDeploySlave.setNeutralMode(NeutralModeValue.Brake);
+
         intakeDeploySlave.setControl(new Follower(intakeDeployMaster.getDeviceID(), MotorAlignmentValue.Opposed));
+
+        intakeDeployMaster.setPosition(0.0);
     }
 
-    private ControlRequest createControlRequest(double target, boolean useVoltage) {
-//        double voltageFF = -SubsystemConstants.intakekGFactor *
-//                Math.sin(intakePositionDegrees * Math.PI/180);
-
-        if (useVoltage) {
-            return new VoltageOut(target);
-        } else {
-            return new MotionMagicVoltage(target)
-                    .withEnableFOC(true)
-                    .withSlot(0)
-                    .withOverrideBrakeDurNeutral(true)
-                    .withLimitForwardMotion(false)
-                    .withLimitReverseMotion(false);
-        }
-    }
+//    private ControlRequest createControlRequest(double target, boolean useVoltage) {
+////        double voltageFF = -SubsystemConstants.intakekGFactor *
+////                Math.sin(intakePositionDegrees * Math.PI/180);
+//
+//        if (useVoltage) {
+//            return new VoltageOut(target);
+//        } else {
+////            return new MotionMagicVoltage(target)
+////                    .withEnableFOC(true)
+////                    .withSlot(0)
+////                    .withOverrideBrakeDurNeutral(true)
+////                    .withLimitForwardMotion(false)
+////                    .withLimitReverseMotion(false);
+//            return new PositionVoltage()
+//        }
+//    }
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
         inputs.voltage = intakeRoller.getMotorVoltage().getValue().in(Units.Volts);
@@ -71,6 +79,7 @@ public class IntakeIOReal implements IntakeIO {
         Logger.recordOutput("Intake/positionRotations", intakeDeployMaster.getPosition().getValue().in(Units.Rotations));
         Logger.recordOutput("Intake/positionMeters", inputs.position);
         Logger.recordOutput("Intake/voltage", inputs.voltage);
+        Logger.recordOutput("Intake/deployVoltage", intakeDeployMaster.getMotorVoltage().getValue().in(Units.Volts));
     }
 
     @Override
@@ -79,19 +88,28 @@ public class IntakeIOReal implements IntakeIO {
     }
 
     @Override
-    public void setDeployPosition() {
-        intakeDeployMaster.setControl(createControlRequest(SubsystemConstants.intakeDeployPosition, false));
+    public void setDeployPosition(double position) {
+        //intakeDeployMaster.setControl(createControlRequest(SubsystemConstants.intakeDeployPosition, false));
+        Logger.recordOutput("Intake/wantedPositionRotations", position);
+        intakeDeployMaster.setControl(
+        //        new MotionMagicVoltage(position)
+        new PositionVoltage(position)
+                        .withSlot(0)
+        );
+//        if(position < 0) intakeDeployMaster.setControl(new VoltageOut(-1.0));
+//        else intakeDeployMaster.setControl(new VoltageOut(1.0));
     }
-
-    @Override
-    public void setZeroPosition() {
-        intakeDeployMaster.setControl(createControlRequest(0.0, false));
-    }
+//
+//    @Override
+//    public void setZeroPosition() {
+//        intakeDeployMaster.setControl(createControlRequest(0.0, false));
+//    }
 
     @Override
     public void setVoltage(double voltage) {
+        Logger.recordOutput("Intake/wantedVoltage", voltage);
         intakeRoller.setControl(new VoltageOut(voltage));
-        if (voltage == 0.0) intakeDeployMaster.setControl(createControlRequest(0.0, true));
+//        if (voltage == 0.0) intakeDeployMaster.setControl(createControlRequest(0.0, true));
     }
 
 }
