@@ -205,7 +205,8 @@ public class RobotContainer {
                 );
 
         driverXboxController.povUp()
-                        .onTrue(intakeSubsystem.setRollerVoltage());
+                .whileTrue(intakeSubsystem.setRollerVoltage(() -> 6.5))
+                .whileFalse(intakeSubsystem.setRollerVoltage(() -> 0.0));
 
 
 //        driverXboxController.rightTrigger()
@@ -320,8 +321,9 @@ public class RobotContainer {
         //autoCommand.cancel();
         CommandScheduler.getInstance().cancel(autoCommand);
         RobotState.getInstance().setShuttling(false);
-        shooterSubsystem.setVoltage(() -> 0.0);
+        shooterSubsystem.setSpeed(() -> 0.0);
         indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0);
-        intakeSubsystem.setVoltage(() -> 0.0);
+        intakeSubsystem.setDeployVoltage(() -> 0.0);
+        intakeSubsystem.setRollerVoltage(() -> 0.0);
     }
 }

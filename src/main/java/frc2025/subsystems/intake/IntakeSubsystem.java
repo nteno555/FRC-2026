@@ -48,15 +48,10 @@ public class IntakeSubsystem extends SubsystemBase {
         });
     }
 
-    public Command setRollerVoltage() {
+    public Command setRollerVoltage(Supplier<Double> voltage) {
         return this.run(() -> {
             usingVoltage = true;
-            if (inputs.voltage == 0.0) {
-                io.setVoltage(6.7);
-            }
-            else {
-                io.setVoltage(0.0);
-            }
+            io.setVoltage(voltage.get());
         });
     }
 
