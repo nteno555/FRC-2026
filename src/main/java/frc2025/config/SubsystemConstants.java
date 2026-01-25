@@ -7,7 +7,7 @@ public class SubsystemConstants {
     public static double flywheelS = 0.00;
     public static double flywheelV = 0.127;
     public static double flywheelA = 0.00;
-    public static double flywheelP = 0.05;
+    public static double flywheelP = 0.1;
     public static double flywheelI = 0.0;
     public static double flywheelD = 0.0;
 

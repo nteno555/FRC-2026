@@ -67,8 +67,10 @@ public class RobotContainer {
         createSubsystems();
         configureBindings();
         autos = new Autos(this);
-        autoCommand = autos.MidDepotShootWhileMoving();
-        configureAutoCommands();
+        autoCommand = autos.MidStationDepotShootWhileMoving();
+        //autoCommand = autos.MidDepotNeutralClimbShootWhileMoving();
+//        autoCommand = autos.MidDepotShootWhileMoving();
+//        configureAutoCommands();
         //autoCommand = autos.LowShootPreload();
     }
 
@@ -307,7 +309,7 @@ public class RobotContainer {
     public void autoInit() {
 //        autoCommand = autoChooser.getSelected();
         RobotState.getInstance().setShuttling(false);
-        autoCommand = autos.MidDepotShootWhileMoving();
+        autoCommand = autos.MidStationDepotShootWhileMoving();
         CommandScheduler.getInstance().schedule(autoCommand);
     }
 

@@ -168,7 +168,7 @@ public class DriveSubsystem extends SubsystemBase {
     public boolean getShotReady() {
         double angleToVirtualTarget = RobotState.getInstance().getAngleToVirtualTarget();
         double robotAngle = RobotState.getInstance().getVisionPose().getRotation().getRadians();
-        return Math.abs(angleToVirtualTarget - robotAngle) < Math.toRadians(7.0);
+        return Math.abs(angleToVirtualTarget - robotAngle) < Math.toRadians(15.0);
     }
 
     // characterization

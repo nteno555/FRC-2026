@@ -4,6 +4,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc2025.RobotContainer;
 import frc2025.RobotState;
@@ -117,13 +118,26 @@ public class AutoAimCommands {
             Logger.recordOutput("Indexer/autoIndexShooterReady", RobotState.getInstance().getShooterReady());
             Logger.recordOutput("Indexer/autoIndexDriveReady", RobotState.getInstance().getDriveShotReady());
 //            if(robotContainer.getShooter().getShotReady() && robotContainer.getDrive().getShotReady()) {
-            if(RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady()) {
+            boolean good = RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady();
+            if(DriverStation.isAutonomous()) good = good && RobotState.getInstance().getDriveAutoAiming();
+
+            if(good) {
                 Logger.recordOutput("Indexer/ready", true);
                 return -6.0;
             } else {
                 Logger.recordOutput("Indexer/ready", false);
                 return 0.0;
             }
-        }, () -> -12.0);
+        }, () -> {
+            boolean good = RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady();
+            if(DriverStation.isAutonomous()) good = good && RobotState.getInstance().getDriveAutoAiming();
+
+            if (good) {
+                return -12.0;
+            }
+            else {
+                return 0.0;
+            }
+        });
     }
 }

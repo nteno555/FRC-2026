@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.179957012035229,
-        "y": 6.0373550239845555
+        "x": 3.544341943811488,
+        "y": 5.231567984121817
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.126576547128183,
-        "y": 6.0
+        "x": 6.900566715946905,
+        "y": 5.871767367327655
       },
       "prevControl": {
-        "x": 5.7224860370777275,
-        "y": 6.0127028915970415
+        "x": 4.771213992719927,
+        "y": 5.499829394206118
       },
       "nextControl": {
-        "x": 7.9057447644798495,
-        "y": 5.992950818106076
+        "x": 7.989685151276762,
+        "y": 6.062005696049442
       },
       "isLocked": false,
       "linkedName": null
@@ -46,12 +46,12 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.20937467876233556,
-      "rotationDegrees": -90.0
+      "waypointRelativePos": 0.3551115337171053,
+      "rotationDegrees": -45.0
     },
     {
-      "waypointRelativePos": 0.5927059775904606,
-      "rotationDegrees": -90.0
+      "waypointRelativePos": 0.8366182026110197,
+      "rotationDegrees": -45.0
     }
   ],
   "constraintZones": [
@@ -73,7 +73,7 @@
   "eventMarkers": [
     {
       "name": "stop auto aim",
-      "waypointRelativePos": 0.20477396309177745,
+      "waypointRelativePos": 0.38996638808139517,
       "endWaypointRelativePos": 2.0,
       "command": null
     }

@@ -1,6 +1,5 @@
 package frc2025.commands;
 
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.pathplanner.lib.path.EventMarker;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
@@ -9,15 +8,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc2025.RobotContainer;
 import frc2025.RobotState;
-import frc2025.config.FieldConstants;
-import frc2025.config.ShooterTreeMap;
 import frc2025.subsystems.drive.DriveSubsystem;
-import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.List;
@@ -40,22 +34,17 @@ public class FollowPathCommand extends Command {
     private boolean useTimeout = false;
     private double distanceThresh = 0.15;
 
-    private boolean shootWhileMove = false;
-    private RobotContainer robotContainer;
-
-    public FollowPathCommand(DriveSubsystem drive, Supplier<PathPlannerPath> pathSupplier, Supplier<Boolean> flip, boolean useTimeout, boolean shootWhileMove, RobotContainer robotContainer) {
+    public FollowPathCommand(DriveSubsystem drive, Supplier<PathPlannerPath> pathSupplier, Supplier<Boolean> flip, boolean useTimeout) {
         this.pathSupplier = pathSupplier;
         this.driveSubsystem = drive;
         this.flip = flip;
 
-        translationPID = new PIDController(1.0, 0, 0);
-        rotationPID = new PIDController(3, 0, 0);
+        translationPID = new PIDController(2, 0, 0);
+        rotationPID = new PIDController(5, 0, 0);
         rotationPID.enableContinuousInput(-Math.PI, Math.PI);
 
         addRequirements(this.driveSubsystem);
         this.useTimeout = useTimeout;
-        this.shootWhileMove = shootWhileMove;
-        this.robotContainer = robotContainer;
     }
 
     @Override
@@ -111,6 +100,7 @@ public class FollowPathCommand extends Command {
         Logger.recordOutput("Drive/pathProgress", pathProgress);
         Logger.recordOutput("Drive/autoAimOverride", autoAimOverride);
 
+        RobotState.getInstance().setDriveAutoAiming(autoAimOverride);
         //if (shootWhileMove) {
         if(autoAimOverride) {
             virtualTarget = RobotState.getInstance().getShootingWhileMovingVirtualPose();

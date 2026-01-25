@@ -58,7 +58,7 @@ public class IntakeSubsystem extends SubsystemBase {
         return this.run(() -> {
             usingVoltage = false;
             if(intake.get()) {
-                io.setVoltage(5.0);
+                io.setVoltage(6.7);
                 io.setDeployPosition(SubsystemConstants.intakeDeployPosition);
                 if (Math.abs(SubsystemConstants.intakeDeployPosition - inputs.position) < 0.5) {
                     intakeExtended = true;

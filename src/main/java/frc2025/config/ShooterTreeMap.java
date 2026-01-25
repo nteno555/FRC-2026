@@ -20,14 +20,14 @@ public class ShooterTreeMap {
         pivotTreeMap.put(4.0, 0.0);
         pivotTreeMap.put(5.0, 2.0);
 
-        lowerWheelTreeMap.put(2.0, -24.0);
-        lowerWheelTreeMap.put(2.50, -27.0);
-        lowerWheelTreeMap.put(3.0, -29.0);
-        lowerWheelTreeMap.put(3.5, -31.0);
-        lowerWheelTreeMap.put(4.0, -33.0);
-        lowerWheelTreeMap.put(5.0, -33.0);
+        lowerWheelTreeMap.put(2.0, -24.4);
+        lowerWheelTreeMap.put(2.50, -27.4);
+        lowerWheelTreeMap.put(3.0, -29.4);
+        lowerWheelTreeMap.put(3.5, -31.4);
+        lowerWheelTreeMap.put(4.0, -33.4);
+        lowerWheelTreeMap.put(5.0, -33.4);
 
-        tofTreeMap.put(2.0, 1.2);
+        tofTreeMap.put(2.0, 1.3);
 //        tofTreeMap.put(0.5, 0.7);
 //        tofTreeMap.put(1.0, 1.0);
 //        tofTreeMap.put(3.0, 1.0);
@@ -36,7 +36,7 @@ public class ShooterTreeMap {
 //        tofTreeMap.put(4.0, 1.28);
 //        tofTreeMap.put(5.0, 1.30);
 //        tofTreeMap.put(6.0, 1.31);
-        tofTreeMap.put(10.0, 1.2);
+        tofTreeMap.put(10.0, 1.3);
 //        double tofAt2 = 0.6;
 //        for(double k = 0; k <= 10; k += 0.1) {
 //            tofTreeMap.put(k, tofAt2 * Math.pow(k / 2.0, 0.5) + 0.2);

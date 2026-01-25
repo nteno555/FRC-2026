@@ -12,20 +12,20 @@
         "y": 4.693560593216507
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "mid"
     },
     {
       "anchor": {
-        "x": 1.1030980778446908,
-        "y": 5.960866982919199
+        "x": 1.0302027260109237,
+        "y": 5.9492646829110605
       },
       "prevControl": {
-        "x": 1.6342824859619145,
-        "y": 5.496182437472873
+        "x": 1.5613871341281473,
+        "y": 5.484580137464735
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "depot"
     }
   ],
   "rotationTargets": [
