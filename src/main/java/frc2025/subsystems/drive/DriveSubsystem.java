@@ -69,6 +69,7 @@ public class DriveSubsystem extends SubsystemBase {
         RobotState.getInstance().setSpeed(speed);
         RobotState.getInstance().setRobotRelativeSpeeds(inputs.currentChassisSpeeds);
         RobotState.getInstance().updateShootingWhileMovingVirtualPose();
+        Logger.recordOutput("Drive/shotAutoIndexReady", getShotReady());
         RobotState.getInstance().setDriveShotReady(getShotReady());
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);
         Logger.processInputs("RealOutputs/Drive", inputs);
@@ -167,7 +168,7 @@ public class DriveSubsystem extends SubsystemBase {
     public boolean getShotReady() {
         double angleToVirtualTarget = RobotState.getInstance().getAngleToVirtualTarget();
         double robotAngle = RobotState.getInstance().getVisionPose().getRotation().getRadians();
-        return Math.abs(angleToVirtualTarget - robotAngle) < Math.toRadians(5.0);
+        return Math.abs(angleToVirtualTarget - robotAngle) < Math.toRadians(7.0);
     }
 
     // characterization

@@ -67,7 +67,7 @@ public class RobotContainer {
         createSubsystems();
         configureBindings();
         autos = new Autos(this);
-        autoCommand = autos.MidShootPreload();
+        autoCommand = autos.MidDepotShootWhileMoving();
         configureAutoCommands();
         //autoCommand = autos.LowShootPreload();
     }
@@ -203,9 +203,12 @@ public class RobotContainer {
                driverXboxController.povRight().whileTrue(pivotSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/pivotPosition", 0.0)));
 
 
+//        driverXboxController.rightTrigger()
+//                .whileTrue(indexerSubsystem.setVoltage(() -> -6.0, () -> -5.0))
+//                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
         driverXboxController.rightTrigger()
-                .whileTrue(indexerSubsystem.setVoltage(() -> -6.0, () -> -5.0))
-                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
+                        .whileTrue(AutoAimCommands.autoIndex(this))
+                                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
 
         driverXboxController.b().onTrue(new InstantCommand(() -> {
             RobotState.getInstance().setShuttling(!RobotState.getInstance().getShuttling());
@@ -303,6 +306,7 @@ public class RobotContainer {
 
     public void autoInit() {
 //        autoCommand = autoChooser.getSelected();
+        RobotState.getInstance().setShuttling(false);
         autoCommand = autos.MidDepotShootWhileMoving();
         CommandScheduler.getInstance().schedule(autoCommand);
     }

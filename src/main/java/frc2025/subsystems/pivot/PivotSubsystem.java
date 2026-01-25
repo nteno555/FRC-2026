@@ -57,7 +57,7 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public Command rezero() {
-        return this.run(() -> io.rezero(0.0));
+        return this.runOnce(() -> io.rezero(0.0));
     }
 
     public Command setFixed() {

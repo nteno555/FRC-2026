@@ -25,9 +25,9 @@ public class ShooterIOSim implements ShooterIO {
     @Override
     public void setPercentOutput(double percentOutput) {this.percentOutput = percentOutput;}
 
-    @Override
-    public boolean getShotReady(double wantedSpeed) {
-        return false;
-    }
+//    @Override
+//    public boolean getShotReady(double wantedSpeed) {
+//        return false;
+//    }
 }
 

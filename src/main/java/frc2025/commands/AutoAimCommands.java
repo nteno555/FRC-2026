@@ -111,10 +111,15 @@ public class AutoAimCommands {
 
 
     public static Command autoIndex(RobotContainer robotContainer) {
-        return robotContainer.getIndexer().setSpeed(() -> {
-            if(robotContainer.getShooter().getShotReady() && robotContainer.getDrive().getShotReady()) {
+        return robotContainer.getIndexer().setVoltage(() -> {
+//            Logger.recordOutput("Indexer/autoIndexShooterReady", robotContainer.getShooter().getShotReady());
+//            Logger.recordOutput("Indexer/autoIndexDriveReady", robotContainer.getDrive().getShotReady());
+            Logger.recordOutput("Indexer/autoIndexShooterReady", RobotState.getInstance().getShooterReady());
+            Logger.recordOutput("Indexer/autoIndexDriveReady", RobotState.getInstance().getDriveShotReady());
+//            if(robotContainer.getShooter().getShotReady() && robotContainer.getDrive().getShotReady()) {
+            if(RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady()) {
                 Logger.recordOutput("Indexer/ready", true);
-                return -1.5;
+                return -6.0;
             } else {
                 Logger.recordOutput("Indexer/ready", false);
                 return 0.0;

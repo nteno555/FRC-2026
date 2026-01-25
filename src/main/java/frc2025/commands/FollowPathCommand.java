@@ -48,7 +48,7 @@ public class FollowPathCommand extends Command {
         this.driveSubsystem = drive;
         this.flip = flip;
 
-        translationPID = new PIDController(3, 0, 0);
+        translationPID = new PIDController(1.0, 0, 0);
         rotationPID = new PIDController(3, 0, 0);
         rotationPID.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -127,8 +127,10 @@ public class FollowPathCommand extends Command {
         ChassisSpeeds desiredStateFlipped = new ChassisSpeeds(
                 desiredState.fieldSpeeds.vxMetersPerSecond * -1.0,
                 desiredState.fieldSpeeds.vyMetersPerSecond * -1.0,
-                omegaFeedback * -1
+                desiredState.fieldSpeeds.omegaRadiansPerSecond * -1.0
+                //omegaFeedback * -1
         );
+        if(autoAimOverride) desiredStateFlipped.omegaRadiansPerSecond = 0;
 
         Logger.recordOutput("Drive/PathFollowingError", dist);
 

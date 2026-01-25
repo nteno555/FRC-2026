@@ -10,7 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 public class IndexerIOReal implements IndexerIO {
     private final TalonFX indexer = new TalonFX(21, "rio");
-    private final TalonFX tower = new TalonFX(1, "rio");
+    private final TalonFX tower = new TalonFX(25, "rio");
     // private double wantedVoltage = 0.0;
 
     public IndexerIOReal() {

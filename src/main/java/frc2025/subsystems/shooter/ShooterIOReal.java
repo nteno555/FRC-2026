@@ -74,9 +74,9 @@ public class ShooterIOReal implements ShooterIO {
         flywheelMaster.setControl(controlRequest);
     }
 
-    @Override
-    public boolean getShotReady(double wantedSpeed) {
-        Logger.recordOutput("Shooter/getVelocityValAsDouble", flywheelMaster.getVelocity().getValueAsDouble());
-        return Math.abs(flywheelMaster.getVelocity().getValueAsDouble() - wantedSpeed) < 20.0;
-    }
+//    @Override
+//    public boolean getShotReady(double wantedSpeed) {
+//        Logger.recordOutput("Shooter/getVelocityValAsDouble", flywheelMaster.getVelocity().getValueAsDouble());
+//        return Math.abs(flywheelMaster.getVelocity().getValueAsDouble() - wantedSpeed) < 20.0;
+//    }
 }

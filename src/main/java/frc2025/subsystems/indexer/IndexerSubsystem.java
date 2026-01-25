@@ -36,7 +36,7 @@ public class IndexerSubsystem extends SubsystemBase {
     }
 
     public Command setVoltage(Supplier<Double> indexerVoltage, Supplier<Double> towerVoltage) {
-        return this.runOnce(() -> {
+        return this.run(() -> {
             usingVoltage = true;
             io.setVoltage(indexerVoltage.get(), towerVoltage.get());
         });

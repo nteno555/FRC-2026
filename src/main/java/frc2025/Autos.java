@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc2025.commands.AutoAimCommands;
@@ -57,21 +58,21 @@ public class Autos {
         });
     }
 
-    public Command autoIndex() {
-        return robotContainer.getIndexer().setSpeed(() -> {
-            if(RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady()) {
-                return -3.0;
-            } else {
-                return 0.0;
-            }
-        }, () -> {
-            if(robotContainer.getShooter().getShotReady()) {
-                return -3.0;
-            } else {
-                return 0.0;
-            }
-        });
-    }
+//    public Command autoIndex() {
+//        return robotContainer.getIndexer().setVoltage(() -> {
+//            if(RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady()) {
+//                return -6.0;
+//            } else {
+//                return 0.0;
+//            }
+//        }, () -> {
+//            if(robotContainer.getShooter().getShotReady()) {
+//                return -12.0;
+//            } else {
+//                return 0.0;
+//            }
+//        });
+//    }
 
     private Command intakePath(String pathName, boolean shootWhileMove) {
         PathPlannerPath path;
@@ -85,7 +86,7 @@ public class Autos {
         PathPlannerPath finalPath = path;
 
         return new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true, shootWhileMove, robotContainer)
-                .alongWith(robotContainer.getIntake().setVoltage(() -> 5.0))
+                .raceWith(robotContainer.getIntake().setIntaking(() -> true))
                 .andThen(new WaitCommand(0.2));
     }
 
@@ -120,9 +121,19 @@ public class Autos {
     }
 
     public Command MidShootPreload() {
+//        Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
+//                .andThen(intakePath("Mid-Driveback", false))
+//                .andThen(autoScore(RobotState.getInstance().getTargetPose()));
+//        return auto;
         Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
-                .andThen(intakePath("Mid-Driveback", false))
-                .andThen(autoScore(RobotState.getInstance().getTargetPose()));
+                .andThen(
+                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getTargetPose())
+                                .alongWith(AutoAimCommands.autoIndex(robotContainer))
+                                .alongWith(
+                                        intakePath("Mid-Driveback", true)
+//                                                .andThen(robotContainer.getIndexer().setVoltage(() -> -6.0, () -> -12.0))
+                                )
+                );
         return auto;
     }
 
@@ -130,7 +141,7 @@ public class Autos {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
                 .andThen(
                         autoSpinUp(() -> RobotState.getInstance().getVisionPose())
-                                .alongWith(autoIndex())
+                                .alongWith(new WaitUntilCommand(1.0).andThen(AutoAimCommands.autoIndex(robotContainer)))
                                 .alongWith(
                                         intakePath("Mid-SWM1", true)
                                                 .andThen(intakePath("Mid-SWM2", true))
@@ -146,7 +157,7 @@ public class Autos {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
                 .andThen(
                         autoSpinUp(() -> RobotState.getInstance().getVisionPose())
-                                .alongWith(autoIndex())
+                                .alongWith(AutoAimCommands.autoIndex(robotContainer))
                                 .alongWith(
                                         intakePath("Mid-Depot", true)
                                                 .andThen(intakePath("Depot-Neutral", true))
@@ -213,7 +224,7 @@ public class Autos {
                     .andThen(intakePath("Low-Neutral", false))
 
                     .andThen(autoSpinUp(() -> RobotState.getInstance().getVisionPose())
-                            .alongWith(autoIndex())
+                            .alongWith(AutoAimCommands.autoIndex(robotContainer))
                                 .alongWith(
                                     intakePath("Neutral-Driveback", true)
                                             .andThen(finalAutoAim())

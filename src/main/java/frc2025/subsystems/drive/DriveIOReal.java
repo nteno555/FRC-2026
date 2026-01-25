@@ -69,6 +69,7 @@ public class DriveIOReal extends SwerveDrivetrain implements DriveIO{
         inputs.odometryTwist = twist;
         inputs.odometryTimestamp = Timer.getFPGATimestamp();
 
+        Logger.recordOutput("Drive/pigeonConnected", getPigeon2().isConnected());
         Logger.recordOutput("Drive/SwerveModuleStates", getState().ModuleStates);
         Logger.recordOutput("Drive/SwerveModuleStatesWanted", getState().ModuleTargets);
     }

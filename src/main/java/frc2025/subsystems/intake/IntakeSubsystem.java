@@ -14,6 +14,7 @@ public class IntakeSubsystem extends SubsystemBase {
     IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
     boolean usingVoltage = false;
     private Trigger hasPieceTrigger = (new Trigger(() -> {return inputs.current>28;})).debounce(0.1);
+    private boolean intakeExtended = false;
 
     public IntakeSubsystem(IntakeIO io){
         this.io = io;
@@ -40,7 +41,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public Command setVoltage(Supplier<Double> voltage){
-        return this.runOnce(() -> {
+        return this.run(() -> {
             usingVoltage = true;
             if (voltage.get() == 0.0) {
                 io.setDeployPosition(0.0);
@@ -59,8 +60,15 @@ public class IntakeSubsystem extends SubsystemBase {
             if(intake.get()) {
                 io.setVoltage(5.0);
                 io.setDeployPosition(SubsystemConstants.intakeDeployPosition);
+                if (Math.abs(SubsystemConstants.intakeDeployPosition - inputs.position) < 0.5) {
+                    intakeExtended = true;
+                }
+                if(intakeExtended) {
+                    io.setDeployVoltage(0.0);
+                }
             }
             else {
+                intakeExtended = false;
                 io.setDeployPosition(0.0);
                 io.setSpeed(0);
             }

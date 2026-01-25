@@ -105,6 +105,7 @@ public class RobotState {
             if(!shuttling) {
                 return FieldConstants.redNetPos;
             } else {
+//                return FieldConstants.redShuttlePos;
                 if(visionPoseEstimator.getLatestPose().getY() > FieldConstants.yHalfLine) {
                     return FieldConstants.redShuttlePosUpper;
                 } else {
@@ -115,6 +116,7 @@ public class RobotState {
             if(!shuttling) {
                 return FieldConstants.blueNetPos;
             } else {
+//                return FieldConstants.blueShuttlePos;
                 if(visionPoseEstimator.getLatestPose().getY() > FieldConstants.yHalfLine) {
                     return FieldConstants.blueShuttlePosUpper;
                 } else {
