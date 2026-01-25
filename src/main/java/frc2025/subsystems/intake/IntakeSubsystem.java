@@ -1,12 +1,16 @@
 package frc2025.subsystems.intake;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc2025.Robot;
+import frc2025.RobotState;
 import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
+import java.sql.Driver;
 import java.util.function.Supplier;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -24,9 +28,13 @@ public class IntakeSubsystem extends SubsystemBase {
     public void periodic(){
         Logger.processInputs("RealOutputs/Intake",inputs);
         io.updateInputs(inputs);
+
+        if (DriverStation.isAutonomousEnabled() && RobotState.getInstance().getWantAutoIntaking()) {
+            io.setVoltage(0.0);
+        }
     }
 
-    public Command setSpeed(Supplier<Double> speed){
+    public Command setSpeed(Supplier<Double> speed) {
         return this.run(() -> {
             usingVoltage = false;
             if (speed.get() == 0.0) {
@@ -36,6 +44,18 @@ public class IntakeSubsystem extends SubsystemBase {
             else {
                 io.setSpeed(speed.get());
                 io.setDeployPosition(SubsystemConstants.intakeDeployPosition);
+            }
+        });
+    }
+
+    public Command setRollerVoltage() {
+        return this.run(() -> {
+            usingVoltage = true;
+            if (inputs.voltage == 0.0) {
+                io.setVoltage(6.7);
+            }
+            else {
+                io.setVoltage(0.0);
             }
         });
     }

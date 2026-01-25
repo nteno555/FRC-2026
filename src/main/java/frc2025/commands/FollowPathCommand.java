@@ -90,10 +90,15 @@ public class FollowPathCommand extends Command {
 
         double pathProgress = currentTime / trajectory.getTotalTimeSeconds() * (path.getWaypoints().size() - 1);
         boolean autoAimOverride = true;
+        RobotState.getInstance().setWantAutoIntaking(true);
         for(EventMarker marker : eventMarkers) {
-            if(marker.triggerName().equals("stop auto aim") && pathProgress >= marker.position() && pathProgress <= marker.endPosition()) {
-                autoAimOverride = false;
-                break;
+            if (pathProgress >= marker.position() && pathProgress <= marker.endPosition()) {
+                if (marker.triggerName().equals("stop auto aim")) {
+                    autoAimOverride = false;
+                }
+                if (marker.triggerName().equals("stop intake")) {
+                    RobotState.getInstance().setWantAutoIntaking(false);
+                }
             }
         }
 

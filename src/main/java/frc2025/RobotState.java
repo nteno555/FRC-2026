@@ -33,6 +33,7 @@ public class RobotState {
     private boolean shooterReady;
     private boolean hoodReady;
     private boolean driveAutoAiming;
+    private boolean wantAutoIntaking;
 
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
@@ -172,4 +173,6 @@ public class RobotState {
     public boolean getShooterReady() { return shooterReady; }
     public void setDriveAutoAiming(boolean ready) { driveAutoAiming = ready; }
     public boolean getDriveAutoAiming() { return driveAutoAiming; }
+    public void setWantAutoIntaking(boolean want) {wantAutoIntaking = want;}
+    public boolean getWantAutoIntaking() {return wantAutoIntaking;}
 }

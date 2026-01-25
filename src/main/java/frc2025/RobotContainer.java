@@ -150,9 +150,6 @@ public class RobotContainer {
             }
         }));
 
-
-
-
         
         SmartDashboard.putNumber("Tuning/Distance", 0.0);
         SmartDashboard.putNumber("Tuning/RPM", 0.0);
@@ -202,7 +199,13 @@ public class RobotContainer {
                                ))
                ).whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
-               driverXboxController.povRight().whileTrue(pivotSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/pivotPosition", 0.0)));
+        driverXboxController.povRight()
+                .whileTrue(
+                        pivotSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/pivotPosition", 0.0))
+                );
+
+        driverXboxController.povUp()
+                        .onTrue(intakeSubsystem.setRollerVoltage());
 
 
 //        driverXboxController.rightTrigger()

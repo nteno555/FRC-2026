@@ -25,7 +25,6 @@ public class Autos {
     private static Pose2d MID_START = new Pose2d(3.445, 4.092, Rotation2d.fromDegrees(0));
     private static Pose2d LOW_START = new Pose2d(3.516, 2.112, Rotation2d.fromDegrees(0));
 
-    public static Pose2d startPose = HIGH_START;
     private RobotContainer robotContainer;
 
     public Autos(RobotContainer robotContainer) {
@@ -34,40 +33,7 @@ public class Autos {
         RobotState.getInstance().setShuttling(false);
     }
 
-    public Command autoScore(Pose2d pose) {
-        Command score = //AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> pose)
-            AutoAimCommands.autoAimCommand(robotContainer, () -> pose, () -> new ChassisSpeeds(0,0,0))
-               .andThen(new WaitUntilCommand(() -> {
-                           return RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady();
-                       }).andThen(
-                                    robotContainer.getIndexer().setVoltage(() -> -3.0, () -> -3.0)
-                                ));
-        return score;
-    }
-
-    public Command autoSpinUp(Supplier<Pose2d> robotPose) {
-        return robotContainer.getShooter().setSpeed(() -> {
-            double distance = robotPose.get().getTranslation().getDistance(RobotState.getInstance().getShootingWhileMovingVirtualPose().getTranslation());
-            double wantedSpeed = ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(distance);
-            return wantedSpeed;
-        });
-    }
-
-//    public Command autoIndex() {
-//        return robotContainer.getIndexer().setVoltage(() -> {
-//            if(RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady()) {
-//                return -6.0;
-//            } else {
-//                return 0.0;
-//            }
-//        }, () -> {
-//            if(robotContainer.getShooter().getShotReady()) {
-//                return -12.0;
-//            } else {
-//                return 0.0;
-//            }
-//        });
-//    }
+    /* Path Commands */
 
     private Command intakePath(String pathName) {
         PathPlannerPath path;
@@ -79,7 +45,6 @@ public class Autos {
         }
 
         PathPlannerPath finalPath = path;
-
         return new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true)
                 .raceWith(robotContainer.getIntake().setIntaking(() -> true))
                 .andThen(new WaitCommand(0.2));
@@ -108,46 +73,43 @@ public class Autos {
         };
     }
 
+    /* Low Autos */
     public Command LowShootPreload() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(LOW_START))
-                .andThen(intakePath("Low-Driveback"))
-                .andThen(autoScore(RobotState.getInstance().getTargetPose()));
+                .andThen(
+                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getTargetPose())
+                                .alongWith(AutoAimCommands.autoIndex(robotContainer))
+                                .alongWith(
+                                        intakePath("Low-Driveback")
+                                )
+                );
         return auto;
     }
 
+    public Command LowShuttleAuto() {
+        RobotState.getInstance().setShuttling(true);
+        Command auto = drive.resetOdometryCommand(startPoseSupplier(LOW_START))
+                .andThen(AutoAimCommands.autoIndex(robotContainer))
+                .andThen(intakePath("Low-Neutral"))
+                .andThen(AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getTargetPose())
+                        .alongWith(AutoAimCommands.autoIndex(robotContainer))
+                        .alongWith(
+                                intakePath("Neutral-Driveback")
+                                        .andThen(finalAutoAim())
+                        )
+                );
+        return auto;
+    }
+
+    /* Mid Autos */
+
     public Command MidShootPreload() {
-//        Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
-//                .andThen(intakePath("Mid-Driveback", false))
-//                .andThen(autoScore(RobotState.getInstance().getTargetPose()));
-//        return auto;
         Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
                 .andThen(
                         AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getTargetPose())
                                 .alongWith(AutoAimCommands.autoIndex(robotContainer))
                                 .alongWith(
                                         intakePath("Mid-Driveback")
-//                                                .andThen(robotContainer.getIndexer().setVoltage(() -> -6.0, () -> -12.0))
-                                )
-                );
-        return auto;
-    }
-
-//    public Command driveOverRamp() {
-//        Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
-//                .andThen()
-//    }
-
-    public Command MidShootWhileMoving() {
-        Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
-                .andThen(
-                        autoSpinUp(() -> RobotState.getInstance().getVisionPose())
-                                .alongWith(new WaitUntilCommand(1.0).andThen(AutoAimCommands.autoIndex(robotContainer)))
-                                .alongWith(
-                                        intakePath("Mid-SWM1")
-                                                .andThen(intakePath("Mid-SWM2"))
-//                                                .andThen(() -> {
-//                                                    if (robotContainer.getIndexer().getHasPiece()) {autoScore(RobotState.getInstance().getVisionPose());}
-//                                                })
                                 )
                 );
         return auto;
@@ -171,91 +133,87 @@ public class Autos {
     public Command MidDepotShootWhileMoving() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
                 .andThen(
-                        autoSpinUp(() -> RobotState.getInstance().getVisionPose())
-                                //.alongWith(autoIndex())
+                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getTargetPose())
                                 .alongWith(AutoAimCommands.autoIndex(robotContainer))
                                 .alongWith(
                                         intakePath("Mid-Depot")
                                                 .andThen(intakePath("Depot-Mid"))
                                                 .andThen(finalAutoAim())
-//                                                .andThen(() -> {
-//                                                    if (robotContainer.getIndexer().getHasPiece()) {autoScore(RobotState.getInstance().getVisionPose());}
-//                                                })
                                 )
                 );
         return auto;
     }
 
-    public Command HighShootPreload() {
-        Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
-                .andThen(intakePath("High-Driveback"))
-                .andThen(autoScore(RobotState.getInstance().getTargetPose()));
-        return auto;
-    }
-
     public Command MidShootIntake() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
-                .andThen(intakePath("Mid-Driveback"))
-                .andThen(autoScore(RobotState.getInstance().getTargetPose()))
-                .andThen(intakePath("MidDriveback-Depot"))
-                .andThen(autoScore(RobotState.getInstance().getTargetPose()));
-        return auto;
-    }
-
-    public Command HighShootClimb() {
-        Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
-                .andThen(autoScore(RobotState.getInstance().getTargetPose()))
-                .andThen(intakePath("HighDriveback-Climb"));
-        return auto;
-
-    }
-    public Command HighShootIntakeClimb() {
-        Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
-                .andThen(autoScore(RobotState.getInstance().getTargetPose()))
-                .andThen(autoScore(RobotState.getInstance().getTargetPose()));
-        return auto;
-    }
-
-    public Command LowShuttleAuto() {
-        RobotState.getInstance().setShuttling(true);
-        Command auto = drive.resetOdometryCommand(startPoseSupplier(LOW_START))
-                    .andThen(autoScore(RobotState.getInstance().getTargetPose()))
-
-                    .andThen(intakePath("Low-Neutral"))
-
-                    .andThen(autoSpinUp(() -> RobotState.getInstance().getVisionPose())
-                            .alongWith(AutoAimCommands.autoIndex(robotContainer))
+                .andThen(
+                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getTargetPose())
+                                .alongWith(AutoAimCommands.autoIndex(robotContainer))
                                 .alongWith(
-                                    intakePath("Neutral-Driveback")
-                                            .andThen(finalAutoAim())
+                                        intakePath("Mid-Driveback")
+                                                .andThen(intakePath("MidDriveback-Depot"))
                                 )
-                    );
-        return auto;
-    }
-
-    public Command Taxi() {
-        Command auto = drive.driveRobotRelative(() -> new ChassisSpeeds(1, 0, 0))
-                .withTimeout(2.0)
-                .andThen(drive.driveRobotRelative(() -> new ChassisSpeeds(0, 0, 0)));
+                );
         return auto;
     }
 
     public Command MidStationDepotShootWhileMoving() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
                 .andThen(
-                        autoSpinUp(() -> RobotState.getInstance().getVisionPose())
-                                //.alongWith(autoIndex())
+                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getTargetPose())
                                 .alongWith(AutoAimCommands.autoIndex(robotContainer))
                                 .alongWith(
                                         intakePath("Mid-Station")
                                                 .andThen(intakePath("Station-Depot"))
                                                 .andThen(intakePath("Depot-Mid"))
                                                 .andThen(finalAutoAim())
-//                                                .andThen(() -> {
-//                                                    if (robotContainer.getIndexer().getHasPiece()) {autoScore(RobotState.getInstance().getVisionPose());}
-//                                                })
                                 )
                 );
+        return auto;
+    }
+
+    /* High Autos */
+
+    public Command HighShootPreload() {
+        Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
+                .andThen(
+                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getTargetPose())
+                                .alongWith(AutoAimCommands.autoIndex(robotContainer))
+                                .alongWith(
+                                        intakePath("High-Driveback")
+                                )
+                );
+        return auto;
+    }
+
+    public Command HighShootClimb() {
+        Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
+                .andThen(
+                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getTargetPose())
+                                .alongWith(AutoAimCommands.autoIndex(robotContainer))
+                                .alongWith(
+                                        intakePath("HighDriveback-Climb")
+                                )
+                );
+        return auto;
+
+    }
+    public Command HighShootIntakeClimb() {
+        Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
+                .andThen(AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getTargetPose()))
+                .alongWith(AutoAimCommands.autoIndex(robotContainer))
+                .alongWith(
+                        intakePath("High-Station")
+                                .andThen(intakePath("Station-Climb"))
+                );
+        return auto;
+    }
+
+
+    public Command Taxi() {
+        Command auto = drive.driveRobotRelative(() -> new ChassisSpeeds(1, 0, 0))
+                .withTimeout(2.0)
+                .andThen(drive.driveRobotRelative(() -> new ChassisSpeeds(0, 0, 0)));
         return auto;
     }
 }
