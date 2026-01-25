@@ -1,24 +1,22 @@
 package frc2025.config;
 
-import java.util.ArrayList;
-
 import frc2025.util.InterpolatingTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ShooterTreeMap {
     private static ShooterTreeMap instance;
-    public  InterpolatingTreeMap pivotTreeMap = new InterpolatingTreeMap();
+    public  InterpolatingTreeMap hoodTreeMap = new InterpolatingTreeMap();
     public  InterpolatingTreeMap lowerWheelTreeMap = new InterpolatingTreeMap();
     public  InterpolatingTreeMap tofTreeMap = new InterpolatingTreeMap();
     
     public ShooterTreeMap() {
-        pivotTreeMap.put(2.0, 0.0);
-        pivotTreeMap.put(2.25, 0.0);
-        pivotTreeMap.put(2.50, 0.0);
-        pivotTreeMap.put(3.0, 0.0);
-        pivotTreeMap.put(3.5, 0.0);
-        pivotTreeMap.put(4.0, 0.0);
-        pivotTreeMap.put(5.0, 2.0);
+        hoodTreeMap.put(2.0, 0.0);
+        hoodTreeMap.put(2.25, 0.0);
+        hoodTreeMap.put(2.50, 0.0);
+        hoodTreeMap.put(3.0, 0.0);
+        hoodTreeMap.put(3.5, 0.0);
+        hoodTreeMap.put(4.0, 0.0);
+        hoodTreeMap.put(5.0, 2.0);
 
         lowerWheelTreeMap.put(2.0, -24.4);
         lowerWheelTreeMap.put(2.50, -27.4);

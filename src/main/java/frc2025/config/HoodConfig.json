@@ -1,0 +1,17 @@
+{
+  "rotationsPerDegree": 0.2083333333,
+  "handoffAngleDegree": 67,
+
+  "hoodkS": 0,
+  "hoodkV": 0.12,
+  "hoodkG": 0,
+  "hoodkA": 0,
+  "hoodkP": 0.10,
+  "hoodkI": 0,
+  "hoodkD": 0.007,
+  "voltageFF": 0.3,
+  "hoodMaxMovableAngle": 4,
+  "hoodMinMovableAngle": -2.985,
+  "hoodFreeMoveAngle":-0.6,
+  "ffFactor": 0.3
+}

@@ -1,4 +1,4 @@
-package frc2025.subsystems.pivot;
+package frc2025.subsystems.hood;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -6,23 +6,23 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 import java.util.function.Supplier;
 
-public class PivotSubsystem extends SubsystemBase {
-    PivotIO io;
-    PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
+public class HoodSubsystem extends SubsystemBase {
+    HoodIO io;
+    HoodIOInputsAutoLogged inputs = new HoodIOInputsAutoLogged();
     double setpoint;
     double voltage;
     boolean usingVoltage = false;
     double voltageRamp = 0;
 
-    public PivotSubsystem(PivotIO io) {
+    public HoodSubsystem(HoodIO io) {
         io.rezero(0);
         this.io = io;
     }
 
     @Override
     public void periodic() {
-        Logger.processInputs("RealOutputs/Pivot", inputs);
-        Logger.recordOutput("Pivot/setpoint", setpoint);
+        Logger.processInputs("RealOutputs/hood", inputs);
+        Logger.recordOutput("Hood/setpoint", setpoint);
         if(DriverStation.isDisabled()) {
             setpoint = inputs.positionRotations;
         }

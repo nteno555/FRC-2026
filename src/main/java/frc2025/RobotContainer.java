@@ -22,15 +22,15 @@ import frc2025.config.ShooterTreeMap;
 import frc2025.subsystems.drive.DriveIOReal;
 import frc2025.subsystems.drive.DriveIOSim;
 import frc2025.subsystems.drive.DriveSubsystem;
+import frc2025.subsystems.hood.HoodIOSim;
 import frc2025.subsystems.indexer.IndexerIOReal;
 import frc2025.subsystems.indexer.IndexerIOSim;
 import frc2025.subsystems.indexer.IndexerSubsystem;
 import frc2025.subsystems.intake.IntakeIOReal;
 import frc2025.subsystems.intake.IntakeIOSim;
 import frc2025.subsystems.intake.IntakeSubsystem;
-import frc2025.subsystems.pivot.PivotIOReal;
-import frc2025.subsystems.pivot.PivotIOSim;
-import frc2025.subsystems.pivot.PivotSubsystem;
+import frc2025.subsystems.hood.HoodIOReal;
+import frc2025.subsystems.hood.HoodSubsystem;
 import frc2025.subsystems.shooter.ShooterIOReal;
 import frc2025.subsystems.shooter.ShooterIOSim;
 import frc2025.subsystems.shooter.ShooterSubsystem;
@@ -38,9 +38,6 @@ import frc2025.subsystems.vision.VisionIOReal;
 import frc2025.subsystems.vision.VisionIOSim;
 import frc2025.subsystems.vision.VisionSubsystem;
 import frc2025.util.Alliance;
-
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static frc2025.subsystems.drive.DriveConstants.*;
 
 public class RobotContainer {
     public static final double DEAD_BAND_DRIVER = 0.1;
@@ -55,7 +52,7 @@ public class RobotContainer {
     VisionSubsystem visionSubsystem;
     IndexerSubsystem indexerSubsystem;
     IntakeSubsystem intakeSubsystem;
-    PivotSubsystem pivotSubsystem;
+    HoodSubsystem hoodSubsystem;
     ShooterSubsystem shooterSubsystem;
 
     Autos autos;
@@ -83,14 +80,14 @@ public class RobotContainer {
             visionSubsystem = new VisionSubsystem(new VisionIOReal());
             indexerSubsystem = new IndexerSubsystem(new IndexerIOReal());
             intakeSubsystem = new IntakeSubsystem(new IntakeIOReal());
-            pivotSubsystem = new PivotSubsystem(new PivotIOReal());
+            hoodSubsystem = new HoodSubsystem(new HoodIOReal());
             shooterSubsystem = new ShooterSubsystem(new ShooterIOReal());
         } else {
             driveSubsystem = new DriveSubsystem(new DriveIOSim(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOSim());
             indexerSubsystem = new IndexerSubsystem(new IndexerIOSim());
             intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
-            pivotSubsystem = new PivotSubsystem(new PivotIOSim());
+            hoodSubsystem = new HoodSubsystem(new HoodIOSim());
             shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
         }
     }
@@ -121,8 +118,8 @@ public class RobotContainer {
         return intakeSubsystem;
     }
 
-    public PivotSubsystem getPivot() {
-        return pivotSubsystem;
+    public HoodSubsystem getHood() {
+        return hoodSubsystem;
     }
 
     public ShooterSubsystem getShooter() {
@@ -153,12 +150,12 @@ public class RobotContainer {
         
         SmartDashboard.putNumber("Tuning/Distance", 0.0);
         SmartDashboard.putNumber("Tuning/RPM", 0.0);
-        SmartDashboard.putNumber("Tuning/pivotPosition", 0.0);
+        SmartDashboard.putNumber("Tuning/hoodPosition", 0.0);
 
         SmartDashboard.putData("Tuning/Add Point", new InstantCommand(() -> {
             double dist = SmartDashboard.getNumber("Tuning/Distance", 0.0);
             double rpm = SmartDashboard.getNumber("Tuning/RPM", 0.0);
-            double pivotPos = SmartDashboard.getNumber("Tuning/pivotPosition", 0.0);
+            double hoodPos = SmartDashboard.getNumber("Tuning/hoodPosition", 0.0);
 
             ShooterTreeMap.getInstance().addShot(dist,rpm);
             //SmartDashboard.putString("Tuning/lowerWheelTree Map", ShooterTreeMap.getInstance().lowerWheelTreeMap.toString());
@@ -201,7 +198,7 @@ public class RobotContainer {
 
         driverXboxController.povRight()
                 .whileTrue(
-                        pivotSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/pivotPosition", 0.0))
+                        hoodSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/hoodPosition", 0.0))
                 );
 
         driverXboxController.povUp()
@@ -223,10 +220,7 @@ public class RobotContainer {
         driverXboxController.rightBumper().whileTrue(
                 shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/RPM", 0.0))
         ).whileFalse(shooterSubsystem.setSpeed(() -> 0.0));
-//        driverXboxController.y().onTrue(
-//                        pivotSubsystem.setVoltage(() -> -0.5))
-//                .onFalse(pivotSubsystem.rezero()
-//                        .andThen(pivotSubsystem.setVoltage(() -> 0.0)));
+
         driverXboxController.x().onTrue(
                 intakeSubsystem.setDeployVoltage(() -> 1.0))
                         .onFalse(intakeSubsystem.rezero()

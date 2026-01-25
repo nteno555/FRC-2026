@@ -2,7 +2,6 @@ package frc2025.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -50,12 +49,12 @@ public class AutoAimCommands {
         );
     }
 
-    public static Command pivotAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier) {
-        return robotContainer.getPivot().setPosition(() -> {
+    public static Command hoodAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier) {
+        return robotContainer.getHood().setPosition(() -> {
             Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
             Pose2d targetPose = targetPoseSupplier.get();
             double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
-            return ShooterTreeMap.getInstance().pivotTreeMap.getInterpolated(dist);
+            return ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist);
         });
     }
 
@@ -71,7 +70,7 @@ public class AutoAimCommands {
     public static Command autoAimCommand(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {
         return shooterAutoSpinUp(robotContainer, targetPoseSupplier)
                 .alongWith(driveAutoAim(robotContainer, targetPoseSupplier, unlockedSpeeds))
-                .alongWith(pivotAutoAim(robotContainer, targetPoseSupplier));
+                .alongWith(hoodAutoAim(robotContainer, targetPoseSupplier));
     }
 
     // calculate the virtual pose of the hub

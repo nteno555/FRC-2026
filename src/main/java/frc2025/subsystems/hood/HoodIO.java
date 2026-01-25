@@ -1,16 +1,16 @@
-package frc2025.subsystems.pivot;
+package frc2025.subsystems.hood;
 
 import org.littletonrobotics.junction.AutoLog;
 
-public interface PivotIO {
+public interface HoodIO {
     @AutoLog
-    public class PivotIOInputs {
+    public class HoodIOInputs {
         public double positionRotations;
         public double positionDegrees;
         public double positionDegreesReal;
     }
 
-    public void updateInputs(PivotIOInputs inputs);
+    public void updateInputs(HoodIOInputs inputs);
     public void setPosition(double position);
     public void setVoltage(double voltage);
     public void rezero(double position);

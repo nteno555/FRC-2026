@@ -1,8 +1,8 @@
-package frc2025.subsystems.pivot;
+package frc2025.subsystems.hood;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
-public class PivotIOSim implements PivotIO {
+public class HoodIOSim implements HoodIO {
     private final double ROTATIONS_PER_DEGREE = 0.20833333333;
     private double targetPosition = 0;
     private double velocity = 0;
@@ -14,7 +14,7 @@ public class PivotIOSim implements PivotIO {
     }
 
     @Override
-    public void updateInputs(PivotIOInputs inputs) {
+    public void updateInputs(HoodIOInputs inputs) {
         if(!init) inputs.positionRotations = -36;
         init = true;
 
