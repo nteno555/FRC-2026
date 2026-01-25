@@ -5,9 +5,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 public class SubsystemConstants {
     public static double flywheelS = 0.00;
-    public static double flywheelV = 0.127;
+    public static double flywheelV = 0.13;
     public static double flywheelA = 0.00;
-    public static double flywheelP = 0.1;
+    public static double flywheelP = 0.12;
     public static double flywheelI = 0.0;
     public static double flywheelD = 0.0;
 
