@@ -319,7 +319,7 @@ public class RobotContainer {
 
     public void teleopInit() {
         //autoCommand.cancel();
-        CommandScheduler.getInstance().cancel(autoCommand);
+        CommandScheduler.getInstance().cancelAll();
         RobotState.getInstance().setShuttling(false);
         shooterSubsystem.setSpeed(() -> 0.0);
         indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0);
