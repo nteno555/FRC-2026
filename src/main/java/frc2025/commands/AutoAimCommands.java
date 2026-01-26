@@ -51,10 +51,24 @@ public class AutoAimCommands {
 
     public static Command hoodAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier) {
         return robotContainer.getHood().setPosition(() -> {
+            
             Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
+            double robotXpose = robotPose.getX();
+            double robotYpose = robotPose.getY();
+            
+            boolean nearBlueUpperTrench = (robotXpose < 6.25 && robotXpose > 3.0) && robotYpose > 7.0; 
+            boolean nearBlueLowerTrench = (robotXpose < 6.25 && robotXpose > 3.0) && robotYpose < 1.2; 
+            boolean nearRedUpperTrench = (robotXpose < 13.5 && robotXpose > 10.25) && robotYpose > 7.0; 
+            boolean nearRedLowerTrench = (robotXpose < 13.5 && robotXpose > 10.25) && robotYpose < 1.2; 
+            
+            if (nearBlueUpperTrench || nearBlueLowerTrench || nearRedUpperTrench || nearRedLowerTrench) {
+                return 0.0;
+            }
+            
             Pose2d targetPose = targetPoseSupplier.get();
             double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
             return ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist);
+            
         });
     }
 
