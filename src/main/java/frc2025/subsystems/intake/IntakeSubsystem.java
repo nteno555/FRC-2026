@@ -70,7 +70,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public Command setIntaking(Supplier<Boolean> intake){
-        return this.run(() -> {
+        return this.runEnd(() -> {
                     usingVoltage = false;
                     if (intake.get()) {
                         io.setVoltage(6.7);
@@ -88,13 +88,13 @@ public class IntakeSubsystem extends SubsystemBase {
                         io.setVoltage(0.0);
                         intakeExtended = false;
                     }
+                },
+                () -> {
+                    io.setDeployPosition(0.0);
+                    io.setVoltage(0.0);
+                    intakeExtended = true;
                 }
             );
-//        }, () -> {
-//            intakeExtended = true;
-//            io.setDeployVoltage(0.0);
-//            io.setVoltage(0.0);
-//        });
     }
 
     public Command setOuttaking(Supplier<Boolean> intake){

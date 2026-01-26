@@ -39,11 +39,14 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public Command setSpeed(Supplier<Double> speed) {
-        return this.run(() -> {
+        return this.runEnd(() -> {
             Logger.recordOutput("Shooter/wantedSpeedSubsystem", speed.get());
             usingVoltage = false;
             wantedVelocity = speed.get();
             io.setSpeed(speed.get());
+        }, () -> {
+            usingVoltage = false;
+            io.setSpeed(0.0);
         });
     }
 
