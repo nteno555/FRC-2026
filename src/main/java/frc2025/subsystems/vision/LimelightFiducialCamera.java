@@ -74,7 +74,7 @@ public class LimelightFiducialCamera {
             reject = true;
         }
 
-        //if (Math.abs(pose.getRotation().minus(RobotState.getInstance().getVisionPose().getRotation()).getRadians()) > 0.3) reject = true;
+        if (Math.abs(pose.getRotation().minus(RobotState.getInstance().getVisionPose().getRotation()).getRadians()) > 1.0) reject = true;
 
         Vector<N3> distStdDevs;
 

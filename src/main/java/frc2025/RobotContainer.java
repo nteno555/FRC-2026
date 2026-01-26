@@ -64,7 +64,7 @@ public class RobotContainer {
         createSubsystems();
         configureBindings();
         autos = new Autos(this);
-        autoCommand = autos.MidStationDepotShootWhileMoving();
+        autoCommand = autos.MidDepotNeutralClimbShootWhileMoving();
         //autoCommand = autos.MidDepotNeutralClimbShootWhileMoving();
 //        autoCommand = autos.MidDepotShootWhileMoving();
 //        configureAutoCommands();
@@ -182,6 +182,9 @@ public class RobotContainer {
                 new InstantCommand(() -> wantIntake = !wantIntake)
                         .andThen(intakeSubsystem.setIntaking(() -> wantIntake))
         );
+//                .whileFalse(
+//                        new InstantCommand(() -> CommandScheduler.getInstance().cancel(intakeSubsystem.setIntaking(() -> false)))
+//                );
 
 
         driverXboxController.leftTrigger()
@@ -307,7 +310,7 @@ public class RobotContainer {
     public void autoInit() {
 //        autoCommand = autoChooser.getSelected();
         RobotState.getInstance().setShuttling(false);
-        autoCommand = autos.MidStationDepotShootWhileMoving();
+        autoCommand = autos.MidDepotNeutralClimbShootWhileMoving();
         CommandScheduler.getInstance().schedule(autoCommand);
     }
 

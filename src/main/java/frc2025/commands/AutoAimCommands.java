@@ -122,7 +122,7 @@ public class AutoAimCommands {
 
             if(good) {
                 Logger.recordOutput("Indexer/ready", true);
-                return -6.0;
+                return -9.0;
             } else {
                 Logger.recordOutput("Indexer/ready", false);
                 return 0.0;

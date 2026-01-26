@@ -71,23 +71,30 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public Command setIntaking(Supplier<Boolean> intake){
         return this.run(() -> {
-            usingVoltage = false;
-            if(intake.get()) {
-                io.setVoltage(6.7);
-                io.setDeployPosition(SubsystemConstants.intakeDeployPosition);
-                if (Math.abs(SubsystemConstants.intakeDeployPosition - inputs.position) < 0.5) {
-                    intakeExtended = true;
+                    usingVoltage = false;
+                    if (intake.get()) {
+                        io.setVoltage(6.7);
+                        io.setDeployPosition(SubsystemConstants.intakeDeployPosition);
+                        if (Math.abs(SubsystemConstants.intakeDeployPosition - inputs.position) < 0.5) {
+                            intakeExtended = true;
+                        }
+                        if (intakeExtended) {
+                            intakeExtended = true;
+                            io.setDeployVoltage(0.0);
+                        }
+                    }
+                    else {
+                        io.setDeployPosition(0.0);
+                        io.setVoltage(0.0);
+                        intakeExtended = false;
+                    }
                 }
-                if(intakeExtended) {
-                    io.setDeployVoltage(0.0);
-                }
-            }
-            else {
-                intakeExtended = false;
-                io.setDeployPosition(0.0);
-                io.setSpeed(0);
-            }
-        });
+            );
+//        }, () -> {
+//            intakeExtended = true;
+//            io.setDeployVoltage(0.0);
+//            io.setVoltage(0.0);
+//        });
     }
 
     public Command setOuttaking(Supplier<Boolean> intake){

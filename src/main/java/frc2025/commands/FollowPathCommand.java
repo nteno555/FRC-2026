@@ -39,7 +39,7 @@ public class FollowPathCommand extends Command {
         this.driveSubsystem = drive;
         this.flip = flip;
 
-        translationPID = new PIDController(2, 0, 0);
+        translationPID = new PIDController(1, 0, 0);
         rotationPID = new PIDController(5, 0, 0);
         rotationPID.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -90,20 +90,23 @@ public class FollowPathCommand extends Command {
 
         double pathProgress = currentTime / trajectory.getTotalTimeSeconds() * (path.getWaypoints().size() - 1);
         boolean autoAimOverride = true;
-        RobotState.getInstance().setWantAutoIntaking(true);
+//        RobotState.getInstance().setWantAutoIntaking(true);
         for(EventMarker marker : eventMarkers) {
             if (pathProgress >= marker.position() && pathProgress <= marker.endPosition()) {
                 if (marker.triggerName().equals("stop auto aim")) {
                     autoAimOverride = false;
                 }
-                if (marker.triggerName().equals("stop intake")) {
-                    RobotState.getInstance().setWantAutoIntaking(false);
-                }
+//                if (marker.triggerName().equals("stop intake")) {
+//                    RobotState.getInstance().setWantAutoIntaking(false);
+//                }
             }
         }
 
         Logger.recordOutput("Drive/pathProgress", pathProgress);
         Logger.recordOutput("Drive/autoAimOverride", autoAimOverride);
+
+        Logger.recordOutput("Drive/FollowPath/wantedVelocity", desiredState.linearVelocity);
+        Logger.recordOutput("Drive/FollowPath/currentVelocity", RobotState.getInstance().getSpeed());
 
         RobotState.getInstance().setDriveAutoAiming(autoAimOverride);
         //if (shootWhileMove) {

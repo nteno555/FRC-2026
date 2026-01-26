@@ -74,6 +74,7 @@ public class DriveSubsystem extends SubsystemBase {
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);
         Logger.processInputs("RealOutputs/Drive", inputs);
         Logger.recordOutput("Vision/autoAimAngleError", Math.toDegrees(RobotState.getInstance().getVisionPose().getRotation().getRadians() - RobotState.getInstance().getAngleToVirtualTarget()));
+        Logger.recordOutput("Vision/targetVirtualPose", RobotState.getInstance().getTargetPose());
     }
 
     public void applyChassisSpeeds(ChassisSpeeds speeds) {
@@ -168,7 +169,7 @@ public class DriveSubsystem extends SubsystemBase {
     public boolean getShotReady() {
         double angleToVirtualTarget = RobotState.getInstance().getAngleToVirtualTarget();
         double robotAngle = RobotState.getInstance().getVisionPose().getRotation().getRadians();
-        return Math.abs(angleToVirtualTarget - robotAngle) < Math.toRadians(15.0);
+        return Math.abs((angleToVirtualTarget - robotAngle) % (Math.PI * 2)) < Math.toRadians(15.0);
     }
 
     // characterization

@@ -77,7 +77,7 @@ public class Autos {
     public Command LowShootPreload() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(LOW_START))
                 .andThen(
-                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getTargetPose())
+                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
                                 .alongWith(AutoAimCommands.autoIndex(robotContainer))
                                 .alongWith(
                                         intakePath("Low-Driveback")
@@ -91,7 +91,7 @@ public class Autos {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(LOW_START))
                 .andThen(AutoAimCommands.autoIndex(robotContainer))
                 .andThen(intakePath("Low-Neutral"))
-                .andThen(AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getTargetPose())
+                .andThen(AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
                         .alongWith(AutoAimCommands.autoIndex(robotContainer))
                         .alongWith(
                                 intakePath("Neutral-Driveback")
@@ -106,7 +106,7 @@ public class Autos {
     public Command MidShootPreload() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
                 .andThen(
-                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getTargetPose())
+                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
                                 .alongWith(AutoAimCommands.autoIndex(robotContainer))
                                 .alongWith(
                                         intakePath("Mid-Driveback")
@@ -118,7 +118,7 @@ public class Autos {
     public Command MidDepotNeutralClimbShootWhileMoving() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
                 .andThen(
-                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getTargetPose())
+                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
                                 .alongWith(AutoAimCommands.autoIndex(robotContainer))
                                 .alongWith(
                                         intakePath("Mid-Depot")
@@ -133,7 +133,7 @@ public class Autos {
     public Command MidDepotShootWhileMoving() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
                 .andThen(
-                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getTargetPose())
+                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
                                 .alongWith(AutoAimCommands.autoIndex(robotContainer))
                                 .alongWith(
                                         intakePath("Mid-Depot")
@@ -147,7 +147,7 @@ public class Autos {
     public Command MidShootIntake() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
                 .andThen(
-                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getTargetPose())
+                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
                                 .alongWith(AutoAimCommands.autoIndex(robotContainer))
                                 .alongWith(
                                         intakePath("Mid-Driveback")
@@ -160,7 +160,8 @@ public class Autos {
     public Command MidStationDepotShootWhileMoving() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
                 .andThen(
-                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getTargetPose())
+                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
+                                .alongWith(AutoAimCommands.hoodAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose()))
                                 .alongWith(AutoAimCommands.autoIndex(robotContainer))
                                 .alongWith(
                                         intakePath("Mid-Station")
@@ -177,7 +178,7 @@ public class Autos {
     public Command HighShootPreload() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
                 .andThen(
-                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getTargetPose())
+                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
                                 .alongWith(AutoAimCommands.autoIndex(robotContainer))
                                 .alongWith(
                                         intakePath("High-Driveback")
@@ -189,7 +190,7 @@ public class Autos {
     public Command HighShootClimb() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
                 .andThen(
-                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getTargetPose())
+                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
                                 .alongWith(AutoAimCommands.autoIndex(robotContainer))
                                 .alongWith(
                                         intakePath("HighDriveback-Climb")
@@ -200,7 +201,7 @@ public class Autos {
     }
     public Command HighShootIntakeClimb() {
         Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
-                .andThen(AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getTargetPose()))
+                .andThen(AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose()))
                 .alongWith(AutoAimCommands.autoIndex(robotContainer))
                 .alongWith(
                         intakePath("High-Station")

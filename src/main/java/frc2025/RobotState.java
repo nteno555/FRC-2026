@@ -3,6 +3,7 @@ package frc2025;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -109,20 +110,39 @@ public class RobotState {
             } else {
 //                return FieldConstants.redShuttlePos;
                 if(visionPoseEstimator.getLatestPose().getY() > FieldConstants.yHalfLine) {
-                    return FieldConstants.redShuttlePosUpper;
+                    return new Pose2d(
+                            FieldConstants.redShuttlePosUpper.getX(),
+                            8 - visionPoseEstimator.getLatestPose().getY() + 4 - 1,
+                            Rotation2d.kZero
+                    );
                 } else {
-                    return FieldConstants.redShuttlePosLower;
+                    //return FieldConstants.redShuttlePosLower;
+                    return new Pose2d(
+                            FieldConstants.redShuttlePosLower.getX(),
+                            4 - visionPoseEstimator.getLatestPose().getY() + 1,
+                            Rotation2d.kZero
+                    );
                 }
             }
         } else {
             if(!shuttling) {
                 return FieldConstants.blueNetPos;
             } else {
-//                return FieldConstants.blueShuttlePos;
                 if(visionPoseEstimator.getLatestPose().getY() > FieldConstants.yHalfLine) {
-                    return FieldConstants.blueShuttlePosUpper;
-                } else {
-                    return FieldConstants.blueShuttlePosLower;
+                    return new Pose2d(
+                            FieldConstants.blueShuttlePosUpper.getX(),
+                            8 - visionPoseEstimator.getLatestPose().getY() + 4 - 1,
+                            Rotation2d.kZero
+                    );
+                }
+                else {
+                    //return FieldConstants.redShuttlePosLower;
+                    return new Pose2d(
+                            FieldConstants.blueShuttlePosLower.getX(),
+                            4 - visionPoseEstimator.getLatestPose().getY() + 1,
+//                            -FieldConstants.yHalfLine + visionPoseEstimator.getLatestPose().getY(),
+                            Rotation2d.kZero
+                    );
                 }
             }
         }
