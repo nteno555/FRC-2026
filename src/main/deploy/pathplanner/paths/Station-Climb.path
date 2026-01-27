@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.644,
-        "y": 0.636
+        "x": 0.8037310581913706,
+        "y": 0.630632474546079
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6824865831842568,
-        "y": 1.8526833631484791
+        "x": 1.8422176413756275,
+        "y": 1.8473158376945582
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "station"
     },
     {
       "anchor": {
-        "x": 1.6338103756708402,
-        "y": 3.734830053667263
+        "x": 1.8512252491138605,
+        "y": 3.6896210315845632
       },
       "prevControl": {
-        "x": 2.542432915921288,
-        "y": 3.00468694096601
+        "x": 2.7598477893643083,
+        "y": 2.95947791888331
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "climb"
     }
   ],
   "rotationTargets": [],
@@ -48,7 +48,7 @@
   "folder": "Station-Climb",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

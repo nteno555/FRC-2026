@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc2025.RobotContainer;
 import frc2025.RobotState;
 import frc2025.config.ShooterTreeMap;
@@ -126,12 +127,10 @@ public class AutoAimCommands {
 
     public static Command autoIndex(RobotContainer robotContainer) {
         return robotContainer.getIndexer().setVoltage(() -> {
-//            Logger.recordOutput("Indexer/autoIndexShooterReady", robotContainer.getShooter().getShotReady());
-//            Logger.recordOutput("Indexer/autoIndexDriveReady", robotContainer.getDrive().getShotReady());
             Logger.recordOutput("Indexer/autoIndexShooterReady", RobotState.getInstance().getShooterReady());
             Logger.recordOutput("Indexer/autoIndexDriveReady", RobotState.getInstance().getDriveShotReady());
-//            if(robotContainer.getShooter().getShotReady() && robotContainer.getDrive().getShotReady()) {
             boolean good = RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady();
+
             if(DriverStation.isAutonomous()) good = good && RobotState.getInstance().getDriveAutoAiming();
 
             if(good) {
@@ -151,6 +150,40 @@ public class AutoAimCommands {
             else {
                 return 0.0;
             }
-        });
+        })
+            .alongWith(robotContainer.getIntake().setRollerVoltage(() -> {
+                    boolean good = RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady();
+                    if(DriverStation.isAutonomous()) good = good && RobotState.getInstance().getDriveAutoAiming();
+                    if (good) {
+                        return 4.5;
+                    }
+                    else {
+                        return 0.0;
+                    }
+            }));
+    }
+
+    public static Command shootFlush(RobotContainer robotContainer) {
+        return robotContainer.getHood().setPosition(() -> 0.0)
+                .alongWith(robotContainer.getShooter().setSpeed(() -> ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(0.5)))
+                .alongWith(robotContainer.getIndexer().setVoltage(() -> {
+                    boolean good = RobotState.getInstance().getShooterReady() && (RobotState.getInstance().getSpeed() < 0.1);
+                    if (good) {
+                        return -9.0;
+                    }
+                    else {
+                        return 0.0;
+                    }
+                }, () -> {
+                    boolean good = RobotState.getInstance().getShooterReady() && (RobotState.getInstance().getSpeed() < 0.1);
+                    if (good) {
+                        return -12.0;
+                    }
+                    else {
+                        return 0.0;
+                    }
+                }
+            )
+        );
     }
 }

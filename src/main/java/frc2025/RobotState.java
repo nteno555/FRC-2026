@@ -28,6 +28,7 @@ public class RobotState {
     private double angleToVirtualTarget;
 
     private boolean shuttling;
+    private boolean manual;
     private Pose2d shootingWhileMovingVirtualPose;
 
     private boolean driveShotReady;
@@ -39,6 +40,7 @@ public class RobotState {
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
         shuttling = false;
+        manual = false;
     }
 
     public static RobotState getInstance() {
@@ -195,4 +197,6 @@ public class RobotState {
     public boolean getDriveAutoAiming() { return driveAutoAiming; }
     public void setWantAutoIntaking(boolean want) {wantAutoIntaking = want;}
     public boolean getWantAutoIntaking() {return wantAutoIntaking;}
+    public void setManual(boolean enable) {manual = enable;}
+    public boolean getManual() {return manual;}
 }
