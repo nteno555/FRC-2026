@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc2025.commands.AutoAimCommands;
 import frc2025.commands.FollowPathCommand;
 import frc2025.config.ShooterTreeMap;
+import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveSubsystem;
 import frc2025.util.Alliance;
 import org.json.simple.parser.ParseException;
@@ -71,11 +72,15 @@ public class Autos {
     }
 
     private Command finalAutoAim() {
-        return AutoAimCommands.driveAutoAim(
-                robotContainer,
-                () -> RobotState.getInstance().getTargetPose(),
-                () -> new ChassisSpeeds(0,0,0)
-        );
+                if (!SubsystemConstants.hasTurret) {
+                        return AutoAimCommands.driveAutoAim(
+                                robotContainer,
+                                () -> RobotState.getInstance().getTargetPose(),
+                                () -> new ChassisSpeeds(0,0,0)
+                        );
+                } else {
+                        return AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getTargetPose(), null);
+                }
     }
 
 
@@ -94,10 +99,18 @@ public class Autos {
     }
 
     public Command buildAuto(List<String> paths, boolean climb) {
-        Command auto = AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> null)
-                .alongWith(AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose()))
-                .alongWith(AutoAimCommands.hoodAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose()))
-                .alongWith(AutoAimCommands.autoIndex(robotContainer));
+        Command auto;
+        if (SubsystemConstants.hasTurret) {
+                auto = AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> null)
+                        .alongWith(AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose()))
+                        .alongWith(AutoAimCommands.hoodAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose()))
+                        .alongWith(AutoAimCommands.autoIndex(robotContainer));
+        } else {
+                auto = AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
+                        .alongWith(AutoAimCommands.hoodAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose()))
+                        .alongWith(AutoAimCommands.autoIndex(robotContainer));
+        }
+        
 
         Command pathCommands = intakePathResetOdometry(paths.get(0));
 
