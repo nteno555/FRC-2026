@@ -4,6 +4,7 @@ package frc2025.subsystems.vision;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N3;
 import frc2025.RobotState;
 import org.littletonrobotics.junction.Logger;
@@ -12,16 +13,24 @@ import java.util.List;
 
 public class LimelightFiducialCamera {
     String name;
-    public LimelightFiducialCamera(String name) {
+    boolean turretMounted;
+
+    public LimelightFiducialCamera(String name, boolean turretMounted) {
         this.name = name;
+        this.turretMounted = turretMounted;
     }
+
     public void resetGyro() {}
+
     public void setUseGyro() {}
+
     public void updateReefAlign() {}
+
     public void writeGyro() {
         LimelightHelpers.SetIMUMode(name, 0);
         LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getVisionPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     }
+
     public void updateSide() {
         /*if(!Alliance.get()) {
             LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{17, 18, 19, 20, 21, 22});
@@ -29,6 +38,7 @@ public class LimelightFiducialCamera {
             LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{6, 7, 8, 9, 10, 11});
         }*/
     }
+
     public void updatePose() {
         updateSide();
 
@@ -54,6 +64,14 @@ public class LimelightFiducialCamera {
 
 
         Pose2d pose = poseEstimate.pose;
+        Pose2d robotToCameraPose = RobotState.getInstance().getTurretLimelightPose();
+        if(turretMounted) {
+            pose = new Pose2d(
+                    pose.getX() - robotToCameraPose.getX(),
+                    pose.getY() - robotToCameraPose.getY(),
+                    pose.getRotation().minus(robotToCameraPose.getRotation())
+            );
+        }
 
         double meanAmbiguity = 0.0;
         int tagCount = 0;
@@ -80,7 +98,6 @@ public class LimelightFiducialCamera {
 
         if(usingMt1) {
             distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 5.0, Math.pow(leastDistance, 2) / 5.0, Math.pow(leastDistance, 2) / 10000.0);
-            //distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 5.0, Math.pow(leastDistance, 2) / 5.0, 999999);
         } else {
             distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 5.0, Math.pow(leastDistance, 2) / 5.0, 999999);
         }

@@ -1,9 +1,12 @@
 package frc2025.subsystems.turret;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc2025.RobotState;
+import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.function.Supplier;
@@ -25,6 +28,16 @@ public class TurretSubsystem extends SubsystemBase {
         Logger.recordOutput("Turret/setpoint", setpoint);
         if(DriverStation.isDisabled()) {setpoint = inputs.positionTicks;}
         io.updateInputs(inputs);
+
+        Pose2d turretLimelightPose = new Pose2d(
+                SubsystemConstants.shooterToCenterPose.getX() + Math.cos(inputs.positionRadians),
+                SubsystemConstants.shooterToCenterPose.getY() + Math.sin(inputs.positionRadians),
+                SubsystemConstants.shooterToCenterPose.getAngle().plus(Rotation2d.fromRadians(inputs.positionRadians))
+        );
+        RobotState.getInstance().setTurretLimelightPose(turretLimelightPose);
+//        RobotState.getInstance().setTurretLimelightPose(
+//
+//        );
     }
 
     public Command setPositionFieldRelative(Supplier<Double> positionRadians) {

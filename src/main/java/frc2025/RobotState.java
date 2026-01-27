@@ -37,6 +37,8 @@ public class RobotState {
     private boolean driveAutoAiming;
     private boolean wantAutoIntaking;
 
+    private Pose2d turretLimelightPose;
+
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
         shuttling = false;
@@ -199,4 +201,6 @@ public class RobotState {
     public boolean getWantAutoIntaking() {return wantAutoIntaking;}
     public void setManual(boolean enable) {manual = enable;}
     public boolean getManual() {return manual;}
+    public void setTurretLimelightPose(Pose2d pose) { turretLimelightPose = pose; }
+    public Pose2d getTurretLimelightPose() { return turretLimelightPose; }
 }
