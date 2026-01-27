@@ -167,6 +167,8 @@ public class RobotContainer {
         
         SmartDashboard.putNumber("Tuning/RPM", 0.0);
         SmartDashboard.putNumber("Tuning/hoodPosition", 0.0);
+        
+        turretSubsystem.setDefaultCommand(AutoAimCommands.turretAutoAim(this, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), null));
 
         driverXboxController.rightTrigger().whileTrue(
             indexerSubsystem.setVoltage(() -> -6.0, () -> -12.0))
