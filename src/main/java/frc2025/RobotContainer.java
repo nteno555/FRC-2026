@@ -34,6 +34,9 @@ import frc2025.subsystems.hood.HoodSubsystem;
 import frc2025.subsystems.shooter.ShooterIOReal;
 import frc2025.subsystems.shooter.ShooterIOSim;
 import frc2025.subsystems.shooter.ShooterSubsystem;
+import frc2025.subsystems.turret.TurretIOReal;
+import frc2025.subsystems.turret.TurretIOSim;
+import frc2025.subsystems.turret.TurretSubsystem;
 import frc2025.subsystems.vision.VisionIOReal;
 import frc2025.subsystems.vision.VisionIOSim;
 import frc2025.subsystems.vision.VisionSubsystem;
@@ -54,6 +57,7 @@ public class RobotContainer {
     IntakeSubsystem intakeSubsystem;
     HoodSubsystem hoodSubsystem;
     ShooterSubsystem shooterSubsystem;
+    TurretSubsystem turretSubsystem;
 
     Autos autos;
     Command autoCommand;
@@ -82,6 +86,7 @@ public class RobotContainer {
             intakeSubsystem = new IntakeSubsystem(new IntakeIOReal());
             hoodSubsystem = new HoodSubsystem(new HoodIOReal());
             shooterSubsystem = new ShooterSubsystem(new ShooterIOReal());
+            turretSubsystem = new TurretSubsystem(new TurretIOReal());
         } else {
             driveSubsystem = new DriveSubsystem(new DriveIOSim(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOSim());
@@ -89,6 +94,7 @@ public class RobotContainer {
             intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
             hoodSubsystem = new HoodSubsystem(new HoodIOSim());
             shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
+            turretSubsystem = new TurretSubsystem(new TurretIOSim());
         }
     }
 
@@ -128,6 +134,10 @@ public class RobotContainer {
 
     public VisionSubsystem getVision() {
         return visionSubsystem;
+    }
+
+    public TurretSubsystem getTurret() {
+        return turretSubsystem;
     }
 
     private void configureBindings() {
@@ -208,7 +218,7 @@ public class RobotContainer {
                                                         (-0.5) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
                                                         (-0.5) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
                                                         (0.7) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
-                                                )),
+                                                ), false),
                                         AutoAimCommands.shootFlush(this),
                                         () -> !RobotState.getInstance().getManual()
                                 )

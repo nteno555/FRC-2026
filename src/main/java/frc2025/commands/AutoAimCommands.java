@@ -1,11 +1,11 @@
 package frc2025.commands;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc2025.RobotContainer;
 import frc2025.RobotState;
 import frc2025.config.ShooterTreeMap;
@@ -30,10 +30,6 @@ public class AutoAimCommands {
                     Pose2d shooterPose = RobotState.getInstance().getVisionShooterPose();
                     Pose2d targetPose = targetPoseSupplier.get();
 
-                    /*double angleToTarget = Math.atan2(
-                            targetPose.getY() - shooterPose.getY(),
-                            targetPose.getX() - shooterPose.getX()
-                    );*/
                     double angleToTarget = RobotState.getInstance().getAngleToVirtualTarget();
                     double angularVelocity = angleController.calculate(modAngle(shooterPose.getRotation().getRadians()), modAngle(angleToTarget));
 
@@ -48,6 +44,38 @@ public class AutoAimCommands {
                     );
                 }
         );
+    }
+
+
+    public static Command turretAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {
+        return robotContainer.getTurret().setPositionFieldRelative(
+                () -> {
+                    return RobotState.getInstance().getAngleToVirtualTarget();
+                }
+        );
+    }
+    
+    public static double clampTurretAngle(double wantedAngle, double currentAngle) {
+        double min_angle = Math.PI * -2;
+        double max_angle = Math.PI * 2;
+
+        double[] candidates = {wantedAngle, wantedAngle + 2*Math.PI, wantedAngle - 2*Math.PI};
+    
+        double bestAngle = currentAngle;  
+        double minDistance = 9999999.0;
+        
+        for (double candidate : candidates) {
+            if (candidate >= min_angle && candidate <= max_angle) {
+                double distance = Math.abs(candidate - currentAngle);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    bestAngle = candidate;
+                }
+            }
+        }
+
+        return bestAngle;
+
     }
 
     public static Command hoodAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier) {
@@ -82,10 +110,16 @@ public class AutoAimCommands {
         });
     }
 
-    public static Command autoAimCommand(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {
-        return shooterAutoSpinUp(robotContainer, targetPoseSupplier)
+    public static Command autoAimCommand(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds, boolean useTurret) {
+        if (useTurret) {
+            return shooterAutoSpinUp(robotContainer, targetPoseSupplier)
                 .alongWith(driveAutoAim(robotContainer, targetPoseSupplier, unlockedSpeeds))
                 .alongWith(hoodAutoAim(robotContainer, targetPoseSupplier));
+        } else {
+             return shooterAutoSpinUp(robotContainer, targetPoseSupplier)
+                .alongWith(turretAutoAim(robotContainer, targetPoseSupplier, unlockedSpeeds))
+                .alongWith(hoodAutoAim(robotContainer, targetPoseSupplier));
+        }
     }
 
     // calculate the virtual pose of the hub
@@ -117,15 +151,17 @@ public class AutoAimCommands {
 //        return virtualPose;
 //    }
 
-    public static Command autoAimWhileMovingCommand(RobotContainer robotContainer, ShooterTreeMap treeMap, Supplier<ChassisSpeeds> unlockedSpeeds) {
+    public static Command autoAimWhileMovingCommand(RobotContainer robotContainer, ShooterTreeMap treeMap, Supplier<ChassisSpeeds> unlockedSpeeds, boolean useTurret) {
         return autoAimCommand(
                 robotContainer,
                 () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
-                unlockedSpeeds);
+                unlockedSpeeds,
+                useTurret
+        );
     }
 
 
-    public static Command autoIndex(RobotContainer robotContainer) {
+   public static Command autoIndex(RobotContainer robotContainer) {
         return robotContainer.getIndexer().setVoltage(() -> {
             Logger.recordOutput("Indexer/autoIndexShooterReady", RobotState.getInstance().getShooterReady());
             Logger.recordOutput("Indexer/autoIndexDriveReady", RobotState.getInstance().getDriveShotReady());
