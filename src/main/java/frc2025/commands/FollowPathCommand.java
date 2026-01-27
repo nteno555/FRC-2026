@@ -66,12 +66,12 @@ public class FollowPathCommand extends Command {
         //Logger.recordOutput("Drive/path", path.getPathPoses());
     }
 
-    private double modAngle(double angle) {
-        angle = angle % (2*Math.PI);
-        if(angle > Math.PI) return angle - 2*Math.PI;
-        if(angle < -Math.PI) return angle + 2*Math.PI;
-        return angle;
-    }
+    // private double modAngle(double angle) {
+    //     angle = angle % (2*Math.PI);
+    //     if(angle > Math.PI) return angle - 2*Math.PI;
+    //     if(angle < -Math.PI) return angle + 2*Math.PI;
+    //     return angle;
+    // }
 
     @Override
     public void execute() {
@@ -86,39 +86,39 @@ public class FollowPathCommand extends Command {
         double omegaFeedback = rotationPID.calculate(
                 currentPose.getRotation().getRadians(), desiredState.pose.getRotation().getRadians());
 
-        Pose2d virtualTarget;
+        // Pose2d virtualTarget;
 
         double pathProgress = currentTime / trajectory.getTotalTimeSeconds() * (path.getWaypoints().size() - 1);
-        boolean autoAimOverride = true;
-//        RobotState.getInstance().setWantAutoIntaking(true);
-        for(EventMarker marker : eventMarkers) {
-            if (pathProgress >= marker.position() && pathProgress <= marker.endPosition()) {
-                if (marker.triggerName().equals("stop auto aim")) {
-                    autoAimOverride = false;
-                }
-//                if (marker.triggerName().equals("stop intake")) {
-//                    RobotState.getInstance().setWantAutoIntaking(false);
-//                }
-            }
-        }
+//         boolean autoAimOverride = true;
+// //        RobotState.getInstance().setWantAutoIntaking(true);
+//         for(EventMarker marker : eventMarkers) {
+//             if (pathProgress >= marker.position() && pathProgress <= marker.endPosition()) {
+//                 if (marker.triggerName().equals("stop auto aim")) {
+//                     autoAimOverride = false;
+//                 }
+// //                if (marker.triggerName().equals("stop intake")) {
+// //                    RobotState.getInstance().setWantAutoIntaking(false);
+// //                }
+//             }
+//         }
 
         Logger.recordOutput("Drive/pathProgress", pathProgress);
-        Logger.recordOutput("Drive/autoAimOverride", autoAimOverride);
+        // Logger.recordOutput("Drive/autoAimOverride", autoAimOverride);
 
         Logger.recordOutput("Drive/FollowPath/wantedVelocity", desiredState.linearVelocity);
         Logger.recordOutput("Drive/FollowPath/currentVelocity", RobotState.getInstance().getSpeed());
 
-        RobotState.getInstance().setDriveAutoAiming(autoAimOverride);
+        // RobotState.getInstance().setDriveAutoAiming(autoAimOverride);
         //if (shootWhileMove) {
-        if(autoAimOverride) {
-            virtualTarget = RobotState.getInstance().getShootingWhileMovingVirtualPose();
-            //double angleToTarget = Math.atan2(virtualTarget.getY() - currentPose.getY(), virtualTarget.getX() - currentPose.getX());
-            double angleToTarget = RobotState.getInstance().getAngleToVirtualTarget();
-            omegaFeedback = rotationPID.calculate(modAngle(currentPose.getRotation().getRadians()), modAngle(angleToTarget));
-        }
-        else {virtualTarget = null;}
+        // if(autoAimOverride) {
+        //     virtualTarget = RobotState.getInstance().getShootingWhileMovingVirtualPose();
+        //     //double angleToTarget = Math.atan2(virtualTarget.getY() - currentPose.getY(), virtualTarget.getX() - currentPose.getX());
+        //     double angleToTarget = RobotState.getInstance().getAngleToVirtualTarget();
+        //     omegaFeedback = rotationPID.calculate(modAngle(currentPose.getRotation().getRadians()), modAngle(angleToTarget));
+        // }
+        // else {virtualTarget = null;}
 
-        Logger.recordOutput("Drive/autoVirtualTarget", virtualTarget);
+        // Logger.recordOutput("Drive/autoVirtualTarget", virtualTarget);
 
         double dist = Math.sqrt(Math.pow(currentPose.getX() - desiredState.pose.getX(), 2) + Math.pow(currentPose.getY() - desiredState.pose.getY(), 2));
 
@@ -128,7 +128,7 @@ public class FollowPathCommand extends Command {
                 desiredState.fieldSpeeds.omegaRadiansPerSecond * -1.0
                 //omegaFeedback * -1
         );
-        if(autoAimOverride) desiredStateFlipped.omegaRadiansPerSecond = 0;
+        // if(autoAimOverride) desiredStateFlipped.omegaRadiansPerSecond = 0;
 
         Logger.recordOutput("Drive/PathFollowingError", dist);
 
