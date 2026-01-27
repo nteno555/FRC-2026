@@ -17,6 +17,7 @@ import frc2025.util.Alliance;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class Autos {
@@ -70,7 +71,7 @@ public class Autos {
     }
 
     private Command finalAutoAim() {
-        return AutoAimCommands.turretAutoAim(
+        return AutoAimCommands.driveAutoAim(
                 robotContainer,
                 () -> RobotState.getInstance().getTargetPose(),
                 () -> new ChassisSpeeds(0,0,0)
@@ -92,215 +93,19 @@ public class Autos {
         };
     }
 
-    /* Low Autos */
-    public Command LowShootPreload() {
-        Command auto = drive.resetOdometryCommand(startPoseSupplier(LOW_START))
-                .andThen(
-                        AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> null)
-                        .alongWith(
-                                AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
-                                        .alongWith(AutoAimCommands.autoIndex(robotContainer))
-                                        .alongWith(
-                                                intakePath("Low-Driveback")
-                                        )
-                        )
-                );
-        return auto;
-    }
+    public Command buildAuto(List<String> paths, boolean climb) {
+        Command auto = AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> null)
+                .alongWith(AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose()))
+                .alongWith(AutoAimCommands.hoodAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose()))
+                .alongWith(AutoAimCommands.autoIndex(robotContainer));
 
-    public Command LowShuttleAuto() {
-        RobotState.getInstance().setShuttling(true);
-        Command auto = drive.resetOdometryCommand(startPoseSupplier(LOW_START))
-                .andThen(
-                        AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> null)
-                                .alongWith(
-                                        AutoAimCommands.autoIndex(robotContainer)
-                                        .andThen(intakePath("Low-Neutral"))
-                                        .andThen(AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
-                                                .alongWith(AutoAimCommands.autoIndex(robotContainer))
-                                                .alongWith(
-                                                        intakePath("Neutral-Driveback")
-                                                                .andThen(finalAutoAim())
-                                                )
-                                        )
-                                )
-                );
+        Command pathCommands = intakePathResetOdometry(paths.get(0));
 
-        return auto;
-    }
+        for(int i = 1; i < paths.size(); i++) {
+            pathCommands = pathCommands.andThen(intakePath(paths.get(i)));
+        }
 
-    public Command LowStationDepotClimb() {
-        Command auto = drive.resetOdometryCommand(startPoseSupplier(LOW_START))
-                .andThen(
-                        AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> null)
-                                .alongWith(
-                                        AutoAimCommands.autoIndex(robotContainer)
-                                        .alongWith(AutoAimCommands.hoodAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose()))
-                                        .alongWith(AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose()))
-                                        .alongWith(
-                                                intakePath("Low-Station")
-                                                        .andThen(intakePathResetOdometry("Station-Depot"))
-                                                        .andThen(intakePath("Depot-Climb"))
-                                                        .andThen(finalAutoAim())
-                                        )
-                                )
-                );
-        return auto;
-    }
-
-    /* Mid Autos */
-
-    public Command MidShootPreload() {
-        Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
-                .andThen(
-                        AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> null)
-                                .alongWith(
-                                        AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
-                                                .alongWith(AutoAimCommands.autoIndex(robotContainer))
-                                                .alongWith(
-                                                        intakePath("Mid-Driveback")
-                                                )
-                                )
-                );
-        return auto;
-    }
-
-    public Command MidDepotNeutralClimbShootWhileMoving() {
-        Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
-                .andThen(
-                        AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> null)
-                        .alongWith(
-                                AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
-                                        .alongWith(AutoAimCommands.autoIndex(robotContainer))
-                                        .alongWith(
-                                                intakePathResetOdometry("Mid-Depot")
-                                                        .andThen(intakePath("Depot-Neutral"))
-                                                        .andThen(intakePath("Neutral-Climb"))
-                                                        .andThen(finalAutoAim())
-                                        )
-                        )
-                );
-        return auto;
-    }
-
-    public Command MidDepotShootWhileMoving() {
-        Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
-                .andThen(
-                        AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> null)
-                        .alongWith(
-                                AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
-                                        .alongWith(AutoAimCommands.autoIndex(robotContainer))
-                                        .alongWith(
-                                                intakePath("Mid-Depot")
-                                                        .andThen(intakePath("Depot-Mid"))
-                                                        .andThen(finalAutoAim())
-                                        )
-                        )
-                );
-        return auto;
-    }
-
-    public Command MidShootIntake() {
-        Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
-                .andThen(
-                        AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> null)
-                        .alongWith(
-                                AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
-                                        .alongWith(AutoAimCommands.autoIndex(robotContainer))
-                                        .alongWith(
-                                                intakePath("Mid-Driveback")
-                                                        .andThen(intakePath("MidDriveback-Depot"))
-                                        )
-                        )
-                );
-        return auto;
-    }
-
-    public Command MidStationDepotShootWhileMoving() {
-        Command auto = drive.resetOdometryCommand(startPoseSupplier(MID_START))
-                .andThen(
-                        AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> null)
-                        .alongWith(
-                                AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
-                                        .alongWith(AutoAimCommands.hoodAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose()))
-                                        .alongWith(AutoAimCommands.autoIndex(robotContainer))
-                                        .alongWith(
-                                                intakePath("Mid-Station")
-                                                        .andThen(intakePath("Station-Depot"))
-                                                        .andThen(intakePath("Depot-Mid"))
-                                                        .andThen(finalAutoAim())
-                                        )
-                        )
-                );
-        return auto;
-    }
-
-    /* High Autos */
-
-    public Command HighDepotStationClimb() {
-        Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
-                .andThen(
-                        AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> null)
-                        .alongWith(
-                                AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
-                                .alongWith(AutoAimCommands.hoodAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose()))
-                                .alongWith(AutoAimCommands.autoIndex(robotContainer))
-                                .alongWith(
-                                        intakePathResetOdometry("High-Depot")
-                                                .andThen(intakePath("Depot-Station"))
-                                                .andThen(intakePath("Station-Climb"))
-                                                .andThen(finalAutoAim())
-                                )
-                        )
-                );
-        return auto;
-    }
-
-    public Command HighShootPreload() {
-        Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
-                .andThen(
-                        AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> null)
-                        .alongWith(
-                                AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
-                                        .alongWith(AutoAimCommands.autoIndex(robotContainer))
-                                        .alongWith(
-                                                intakePath("High-Driveback")
-                                        )
-                        )
-                );
-        return auto;
-    }
-
-    public Command HighShootClimb() {
-        Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
-                .andThen(
-                        AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> null)
-                        .alongWith(
-                                AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
-                                        .alongWith(AutoAimCommands.autoIndex(robotContainer))
-                                        .alongWith(
-                                                intakePath("HighDriveback-Climb")
-                                        )
-                        )
-                );
-        return auto;
-
-    }
-    public Command HighShootIntakeClimb() {
-        Command auto = drive.resetOdometryCommand(startPoseSupplier(HIGH_START))
-                .andThen(
-                        AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> null)
-                        .alongWith(
-                                AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
-                                .alongWith(AutoAimCommands.autoIndex(robotContainer)
-                                .alongWith(
-                                        intakePath("High-Station")
-                                                .andThen(intakePath("Station-Climb"))
-                                        )
-                                )
-                        )
-                );
-        return auto;
+        return auto.andThen(pathCommands);
     }
 
 
@@ -310,4 +115,12 @@ public class Autos {
                 .andThen(drive.driveRobotRelative(() -> new ChassisSpeeds(0, 0, 0)));
         return auto;
     }
+
+    public Command HighDepotStationClimb = buildAuto(List.of("High-Depot", "Depot-Station", "Station-Climb"), true);
+    public Command MidStationDepotClimb = buildAuto(List.of("Mid-Station", "Station-Depot", "Depot-Climb"), true);
+    public Command LowStationDepotClimb = buildAuto(List.of("Low-Station", "Station-Depot", "Depot-Climb"), true);
+    public Command HighDepotClimb = buildAuto(List.of("High-Depot", "Depot-Climb"), true);
+    public Command LowStationClimb = buildAuto(List.of("Low-Station", "Station-Climb"), true);
+    public Command MidClimb = buildAuto(List.of("Mid-Climb"), true);
+    public Command LowStationNeutralClimb = buildAuto(List.of("Low-Station", "Station-Neutral", "Neutral-Climb (Low)"), true);
 }

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7900894454382823,
-        "y": 5.973935599284436
+        "x": 1.1804385432490603,
+        "y": 5.988557703088832
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8609660107334522,
-        "y": 5.341144901610018
+        "x": 2.066098717583551,
+        "y": 5.211339949431242
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "depot"
     },
     {
       "anchor": {
-        "x": 1.6338103756708402,
-        "y": 3.7186046511627904
+        "x": 2.403771523934824,
+        "y": 3.8105386798999925
       },
       "prevControl": {
-        "x": 1.8285152057245075,
-        "y": 4.367620751341681
+        "x": 2.2389419764765988,
+        "y": 5.009989426789461
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "climb"
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 240.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
-  },
-  "reversed": false,
-  "folder": "Depot-Climb",
-  "idealStartingState": {
-    "velocity": 0,
     "rotation": 0.0
   },
-  "useDefaultConstraints": true
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "useDefaultConstraints": false
 }

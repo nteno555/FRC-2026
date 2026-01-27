@@ -91,7 +91,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Neutral-Climb",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

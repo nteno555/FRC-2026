@@ -69,7 +69,8 @@ public class ShooterIOReal implements ShooterIO {
 
     @Override
     public void setSpeed(double speed) {
-        VelocityVoltage controlRequest = new VelocityVoltage(speed);
+        VelocityVoltage controlRequest = new VelocityVoltage(speed)
+                .withEnableFOC(true);
         Logger.recordOutput("Shooter/controlRequestVelocity", controlRequest.Velocity);
         flywheelMaster.setControl(controlRequest);
     }

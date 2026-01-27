@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 2.6800174944842308,
-        "y": 1.4467198554144969
+        "y": 1.4467198554144973
       },
       "isLocked": false,
       "linkedName": "mid"
@@ -57,7 +57,7 @@
     "rotation": 90.0
   },
   "reversed": false,
-  "folder": "Start-Station",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

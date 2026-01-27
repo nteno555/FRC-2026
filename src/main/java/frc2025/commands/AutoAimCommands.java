@@ -122,35 +122,6 @@ public class AutoAimCommands {
         }
     }
 
-    // calculate the virtual pose of the hub
-//    public static Pose2d calculateShootingWhileMoving(RobotContainer robotContainer, ShooterTreeMap treeMap, Pose2d realTargetPose) {
-//        Pose2d currentPose = RobotState.getInstance().getVisionPose();
-//        //Pose2d targetPose = Alliance.get() ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
-//        Pose2d virtualPose = realTargetPose;
-//
-//        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
-//            robotContainer.getDrive().getRobotRelativeSpeeds(),
-//            currentPose.getRotation()
-//        );
-//        Translation2d velocity = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
-//
-//        for (int i = 0; i < 5; i++) {
-//            double dx = virtualPose.getX() - currentPose.getX();
-//            double dy = virtualPose.getY() - currentPose.getY();
-//            double distance = Math.hypot(dx, dy);
-//
-//            double flightTime = treeMap.tofTreeMap.getInterpolated(distance);
-//
-//            virtualPose = new Pose2d(
-//                realTargetPose.getX() + velocity.getX() * flightTime,
-//                realTargetPose.getY() + velocity.getY() * flightTime,
-//                realTargetPose.getRotation()
-//            );
-//        }
-//
-//        return virtualPose;
-//    }
-
     public static Command autoAimWhileMovingCommand(RobotContainer robotContainer, ShooterTreeMap treeMap, Supplier<ChassisSpeeds> unlockedSpeeds, boolean useTurret) {
         return autoAimCommand(
                 robotContainer,
@@ -197,6 +168,11 @@ public class AutoAimCommands {
                         return 0.0;
                     }
             }));
+    }
+
+    public static Command autoAimFlush(RobotContainer robotContainer) {
+        return robotContainer.getHood().setPosition(() -> 0.0)
+                .alongWith(robotContainer.getShooter().setSpeed(() -> ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(0.5)));
     }
 
     public static Command shootFlush(RobotContainer robotContainer) {
