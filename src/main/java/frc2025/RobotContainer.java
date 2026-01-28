@@ -74,7 +74,7 @@ public class RobotContainer {
 //        autoCommand = autos.MidDepotShootWhileMoving();
 //        configureAutoCommands();
         //autoCommand = autos.LowShootPreload();
-        autoCommand = autos.LowStationDepotClimb;
+//        autoCommand = Autos.LowStationDepotClimb;
     }
 
     public void periodic() {
@@ -152,7 +152,7 @@ public class RobotContainer {
         );
 
         hoodSubsystem.setDefaultCommand(AutoAimCommands.hoodAutoAim(this, () -> RobotState.getInstance().getTargetPose()));
-        shooterSubsystem.setDefaultCommand(AutoAimCommands.hoodAutoAim(this, () -> RobotState.getInstance().getTargetPose()));
+        shooterSubsystem.setDefaultCommand(AutoAimCommands.shooterAutoSpinUp(this, () -> RobotState.getInstance().getTargetPose()));
         turretSubsystem.setDefaultCommand(AutoAimCommands.turretAutoAim(this, () -> RobotState.getInstance().getTargetPose(), () -> null));
         //hoodSubsystem.setDefaultCommand(AutoAimCommands.hoodAutoAim(this, () -> RobotState.getInstance().getTargetPose()));
 
@@ -304,8 +304,8 @@ public class RobotContainer {
 
     public void autoInit() {
 //        autoCommand = autoChooser.getSelected();
+        autoCommand = autos.LowStationDepotClimb();
         RobotState.getInstance().setShuttling(false);
-        autoCommand = autos.LowStationDepotClimb;
         CommandScheduler.getInstance().schedule(autoCommand);
     }
 

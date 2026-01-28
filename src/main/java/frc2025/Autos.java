@@ -33,6 +33,8 @@ public class Autos {
         this.robotContainer = robotContainer;
         this.drive = robotContainer.getDrive();
         RobotState.getInstance().setShuttling(false);
+
+        System.out.println(this.robotContainer);
     }
 
     /* Path Commands */
@@ -129,11 +131,11 @@ public class Autos {
         return auto;
     }
 
-    public Command HighDepotStationClimb = buildAuto(List.of("High-Depot", "Depot-Station", "Station-Climb"), true);
-    public Command MidStationDepotClimb = buildAuto(List.of("Mid-Station", "Station-Depot", "Depot-Climb"), true);
-    public Command LowStationDepotClimb = buildAuto(List.of("Low-Station", "Station-Depot", "Depot-Climb"), true);
-    public Command HighDepotClimb = buildAuto(List.of("High-Depot", "Depot-Climb"), true);
-    public Command LowStationClimb = buildAuto(List.of("Low-Station", "Station-Climb"), true);
-    public Command MidClimb = buildAuto(List.of("Mid-Climb"), true);
-    public Command LowStationNeutralClimb = buildAuto(List.of("Low-Station", "Station-Neutral", "Neutral-Climb (Low)"), true);
+    public Command HighDepotStationClimb() { return buildAuto(List.of("High-Depot", "Depot-Station", "Station-Climb"), true); }
+    public Command MidStationDepotClimb() { return buildAuto(List.of("Mid-Station", "Station-Depot", "Depot-Climb"), true); }
+    public Command LowStationDepotClimb() { return buildAuto(List.of("Low-Station", "Station-Depot", "Depot-Climb"), true); }
+    public Command HighDepotClimb() { return buildAuto(List.of("High-Depot", "Depot-Climb"), true); }
+    public Command LowStationClimb() { return buildAuto(List.of("Low-Station", "Station-Climb"), true); }
+    public Command MidClimb() { return buildAuto(List.of("Mid-Climb"), true); }
+    public Command LowStationNeutralClimb() { return buildAuto(List.of("Low-Station", "Station-Neutral", "Neutral-Climb (Low)"), true); }
 }
