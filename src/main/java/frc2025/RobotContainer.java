@@ -174,9 +174,13 @@ public class RobotContainer {
             .whileFalse(indexerSubsystem.setVoltage(() -> 0.5, () -> 0.0));
 
         driverXboxController.povLeft().whileTrue(
-                new InstantCommand(() -> wantIntake = !wantIntake)
-                        .andThen(intakeSubsystem.setIntaking(() -> wantIntake))
+                indexerSubsystem.setVoltage(() -> 0.0, () -> 12.0).
+                        alongWith(shooterSubsystem.setSpeed(() -> 30.0))
+//                new InstantCommand(() -> wantIntake = !wantIntake)
+//                        .andThen(intakeSubsystem.setIntaking(() -> wantIntake))
         );
+
+
 
         driverXboxController.leftTrigger()
                         .whileTrue(

@@ -69,6 +69,13 @@ public class TurretSubsystem extends SubsystemBase {
                 }
             }
 
+            if (bestAngle < minAngle) {
+                bestAngle = minAngle;
+            }
+            else if (bestAngle > maxAngle) {
+                bestAngle = maxAngle;
+            }
+
             setpoint = io.toRotations(bestAngle);
             usingVoltage = false;
             io.setPosition(setpoint);

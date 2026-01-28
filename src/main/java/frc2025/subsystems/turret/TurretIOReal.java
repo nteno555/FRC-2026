@@ -1,5 +1,6 @@
 package frc2025.subsystems.turret;
 
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.ControlRequest;
@@ -9,6 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
@@ -43,9 +45,16 @@ public class TurretIOReal implements TurretIO{
         configTorque.PeakReverseTorqueCurrent = SubsystemConstants.turretPeakReverseTorqueCurrent;
         configTorque.TorqueNeutralDeadband = SubsystemConstants.turretTorqueNeutralDeadband;
 
+        SoftwareLimitSwitchConfigs softLimits = new SoftwareLimitSwitchConfigs();
+        softLimits.ForwardSoftLimitThreshold = SubsystemConstants.turretRotationsPerRadian * Math.PI / 2.0;
+        softLimits.ForwardSoftLimitEnable = true;
+        softLimits.ReverseSoftLimitThreshold = -SubsystemConstants.turretRotationsPerRadian * Math.PI / 2.0;
+        softLimits.ReverseSoftLimitEnable = true;
+
         turretMotor.getConfigurator().apply(talonFXConfigs);
         turretMotor.getConfigurator().apply(configTorque);
         turretMotor.setNeutralMode(NeutralModeValue.Brake);
+        turretMotor.getConfigurator().apply(softLimits);
     }
 
     public double toRadians(double position) {
