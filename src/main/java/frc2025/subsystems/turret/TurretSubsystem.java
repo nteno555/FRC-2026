@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc2025.RobotState;
 import frc2025.config.SubsystemConstants;
@@ -30,8 +31,10 @@ public class TurretSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
 
         Pose2d turretLimelightPose = new Pose2d(
-                SubsystemConstants.shooterToCenterPose.getX() + Math.cos(inputs.positionRadians),
-                SubsystemConstants.shooterToCenterPose.getY() + Math.sin(inputs.positionRadians),
+                SubsystemConstants.shooterToCenterPose.getX()
+                        + SubsystemConstants.turretToLimelightRadius * Math.cos(inputs.positionRadians + SubsystemConstants.turretLimelightAngleOffsetRadians),
+                SubsystemConstants.shooterToCenterPose.getY()
+                        + SubsystemConstants.turretToLimelightRadius * Math.sin(inputs.positionRadians + SubsystemConstants.turretLimelightAngleOffsetRadians),
                 SubsystemConstants.shooterToCenterPose.getAngle().plus(Rotation2d.fromRadians(inputs.positionRadians))
         );
         RobotState.getInstance().setTurretLimelightPose(turretLimelightPose);
@@ -48,8 +51,8 @@ public class TurretSubsystem extends SubsystemBase {
 
     public Command setPositionSafe(Supplier<Double> positionRadians) {
         return this.run(() -> {
-            double minAngle = Math.PI * -2;
-            double maxAngle = Math.PI * 2;
+            double minAngle = SubsystemConstants.turretMinAngleRadians;
+            double maxAngle = SubsystemConstants.turretMaxAngleRadians;
 
             double[] candidates = {positionRadians.get(), positionRadians.get() + 2*Math.PI, positionRadians.get() - 2*Math.PI};
 

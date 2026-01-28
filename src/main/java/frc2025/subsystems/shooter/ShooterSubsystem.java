@@ -24,7 +24,7 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         Logger.processInputs("RealOutputs/Shooter", inputs);
-        Logger.recordOutput("Shooter/shotReadyklajdflajsndlfna", getShotReady());
+        Logger.recordOutput("Shooter/shotReady", getShotReady());
         io.updateInputs(this.inputs);
         RobotState.getInstance().setShooterReady(getShotReady());
     }
@@ -40,7 +40,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public Command setSpeed(Supplier<Double> speed) {
         return this.runEnd(() -> {
-            Logger.recordOutput("Shooter/wantedSpeedSubsystem", speed.get());
+            Logger.recordOutput("Shooter/wantedSpeed", speed.get());
             usingVoltage = false;
             wantedVelocity = speed.get();
             io.setSpeed(speed.get());
@@ -56,7 +56,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public Command setPercentOutput(Supplier<Double> percentOutput) {
         return this.run( () -> {
-            Logger.recordOutput("Shooter/percentOutput", percentOutput.get());
+            Logger.recordOutput("Shooter/wantedPercentOutput", percentOutput.get());
             usingVoltage = false;
             wantedPercentOutput = percentOutput.get();
             io.setPercentOutput(percentOutput.get());

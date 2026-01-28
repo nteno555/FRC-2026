@@ -5,8 +5,10 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.numbers.N3;
 import frc2025.RobotState;
+import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.List;
@@ -42,6 +44,13 @@ public class LimelightFiducialCamera {
     public void updatePose() {
         updateSide();
 
+        if(turretMounted) {
+            Pose2d pose = RobotState.getInstance().getTurretLimelightPose();
+            LimelightHelpers.setCameraPose_RobotSpace(name,
+                    pose.getY(), pose.getX(), SubsystemConstants.turretLimelightHeight,
+                    SubsystemConstants.turretLimelightRoll, SubsystemConstants.turretLimelightPitch, pose.getRotation().getDegrees());
+        }
+
         LimelightHelpers.LimelightTarget_Fiducial fiducial = new LimelightHelpers.LimelightTarget_Fiducial();
         fiducial.ta = LimelightHelpers.getTA(name);
         fiducial.fiducialID = LimelightHelpers.getFiducialID(name);
@@ -65,13 +74,18 @@ public class LimelightFiducialCamera {
 
         Pose2d pose = poseEstimate.pose;
         Pose2d robotToCameraPose = RobotState.getInstance().getTurretLimelightPose();
-        if(turretMounted) {
-            pose = new Pose2d(
-                    pose.getX() - robotToCameraPose.getX(),
-                    pose.getY() - robotToCameraPose.getY(),
-                    pose.getRotation().minus(robotToCameraPose.getRotation())
-            );
-        }
+//        if(turretMounted) {
+////            pose = new Pose2d(
+////                    pose.getX() - robotToCameraPose.getX(),
+////                    pose.getY() - robotToCameraPose.getY(),
+////                    pose.getRotation().minus(robotToCameraPose.getRotation())
+////            );
+//            Transform2d cameraToRobotTransform = new Transform2d(
+//                    robotToCameraPose.getTranslation().times(-1),
+//                    robotToCameraPose.getRotation().unaryMinus()
+//            );
+//            pose = pose.transformBy(cameraToRobotTransform);
+//        }
 
         double meanAmbiguity = 0.0;
         int tagCount = 0;

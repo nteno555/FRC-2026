@@ -92,17 +92,34 @@ public class TurretIOReal implements TurretIO{
 
     @Override
     public void rezero() {
-        double tb1RotToRad = (Math.PI*2) / SubsystemConstants.throughBoreRatio1;
-        double tb2RotToRad = (Math.PI*2) / SubsystemConstants.throughBoreRatio2;
-        double smallestPos1 = ((throughBore1.get() - SubsystemConstants.throughBoreZero1 + 1) % 1) * tb1RotToRad;
-        double smallestPos2 = ((1 - throughBore2.get() - SubsystemConstants.throughBoreZero2 + 1) % 1) * tb2RotToRad;
-        double epsilon = 5;
+        turretMotor.setPosition(0.0);
+    }
 
-        while(Math.abs(smallestPos1 - smallestPos2) > epsilon) { 
-            if(smallestPos1 < smallestPos2) smallestPos1 += tb1RotToRad;
-            else smallestPos2 += tb2RotToRad;
+    public void rezeroCRT() {
+        double pos1 = ((throughBore1.get() - SubsystemConstants.throughBoreZero1) / SubsystemConstants.throughBoreRatio1) % 1;
+        double pos2 = ((throughBore2.get() - SubsystemConstants.throughBoreZero2) / SubsystemConstants.throughBoreRatio2) % 1;
+
+        while(Math.abs(pos1 - pos2) > 0.01) {
+            if(pos1 < pos2) pos1 += 1 / SubsystemConstants.throughBoreRatio1;
+            else pos2 += 1 / SubsystemConstants.throughBoreRatio2;
         }
 
-        turretMotor.setPosition(- 1 * smallestPos1 * SubsystemConstants.turretRotationsPerRadian);
+        turretMotor.setPosition(pos1);
     }
+
+//    @Override
+//    public void rezero() {
+//        double tb1RotToRad = (Math.PI*2) / SubsystemConstants.throughBoreRatio1;
+//        double tb2RotToRad = (Math.PI*2) / SubsystemConstants.throughBoreRatio2;
+//        double smallestPos1 = ((throughBore1.get() - SubsystemConstants.throughBoreZero1 + 1) % 1) * tb1RotToRad;
+//        double smallestPos2 = ((1 - throughBore2.get() - SubsystemConstants.throughBoreZero2 + 1) % 1) * tb2RotToRad;
+//        double epsilon = 5;
+//
+//        while(Math.abs(smallestPos1 - smallestPos2) > epsilon) {
+//            if(smallestPos1 < smallestPos2) smallestPos1 += tb1RotToRad;
+//            else smallestPos2 += tb2RotToRad;
+//        }
+//
+//        turretMotor.setPosition(- 1 * smallestPos1 * SubsystemConstants.turretRotationsPerRadian);
+//    }
 }

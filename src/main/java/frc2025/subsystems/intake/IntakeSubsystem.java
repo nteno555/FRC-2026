@@ -26,7 +26,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic(){
-        Logger.processInputs("RealOutputs/Intake",inputs);
+        Logger.processInputs("RealOutputs/Intake", inputs);
         io.updateInputs(inputs);
 
         if (DriverStation.isAutonomousEnabled() && RobotState.getInstance().getWantAutoIntaking()) {

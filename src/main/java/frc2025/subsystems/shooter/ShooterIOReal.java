@@ -54,9 +54,8 @@ public class ShooterIOReal implements ShooterIO {
 
         inputs.slaveVoltage = flywheelSlave.getMotorVoltage().getValueAsDouble();
         inputs.slaveVelocityRPM = flywheelSlave.getVelocity().getValueAsDouble();
-        Logger.recordOutput("Shooter/lowerflywheelvel",flywheelMaster.getVelocity().getValueAsDouble());
     }
-    
+
     @Override
     public void setVoltage(double voltage) {
         flywheelMaster.setControl(new VoltageOut(voltage));
@@ -71,13 +70,6 @@ public class ShooterIOReal implements ShooterIO {
     public void setSpeed(double speed) {
         VelocityVoltage controlRequest = new VelocityVoltage(speed)
                 .withEnableFOC(true);
-        Logger.recordOutput("Shooter/controlRequestVelocity", controlRequest.Velocity);
         flywheelMaster.setControl(controlRequest);
     }
-
-//    @Override
-//    public boolean getShotReady(double wantedSpeed) {
-//        Logger.recordOutput("Shooter/getVelocityValAsDouble", flywheelMaster.getVelocity().getValueAsDouble());
-//        return Math.abs(flywheelMaster.getVelocity().getValueAsDouble() - wantedSpeed) < 20.0;
-//    }
 }

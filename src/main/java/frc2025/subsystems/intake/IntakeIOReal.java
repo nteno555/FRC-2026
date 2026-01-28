@@ -76,9 +76,6 @@ public class IntakeIOReal implements IntakeIO {
     public void updateInputs(IntakeIOInputs inputs) {
         inputs.voltage = intakeRoller.getMotorVoltage().getValue().in(Units.Volts);
         inputs.position = intakeDeployMaster.getPosition().getValueAsDouble();
-        Logger.recordOutput("Intake/positionRotations", intakeDeployMaster.getPosition().getValue().in(Units.Rotations));
-        Logger.recordOutput("Intake/positionMeters", inputs.position);
-        Logger.recordOutput("Intake/voltage", inputs.voltage);
         Logger.recordOutput("Intake/deployVoltage", intakeDeployMaster.getMotorVoltage().getValue().in(Units.Volts));
     }
 
@@ -89,27 +86,17 @@ public class IntakeIOReal implements IntakeIO {
 
     @Override
     public void setDeployPosition(double position) {
-        //intakeDeployMaster.setControl(createControlRequest(SubsystemConstants.intakeDeployPosition, false));
         Logger.recordOutput("Intake/wantedPositionRotations", position);
         intakeDeployMaster.setControl(
-        //        new MotionMagicVoltage(position)
         new PositionVoltage(position)
                         .withSlot(0)
         );
-//        if(position < 0) intakeDeployMaster.setControl(new VoltageOut(-1.0));
-//        else intakeDeployMaster.setControl(new VoltageOut(1.0));
     }
-//
-//    @Override
-//    public void setZeroPosition() {
-//        intakeDeployMaster.setControl(createControlRequest(0.0, false));
-//    }
 
     @Override
     public void setVoltage(double voltage) {
         Logger.recordOutput("Intake/wantedVoltage", voltage);
         intakeRoller.setControl(new VoltageOut(voltage));
-//        if (voltage == 0.0) intakeDeployMaster.setControl(createControlRequest(0.0, true));
     }
 
     @Override

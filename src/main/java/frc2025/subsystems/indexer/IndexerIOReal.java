@@ -11,7 +11,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 public class IndexerIOReal implements IndexerIO {
     private final TalonFX indexer = new TalonFX(21, "rio");
     private final TalonFX tower = new TalonFX(25, "rio");
-    // private double wantedVoltage = 0.0;
 
     public IndexerIOReal() {
         indexer.getConfigurator().apply(new TalonFXConfiguration());
@@ -46,11 +45,7 @@ public class IndexerIOReal implements IndexerIO {
         indexer.getConfigurator().apply(configTorque, 0.05);
         tower.getConfigurator().apply(towerConfigs, 0.050);
         tower.getConfigurator().apply(towerConfigTorque, 0.05);
-
     }
-
-
-
 
     private ControlRequest createControlRequest(double targetValue, boolean useVoltage) {
         if (useVoltage) {
@@ -62,12 +57,10 @@ public class IndexerIOReal implements IndexerIO {
 
     @Override
     public void updateInputs(IndexerIOInputs inputs) {
-        // TODO: not sure if this is needed
         inputs.indexerVoltage = indexer.getMotorVoltage().getValueAsDouble();
         inputs.indexerCurrent = indexer.getTorqueCurrent().getValueAsDouble();
         inputs.towerVoltage = tower.getMotorVoltage().getValueAsDouble();
         inputs.towerCurrent = tower.getTorqueCurrent().getValueAsDouble();
-        //Logger.recordOutput("Indexer/wantedVoltage", wantedVoltage);
     }
 
     @Override
@@ -80,7 +73,6 @@ public class IndexerIOReal implements IndexerIO {
     public void setVoltage(double indexerVoltage, double towerVoltage) {
         indexer.setControl(createControlRequest(indexerVoltage, true));
         tower.setControl(createControlRequest(towerVoltage, false));
-        //wantedVoltage = voltage;
     }
 
 

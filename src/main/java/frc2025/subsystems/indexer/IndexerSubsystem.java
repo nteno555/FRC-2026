@@ -27,7 +27,6 @@ public class IndexerSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
     }
 
-    // Sets speed as a decimal from 0-1
     public Command setSpeed(Supplier<Double> indexerSpeed, Supplier<Double> towerSpeed) {
         return this.run(() -> {
             usingVoltage = false;
@@ -42,37 +41,6 @@ public class IndexerSubsystem extends SubsystemBase {
         }, () -> {
             io.setVoltage(0.0, 0.0);
         });
-    }
-
-    public Command setIntake(Supplier<Boolean> intake) {
-        return this.run(() -> {
-            usingVoltage = false;
-            if (intake.get()) io.setSpeed(1, 1);
-            else io.setSpeed(0, 0);
-        });
-    }
-
-    public Command setOuttake(Supplier<Boolean> intake) {
-        return this.run(() -> {
-            usingVoltage = false;
-            if (intake.get()) io.setSpeed(-1.0, -1.0);
-            else io.setSpeed(0, 0);
-        });
-    }
-
-    public Command setAuto() {
-        return this.run(() -> {
-            if(getHasPiece()) io.setSpeed(1.0, 1.0);
-            else io.setSpeed(0, 0);
-        });
-    }
-
-    public IndexerIO getIO() {
-        return io;
-    }
-
-    public boolean getHasPiece() {
-        return hasPieceTrigger.getAsBoolean();
     }
 }
 
