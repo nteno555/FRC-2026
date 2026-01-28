@@ -56,26 +56,32 @@ public class AutoAimCommands {
     }
     
     public static double clampTurretAngle(double wantedAngle, double currentAngle) {
-        double min_angle = Math.PI * -2;
-        double max_angle = Math.PI * 2;
+        double minAngle = -Math.PI/2.0;
+        double maxAngle = Math.PI/2.0;
 
-        double[] candidates = {wantedAngle, wantedAngle + 2*Math.PI, wantedAngle - 2*Math.PI};
-    
-        double bestAngle = currentAngle;  
-        double minDistance = 9999999.0;
-        
-        for (double candidate : candidates) {
-            if (candidate >= min_angle && candidate <= max_angle) {
-                double distance = Math.abs(candidate - currentAngle);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    bestAngle = candidate;
-                }
-            }
+        double bestAngle = wantedAngle;
+        if (wantedAngle < minAngle) {
+            bestAngle = minAngle;
         }
+        else if (bestAngle > maxAngle) {
+            bestAngle = maxAngle;
+        }
+//        double[] candidates = {wantedAngle, wantedAngle + 2*Math.PI, wantedAngle - 2*Math.PI};
+//
+//        double bestAngle = currentAngle;
+//        double minDistance = 9999999.0;
+//
+//        for (double candidate : candidates) {
+//            if (candidate >= min_angle && candidate <= max_angle) {
+//                double distance = Math.abs(candidate - currentAngle);
+//                if (distance < minDistance) {
+//                    minDistance = distance;
+//                    bestAngle = candidate;
+//                }
+//            }
+//        }
 
         return bestAngle;
-
     }
 
     public static Command hoodAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier) {

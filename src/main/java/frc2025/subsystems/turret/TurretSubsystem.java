@@ -48,22 +48,15 @@ public class TurretSubsystem extends SubsystemBase {
 
     public Command setPositionSafe(Supplier<Double> positionRadians) {
         return this.run(() -> {
-            double minAngle = Math.PI * -2;
-            double maxAngle = Math.PI * 2;
-
-            double[] candidates = {positionRadians.get(), positionRadians.get() + 2*Math.PI, positionRadians.get() - 2*Math.PI};
+            double minAngle = -Math.PI/2.0;
+            double maxAngle = Math.PI/2.0;
 
             double bestAngle = positionRadians.get();
-            double minDistance = 9999999.0;
-
-            for (double candidate : candidates) {
-                if (candidate >= minAngle && candidate <= maxAngle) {
-                    double distance = Math.abs(candidate - inputs.positionRadians);
-                    if (distance < minDistance) {
-                        minDistance = distance;
-                        bestAngle = candidate;
-                    }
-                }
+            if (bestAngle < minAngle) {
+                bestAngle = minAngle;
+            }
+            else if (bestAngle > maxAngle) {
+                bestAngle = maxAngle;
             }
 
             setpoint = io.toRotations(bestAngle);
