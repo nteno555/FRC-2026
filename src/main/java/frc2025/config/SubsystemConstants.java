@@ -47,15 +47,15 @@ public class SubsystemConstants {
     public static double intakeTorqueNeutralDeadband = 1;
     public static double intakeDeployPosition = -3.70;
 
-    public static double turretkS = 0.67;
-    public static double turretkV = 0.67;
-    public static double turretkG = 0.00;
-    public static double turretkP = 0.67;
-    public static double turretkI = 0.67;
-    public static double turretkD = 0.67;
-    public static double turretCruiseVelocity = 100;
-    public static double turretAcceleration = 200;
-    public static double turretJerk = 7000;
+    public static double turretkS = 0.30;
+    public static double turretkV = 0.12;
+    public static double turretkG = 0.0;
+    public static double turretkP = 2.0;
+    public static double turretkI = 0.0;
+    public static double turretkD = 0.0;
+    public static double turretCruiseVelocity = 60;
+    public static double turretAcceleration = 150;
+    public static double turretJerk = 700;
     public static double turretSupplyCurrentLimit = 40;
     public static double turretStatorCurrentLimit = 40;
     public static double turretPeakForwardTorqueCurrent = 40;
@@ -63,9 +63,9 @@ public class SubsystemConstants {
     public static double turretTorqueNeutralDeadband = 1;
     public static double turretRotationsPerDegree = 0.208333333333;
     public static double turretZeroOffsetDegrees = 20;
-    public static double turretRotationsPerRadian = turretRotationsPerDegree * (180/Math.PI);
-    public static double turretMinAngleRadians = 0;
-    public static double turretMaxAngleRadians = 2 * Math.PI * 1.1;
+    public static double turretRotationsPerRadian = 2.556750949;
+    public static double turretMinAngleRadians = -4.7123889804;
+    public static double turretMaxAngleRadians = 1.5707963268;
     public static double throughBoreZero1 = 0.879;
     public static double throughBoreZero2 = 0.205;
     public static double throughBoreRatio1 = 3.7058823529;

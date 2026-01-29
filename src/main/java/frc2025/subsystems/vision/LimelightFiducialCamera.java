@@ -44,7 +44,7 @@ public class LimelightFiducialCamera {
     public void updatePose() {
         updateSide();
 
-        if(turretMounted) {
+        if(turretMounted && RobotState.getInstance().getTurretLimelightPose() != null) {
             Pose2d pose = RobotState.getInstance().getTurretLimelightPose();
             LimelightHelpers.setCameraPose_RobotSpace(name,
                     pose.getY(), pose.getX(), SubsystemConstants.turretLimelightHeight,

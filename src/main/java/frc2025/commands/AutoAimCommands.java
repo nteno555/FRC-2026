@@ -9,8 +9,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc2025.RobotContainer;
 import frc2025.RobotState;
 import frc2025.config.ShooterTreeMap;
+import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 public class AutoAimCommands {
@@ -139,14 +141,23 @@ public class AutoAimCommands {
 
 
    public static Command autoIndex(RobotContainer robotContainer) {
+        BooleanSupplier readySupplier = () -> {
+            boolean good;
+            if(!SubsystemConstants.hasTurret) {
+                good = RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady();
+            } else {
+                good = RobotState.getInstance().getShooterReady() && robotContainer.getTurret().getShotReady();
+            }
+
+            if(DriverStation.isAutonomous()) good = good && RobotState.getInstance().getDriveAutoAiming();
+            return good;
+        };
+
         return robotContainer.getIndexer().setVoltage(() -> {
             Logger.recordOutput("Indexer/autoIndexShooterReady", RobotState.getInstance().getShooterReady());
             Logger.recordOutput("Indexer/autoIndexDriveReady", RobotState.getInstance().getDriveShotReady());
-            boolean good = RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady();
 
-            if(DriverStation.isAutonomous()) good = good && RobotState.getInstance().getDriveAutoAiming();
-
-            if(good) {
+            if(readySupplier.getAsBoolean()) {
                 Logger.recordOutput("Indexer/ready", true);
                 return -9.0;
             } else {
@@ -154,27 +165,21 @@ public class AutoAimCommands {
                 return 0.0;
             }
         }, () -> {
-            boolean good = RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady();
-            if(DriverStation.isAutonomous()) good = good && RobotState.getInstance().getDriveAutoAiming();
-
-            if (good) {
+            if (readySupplier.getAsBoolean()) {
                 return -12.0;
             }
             else {
                 return 0.0;
             }
-        })
-            .alongWith(robotContainer.getIntake().setRollerVoltage(() -> {
-                    boolean good = RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady();
-                    if(DriverStation.isAutonomous()) good = good && RobotState.getInstance().getDriveAutoAiming();
-                    if (good) {
+        }).alongWith(robotContainer.getIntake().setRollerVoltage(() -> {
+                    if (readySupplier.getAsBoolean()) {
                         return 4.5;
                     }
                     else {
                         return 0.0;
                     }
-            }));
-    }
+                }));
+   }
 
     public static Command autoAimFlush(RobotContainer robotContainer) {
         return robotContainer.getHood().setPosition(() -> 0.0)

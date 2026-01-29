@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -15,7 +16,7 @@ import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class TurretIOReal implements TurretIO{
-    private final TalonFX turretMotor = new TalonFX(15, "rio");
+    private final TalonFX turretMotor = new TalonFX(23, "rio");
     private final DutyCycleEncoder throughBore1 = new DutyCycleEncoder(2);
     private final DutyCycleEncoder throughBore2 = new DutyCycleEncoder(3);
 
@@ -45,16 +46,11 @@ public class TurretIOReal implements TurretIO{
         configTorque.PeakReverseTorqueCurrent = SubsystemConstants.turretPeakReverseTorqueCurrent;
         configTorque.TorqueNeutralDeadband = SubsystemConstants.turretTorqueNeutralDeadband;
 
-        SoftwareLimitSwitchConfigs softLimits = new SoftwareLimitSwitchConfigs();
-        softLimits.ForwardSoftLimitThreshold = SubsystemConstants.turretRotationsPerRadian * Math.PI / 2.0;
-        softLimits.ForwardSoftLimitEnable = true;
-        softLimits.ReverseSoftLimitThreshold = -SubsystemConstants.turretRotationsPerRadian * Math.PI / 2.0;
-        softLimits.ReverseSoftLimitEnable = true;
 
         turretMotor.getConfigurator().apply(talonFXConfigs);
         turretMotor.getConfigurator().apply(configTorque);
         turretMotor.setNeutralMode(NeutralModeValue.Brake);
-        turretMotor.getConfigurator().apply(softLimits);
+        rezero();
     }
 
     public double toRadians(double position) {
@@ -68,12 +64,15 @@ public class TurretIOReal implements TurretIO{
         if (useVoltage) {
             return new VoltageOut(targetValue);
         } else {
-            return new MotionMagicVoltage(targetValue)
-                    .withEnableFOC(true)
+            return new PositionVoltage(targetValue)
                     .withSlot(0)
-                    .withOverrideBrakeDurNeutral(true)
-                    .withLimitForwardMotion(false)
-                    .withLimitReverseMotion(false);
+                    .withEnableFOC(true);
+//            return new MotionMagicVoltage(targetValue)
+//                    .withEnableFOC(true)
+//                    .withSlot(0)
+//                    .withOverrideBrakeDurNeutral(true)
+//                    .withLimitForwardMotion(false)
+//                    .withLimitReverseMotion(false);
         }
     }
 
@@ -82,14 +81,14 @@ public class TurretIOReal implements TurretIO{
     public void updateInputs(TurretIOInputs inputs) {
         inputs.positionTicks = turretMotor.getPosition().getValue().in(Units.Rotation);
         inputs.positionRadians = toRadians(inputs.positionTicks);
+        //inputs.current = turretMotor.getSupplyCurrent();
 
         Logger.recordOutput("Turret/voltage", turretMotor.getMotorVoltage().getValue().in(Units.Volts));
         Logger.recordOutput("Turret/current", turretMotor.getSupplyCurrent().getValue().in(Units.Amp));
     }
 
     @Override
-    public void setPosition(double radians) {
-        double position = radians * SubsystemConstants.turretRotationsPerRadian;
+    public void setPosition(double position) {
         turretMotor.setControl(createControlRequest(position, false));
         Logger.recordOutput("Turret/setPosPosition", position);
     }

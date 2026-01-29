@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc2025.commands.AutoAimCommands;
@@ -81,7 +82,8 @@ public class Autos {
                                 () -> new ChassisSpeeds(0,0,0)
                         );
                 } else {
-                        return AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getTargetPose(), null);
+                        //return AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getTargetPose(), null);
+                    return Commands.none();
                 }
     }
 
@@ -120,7 +122,7 @@ public class Autos {
             pathCommands = pathCommands.andThen(intakePath(paths.get(i)));
         }
 
-        return auto.andThen(pathCommands);
+        return auto.andThen(pathCommands.andThen(finalAutoAim()));
     }
 
 

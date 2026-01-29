@@ -151,9 +151,10 @@ public class RobotContainer {
                 )
         );
 
-        hoodSubsystem.setDefaultCommand(AutoAimCommands.hoodAutoAim(this, () -> RobotState.getInstance().getTargetPose()));
-        shooterSubsystem.setDefaultCommand(AutoAimCommands.shooterAutoSpinUp(this, () -> RobotState.getInstance().getTargetPose()));
-        turretSubsystem.setDefaultCommand(AutoAimCommands.turretAutoAim(this, () -> RobotState.getInstance().getTargetPose(), () -> null));
+//        hoodSubsystem.setDefaultCommand(AutoAimCommands.hoodAutoAim(this, () -> RobotState.getInstance().getTargetPose()));
+//        shooterSubsystem.setDefaultCommand(AutoAimCommands.shooterAutoSpinUp(this, () -> RobotState.getInstance().getTargetPose()));
+//        turretSubsystem.setDefaultCommand(AutoAimCommands.turretAutoAim(this, () -> RobotState.getInstance().getTargetPose(), () -> null));
+//        indexerSubsystem.setDefaultCommand(AutoAimCommands.autoIndex(this));
         //hoodSubsystem.setDefaultCommand(AutoAimCommands.hoodAutoAim(this, () -> RobotState.getInstance().getTargetPose()));
 
         driverXboxController.a().onTrue(new InstantCommand(() -> {
@@ -211,6 +212,10 @@ public class RobotContainer {
                 intakeSubsystem.setDeployVoltage(() -> 1.0))
                         .onFalse(intakeSubsystem.rezero()
                                 .andThen(intakeSubsystem.setDeployVoltage(() -> 0.0)));
+
+        driverXboxController.y().whileTrue(
+                turretSubsystem.setPositionFieldRelative(() -> 0.0)
+        );
 
 
         operatorXboxController.leftTrigger()
@@ -273,6 +278,22 @@ public class RobotContainer {
         tuningController.rightBumper().whileTrue(
                 shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/RPM", 0.0))
         ).whileFalse(shooterSubsystem.setSpeed(() -> 0.0));
+
+        tuningController.povLeft().whileTrue(
+                turretSubsystem.setVoltage(() -> 0.9)
+        ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
+
+        tuningController.povRight().whileTrue(
+                turretSubsystem.setVoltage(() -> -0.9)
+        ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
+
+        tuningController.povUp().whileTrue(
+                turretSubsystem.setPositionSafe(() -> Math.PI)
+        ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
+
+        tuningController.povDown().whileTrue(
+                turretSubsystem.setPositionSafe(() -> Math.PI*1.6)
+        ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
 
 
         SmartDashboard.putNumber("Tuning/RPM", 0.0);
