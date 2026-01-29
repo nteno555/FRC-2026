@@ -66,10 +66,12 @@ public class SubsystemConstants {
     public static double turretRotationsPerRadian = 2.556750949;
     public static double turretMinAngleRadians = -4.7123889804;
     public static double turretMaxAngleRadians = 1.5707963268;
-    public static double throughBoreZero1 = 0.879;
-    public static double throughBoreZero2 = 0.205;
-    public static double throughBoreRatio1 = 3.7058823529;
-    public static double throughBoreRatio2 = 3.0;
+    public static double throughBoreZero1 = 0.837;
+    public static double throughBoreZero2 = 0.756;
+//    public static double throughBoreRatio1 = 0.25; // might have to swap or inverse
+//    public static double throughBoreRatio2 = 0.2037;
+    public static double throughBoreRatio1 = 4.90909;
+    public static double throughBoreRatio2 = 4.0; // 4 motor rotations for 1 throughgbore rotation
     public static boolean hasTurret = true;
 
     public static double kMaxShootVelocity = 1;

@@ -271,7 +271,9 @@ public class RobotContainer {
 //        tuningController.rightBumper()
 //                .whileTrue(new WheelRadiusCharacterizationCommand(driveSubsystem));
 
-
+    tuningController.leftBumper().whileTrue(
+            turretSubsystem.rezero()
+    );
     tuningController.povRight()
             .whileTrue(
                     hoodSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/hoodPosition", 0.0))

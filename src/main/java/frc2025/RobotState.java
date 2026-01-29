@@ -185,6 +185,7 @@ public class RobotState {
                 virtualPose.getX() - shooterPose.getX()
         );
         Logger.recordOutput("Vision/shootingWhileMovingVirtualPose", shootingWhileMovingVirtualPose);
+        Logger.recordOutput("Vision/angleToVirtualTarget", angleToVirtualTarget);
     }
 
     public double getAngleToVirtualTarget() {

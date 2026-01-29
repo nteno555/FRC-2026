@@ -37,6 +37,7 @@ public class TurretSubsystem extends SubsystemBase {
                         + SubsystemConstants.turretToLimelightRadius * Math.sin(inputs.positionRadians + SubsystemConstants.turretLimelightAngleOffsetRadians),
                 SubsystemConstants.shooterToCenterPose.getAngle().plus(Rotation2d.fromRadians(inputs.positionRadians))
         );
+        Logger.recordOutput("Turret/turretPose", turretLimelightPose);
         RobotState.getInstance().setTurretLimelightPose(turretLimelightPose);
 //        RobotState.getInstance().setTurretLimelightPose(
 //
@@ -112,7 +113,7 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     public Command rezero() {
-        return this.run(() -> io.rezero());
+        return this.runOnce(() -> io.rezero());
     }
 
     public Command setFixed() {
