@@ -52,7 +52,7 @@ public class AutoAimCommands {
     public static Command turretAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {
         return robotContainer.getTurret().setPositionFieldRelative(
                 () -> {
-                    return RobotState.getInstance().getAngleToVirtualTarget();
+                    return  RobotState.getInstance().getAngleToVirtualTarget();
                 }
         );
     }
@@ -119,7 +119,7 @@ public class AutoAimCommands {
     }
 
     public static Command autoAimCommand(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds, boolean useTurret) {
-        if (useTurret) {
+        if (!useTurret) {
             return shooterAutoSpinUp(robotContainer, targetPoseSupplier)
                 .alongWith(driveAutoAim(robotContainer, targetPoseSupplier, unlockedSpeeds))
                 .alongWith(hoodAutoAim(robotContainer, targetPoseSupplier));

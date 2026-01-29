@@ -82,7 +82,7 @@ public class IntakeSubsystem extends SubsystemBase {
                         }
                         if (intakeExtended) {
                             intakeExtended = true;
-                            io.setDeployVoltage(0.0);
+//                            io.setDeployVoltage(0.0);
                         }
                     }
                     else {
@@ -92,7 +92,7 @@ public class IntakeSubsystem extends SubsystemBase {
                 },
                 () -> {
                     if (!DriverStation.isTeleopEnabled()) {
-                        io.setVoltage(0.0);
+//                        io.setVoltage(0.0);
                     }
                 }
             );

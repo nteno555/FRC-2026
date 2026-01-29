@@ -75,11 +75,11 @@ public class LimelightFiducialCamera {
         Pose2d pose = poseEstimate.pose;
         Pose2d robotToCameraPose = RobotState.getInstance().getTurretLimelightPose();
 //        if(turretMounted) {
-////            pose = new Pose2d(
-////                    pose.getX() - robotToCameraPose.getX(),
-////                    pose.getY() - robotToCameraPose.getY(),
-////                    pose.getRotation().minus(robotToCameraPose.getRotation())
-////            );
+//            pose = new Pose2d(
+//                    pose.getX() - robotToCameraPose.getX(),
+//                    pose.getY() - robotToCameraPose.getY(),
+//                    pose.getRotation().minus(robotToCameraPose.getRotation())
+//            );
 //            Transform2d cameraToRobotTransform = new Transform2d(
 //                    robotToCameraPose.getTranslation().times(-1),
 //                    robotToCameraPose.getRotation().unaryMinus()

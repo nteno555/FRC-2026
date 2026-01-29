@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc2025.commands.AutoAimCommands;
 import frc2025.config.ShooterTreeMap;
+import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveIOReal;
 import frc2025.subsystems.drive.DriveIOSim;
 import frc2025.subsystems.drive.DriveSubsystem;
@@ -175,24 +176,23 @@ public class RobotContainer {
             .whileFalse(indexerSubsystem.setVoltage(() -> 0.5, () -> 0.0));
 
         driverXboxController.povLeft().whileTrue(
-                indexerSubsystem.setVoltage(() -> 0.0, () -> 12.0).
-                        alongWith(shooterSubsystem.setSpeed(() -> 30.0))
-//                new InstantCommand(() -> wantIntake = !wantIntake)
-//                        .andThen(intakeSubsystem.setIntaking(() -> wantIntake))
+                new InstantCommand(() -> wantIntake = !wantIntake)
+                        .andThen(intakeSubsystem.setIntaking(() -> wantIntake))
         );
 
 
 
         driverXboxController.leftTrigger()
                         .whileTrue(
-                                AutoAimCommands.driveAutoAim(
+                                AutoAimCommands.autoAimCommand(
                                         this,
                                         () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
                                         () -> driveSubsystem.getTeleopSpeeds(
                                                 (-0.5) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
                                                 (-0.5) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                                                (0.7) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
-                                        ))
+                                                 handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
+                                        )
+                                ,true)
                         );
 
 
@@ -201,7 +201,9 @@ public class RobotContainer {
                 .onTrue(intakeSubsystem.deploy());
 
         driverXboxController.rightTrigger()
-                        .whileTrue(AutoAimCommands.autoIndex(this))
+                        .whileTrue(indexerSubsystem.setVoltage(() -> -8.0, () -> -12.0)
+//                                AutoAimCommands.autoIndex(this)
+                        )
                                 .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
 
         driverXboxController.b().onTrue(new InstantCommand(() -> {
@@ -270,10 +272,10 @@ public class RobotContainer {
 //                .whileTrue(new WheelRadiusCharacterizationCommand(driveSubsystem));
 
 
-        tuningController.povRight()
-                .whileTrue(
-                        hoodSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/hoodPosition", 0.0))
-                );
+    tuningController.povRight()
+            .whileTrue(
+                    hoodSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/hoodPosition", 0.0))
+            );
 
         tuningController.rightBumper().whileTrue(
                 shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/RPM", 0.0))

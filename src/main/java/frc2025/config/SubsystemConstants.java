@@ -31,10 +31,10 @@ public class SubsystemConstants {
     public static double hoodZeroOffsetDegrees = 1;
 
     public static double intakekS = 0.00;
-    public static double intakekG = 0.17;
+    public static double intakekG = 0.20;
     public static double intakekV = 0.175;
     public static double intakekA = 0.0;
-    public static double intakekP = 1.0;
+    public static double intakekP = 1.5;
     public static double intakekI = 0.0;
     public static double intakekD = 0.0;
     public static double intakeCruiseVelocity = 10;
@@ -45,7 +45,7 @@ public class SubsystemConstants {
     public static double intakePeakForwardTorqueCurrent = 100;
     public static double intakePeakReverseTorqueCurrent = 100;
     public static double intakeTorqueNeutralDeadband = 1;
-    public static double intakeDeployPosition = -3.70;
+    public static double intakeDeployPosition = -3.3;
 
     public static double turretkS = 0.30;
     public static double turretkV = 0.12;
