@@ -25,8 +25,8 @@ public class HoodIOSim implements HoodIO {
         }
 
         inputs.positionRotations = inputs.positionRotations + velocity;
-        inputs.positionDegrees = toDegree(inputs.positionRotations);
-        inputs.positionDegreesReal = inputs.positionDegrees + 15;
+        inputs.positionRadians = toDegree(inputs.positionRotations);
+        inputs.positionDegreesReal = inputs.positionRadians + 15;
     }
 
     @Override

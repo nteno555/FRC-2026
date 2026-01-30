@@ -2,15 +2,14 @@ package frc2025;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
+import frc2025.subsystems.hood.HoodSubsystem;
+import frc2025.subsystems.shooter.ShooterSubsystem;
 import frc2025.subsystems.vision.VisionPoseEstimator;
 import org.littletonrobotics.junction.Logger;
 
@@ -38,6 +37,10 @@ public class RobotState {
     private boolean wantAutoIntaking;
 
     private Pose2d turretLimelightPose;
+    private Translation3d shotVectorWhileMoving = new Translation3d(0, 0, 0);
+
+//    private double shooterExitVelocity;
+//    private double hoodAngle;
 
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
@@ -204,4 +207,47 @@ public class RobotState {
     public boolean getManual() {return manual;}
     public void setTurretLimelightPose(Pose2d pose) { turretLimelightPose = pose; }
     public Pose2d getTurretLimelightPose() { return turretLimelightPose; }
+
+//    public void setShooterExitVelocity(double velocity) { shooterExitVelocity = velocity; }
+//    public double getShooterExitVelocity() { return shooterExitVelocity; }
+//    public void setHoodAngle(double angle) { hoodAngle = angle; }
+//    public double getHoodAngle() { return hoodAngle; }
+
+    public Translation3d getShotVector(double shooterExitVelocity, double hoodAngle) { // {field x, field y, height}
+        Translation2d direction = getTargetPose().getTranslation().minus(getVisionShooterPose().getTranslation());
+        direction = direction.div(direction.getNorm());
+
+        Translation2d xyVelocity = direction.times(shooterExitVelocity * Math.cos(hoodAngle));
+
+        double zSpeed = shooterExitVelocity * Math.sin(hoodAngle);
+
+        return new Translation3d(
+                xyVelocity.getX(),
+                xyVelocity.getY(),
+                zSpeed
+        );
+    }
+
+    public void updateShotVectorWhileMoving() {
+        double distance = getVisionShooterPose().getTranslation().getDistance(getTargetPose().getTranslation());
+        double shooterSpeed = ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(distance);
+        double hoodAngle = ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(distance);
+
+        Translation3d shotVector = getShotVector(ShooterSubsystem.toBallExitVelocity(shooterSpeed), HoodSubsystem.toRadians(hoodAngle));
+
+        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
+                robotRelativeSpeeds,
+                getVisionPose().getRotation()
+        );
+
+        shotVectorWhileMoving = new Translation3d(
+                shotVector.getX() - chassisSpeeds.vxMetersPerSecond,
+                shotVector.getY() - chassisSpeeds.vyMetersPerSecond,
+                shotVector.getZ()
+        );
+    }
+
+    public Translation3d getShotVectorWhileMoving() {
+        return shotVectorWhileMoving;
+    }
 }

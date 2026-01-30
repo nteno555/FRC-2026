@@ -3,6 +3,8 @@ package frc2025.subsystems.hood;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc2025.RobotState;
+import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 import java.util.function.Supplier;
 
@@ -28,6 +30,11 @@ public class HoodSubsystem extends SubsystemBase {
         }
 
         io.updateInputs(inputs);
+//        RobotState.getInstance().setHoodAngle(getPositionRadians());
+    }
+
+    public Command setPositionRadians(Supplier<Double> positionRadians){
+        return setPosition(() -> toRotations(positionRadians.get()));
     }
 
     public Command setPosition(Supplier<Double> position) {
@@ -70,7 +77,8 @@ public class HoodSubsystem extends SubsystemBase {
     public boolean isNear(double position) {
         return Math.abs(inputs.positionRotations - position) < 2.5;
     }
-
     public double getPosition() { return inputs.positionRotations; }
-    public double getRealAngle() { return inputs.positionDegreesReal; }
+    public double getPositionRadians() { return inputs.positionRadians; }
+    public static double toRadians(double rotations) { return rotations / SubsystemConstants.hoodRotationsPerRadian + SubsystemConstants.hoodZeroOffsetRadians; }
+    public static double toRotations(double radians) { return (radians - SubsystemConstants.hoodZeroOffsetRadians) * SubsystemConstants.hoodRotationsPerRadian; }
 }

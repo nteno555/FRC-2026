@@ -69,6 +69,7 @@ public class DriveSubsystem extends SubsystemBase {
         RobotState.getInstance().setSpeed(speed);
         RobotState.getInstance().setRobotRelativeSpeeds(inputs.currentChassisSpeeds);
         RobotState.getInstance().updateShootingWhileMovingVirtualPose();
+        RobotState.getInstance().updateShotVectorWhileMoving();
         Logger.recordOutput("Drive/shotAutoIndexReady", getShotReady());
         RobotState.getInstance().setDriveShotReady(getShotReady());
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);

@@ -57,14 +57,15 @@ public class HoodIOReal implements HoodIO {
         rezero(0.0);
     }
 
-    private double toDegree(double rotations) {
-        return 1/SubsystemConstants.hoodRotationsPerDegree*rotations;
+    private double toRadians(double rotations) {
+        return 1/SubsystemConstants.hoodRotationsPerRadian * rotations + SubsystemConstants.hoodZeroOffsetRadians;
+    }
+
+    private double toRotations(double radians) {
+        return (radians - SubsystemConstants.hoodZeroOffsetRadians) * SubsystemConstants.hoodRotationsPerRadian;
     }
 
     private ControlRequest createControlRequest(double targetValue, boolean useVoltage) {
-        double hoodPositionDegrees = toDegree(hoodMaster.getPosition().getValue().in(Units.Rotation)) + SubsystemConstants.hoodZeroOffsetDegrees;
-//        double voltageFF = -SubsystemConstants.hoodkGFactor *
-//                Math.sin(hoodPositionDegrees * Math.PI/180);
         double voltageFF = SubsystemConstants.hoodFF;
         if(targetValue < hoodMaster.getPosition().getValueAsDouble()) {
             voltageFF = -voltageFF;
@@ -88,8 +89,8 @@ public class HoodIOReal implements HoodIO {
     @Override
     public void updateInputs(HoodIOInputs inputs) {
         inputs.positionRotations = hoodMaster.getPosition().getValue().in(Units.Rotation);
-        inputs.positionDegrees = toDegree(inputs.positionRotations);
-        inputs.positionDegreesReal = inputs.positionDegrees + SubsystemConstants.hoodZeroOffsetDegrees;
+        inputs.positionRadians = toRadians(inputs.positionRotations);
+        //inputs.positionDegreesReal = inputs.positionRadians + SubsystemConstants.hoodZeroOffsetRadians;
 
         Logger.recordOutput("Hood/controlRequest", hoodMaster.getAppliedControl().getName());
         Logger.recordOutput("Hood/voltage", hoodMaster.getMotorVoltage().getValue().in(Units.Volts));

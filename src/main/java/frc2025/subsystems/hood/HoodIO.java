@@ -6,7 +6,7 @@ public interface HoodIO {
     @AutoLog
     public class HoodIOInputs {
         public double positionRotations;
-        public double positionDegrees;
+        public double positionRadians;
         public double positionDegreesReal;
     }
 

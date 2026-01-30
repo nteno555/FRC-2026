@@ -25,9 +25,11 @@ public class ShooterTreeMap {
         lowerWheelTreeMap.put(4.0, -33.4);
         lowerWheelTreeMap.put(5.0, -33.4);
 
-        tofTreeMap.put(2.4, 1.25);
-        tofTreeMap.put(3.5, 1.39);
-        tofTreeMap.put(4.5, 1.46);
+        tofTreeMap.put(1.3, 1.15);
+        tofTreeMap.put(2.4, 1.27);
+        tofTreeMap.put(3.5, 1.41);
+        tofTreeMap.put(4.5, 1.50);
+        tofTreeMap.put(9.5, 1.90);
 //        double tofAt2 = 0.6;
 //        for(double k = 0; k <= 10; k += 0.1) {
 //            tofTreeMap.put(k, tofAt2 * Math.pow(k / 2.0, 0.5) + 0.2);

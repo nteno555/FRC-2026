@@ -47,8 +47,8 @@ public class Autos {
         }
 
         PathPlannerPath finalPath = path;
-        return new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true)
-                .raceWith(robotContainer.getIntake().setIntaking(() -> true));
+        return new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true);
+                //.raceWith(robotContainer.getIntake().setIntaking(() -> true));
                 //.andThen(new WaitCommand(0.2));
     }
 
@@ -67,8 +67,8 @@ public class Autos {
                 finalPath.getIdealStartingState().rotation()
         );
         return  drive.resetOdometryCommand(() -> startPose)
-                .andThen(new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true))
-                .raceWith(robotContainer.getIntake().setIntaking(() -> true));
+                .andThen(new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true));
+                //.raceWith(robotContainer.getIntake().setIntaking(() -> true));
     }
 
     private Command finalAutoAim() {
@@ -103,12 +103,12 @@ public class Autos {
         Command auto;
         if (SubsystemConstants.hasTurret) {
                 auto = AutoAimCommands.turretAutoAim(robotContainer)
-                        .alongWith(AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose()))
-                        .alongWith(AutoAimCommands.hoodAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose()))
+                        .alongWith(AutoAimCommands.shooterAutoSpinUp(robotContainer))
+                        .alongWith(AutoAimCommands.hoodAutoAim(robotContainer))
                         .alongWith(AutoAimCommands.autoIndex(robotContainer));
         } else {
-                auto = AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose())
-                        .alongWith(AutoAimCommands.hoodAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose()))
+                auto = AutoAimCommands.shooterAutoSpinUp(robotContainer)
+                        .alongWith(AutoAimCommands.hoodAutoAim(robotContainer))
                         .alongWith(AutoAimCommands.autoIndex(robotContainer));
         }
         
@@ -119,7 +119,7 @@ public class Autos {
             pathCommands = pathCommands.andThen(intakePath(paths.get(i)));
         }
 
-        if(SubsystemConstants.hasTurret) {
+        if(!SubsystemConstants.hasTurret) {
             return auto.alongWith(pathCommands.andThen(finalAutoAim()));
         } else {
             return auto.alongWith(pathCommands);

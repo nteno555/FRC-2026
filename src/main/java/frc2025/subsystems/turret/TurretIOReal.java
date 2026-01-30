@@ -41,14 +41,18 @@ public class TurretIOReal implements TurretIO{
         talonFXConfigs.CurrentLimits.StatorCurrentLimit = SubsystemConstants.turretStatorCurrentLimit;
         talonFXConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
 
+        var voltageConfigs = talonFXConfigs.Voltage;
+        voltageConfigs.PeakForwardVoltage = 4.0;
+        voltageConfigs.PeakReverseVoltage = -4.0;
+
         TorqueCurrentConfigs configTorque =  new TorqueCurrentConfigs();
         configTorque.PeakForwardTorqueCurrent = SubsystemConstants.turretPeakForwardTorqueCurrent;
         configTorque.PeakReverseTorqueCurrent = SubsystemConstants.turretPeakReverseTorqueCurrent;
         configTorque.TorqueNeutralDeadband = SubsystemConstants.turretTorqueNeutralDeadband;
 
-
         turretMotor.getConfigurator().apply(talonFXConfigs, 0.05);
         turretMotor.getConfigurator().apply(configTorque, 0.05);
+        turretMotor.getConfigurator().apply(voltageConfigs, 0.05);
         turretMotor.setNeutralMode(NeutralModeValue.Brake);
         rezero();
     }
@@ -120,8 +124,8 @@ public class TurretIOReal implements TurretIO{
     }
 
     public void rezeroCRT() {
-        double pos1 = ((throughBore1.get() - SubsystemConstants.throughBoreZero1 + 1) % 1) * SubsystemConstants.throughBoreRatio1 - 2 * SubsystemConstants.throughBoreRatio1;
-        double pos2 = ((throughBore2.get() - SubsystemConstants.throughBoreZero2 + 1) % 1) * SubsystemConstants.throughBoreRatio2 - 2 * SubsystemConstants.throughBoreRatio2;
+        double pos1 = ((throughBore1.get() - SubsystemConstants.throughBoreZero1 + 1) % 1) * SubsystemConstants.throughBoreRatio1;
+        double pos2 = ((throughBore2.get() - SubsystemConstants.throughBoreZero2 + 1) % 1) * SubsystemConstants.throughBoreRatio2;
         Logger.recordOutput("Turret/tb1NoOffset", throughBore1.get());
         Logger.recordOutput("Turret/tb2NoOffset", throughBore2.get());
         Logger.recordOutput("Turret/tb1WithOffset", throughBore1.get() - SubsystemConstants.throughBoreZero1);
@@ -129,6 +133,11 @@ public class TurretIOReal implements TurretIO{
         Logger.recordOutput("Turret/initialPos1", pos1);
         Logger.recordOutput("Turret/initialPos2", pos2);
         double epsilon = 0.5;
+
+        while(Math.abs(pos1 - pos2) > epsilon && pos1 > -5 && pos2 > -5) {
+            if(pos1 > pos2) pos1 -= SubsystemConstants.throughBoreRatio1;
+            else pos2 -= SubsystemConstants.throughBoreRatio2;
+        }
 
         while(Math.abs(pos1 - pos2) > epsilon) {
             if(pos1 < pos2) pos1 += SubsystemConstants.throughBoreRatio1;

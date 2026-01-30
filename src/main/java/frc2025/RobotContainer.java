@@ -148,10 +148,10 @@ public class RobotContainer {
                 )
         );
 
-        hoodSubsystem.setDefaultCommand(AutoAimCommands.hoodAutoAim(this, () -> RobotState.getInstance().getTargetPose()));
-        shooterSubsystem.setDefaultCommand(AutoAimCommands.shooterAutoSpinUp(this, () -> RobotState.getInstance().getTargetPose()));
+        hoodSubsystem.setDefaultCommand(AutoAimCommands.hoodAutoAim(this));
+        shooterSubsystem.setDefaultCommand(AutoAimCommands.shooterAutoSpinUp(this));
         turretSubsystem.setDefaultCommand(AutoAimCommands.turretAutoAim(this));
-        indexerSubsystem.setDefaultCommand(AutoAimCommands.autoIndex(this));
+//        indexerSubsystem.setDefaultCommand(AutoAimCommands.autoIndex(this));
         //hoodSubsystem.setDefaultCommand(AutoAimCommands.hoodAutoAim(this, () -> RobotState.getInstance().getTargetPose()));
 
         driverXboxController.a().onTrue(new InstantCommand(() -> {

@@ -85,6 +85,8 @@ public class LimelightFiducialCamera {
                     robotToCameraPose.getTranslation().times(-1),
                     robotToCameraPose.getRotation().unaryMinus()
             );
+
+            //Logger.recordOutput("Vision/turretLimelightPose", );
             pose = pose.transformBy(cameraToRobotTransform);
         }
 

@@ -3,6 +3,7 @@ package frc2025.subsystems.shooter;
 import java.util.function.Supplier;
 
 import frc2025.RobotState;
+import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,6 +28,7 @@ public class ShooterSubsystem extends SubsystemBase {
         Logger.recordOutput("Shooter/shotReady", getShotReady());
         io.updateInputs(this.inputs);
         RobotState.getInstance().setShooterReady(getShotReady());
+//        RobotState.getInstance().setShooterExitVelocity(getBallExitVelocity());
     }
 
     public Command setVoltage(Supplier<Double> voltage) {
@@ -48,6 +50,10 @@ public class ShooterSubsystem extends SubsystemBase {
             usingVoltage = false;
             io.setSpeed(0.0);
         });
+    }
+
+    public Command setTargetExitVelocity(Supplier<Double> exitVelocity) {
+        return setSpeed(() -> solveExitVelocity(exitVelocity.get()));
     }
 
     public ShooterIO getIO() {
@@ -72,5 +78,22 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     public boolean getShotReady() {
         return Math.abs(wantedVelocity - inputs.masterVelocityRPM) < 5.0 && wantedVelocity != 0.0;
+    }
+
+    public double getBallExitVelocity() {
+        return toBallExitVelocity(inputs.masterVelocityRPM);
+    }
+
+    public double solveExitVelocity(double wantedExitVelocity) {
+        // (top + bottom) / 2 * efficiency = wantedExitVelocity
+        return wantedExitVelocity / (SubsystemConstants.flywheelEfficiency * 2.0) /
+               (SubsystemConstants.topFlywheelGearRatio * SubsystemConstants.topFlywheelDiameter * Math.PI +
+                SubsystemConstants.bottomFlywheelGearRatio * SubsystemConstants.bottomFlywheelDiameter * Math.PI);
+    }
+
+    public static double toBallExitVelocity(double wheelRPM) {
+        double topVelocity = SubsystemConstants.topFlywheelGearRatio * wheelRPM * SubsystemConstants.topFlywheelDiameter * Math.PI;
+        double bottomVelocity = SubsystemConstants.bottomFlywheelGearRatio * wheelRPM * SubsystemConstants.bottomFlywheelDiameter * Math.PI;
+        return (topVelocity + bottomVelocity) / 2.0 * SubsystemConstants.flywheelEfficiency;
     }
 }

@@ -20,6 +20,7 @@ public class VisionSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.recordOutput("Vision/visionPose", RobotState.getInstance().getVisionPose());
         Logger.recordOutput("Vision/shooterVisionPose", RobotState.getInstance().getVisionShooterPose());
+        //Logger.recordOutput("Vision/shooterVisionPose", RobotState.getInstance().getVisionShooterPose());
         Logger.recordOutput("Vision/visionPoseBuiltin", RobotState.getInstance().getVisionPoseBuiltin());
 
         Pose2d pose = RobotState.getInstance().getVisionShooterPose();;
