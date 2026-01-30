@@ -36,6 +36,11 @@ public class TurretIOSim implements TurretIO{
     }
 
     @Override
+    public void setPosition(double position, double velocity) {
+
+    }
+
+    @Override
     public void setVoltage(double voltage) {
         useVoltage = true;
         velocity = voltage;

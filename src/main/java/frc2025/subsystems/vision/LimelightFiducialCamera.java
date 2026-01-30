@@ -44,12 +44,13 @@ public class LimelightFiducialCamera {
     public void updatePose() {
         updateSide();
 
-        if(turretMounted && RobotState.getInstance().getTurretLimelightPose() != null) {
-            Pose2d pose = RobotState.getInstance().getTurretLimelightPose();
-            LimelightHelpers.setCameraPose_RobotSpace(name,
-                    pose.getY(), pose.getX(), SubsystemConstants.turretLimelightHeight,
-                    SubsystemConstants.turretLimelightRoll, SubsystemConstants.turretLimelightPitch, pose.getRotation().getDegrees());
-        }
+//        if(turretMounted && RobotState.getInstance().getTurretLimelightPose() != null) {
+//            Logger.recordOutput("Vision/turretLimelightUpdatePoseHeartbeat", Math.random());
+//            Pose2d pose = RobotState.getInstance().getTurretLimelightPose();
+//            LimelightHelpers.setCameraPose_RobotSpace(name,
+//                    pose.getY(), pose.getX(), SubsystemConstants.turretLimelightHeight,
+//                    SubsystemConstants.turretLimelightRoll, SubsystemConstants.turretLimelightPitch, pose.getRotation().getDegrees());
+//        }
 
         LimelightHelpers.LimelightTarget_Fiducial fiducial = new LimelightHelpers.LimelightTarget_Fiducial();
         fiducial.ta = LimelightHelpers.getTA(name);
@@ -64,7 +65,7 @@ public class LimelightFiducialCamera {
         if(poseEstimate == null) return;
         if(poseEstimate.tagCount == 0) return;
 
-        Logger.recordOutput("Vision/mt1Pose", poseEstimate.pose);
+//        Logger.recordOutput("Vision/mt1Pose", poseEstimate.pose);
 
 //        if(poseEstimate.avgTagDist > 2) {
 //            poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
@@ -74,18 +75,18 @@ public class LimelightFiducialCamera {
 
         Pose2d pose = poseEstimate.pose;
         Pose2d robotToCameraPose = RobotState.getInstance().getTurretLimelightPose();
-//        if(turretMounted) {
-//            pose = new Pose2d(
-//                    pose.getX() - robotToCameraPose.getX(),
-//                    pose.getY() - robotToCameraPose.getY(),
-//                    pose.getRotation().minus(robotToCameraPose.getRotation())
-//            );
-//            Transform2d cameraToRobotTransform = new Transform2d(
-//                    robotToCameraPose.getTranslation().times(-1),
-//                    robotToCameraPose.getRotation().unaryMinus()
-//            );
-//            pose = pose.transformBy(cameraToRobotTransform);
-//        }
+        if(turretMounted && robotToCameraPose != null) {
+            pose = new Pose2d(
+                    pose.getX() - robotToCameraPose.getX(),
+                    pose.getY() - robotToCameraPose.getY(),
+                    pose.getRotation().minus(robotToCameraPose.getRotation())
+            );
+            Transform2d cameraToRobotTransform = new Transform2d(
+                    robotToCameraPose.getTranslation().times(-1),
+                    robotToCameraPose.getRotation().unaryMinus()
+            );
+            pose = pose.transformBy(cameraToRobotTransform);
+        }
 
         double meanAmbiguity = 0.0;
         int tagCount = 0;

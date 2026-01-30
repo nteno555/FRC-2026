@@ -12,6 +12,7 @@ public interface TurretIO {
 
     public void updateInputs(TurretIOInputs inputs);
     public void setPosition(double position);
+    public void setPosition(double position, double velocity);
     public void setVoltage(double voltage);
     public void rezero();
 

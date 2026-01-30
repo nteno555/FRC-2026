@@ -16,11 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc2025.commands.AutoAimCommands;
-import frc2025.config.ShooterTreeMap;
-import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveIOReal;
 import frc2025.subsystems.drive.DriveIOSim;
 import frc2025.subsystems.drive.DriveSubsystem;
@@ -152,10 +148,10 @@ public class RobotContainer {
                 )
         );
 
-//        hoodSubsystem.setDefaultCommand(AutoAimCommands.hoodAutoAim(this, () -> RobotState.getInstance().getTargetPose()));
-//        shooterSubsystem.setDefaultCommand(AutoAimCommands.shooterAutoSpinUp(this, () -> RobotState.getInstance().getTargetPose()));
-//        turretSubsystem.setDefaultCommand(AutoAimCommands.turretAutoAim(this, () -> RobotState.getInstance().getTargetPose(), () -> null));
-//        indexerSubsystem.setDefaultCommand(AutoAimCommands.autoIndex(this));
+        hoodSubsystem.setDefaultCommand(AutoAimCommands.hoodAutoAim(this, () -> RobotState.getInstance().getTargetPose()));
+        shooterSubsystem.setDefaultCommand(AutoAimCommands.shooterAutoSpinUp(this, () -> RobotState.getInstance().getTargetPose()));
+        turretSubsystem.setDefaultCommand(AutoAimCommands.turretAutoAim(this));
+        indexerSubsystem.setDefaultCommand(AutoAimCommands.autoIndex(this));
         //hoodSubsystem.setDefaultCommand(AutoAimCommands.hoodAutoAim(this, () -> RobotState.getInstance().getTargetPose()));
 
         driverXboxController.a().onTrue(new InstantCommand(() -> {

@@ -50,7 +50,7 @@ public class SubsystemConstants {
     public static double turretkS = 0.30;
     public static double turretkV = 0.12;
     public static double turretkG = 0.0;
-    public static double turretkP = 2.0;
+    public static double turretkP = 1.0;
     public static double turretkI = 0.0;
     public static double turretkD = 0.0;
     public static double turretCruiseVelocity = 60;
@@ -66,8 +66,8 @@ public class SubsystemConstants {
     public static double turretRotationsPerRadian = 2.556750949;
     public static double turretMinAngleRadians = -4.7123889804;
     public static double turretMaxAngleRadians = 1.5707963268;
-    public static double throughBoreZero1 = 0.837;
-    public static double throughBoreZero2 = 0.756;
+    public static double throughBoreZero1 = 0.556;
+    public static double throughBoreZero2 = 0.383;
 //    public static double throughBoreRatio1 = 0.25; // might have to swap or inverse
 //    public static double throughBoreRatio2 = 0.2037;
     public static double throughBoreRatio1 = 4.90909;
@@ -76,10 +76,10 @@ public class SubsystemConstants {
 
     public static double kMaxShootVelocity = 1;
 
-    public static Translation2d shooterToCenterPose = new Translation2d(0.0, -0.1);
+    public static Translation2d shooterToCenterPose = new Translation2d(0.13, -0.1);
     public static double turretLimelightAngleOffsetRadians = Math.toRadians(180);
-    public static double turretToLimelightRadius = 0.1;
-    public static double turretLimelightHeight = 0.4;
+    public static double turretToLimelightRadius = 0.13;
+    public static double turretLimelightHeight = 0.53;
     public static double turretLimelightPitch = 15.0;
     public static double turretLimelightRoll = 0.0;
 }

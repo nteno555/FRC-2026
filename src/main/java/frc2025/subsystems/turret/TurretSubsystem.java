@@ -17,6 +17,7 @@ public class TurretSubsystem extends SubsystemBase {
     TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
     double setpoint, voltage, voltageRamp;
     boolean usingVoltage = false;
+    boolean zeroed = false;
 
     public TurretSubsystem(TurretIO io) {
         this.io = io;
@@ -42,15 +43,23 @@ public class TurretSubsystem extends SubsystemBase {
 //        RobotState.getInstance().setTurretLimelightPose(
 //
 //        );
+
+//        if(!zeroed) {
+            io.rezero();
+            //zeroed = true;
+//        }
     }
 
     public Command setPositionFieldRelative(Supplier<Double> positionRadians) {
-        return setPositionSafe(() -> {
-            return positionRadians.get() - RobotState.getInstance().getVisionPose().getRotation().getRadians();
-        });
+        return setPositionSafe(() -> positionRadians.get() - RobotState.getInstance().getVisionPose().getRotation().getRadians(),
+                () -> -RobotState.getInstance().getRobotRelativeSpeeds().omegaRadiansPerSecond);
     }
 
     public Command setPositionSafe(Supplier<Double> positionRadians) {
+        return setPositionSafe(positionRadians, () -> 0.0);
+    }
+
+    public Command setPositionSafe(Supplier<Double> positionRadians, Supplier<Double> velocityRadiansPerSecond) {
         return this.run(() -> {
             double minAngle = SubsystemConstants.turretMinAngleRadians;
             double maxAngle = SubsystemConstants.turretMaxAngleRadians;
@@ -77,9 +86,16 @@ public class TurretSubsystem extends SubsystemBase {
                 bestAngle = maxAngle;
             }
 
+            double velocityFF = velocityRadiansPerSecond.get();
+
+            if(Math.abs(bestAngle - inputs.positionRadians) > Math.toRadians(180.0)){
+                velocityFF = 0;
+            }
+
             setpoint = io.toRotations(bestAngle);
+
             usingVoltage = false;
-            io.setPosition(setpoint);
+            io.setPosition(setpoint, velocityFF);
             Logger.recordOutput("Turret/turretWantedPositionRadians", positionRadians.get());
             Logger.recordOutput("Turret/turretClampedPositionRadians", bestAngle);
             Logger.recordOutput("Turret/turretClampedPositionRotations", setpoint);
@@ -129,4 +145,5 @@ public class TurretSubsystem extends SubsystemBase {
     public boolean getShotReady() {
         return Math.abs(inputs.positionTicks - setpoint) < 0.5;
     }
+
 }

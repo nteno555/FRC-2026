@@ -47,8 +47,8 @@ public class TurretIOReal implements TurretIO{
         configTorque.TorqueNeutralDeadband = SubsystemConstants.turretTorqueNeutralDeadband;
 
 
-        turretMotor.getConfigurator().apply(talonFXConfigs);
-        turretMotor.getConfigurator().apply(configTorque);
+        turretMotor.getConfigurator().apply(talonFXConfigs, 0.05);
+        turretMotor.getConfigurator().apply(configTorque, 0.05);
         turretMotor.setNeutralMode(NeutralModeValue.Brake);
         rezero();
     }
@@ -89,12 +89,23 @@ public class TurretIOReal implements TurretIO{
         Logger.recordOutput("Turret/current", turretMotor.getSupplyCurrent().getValue().in(Units.Amp));
         Logger.recordOutput("Turret/tb1Position", throughBore1.get());
         Logger.recordOutput("Turret/tb2Position", throughBore2.get());
+        Logger.recordOutput("Turret/RPS", turretMotor.getVelocity().getValueAsDouble());
     }
 
     @Override
     public void setPosition(double position) {
         turretMotor.setControl(createControlRequest(position, false));
         Logger.recordOutput("Turret/setPosPosition", position);
+    }
+
+    @Override
+    public void setPosition(double position, double velocity) {
+        turretMotor.setControl(
+                new PositionVoltage(position)
+                        .withVelocity(velocity)
+                        .withSlot(0)
+                        .withEnableFOC(true)
+        );
     }
 
     @Override

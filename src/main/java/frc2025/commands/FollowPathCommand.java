@@ -164,6 +164,6 @@ public class FollowPathCommand extends Command {
             double velocity = Math.pow(driveSubsystem.getRobotRelativeSpeeds().vxMetersPerSecond, 2) + Math.pow(driveSubsystem.getRobotRelativeSpeeds().vyMetersPerSecond, 2);
             return (translation.getNorm() < distanceThresh && rotationDistance < 3) && this.timer.hasElapsed(trajectory.getTotalTimeSeconds());// && velocity < 0.02 && angularVelocity < 0.1;
         }
-        return this.timer.hasElapsed(trajectory.getTotalTimeSeconds() + 0.2);
+        return this.timer.hasElapsed(trajectory.getTotalTimeSeconds());
     }
 }

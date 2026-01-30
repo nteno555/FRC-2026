@@ -8,11 +8,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc2025.commands.AutoAimCommands;
 import frc2025.commands.FollowPathCommand;
-import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveSubsystem;
 import frc2025.util.Alliance;
@@ -105,7 +102,7 @@ public class Autos {
     public Command buildAuto(List<String> paths, boolean climb) {
         Command auto;
         if (SubsystemConstants.hasTurret) {
-                auto = AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> null)
+                auto = AutoAimCommands.turretAutoAim(robotContainer)
                         .alongWith(AutoAimCommands.shooterAutoSpinUp(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose()))
                         .alongWith(AutoAimCommands.hoodAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose()))
                         .alongWith(AutoAimCommands.autoIndex(robotContainer));
@@ -122,7 +119,11 @@ public class Autos {
             pathCommands = pathCommands.andThen(intakePath(paths.get(i)));
         }
 
-        return auto.andThen(pathCommands.andThen(finalAutoAim()));
+        if(SubsystemConstants.hasTurret) {
+            return auto.alongWith(pathCommands.andThen(finalAutoAim()));
+        } else {
+            return auto.alongWith(pathCommands);
+        }
     }
 
 
@@ -134,6 +135,7 @@ public class Autos {
     }
 
     public Command HighDepotStationClimb() { return buildAuto(List.of("High-Depot", "Depot-Station", "Station-Climb"), true); }
+    public Command HighDepotNeutralClimb() { return buildAuto(List.of("High-Depot", "Depot-Neutral", "Neutral-Climb (High)"), true); }
     public Command MidStationDepotClimb() { return buildAuto(List.of("Mid-Station", "Station-Depot", "Depot-Climb"), true); }
     public Command LowStationDepotClimb() { return buildAuto(List.of("Low-Station", "Station-Depot", "Depot-Climb"), true); }
     public Command HighDepotClimb() { return buildAuto(List.of("High-Depot", "Depot-Climb"), true); }

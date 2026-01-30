@@ -1,6 +1,5 @@
 package frc2025.commands;
 
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -49,7 +48,7 @@ public class AutoAimCommands {
     }
 
 
-    public static Command turretAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {
+    public static Command turretAutoAim(RobotContainer robotContainer) {
         return robotContainer.getTurret().setPositionFieldRelative(
                 () -> {
                     return  RobotState.getInstance().getAngleToVirtualTarget();
@@ -125,7 +124,7 @@ public class AutoAimCommands {
                 .alongWith(hoodAutoAim(robotContainer, targetPoseSupplier));
         } else {
              return shooterAutoSpinUp(robotContainer, targetPoseSupplier)
-                .alongWith(turretAutoAim(robotContainer, targetPoseSupplier, unlockedSpeeds))
+                .alongWith(turretAutoAim(robotContainer))
                 .alongWith(hoodAutoAim(robotContainer, targetPoseSupplier));
         }
     }
