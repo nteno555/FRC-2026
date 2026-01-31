@@ -10,10 +10,11 @@ public class SubsystemConstants {
     public static double flywheelP = 0.12;
     public static double flywheelI = 0.0;
     public static double flywheelD = 0.0;
-    public static double topFlywheelGearRatio = 1.0 / 3.0;
-    public static double bottomFlywheelGearRatio = 1.0 / 3.0;
-    public static double topFlywheelDiameter = 0.0508; // 2 inches in meters
-    public static double bottomFlywheelDiameter = 0.1016; // 5 inches in meters
+    // NOT TUNED
+    public static double topFlywheelGearRatio = 1.0;
+    public static double bottomFlywheelGearRatio = 1.0;
+    public static double topFlywheelDiameter = 0.05; // 2 inches in meters
+    public static double bottomFlywheelDiameter = 0.1; // 4 inches in meters
     public static double flywheelEfficiency = 0.9;
 
     public static double hoodFF = 0.271;
@@ -31,9 +32,8 @@ public class SubsystemConstants {
     public static double hoodPeakForwardTorqueCurrent = 40;
     public static double hoodPeakReverseTorqueCurrent = 40;
     public static double hoodTorqueNeutralDeadband = 1;
-    public static double hoodkGFactor = 0.05;
-    public static double hoodRotationsPerRadian = 0.4558;
-    public static double hoodZeroOffsetRadians = 0;
+    public static double hoodRotationsPerRadian = 0.4558; //NOT TUNED
+    public static double hoodZeroOffsetRadians = 0; // NOT TUNEDDD
 
     public static double intakekS = 0.00;
     public static double intakekG = 0.20;
@@ -66,15 +66,11 @@ public class SubsystemConstants {
     public static double turretPeakForwardTorqueCurrent = 40;
     public static double turretPeakReverseTorqueCurrent = 40;
     public static double turretTorqueNeutralDeadband = 1;
-    public static double turretRotationsPerDegree = 0.208333333333;
-    public static double turretZeroOffsetDegrees = 20;
     public static double turretRotationsPerRadian = 2.556750949;
     public static double turretMinAngleRadians = -4.7123889804;
     public static double turretMaxAngleRadians = 1.5707963268;
     public static double throughBoreZero1 = 0.826;
     public static double throughBoreZero2 = 0.696;
-//    public static double throughBoreRatio1 = 0.25; // might have to swap or inverse
-//    public static double throughBoreRatio2 = 0.2037;
     public static double throughBoreRatio1 = 4.90909;
     public static double throughBoreRatio2 = 4.0; // 4 motor rotations for 1 throughgbore rotation
     public static boolean hasTurret = true;
