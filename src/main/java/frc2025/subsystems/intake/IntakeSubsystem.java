@@ -113,8 +113,10 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public Command setDeployVoltage(Supplier<Double> voltage) {
-        return this.run(() -> {
+        return this.startEnd(() -> {
             io.setDeployVoltage(voltage.get());
+        }, () -> {
+            io.setDeployVoltage(0.0);
         });
     }
 

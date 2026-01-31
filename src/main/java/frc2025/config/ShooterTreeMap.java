@@ -50,6 +50,19 @@ public class ShooterTreeMap {
                         - 0.21478905  * dist * dist * vel
                         - 0.32202871  * dist * vel * vel
                         - 0.18796412  * vel * vel * vel;
+
+        /*
+        12.54232786
+                        + 8.081028    * x
+                        - 6.61004747  * y
+                        - 1.54118737  * x * x
+                        + 1.932908    * x * y
+                        + 1.95712032  * y * y
+                        + 0.15451226  * x * x * x
+                        - 0.21478905  * x * x * y
+                        - 0.32202871  * x * y * y
+                        - 0.18796412  * y * y * y;
+         */
     }
 
     public double calculateHoodAngle(double vel, double dist) {

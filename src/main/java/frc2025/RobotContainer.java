@@ -197,8 +197,6 @@ public class RobotContainer {
         driverXboxController.povUp()
                 .toggleOnTrue(intakeSubsystem.setPosition(() -> SubsystemConstants.intakeDeployPosition))
                 .toggleOnFalse(intakeSubsystem.setPosition(() -> 0.0));
-//                .onTrue
-//                .onTrue(intakeSubsystem.setPosition(() -> ));
 
         driverXboxController.rightTrigger()
                         .whileTrue(indexerSubsystem.setVoltage(() -> -8.0, () -> -12.0)

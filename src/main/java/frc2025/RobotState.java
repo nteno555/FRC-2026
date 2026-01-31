@@ -2,8 +2,11 @@ package frc2025;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
@@ -38,6 +41,9 @@ public class RobotState {
 
     private Pose2d turretLimelightPose;
     private Translation3d shotVectorWhileMoving = new Translation3d(0, 0, 0);
+
+//    private double targetRadialVelocity;
+//    private double targetDistance;
 
 //    private double shooterExitVelocity;
 //    private double hoodAngle;
@@ -229,22 +235,44 @@ public class RobotState {
     }
 
     public void updateShotVectorWhileMoving() {
-        double distance = getVisionShooterPose().getTranslation().getDistance(getTargetPose().getTranslation());
-        double shooterSpeed = ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(distance);
-        double hoodAngle = ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(distance);
-
-        Translation3d shotVector = getShotVector(ShooterSubsystem.toBallExitVelocity(shooterSpeed), HoodSubsystem.toRadians(hoodAngle));
-
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
                 robotRelativeSpeeds,
                 getVisionPose().getRotation()
         );
 
+        Vector<N2> velocityVector = VecBuilder.fill(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+        Vector<N2> directionToTarget = VecBuilder.fill(
+                getTargetPose().getX() - getVisionShooterPose().getX(),
+                getTargetPose().getY() - getVisionShooterPose().getY()
+        );
+        directionToTarget = directionToTarget.div(directionToTarget.norm());
+
+        Vector<N2> radialVelocity = velocityVector.projection(directionToTarget);
+        double targetRadialVelocity = radialVelocity.norm();
+        double targetDistance = Math.hypot(getTargetPose().getX() - getVisionShooterPose().getX(),
+                getTargetPose().getY() - getVisionShooterPose().getY());
+        Vector<N2> tangentialVelocity = velocityVector.minus(radialVelocity);
+
+//        double shooterSpeed = ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(distance);
+//        double hoodAngle = ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(distance);
+        double shooterSpeed = ShooterTreeMap.getInstance().calculateRps(targetRadialVelocity, targetDistance);
+        double hoodAngle = ShooterTreeMap.getInstance().calculateHoodAngle(targetRadialVelocity, targetDistance);
+
+        Translation3d shotVector = getShotVector(ShooterSubsystem.toBallExitVelocity(shooterSpeed), HoodSubsystem.toRadians(hoodAngle));
+
+
+//        shotVectorWhileMoving = new Translation3d(
+//                shotVector.getX() - chassisSpeeds.vxMetersPerSecond,
+//                shotVector.getY() - chassisSpeeds.vyMetersPerSecond,
+//                shotVector.getZ()
+//        );
+
         shotVectorWhileMoving = new Translation3d(
-                shotVector.getX() - chassisSpeeds.vxMetersPerSecond,
-                shotVector.getY() - chassisSpeeds.vyMetersPerSecond,
+                shotVector.getX() - tangentialVelocity.get(0),
+                shotVector.getY() - tangentialVelocity.get(1),
                 shotVector.getZ()
         );
+
     }
 
     public Translation3d getShotVectorWhileMoving() {
