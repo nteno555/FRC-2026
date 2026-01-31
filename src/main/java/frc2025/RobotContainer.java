@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc2025.commands.AutoAimCommands;
+import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveIOReal;
 import frc2025.subsystems.drive.DriveIOSim;
 import frc2025.subsystems.drive.DriveSubsystem;
@@ -194,7 +195,10 @@ public class RobotContainer {
 
 
         driverXboxController.povUp()
-                .onTrue(intakeSubsystem.deploy());
+                .toggleOnTrue(intakeSubsystem.setPosition(() -> SubsystemConstants.intakeDeployPosition))
+                .toggleOnFalse(intakeSubsystem.setPosition(() -> 0.0));
+//                .onTrue
+//                .onTrue(intakeSubsystem.setPosition(() -> ));
 
         driverXboxController.rightTrigger()
                         .whileTrue(indexerSubsystem.setVoltage(() -> -8.0, () -> -12.0)
@@ -207,7 +211,7 @@ public class RobotContainer {
         }));
 
         driverXboxController.x().onTrue(
-                intakeSubsystem.setDeployVoltage(() -> 1.0))
+                intakeSubsystem.setDeployVoltage(() -> 2.0))
                         .onFalse(intakeSubsystem.rezero()
                                 .andThen(intakeSubsystem.setDeployVoltage(() -> 0.0)));
 

@@ -49,45 +49,47 @@ public class AutoAimCommands {
     }
 
 
-//    public static Command turretAutoAim(RobotContainer robotContainer) {
-//        return robotContainer.getTurret().setPositionFieldRelative(
-//                () -> {
-//                    return  RobotState.getInstance().getAngleToVirtualTarget();
-//                }
-//        );
-//    }
-//
-//    public static Command hoodAutoAim(RobotContainer robotContainer) {
-//        return robotContainer.getHood().setPosition(() -> {
-//
-//            Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
-//            double robotXpose = robotPose.getX();
-//            double robotYpose = robotPose.getY();
-//
-//            boolean nearBlueUpperTrench = (robotXpose < 6.25 && robotXpose > 3.0) && robotYpose > 7.0;
-//            boolean nearBlueLowerTrench = (robotXpose < 6.25 && robotXpose > 3.0) && robotYpose < 1.2;
-//            boolean nearRedUpperTrench = (robotXpose < 13.5 && robotXpose > 10.25) && robotYpose > 7.0;
-//            boolean nearRedLowerTrench = (robotXpose < 13.5 && robotXpose > 10.25) && robotYpose < 1.2;
-//
-//            if (nearBlueUpperTrench || nearBlueLowerTrench || nearRedUpperTrench || nearRedLowerTrench) {
-//                return 0.0;
-//            }
-//
-//            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
-//            double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
+    public static Command turretAutoAim(RobotContainer robotContainer) {
+        return robotContainer.getTurret().setPositionFieldRelative(
+                () -> {
+                    return  RobotState.getInstance().getAngleToVirtualTarget();
+                }
+        );
+    }
+
+    public static Command hoodAutoAim(RobotContainer robotContainer) {
+        return robotContainer.getHood().setPosition(() -> {
+
+            Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
+            double robotXpose = robotPose.getX();
+            double robotYpose = robotPose.getY();
+
+            boolean nearBlueUpperTrench = (robotXpose < 6.25 && robotXpose > 3.0) && robotYpose > 7.0;
+            boolean nearBlueLowerTrench = (robotXpose < 6.25 && robotXpose > 3.0) && robotYpose < 1.2;
+            boolean nearRedUpperTrench = (robotXpose < 13.5 && robotXpose > 10.25) && robotYpose > 7.0;
+            boolean nearRedLowerTrench = (robotXpose < 13.5 && robotXpose > 10.25) && robotYpose < 1.2;
+
+            if (nearBlueUpperTrench || nearBlueLowerTrench || nearRedUpperTrench || nearRedLowerTrench) {
+                return 0.0;
+            }
+
+            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
+            double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
 //            return ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist);
-//
-//        });
-//    }
-//
-//    public static Command shooterAutoSpinUp(RobotContainer robotContainer) {
-//        return robotContainer.getShooter().setSpeed(() -> {
-//            Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
-//            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
-//            double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
+            return ShooterTreeMap.getInstance().calculateHoodAngle(0.0, dist);
+
+        });
+    }
+
+    public static Command shooterAutoSpinUp(RobotContainer robotContainer) {
+        return robotContainer.getShooter().setSpeed(() -> {
+            Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
+            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
+            double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
 //            return ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist);
-//        });
-//    }
+            return ShooterTreeMap.getInstance().calculateRps(0.0, dist);
+        });
+    }
 
     public static Command autoAimCommand(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds, boolean useTurret) {
         if (!useTurret) {
@@ -181,27 +183,27 @@ public class AutoAimCommands {
         );
     }
 
-    public static Command shooterAutoSpinUp(RobotContainer robotContainer) {
-        return robotContainer.getShooter().setTargetExitVelocity(() -> {
-            Translation3d vec = RobotState.getInstance().getShotVectorWhileMoving();
-            return vec.getNorm();
-        });
-    }
-
-    public static Command hoodAutoAim(RobotContainer robotContainer) {
-        return robotContainer.getHood().setPositionRadians(() -> {
-            Translation3d vec = RobotState.getInstance().getShotVectorWhileMoving();
-            double up = vec.getZ();
-            double forward = Math.hypot(vec.getX(), vec.getY());
-
-            return Math.atan2(up, forward);
-        });
-    }
-
-    public static Command turretAutoAim(RobotContainer robotContainer) {
-        return robotContainer.getTurret().setPositionFieldRelative(() -> {
-            Translation3d vec = RobotState.getInstance().getShotVectorWhileMoving();
-            return Math.atan2(vec.getY(), vec.getX());
-        });
-    }
+//    public static Command shooterAutoSpinUp(RobotContainer robotContainer) {
+//        return robotContainer.getShooter().setTargetExitVelocity(() -> {
+//            Translation3d vec = RobotState.getInstance().getShotVectorWhileMoving();
+//            return vec.getNorm();
+//        });
+//    }
+//
+//    public static Command hoodAutoAim(RobotContainer robotContainer) {
+//        return robotContainer.getHood().setPositionRadians(() -> {
+//            Translation3d vec = RobotState.getInstance().getShotVectorWhileMoving();
+//            double up = vec.getZ();
+//            double forward = Math.hypot(vec.getX(), vec.getY());
+//
+//            return Math.atan2(up, forward);
+//        });
+//    }
+//
+//    public static Command turretAutoAim(RobotContainer robotContainer) {
+//        return robotContainer.getTurret().setPositionFieldRelative(() -> {
+//            Translation3d vec = RobotState.getInstance().getShotVectorWhileMoving();
+//            return Math.atan2(vec.getY(), vec.getX());
+//        });
+//    }
 }

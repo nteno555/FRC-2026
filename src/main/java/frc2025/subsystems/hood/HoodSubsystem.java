@@ -23,7 +23,9 @@ public class HoodSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        Logger.processInputs("RealOutputs/hood", inputs);
+        Logger.processInputs("RealOutputs/Hood", inputs);
+//        Logger.recordOutput("Hood/positionRotations", inputs.positionRotations);
+//        Logger.recordOutput("Hood/positionRadians", inputs.positionRadians);
         Logger.recordOutput("Hood/setpoint", setpoint);
         if(DriverStation.isDisabled()) {
             setpoint = inputs.positionRotations;

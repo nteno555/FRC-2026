@@ -32,11 +32,11 @@ public class SubsystemConstants {
     public static double hoodPeakForwardTorqueCurrent = 40;
     public static double hoodPeakReverseTorqueCurrent = 40;
     public static double hoodTorqueNeutralDeadband = 1;
-    public static double hoodRotationsPerRadian = 0.4558; //NOT TUNED
-    public static double hoodZeroOffsetRadians = 0; // NOT TUNEDDD
+    public static double hoodRotationsPerRadian = 31.7131757633; //NOT TUNED
+    public static double hoodZeroOffsetRadians = 1.22; // 70 degrees
 
     public static double intakekS = 0.00;
-    public static double intakekG = 0.20;
+    public static double intakekG = 0.2;
     public static double intakekV = 0.175;
     public static double intakekA = 0.0;
     public static double intakekP = 1.5;
@@ -50,7 +50,7 @@ public class SubsystemConstants {
     public static double intakePeakForwardTorqueCurrent = 100;
     public static double intakePeakReverseTorqueCurrent = 100;
     public static double intakeTorqueNeutralDeadband = 1;
-    public static double intakeDeployPosition = -3.3;
+    public static double intakeDeployPosition = -1.5;
 
     public static double turretkS = 0.30;
     public static double turretkV = 0.12;
@@ -69,8 +69,8 @@ public class SubsystemConstants {
     public static double turretRotationsPerRadian = 2.556750949;
     public static double turretMinAngleRadians = -4.7123889804;
     public static double turretMaxAngleRadians = 1.5707963268;
-    public static double throughBoreZero1 = 0.826;
-    public static double throughBoreZero2 = 0.696;
+    public static double throughBoreZero1 = 0.631;
+    public static double throughBoreZero2 = 0.536;
     public static double throughBoreRatio1 = 4.90909;
     public static double throughBoreRatio2 = 4.0; // 4 motor rotations for 1 throughgbore rotation
     public static boolean hasTurret = true;

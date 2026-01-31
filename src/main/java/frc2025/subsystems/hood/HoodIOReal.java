@@ -12,7 +12,7 @@ import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class HoodIOReal implements HoodIO {
-    private final TalonFX hoodMaster = new TalonFX(0, "rio");
+    private final TalonFX hoodMaster = new TalonFX(27, "rio");
 
     public HoodIOReal() {
         hoodMaster.getConfigurator().apply(new TalonFXConfiguration());

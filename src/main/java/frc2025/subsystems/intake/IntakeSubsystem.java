@@ -74,7 +74,7 @@ public class IntakeSubsystem extends SubsystemBase {
                     usingVoltage = true;
 
                     if (intake.get()) {
-                        io.setVoltage(5.7);
+                        io.setVoltage(-5.5);
                         io.setDeployPosition(SubsystemConstants.intakeDeployPosition);
 
                         if (Math.abs(SubsystemConstants.intakeDeployPosition - inputs.position) < 0.5) {
@@ -118,12 +118,18 @@ public class IntakeSubsystem extends SubsystemBase {
         });
     }
 
+    public Command setPosition(Supplier<Double> position) {
+        return this.run(() -> {
+            io.setDeployPosition(position.get());
+        });
+    }
+
     public Command rezero() {
         return this.runOnce(() -> io.rezero(0.0));
     }
 
     public Command deploy() {
-        if (Math.abs(inputs.position - SubsystemConstants.intakeDeployPosition) < 0.5) {
+        if (Math.abs(inputs.position - SubsystemConstants.intakeDeployPosition) < 0.7) {
             return this.run(() -> io.setDeployPosition(0.0));
         }
         return this.run(() -> io.setDeployPosition(SubsystemConstants.intakeDeployPosition));

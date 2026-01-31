@@ -17,7 +17,6 @@ public class ShooterTreeMap {
         hoodTreeMap.put(3.5, 0.0);
         hoodTreeMap.put(4.0, 0.0);
         hoodTreeMap.put(5.0, 2.0);
-
         lowerWheelTreeMap.put(2.0, -24.4);
         lowerWheelTreeMap.put(2.50, -27.4);
         lowerWheelTreeMap.put(3.0, -29.4);
@@ -38,6 +37,25 @@ public class ShooterTreeMap {
         updateDashboardMap();
         SmartDashboard.putString("Tuning/lowerWheelTree Map", lowerWheelTreeMap.toString());
 
+    }
+
+    public double calculateRps(double vel, double dist) {
+        return 12.54232786
+                        + 8.081028    * dist
+                        - 6.61004747  * vel
+                        - 1.54118737  * dist * dist
+                        + 1.932908    * dist * vel
+                        + 1.95712032  * vel * vel
+                        + 0.15451226  * dist * dist * dist
+                        - 0.21478905  * dist * dist * vel
+                        - 0.32202871  * dist * vel * vel
+                        - 0.18796412  * vel * vel * vel;
+    }
+
+    public double calculateHoodAngle(double vel, double dist) {
+        return 1.22173048
+                        - 0.05235988 * dist
+                        - 0.05235988 * vel;
     }
 
     public static ShooterTreeMap getInstance() {
