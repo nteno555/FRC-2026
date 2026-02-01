@@ -86,8 +86,8 @@ public class AutoAimCommands {
             Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
             Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
             double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
-//            return ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist);
-            return ShooterTreeMap.getInstance().calculateRps(0.0, dist);
+            return ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist);
+//            return ShooterTreeMap.getInstance().calculateRps(0.0, dist);
         });
     }
 

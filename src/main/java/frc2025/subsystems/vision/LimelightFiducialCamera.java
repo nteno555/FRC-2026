@@ -58,8 +58,8 @@ public class LimelightFiducialCamera {
 
         boolean usingMt1 = true;
         LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
-        //LimelightHelpers.PoseEstimate poseEstimateMt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
-
+//        LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
+//
         Logger.recordOutput("Vision/heartbeatBeforeNullcheck", Math.random());
 
         if(poseEstimate == null) return;
@@ -113,11 +113,11 @@ public class LimelightFiducialCamera {
 
         Vector<N3> distStdDevs;
 
-        if(usingMt1) {
+//        if(usingMt1) {
             distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 5.0, Math.pow(leastDistance, 2) / 5.0, Math.pow(leastDistance, 2) / 10000.0);
-        } else {
-            distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 5.0, Math.pow(leastDistance, 2) / 5.0, 999999);
-        }
+//        } else {
+//            distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 5.0, Math.pow(leastDistance, 2) / 5.0, 999999);
+//        }
 
         VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
                 poseEstimate.timestampSeconds, pose, distStdDevs

@@ -106,7 +106,7 @@ public class TurretIOReal implements TurretIO{
     public void setPosition(double position, double velocity) {
         turretMotor.setControl(
                 new PositionVoltage(position)
-                        .withVelocity(velocity)
+                        //.withVelocity(velocity)
                         .withSlot(0)
                         .withEnableFOC(true)
         );
@@ -144,7 +144,7 @@ public class TurretIOReal implements TurretIO{
             else pos2 += SubsystemConstants.throughBoreRatio2;
         }
 
-        turretMotor.setPosition(-pos1);
+        turretMotor.setPosition(-(pos1 - toRotations(SubsystemConstants.turretZeroOffsetRadians)));
 
         Logger.recordOutput("Turret/finalPos1", pos1);
         Logger.recordOutput("Turret/finalPos2", pos2);

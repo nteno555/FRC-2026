@@ -18,12 +18,12 @@ public class ShooterTreeMap {
         hoodTreeMap.put(3.5, 0.0);
         hoodTreeMap.put(4.0, 0.0);
         hoodTreeMap.put(5.0, 2.0);
-        lowerWheelTreeMap.put(2.0, -24.4);
-        lowerWheelTreeMap.put(2.50, -27.4);
-        lowerWheelTreeMap.put(3.0, -29.4);
-        lowerWheelTreeMap.put(3.5, -31.4);
-        lowerWheelTreeMap.put(4.0, -33.4);
-        lowerWheelTreeMap.put(5.0, -33.4);
+        lowerWheelTreeMap.put(2.0, -24.0);
+        lowerWheelTreeMap.put(2.50, -27.0);
+        lowerWheelTreeMap.put(3.0, -29.0);
+        lowerWheelTreeMap.put(3.5, -31.0);
+        lowerWheelTreeMap.put(4.0, -33.0);
+        lowerWheelTreeMap.put(5.0, -33.0);
 
         tofTreeMap.put(1.3, 1.15);
         tofTreeMap.put(2.4, 1.27);
@@ -72,9 +72,9 @@ public class ShooterTreeMap {
         double angle = 1.22173048
                         - 0.05235988 * dist
                         - 0.05235988 * vel;
-        if (angle > (70.0/SubsystemConstants.hoodRotationsPerRadian)) {
-            angle = (70.0 / SubsystemConstants.hoodRotationsPerRadian);
-        }
+//        if (angle > (70.0/SubsystemConstants.hoodRotationsPerRadian)) {
+//            angle = (70.0 / SubsystemConstants.hoodRotationsPerRadian);
+//        }
         return angle;
     }
 

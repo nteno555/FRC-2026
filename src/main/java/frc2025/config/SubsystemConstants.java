@@ -33,7 +33,7 @@ public class SubsystemConstants {
     public static double hoodPeakReverseTorqueCurrent = 40;
     public static double hoodTorqueNeutralDeadband = 1;
     public static double hoodRotationsPerRadian = 31.7131757633; //NOT TUNED
-    public static double hoodZeroOffsetRadians = 1.22; // 70 degrees
+    public static double hoodZeroOffsetRadians = 1.154; // 66 degrees
 
     public static double intakekS = 0.00;
     public static double intakekG = 0.2;
@@ -55,7 +55,7 @@ public class SubsystemConstants {
     public static double turretkS = 0.30;
     public static double turretkV = 0.12;
     public static double turretkG = 0.0;
-    public static double turretkP = 2.0;
+    public static double turretkP = 3.0;
     public static double turretkI = 0.0;
     public static double turretkD = 0.0;
     public static double turretCruiseVelocity = 60;
@@ -66,18 +66,25 @@ public class SubsystemConstants {
     public static double turretPeakForwardTorqueCurrent = 40;
     public static double turretPeakReverseTorqueCurrent = 40;
     public static double turretTorqueNeutralDeadband = 1;
-    public static double turretRotationsPerRadian = 2.556750949;
+//    public static double turretRotationsPerRadian = 2.556750949;
+//    public static double turretRotationsPerRadian = ((14.0 / 56.0 * (44.0 / 54.0)) / (2 * Math.PI));
+    //public static double turretRotationsPerRadian = ((56.0 / 14.0) * (54.0 / 44.0)) / (2*Math.PI);
+//    public static double turretRotationsPerRadian = 14.0/56.0 * (54.0/44.0) / (2*Math.PI);
+    //public static double turretZeroOffsetRadians = -0.13;
+    public static double turretZeroOffsetRadians = 0.0;
+    public static double turretRotationsPerRadian = 2.53;
     public static double turretMinAngleRadians = -4.7123889804;
     public static double turretMaxAngleRadians = 1.5707963268;
     public static double throughBoreZero1 = 0.649;
-    public static double throughBoreZero2 = 0.554;
+    public static double throughBoreZero2 = 0.555;
     public static double throughBoreRatio1 = 4.90909;
     public static double throughBoreRatio2 = 4.0; // 4 motor rotations for 1 throughgbore rotation
     public static boolean hasTurret = true;
 
     public static double kMaxShootVelocity = 1;
 
-    public static Translation2d shooterToCenterPose = new Translation2d(0.13, -0.07);
+//    public static Translation2d shooterToCenterPose = new Translation2d(0.13, -0.07);
+    public static Translation2d shooterToCenterPose = new Translation2d(0, 0);
     public static double turretLimelightAngleOffsetRadians = Math.toRadians(180);
     public static double turretToLimelightRadius = 0.13;
     public static double turretLimelightHeight = 0.53;

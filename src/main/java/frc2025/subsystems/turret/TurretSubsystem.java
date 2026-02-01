@@ -39,15 +39,16 @@ public class TurretSubsystem extends SubsystemBase {
                 SubsystemConstants.shooterToCenterPose.getAngle().plus(Rotation2d.fromRadians(inputs.positionRadians))
         );
         Logger.recordOutput("Turret/turretPose", turretLimelightPose);
+        Logger.recordOutput("Turret/fieldRelativeAngleRadians", inputs.positionRadians + RobotState.getInstance().getVisionPose().getRotation().getRadians());
         RobotState.getInstance().setTurretLimelightPose(turretLimelightPose);
 //        RobotState.getInstance().setTurretLimelightPose(
 //
 //        );
 
-//        if(!zeroed) {
+        if(!zeroed) {
             io.rezero();
-            //zeroed = true;
-//        }
+            zeroed = true;
+        }
     }
 
     public Command setPositionFieldRelative(Supplier<Double> positionRadians) {

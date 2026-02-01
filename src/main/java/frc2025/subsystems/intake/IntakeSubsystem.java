@@ -75,6 +75,7 @@ public class IntakeSubsystem extends SubsystemBase {
 //        });
 //    }
 
+
     public Command setIntaking(Supplier<Boolean> intake){
         return this.runEnd(() -> {
                     usingVoltage = true;
