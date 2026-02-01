@@ -34,19 +34,25 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
-    public Command setSpeed(Supplier<Double> speed) {
+    public Command setRollerSpeed(Supplier<Double> speed) {
         return this.run(() -> {
-            usingVoltage = false;
-            if (speed.get() == 0.0) {
-                io.setDeployPosition(0.0);
-                io.setSpeed(0.0);
-            }
-            else {
-                io.setSpeed(speed.get());
-                io.setDeployPosition(SubsystemConstants.intakeDeployPosition);
-            }
-        });
+            io.setSpeed(speed.get());
+        }) ;
     }
+
+//    public Command setSpeed(Supplier<Double> speed) {
+//        return this.run(() -> {
+//            usingVoltage = false;
+//            if (speed.get() == 0.0) {
+//                io.setDeployPosition(0.0);
+//                io.setSpeed(0.0);
+//            }
+//            else {
+//                io.setSpeed(speed.get());
+//                io.setDeployPosition(SubsystemConstants.intakeDeployPosition);
+//            }
+//        });
+//    }
 
     public Command setRollerVoltage(Supplier<Double> voltage) {
         return this.run(() -> {
@@ -55,19 +61,19 @@ public class IntakeSubsystem extends SubsystemBase {
         });
     }
 
-    public Command setVoltage(Supplier<Double> voltage){
-        return this.run(() -> {
-            usingVoltage = true;
-            if (voltage.get() == 0.0) {
-                io.setDeployPosition(0.0);
-                io.setVoltage(0.0);
-            }
-            else {
-                io.setDeployPosition(SubsystemConstants.intakeDeployPosition);
-                io.setVoltage(voltage.get());
-            }
-        });
-    }
+//    public Command setVoltage(Supplier<Double> voltage){
+//        return this.run(() -> {
+//            usingVoltage = true;
+//            if (voltage.get() == 0.0) {
+//                io.setDeployPosition(0.0);
+//                io.setVoltage(0.0);
+//            }
+//            else {
+//                io.setDeployPosition(SubsystemConstants.intakeDeployPosition);
+//                io.setVoltage(voltage.get());
+//            }
+//        });
+//    }
 
     public Command setIntaking(Supplier<Boolean> intake){
         return this.runEnd(() -> {
@@ -113,11 +119,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public Command setDeployVoltage(Supplier<Double> voltage) {
-        return this.startEnd(() -> {
-            io.setDeployVoltage(voltage.get());
-        }, () -> {
-            io.setDeployVoltage(0.0);
-        });
+        return this.run(() -> io.setDeployVoltage(voltage.get()));
     }
 
     public Command setPosition(Supplier<Double> position) {
@@ -128,13 +130,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public Command rezero() {
         return this.runOnce(() -> io.rezero(0.0));
-    }
-
-    public Command deploy() {
-        if (Math.abs(inputs.position - SubsystemConstants.intakeDeployPosition) < 0.7) {
-            return this.run(() -> io.setDeployPosition(0.0));
-        }
-        return this.run(() -> io.setDeployPosition(SubsystemConstants.intakeDeployPosition));
     }
 
     public boolean getHasPiece(){

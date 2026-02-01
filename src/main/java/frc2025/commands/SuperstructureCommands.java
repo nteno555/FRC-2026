@@ -13,7 +13,7 @@ public class SuperstructureCommands {
     }
 
     public static Command intakePieceCommand(RobotContainer robotContainer) {
-        return robotContainer.getIntake().setVoltage(() -> 6.0);
+        return robotContainer.getIntake().setRollerVoltage(() -> 6.0);
     }
 
     public static Command shootCommand(RobotContainer robotContainer) {

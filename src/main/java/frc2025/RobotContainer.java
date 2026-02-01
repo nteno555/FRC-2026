@@ -62,6 +62,7 @@ public class RobotContainer {
     Command autoCommand;
     private boolean tuning = false;
     private boolean wantIntake = false;
+    private boolean wantIntakeRoller = false;
 
     public RobotContainer() {
         createSubsystems();
@@ -173,8 +174,8 @@ public class RobotContainer {
             .whileFalse(indexerSubsystem.setVoltage(() -> 0.5, () -> 0.0));
 
         driverXboxController.povLeft().whileTrue(
-                new InstantCommand(() -> wantIntake = !wantIntake)
-                        .andThen(intakeSubsystem.setIntaking(() -> wantIntake))
+                new InstantCommand(() -> wantIntakeRoller = !wantIntakeRoller)
+                        .andThen(intakeSubsystem.setRollerVoltage(() -> wantIntakeRoller ? -8.5 : 0.0))
         );
 
 
@@ -195,8 +196,12 @@ public class RobotContainer {
 
 
         driverXboxController.povUp()
-                .toggleOnTrue(intakeSubsystem.setPosition(() -> SubsystemConstants.intakeDeployPosition))
-                .toggleOnFalse(intakeSubsystem.setPosition(() -> 0.0));
+                        .whileTrue(
+                                new InstantCommand(() -> wantIntake = !wantIntake)
+                                        .andThen(intakeSubsystem.setPosition(() -> wantIntake ? SubsystemConstants.intakeDeployPosition : 0.0))
+                        );
+//                .toggleOnTrue(intakeSubsystem.setPosition(() -> SubsystemConstants.intakeDeployPosition))
+//                .toggleOnFalse(intakeSubsystem.setPosition(() -> 0.0));
 
         driverXboxController.rightTrigger()
                         .whileTrue(indexerSubsystem.setVoltage(() -> -8.0, () -> -12.0)

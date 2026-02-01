@@ -15,7 +15,7 @@ public class SubsystemConstants {
     public static double bottomFlywheelGearRatio = 1.0;
     public static double topFlywheelDiameter = 0.05; // 2 inches in meters
     public static double bottomFlywheelDiameter = 0.1; // 4 inches in meters
-    public static double flywheelEfficiency = 0.9;
+    public static double flywheelEfficiency = 1;
 
     public static double hoodFF = 0.271;
     public static double hoodkS = 0.0;
@@ -39,7 +39,7 @@ public class SubsystemConstants {
     public static double intakekG = 0.2;
     public static double intakekV = 0.175;
     public static double intakekA = 0.0;
-    public static double intakekP = 1.5;
+    public static double intakekP = 2.5;
     public static double intakekI = 0.0;
     public static double intakekD = 0.0;
     public static double intakeCruiseVelocity = 10;

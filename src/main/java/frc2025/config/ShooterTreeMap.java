@@ -40,7 +40,7 @@ public class ShooterTreeMap {
     }
 
     public double calculateRps(double vel, double dist) {
-        return 12.54232786
+        return -(12.54232786
                         + 8.081028    * dist
                         - 6.61004747  * vel
                         - 1.54118737  * dist * dist
@@ -49,7 +49,7 @@ public class ShooterTreeMap {
                         + 0.15451226  * dist * dist * dist
                         - 0.21478905  * dist * dist * vel
                         - 0.32202871  * dist * vel * vel
-                        - 0.18796412  * vel * vel * vel;
+                        - 0.18796412  * vel * vel * vel);
 
         /*
         12.54232786

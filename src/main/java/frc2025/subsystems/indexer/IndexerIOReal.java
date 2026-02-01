@@ -7,6 +7,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
+import org.littletonrobotics.junction.Logger;
 
 public class IndexerIOReal implements IndexerIO {
     private final TalonFX indexer = new TalonFX(21, "rio");
@@ -37,8 +38,8 @@ public class IndexerIOReal implements IndexerIO {
         towerConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
 
         TorqueCurrentConfigs towerConfigTorque =  new TorqueCurrentConfigs();
-        towerConfigTorque.PeakForwardTorqueCurrent = 40;
-        towerConfigTorque.PeakReverseTorqueCurrent = 40;
+        towerConfigTorque.PeakForwardTorqueCurrent = 100;
+        towerConfigTorque.PeakReverseTorqueCurrent = 100;
         towerConfigTorque.TorqueNeutralDeadband = 1;
 
         indexer.getConfigurator().apply(indexerConfigs, 0.050);
@@ -61,6 +62,11 @@ public class IndexerIOReal implements IndexerIO {
         inputs.indexerCurrent = indexer.getTorqueCurrent().getValueAsDouble();
         inputs.towerVoltage = tower.getMotorVoltage().getValueAsDouble();
         inputs.towerCurrent = tower.getTorqueCurrent().getValueAsDouble();
+
+        Logger.recordOutput("Indexer/spindexerVoltage", inputs.indexerVoltage);
+        Logger.recordOutput("Indexer/spindexerCurrent", inputs.indexerCurrent);
+        Logger.recordOutput("Indexer/towerVoltage", inputs.towerVoltage);
+        Logger.recordOutput("Indexer/towerCurrent", inputs.towerCurrent);
     }
 
     @Override
