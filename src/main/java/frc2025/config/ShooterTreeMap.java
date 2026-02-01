@@ -1,5 +1,6 @@
 package frc2025.config;
 
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc2025.util.InterpolatingTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -40,7 +41,7 @@ public class ShooterTreeMap {
     }
 
     public double calculateRps(double vel, double dist) {
-        return -(12.54232786
+        double rps = -(12.54232786
                         + 8.081028    * dist
                         - 6.61004747  * vel
                         - 1.54118737  * dist * dist
@@ -51,6 +52,7 @@ public class ShooterTreeMap {
                         - 0.32202871  * dist * vel * vel
                         - 0.18796412  * vel * vel * vel);
 
+        if (rps < -40) rps = -40;
         /*
         12.54232786
                         + 8.081028    * x
@@ -63,12 +65,17 @@ public class ShooterTreeMap {
                         - 0.32202871  * x * y * y
                         - 0.18796412  * y * y * y;
          */
+        return rps;
     }
 
     public double calculateHoodAngle(double vel, double dist) {
-        return 1.22173048
+        double angle = 1.22173048
                         - 0.05235988 * dist
                         - 0.05235988 * vel;
+        if (angle > (70.0/SubsystemConstants.hoodRotationsPerRadian)) {
+            angle = (70.0 / SubsystemConstants.hoodRotationsPerRadian);
+        }
+        return angle;
     }
 
     public static ShooterTreeMap getInstance() {

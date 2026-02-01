@@ -248,15 +248,20 @@ public class RobotState {
         directionToTarget = directionToTarget.div(directionToTarget.norm());
 
         Vector<N2> radialVelocity = velocityVector.projection(directionToTarget);
-        double targetRadialVelocity = radialVelocity.norm();
+        double targetRadialVelocity = velocityVector.dot(directionToTarget);
         double targetDistance = Math.hypot(getTargetPose().getX() - getVisionShooterPose().getX(),
                 getTargetPose().getY() - getVisionShooterPose().getY());
         Vector<N2> tangentialVelocity = velocityVector.minus(radialVelocity);
+//        if (tangentialVelocity.norm() < 0.05) {
+            tangentialVelocity = VecBuilder.fill(0.0, 0.0);
+//        }
 
 //        double shooterSpeed = ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(distance);
 //        double hoodAngle = ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(distance);
-        double shooterSpeed = ShooterTreeMap.getInstance().calculateRps(targetRadialVelocity, targetDistance);
-        double hoodAngle = ShooterTreeMap.getInstance().calculateHoodAngle(targetRadialVelocity, targetDistance);
+//        double shooterSpeed = ShooterTreeMap.getInstance().calculateRps(targetRadialVelocity, targetDistance);
+//        double hoodAngle = ShooterTreeMap.getInstance().calculateHoodAngle(targetRadialVelocity, targetDistance);
+        double shooterSpeed = ShooterTreeMap.getInstance().calculateRps(0.0, targetDistance);
+        double hoodAngle = ShooterTreeMap.getInstance().calculateHoodAngle(0.0, targetDistance);
 
         Translation3d shotVector = getShotVector(ShooterSubsystem.toBallExitVelocity(shooterSpeed), HoodSubsystem.toRadians(hoodAngle));
 

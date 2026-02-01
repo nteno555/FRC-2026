@@ -62,11 +62,6 @@ public class IndexerIOReal implements IndexerIO {
         inputs.indexerCurrent = indexer.getTorqueCurrent().getValueAsDouble();
         inputs.towerVoltage = tower.getMotorVoltage().getValueAsDouble();
         inputs.towerCurrent = tower.getTorqueCurrent().getValueAsDouble();
-
-        Logger.recordOutput("Indexer/spindexerVoltage", inputs.indexerVoltage);
-        Logger.recordOutput("Indexer/spindexerCurrent", inputs.indexerCurrent);
-        Logger.recordOutput("Indexer/towerVoltage", inputs.towerVoltage);
-        Logger.recordOutput("Indexer/towerCurrent", inputs.towerCurrent);
     }
 
     @Override

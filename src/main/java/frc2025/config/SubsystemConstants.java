@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 public class SubsystemConstants {
     public static double flywheelS = 0.00;
-    public static double flywheelV = 0.127;
+    public static double flywheelV = 0.13;
     public static double flywheelA = 0.00;
     public static double flywheelP = 0.12;
     public static double flywheelI = 0.0;
@@ -69,8 +69,8 @@ public class SubsystemConstants {
     public static double turretRotationsPerRadian = 2.556750949;
     public static double turretMinAngleRadians = -4.7123889804;
     public static double turretMaxAngleRadians = 1.5707963268;
-    public static double throughBoreZero1 = 0.631;
-    public static double throughBoreZero2 = 0.536;
+    public static double throughBoreZero1 = 0.649;
+    public static double throughBoreZero2 = 0.554;
     public static double throughBoreRatio1 = 4.90909;
     public static double throughBoreRatio2 = 4.0; // 4 motor rotations for 1 throughgbore rotation
     public static boolean hasTurret = true;
