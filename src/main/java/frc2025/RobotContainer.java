@@ -175,7 +175,7 @@ public class RobotContainer {
 
         driverXboxController.povLeft().whileTrue(
                 new InstantCommand(() -> wantIntakeRoller = !wantIntakeRoller)
-                        .andThen(intakeSubsystem.setRollerVoltage(() -> wantIntakeRoller ? -8.5 : 0.0))
+                        .andThen(intakeSubsystem.setRollerVoltage(() -> wantIntakeRoller ? -12.0 : 0.0))
         );
 
 
