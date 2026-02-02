@@ -34,9 +34,9 @@ public class TurretSubsystem extends SubsystemBase {
 
         Pose2d turretLimelightPose = new Pose2d(
                 SubsystemConstants.shooterToCenterPose.getX()
-                        + SubsystemConstants.turretToLimelightRadius * Math.cos(inputs.positionRadians + SubsystemConstants.turretLimelightAngleOffsetRadians),
-                -SubsystemConstants.shooterToCenterPose.getY()
                         + SubsystemConstants.turretToLimelightRadius * Math.sin(inputs.positionRadians + SubsystemConstants.turretLimelightAngleOffsetRadians),
+                -SubsystemConstants.shooterToCenterPose.getY()
+                        + SubsystemConstants.turretToLimelightRadius * Math.cos(inputs.positionRadians + SubsystemConstants.turretLimelightAngleOffsetRadians),
                 SubsystemConstants.shooterToCenterPose.getRotation().plus(Rotation2d.fromRadians(inputs.positionRadians))//.plus(RobotState.getInstance().getVisionPose().getRotation())
         );
 

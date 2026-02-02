@@ -108,7 +108,8 @@ public class LimelightFiducialCamera {
         Vector<N3> distStdDevs;
 
         double rotationStdDev = 99999999;
-        if(!turretMounted) rotationStdDev = Math.pow(leastDistance, 2) / 10000.0;
+//        if(!turretMounted) rotationStdDev = Math.pow(leastDistance, 2) / 10000.0;
+        rotationStdDev = Math.pow(leastDistance, 2) / 10000.0;
 //        if(usingMt1) {
         distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 5.0, Math.pow(leastDistance, 2) / 5.0, rotationStdDev);
 //        } else {

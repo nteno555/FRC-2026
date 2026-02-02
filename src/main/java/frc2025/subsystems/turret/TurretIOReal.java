@@ -106,7 +106,7 @@ public class TurretIOReal implements TurretIO{
     public void setPosition(double position, double velocity) {
         turretMotor.setControl(
                 new PositionVoltage(position)
-                        //.withVelocity(velocity)
+                        .withVelocity(velocity)
                         .withSlot(0)
                         .withEnableFOC(true)
         );

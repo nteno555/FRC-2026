@@ -12,27 +12,48 @@ public class ShooterTreeMap {
     public  InterpolatingTreeMap tofTreeMap = new InterpolatingTreeMap();
     
     public ShooterTreeMap() {
+        //WITH HOOD, GOOD
         hoodTreeMap.put(2.0, 0.0);
         hoodTreeMap.put(2.50, 1.5);
         hoodTreeMap.put(3.0, 3.0);
         hoodTreeMap.put(3.5, 4.5);
         hoodTreeMap.put(4.0, 6.0);
-
-        lowerWheelTreeMap.put(2.0, -24.0);
-        lowerWheelTreeMap.put(2.50, -26.0);
-        lowerWheelTreeMap.put(3.0, -27.5);
-        lowerWheelTreeMap.put(3.5, -28.5);
-        lowerWheelTreeMap.put(4.0, -29.3);
-        lowerWheelTreeMap.put(5.0, -31.0);
-
-//        tofTreeMap.put(1.3, 1.15);
-//        tofTreeMap.put(2.4, 1.27);
-//        tofTreeMap.put(3.5, 1.41);
-//        tofTreeMap.put(4.5, 1.50);
-//        tofTreeMap.put(9.5, 1.90);
-        tofTreeMap.put(2.0, 1.25);
+        lowerWheelTreeMap.put(1.8, -24.0);
+        lowerWheelTreeMap.put(2.30, -26.0);
+        lowerWheelTreeMap.put(2.8, -27.5);
+        lowerWheelTreeMap.put(3.3, -28.5);
+        lowerWheelTreeMap.put(3.8, -29.3);
+        lowerWheelTreeMap.put(4.8, -31.0);
+        lowerWheelTreeMap.put(5.8, -33.0);
+        tofTreeMap.put(1.0, 0.5);
+        tofTreeMap.put(2.0, 0.8);
+        tofTreeMap.put(3.0, 1.1);
 //        tofTreeMap.put(2.28, 1.09);
         tofTreeMap.put(4.0, 1.25);
+        tofTreeMap.put(5.0, 1.33);
+
+
+        // NO HOOD
+
+//        hoodTreeMap.put(2.0, 0.0);
+//        hoodTreeMap.put(2.25, 0.0);
+//        hoodTreeMap.put(2.50, 0.0);
+//        hoodTreeMap.put(3.0, 0.0);
+//        hoodTreeMap.put(3.5, 0.0);
+//        hoodTreeMap.put(4.0, 0.0);
+//        hoodTreeMap.put(5.0, 2.0);
+//
+//        lowerWheelTreeMap.put(2.0, -24.4);
+//        lowerWheelTreeMap.put(2.50, -27.4);
+//        lowerWheelTreeMap.put(3.0, -29.4);
+//        lowerWheelTreeMap.put(3.5, -31.4);
+//        lowerWheelTreeMap.put(4.0, -33.4);
+//        lowerWheelTreeMap.put(5.0, -33.4);
+//
+//        tofTreeMap.put(2.4, 1.25);
+//        tofTreeMap.put(3.5, 1.39);
+//        tofTreeMap.put(4.5, 1.46);
+
 //        double tofAt2 = 0.6;
 //        for(double k = 0; k <= 10; k += 0.1) {
 //            tofTreeMap.put(k, tofAt2 * Math.pow(k / 2.0, 0.5) + 0.2);

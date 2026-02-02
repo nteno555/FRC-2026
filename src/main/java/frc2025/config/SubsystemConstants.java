@@ -86,7 +86,8 @@ public class SubsystemConstants {
     public static double kMaxShootVelocity = 1;
 
 
-    public static Pose2d shooterToCenterPose = new Pose2d(0.1016, -0.1016, Rotation2d.kZero);
+    //public static Pose2d shooterToCenterPose = new Pose2d(0.1016, -0.1016, Rotation2d.kZero);
+    public static Pose2d shooterToCenterPose = new Pose2d(0.0, 0.0, Rotation2d.kZero);
 //    public static Translation2d shooterToCenterPose = new Translation2d(0, 0);
     public static double turretLimelightAngleOffsetRadians = Math.toRadians(180);
     public static double turretToLimelightRadius = 0.15;

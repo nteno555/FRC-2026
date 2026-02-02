@@ -121,20 +121,20 @@ public class RobotState {
             if(!shuttling) {
                 return FieldConstants.redNetPos;
             } else {
-//                return FieldConstants.redShuttlePos;
                 if(visionPoseEstimator.getLatestPose().getY() > FieldConstants.yHalfLine) {
-                    return new Pose2d(
-                            FieldConstants.redShuttlePosUpper.getX(),
-                            8 - visionPoseEstimator.getLatestPose().getY() + 4 - 1,
-                            Rotation2d.kZero
-                    );
+                    return FieldConstants.redShuttlePosUpper;
+//                    return new Pose2d(
+//                            FieldConstants.redShuttlePosUpper.getX(),
+//                            8 - visionPoseEstimator.getLatestPose().getY() + 4 - 0.3,
+//                            Rotation2d.kZero
+//                    );
                 } else {
-                    //return FieldConstants.redShuttlePosLower;
-                    return new Pose2d(
-                            FieldConstants.redShuttlePosLower.getX(),
-                            4 - visionPoseEstimator.getLatestPose().getY() + 1,
-                            Rotation2d.kZero
-                    );
+                    return FieldConstants.redShuttlePosLower;
+//                    return new Pose2d(
+//                            FieldConstants.redShuttlePosLower.getX(),
+//                            4 - visionPoseEstimator.getLatestPose().getY() + 0.3,
+//                            Rotation2d.kZero
+//                    );
                 }
             }
         } else {
@@ -142,20 +142,21 @@ public class RobotState {
                 return FieldConstants.blueNetPos;
             } else {
                 if(visionPoseEstimator.getLatestPose().getY() > FieldConstants.yHalfLine) {
-                    return new Pose2d(
-                            FieldConstants.blueShuttlePosUpper.getX(),
-                            8 - visionPoseEstimator.getLatestPose().getY() + 4 - 1,
-                            Rotation2d.kZero
-                    );
+                    return FieldConstants.blueShuttlePosUpper;
+//                    return new Pose2d(
+//                            FieldConstants.blueShuttlePosUpper.getX(),
+//                            8 - visionPoseEstimator.getLatestPose().getY() + 4 - 0.3,
+//                            Rotation2d.kZero
+//                    );
                 }
                 else {
-                    //return FieldConstants.redShuttlePosLower;
-                    return new Pose2d(
-                            FieldConstants.blueShuttlePosLower.getX(),
-                            4 - visionPoseEstimator.getLatestPose().getY() + 1,
-//                            -FieldConstants.yHalfLine + visionPoseEstimator.getLatestPose().getY(),
-                            Rotation2d.kZero
-                    );
+                    return FieldConstants.blueShuttlePosLower;
+//                    return new Pose2d(
+//                            FieldConstants.blueShuttlePosLower.getX(),
+//                            4 - visionPoseEstimator.getLatestPose().getY() + 0.3,
+////                            -FieldConstants.yHalfLine + visionPoseEstimator.getLatestPose().getY(),
+//                            Rotation2d.kZero
+//                    );
                 }
             }
         }
