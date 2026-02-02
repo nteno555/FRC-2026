@@ -81,6 +81,8 @@ public class HoodSubsystem extends SubsystemBase {
     }
     public double getPosition() { return inputs.positionRotations; }
     public double getPositionRadians() { return inputs.positionRadians; }
-    public static double toRadians(double rotations) { return rotations / SubsystemConstants.hoodRotationsPerRadian + SubsystemConstants.hoodZeroOffsetRadians; }
-    public static double toRotations(double radians) { return (radians - SubsystemConstants.hoodZeroOffsetRadians) * SubsystemConstants.hoodRotationsPerRadian; }
+    public static double toRadians(double rotations) { return  -rotations / SubsystemConstants.hoodRotationsPerRadian + SubsystemConstants.hoodZeroOffsetRadians; }
+    public static double toRotations(double radians) { return (SubsystemConstants.hoodZeroOffsetRadians - radians) * SubsystemConstants.hoodRotationsPerRadian; }
+//    public static double toRadians(double rotations) { return io.to}
 }
+//

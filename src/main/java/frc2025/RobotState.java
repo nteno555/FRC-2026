@@ -75,7 +75,7 @@ public class RobotState {
 
     public Pose2d getVisionShooterPose() {
         Pose2d visionPose = visionPoseEstimator.getLatestPose();
-        Translation2d vec = SubsystemConstants.shooterToCenterPose.rotateBy(visionPose.getRotation());
+        Translation2d vec = SubsystemConstants.shooterToCenterPose.getTranslation().rotateBy(visionPose.getRotation());
         return new Pose2d(
                 visionPose.getX() + vec.getX(),
                 visionPose.getY() + vec.getY(),

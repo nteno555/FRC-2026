@@ -10,8 +10,8 @@ public class VisionIOReal implements VisionIO {
     public VisionIOReal() {
         this.cameras = List.of(
                 //new LimelightFiducialCamera("limelight-xright"),
-                new LimelightFiducialCamera("limelight-front", false)
-//                new LimelightFiducialCamera("limelight-turret", true)
+                new LimelightFiducialCamera("limelight-front", false),
+                new LimelightFiducialCamera("limelight-turret", true)
         );
     }
 

@@ -1,5 +1,7 @@
 package frc2025.config;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 
@@ -21,7 +23,7 @@ public class SubsystemConstants {
     public static double hoodkS = 0.0;
     public static double hoodkV = 0.12;
     public static double hoodkA = 0.00;
-    public static double hoodkP = 2.0;
+    public static double hoodkP = 1.0;
     public static double hoodkI = 0.0;
     public static double hoodkD = 0.00;
     public static double hoodCruiseVelocity = 20;
@@ -32,8 +34,8 @@ public class SubsystemConstants {
     public static double hoodPeakForwardTorqueCurrent = 40;
     public static double hoodPeakReverseTorqueCurrent = 40;
     public static double hoodTorqueNeutralDeadband = 1;
-    public static double hoodRotationsPerRadian = 31.7131757633; //NOT TUNED
-    public static double hoodZeroOffsetRadians = 1.154; // 66 degrees
+    public static double hoodRotationsPerRadian = 31.7131757633;
+    public static double hoodZeroOffsetRadians = 1.22; // 70 degrees
 
     public static double intakekS = 0.00;
     public static double intakekG = 0.2;
@@ -83,11 +85,20 @@ public class SubsystemConstants {
 
     public static double kMaxShootVelocity = 1;
 
-//    public static Translation2d shooterToCenterPose = new Translation2d(0.13, -0.07);
-    public static Translation2d shooterToCenterPose = new Translation2d(0, 0);
+
+    public static Pose2d shooterToCenterPose = new Pose2d(0.1016, -0.1016, Rotation2d.kZero);
+//    public static Translation2d shooterToCenterPose = new Translation2d(0, 0);
     public static double turretLimelightAngleOffsetRadians = Math.toRadians(180);
-    public static double turretToLimelightRadius = 0.13;
+    public static double turretToLimelightRadius = 0.15;
     public static double turretLimelightHeight = 0.53;
     public static double turretLimelightPitch = 15.0;
     public static double turretLimelightRoll = 0.0;
+
+//    public static Pose2d shooterToCenterPose = new Pose2d(0.20, 0.1, Rotation2d.kZero);
+////    public static Translation2d shooterToCenterPose = new Translation2d(0, 0);
+//    public static double turretLimelightAngleOffsetRadians = Math.toRadians(180);
+//    public static double turretToLimelightRadius = 0.2;
+//    public static double turretLimelightHeight = 0.53;
+//    public static double turretLimelightPitch = 15.0;
+//    public static double turretLimelightRoll = 0.0;
 }

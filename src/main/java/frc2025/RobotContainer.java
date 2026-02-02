@@ -178,7 +178,10 @@ public class RobotContainer {
                         .andThen(intakeSubsystem.setRollerVoltage(() -> wantIntakeRoller ? -12.0 : 0.0))
         );
 
-
+        driverXboxController.povDown().whileTrue(
+                hoodSubsystem.setVoltage(() -> -0.5)
+                        .andThen(hoodSubsystem.rezero())
+        );
 
         driverXboxController.leftTrigger()
                         .whileTrue(

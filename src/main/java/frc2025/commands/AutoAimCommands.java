@@ -10,6 +10,7 @@ import frc2025.RobotContainer;
 import frc2025.RobotState;
 import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
+import frc2025.subsystems.hood.HoodSubsystem;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.function.BooleanSupplier;
@@ -75,8 +76,11 @@ public class AutoAimCommands {
 
             Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
             double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
-//            return ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist);
-            return ShooterTreeMap.getInstance().calculateHoodAngle(0.0, dist);
+            return ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist);
+//            double pos = ShooterTreeMap.getInstance().calculateHoodAngle(0.0, dist);
+//            Logger.recordOutput("Hood/autoAimAngle", pos);
+//
+//            return HoodSubsystem.toRotations(pos);
 
         });
     }

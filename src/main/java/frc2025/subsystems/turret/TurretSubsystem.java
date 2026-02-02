@@ -2,6 +2,7 @@ package frc2025.subsystems.turret;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -34,10 +35,13 @@ public class TurretSubsystem extends SubsystemBase {
         Pose2d turretLimelightPose = new Pose2d(
                 SubsystemConstants.shooterToCenterPose.getX()
                         + SubsystemConstants.turretToLimelightRadius * Math.cos(inputs.positionRadians + SubsystemConstants.turretLimelightAngleOffsetRadians),
-                SubsystemConstants.shooterToCenterPose.getY()
+                -SubsystemConstants.shooterToCenterPose.getY()
                         + SubsystemConstants.turretToLimelightRadius * Math.sin(inputs.positionRadians + SubsystemConstants.turretLimelightAngleOffsetRadians),
-                SubsystemConstants.shooterToCenterPose.getAngle().plus(Rotation2d.fromRadians(inputs.positionRadians))
+                SubsystemConstants.shooterToCenterPose.getRotation().plus(Rotation2d.fromRadians(inputs.positionRadians))//.plus(RobotState.getInstance().getVisionPose().getRotation())
         );
+
+//        var visionPose = RobotState.getInstance().getVisionPose();
+//        Transform2d transform = new Transform2d(turretLimelightPose.getX(), turretLimelightPose.getY(), turretLimelightPose.getRotation());
         Logger.recordOutput("Turret/turretPose", turretLimelightPose);
         Logger.recordOutput("Turret/fieldRelativeAngleRadians", inputs.positionRadians + RobotState.getInstance().getVisionPose().getRotation().getRadians());
         RobotState.getInstance().setTurretLimelightPose(turretLimelightPose);

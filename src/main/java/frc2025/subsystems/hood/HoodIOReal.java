@@ -58,11 +58,11 @@ public class HoodIOReal implements HoodIO {
     }
 
     private double toRadians(double rotations) {
-        return 1/SubsystemConstants.hoodRotationsPerRadian * rotations + SubsystemConstants.hoodZeroOffsetRadians;
+        return HoodSubsystem.toRadians(rotations);
     }
 
     private double toRotations(double radians) {
-        return (radians - SubsystemConstants.hoodZeroOffsetRadians) * SubsystemConstants.hoodRotationsPerRadian;
+        return HoodSubsystem.toRotations(radians);
     }
 
     private ControlRequest createControlRequest(double targetValue, boolean useVoltage) {
