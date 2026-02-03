@@ -55,7 +55,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         //if(RobotState.getInstance().getHasNewVisionUpdate()) {
         if(RobotState.getInstance().getVisionUpdates().size() > 0) {
-            Logger.recordOutput("Drive/fuseVisionHeartbeat", Math.random());
+//            Logger.recordOutput("Drive/fuseVisionHeartbeat", Math.random());
             io.addVisionMeasurement(RobotState.getInstance().getVisionUpdates());
             RobotState.getInstance().clearVisionUpdates();
         }
@@ -70,12 +70,12 @@ public class DriveSubsystem extends SubsystemBase {
         RobotState.getInstance().setRobotRelativeSpeeds(inputs.currentChassisSpeeds);
         RobotState.getInstance().updateShootingWhileMovingVirtualPose();
         RobotState.getInstance().updateShotVectorWhileMoving();
-        Logger.recordOutput("Drive/shotAutoIndexReady", getShotReady());
+//        Logger.recordOutput("Drive/shotAutoIndexReady", getShotReady());
         RobotState.getInstance().setDriveShotReady(getShotReady());
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);
         Logger.processInputs("RealOutputs/Drive", inputs);
         Logger.recordOutput("Vision/autoAimAngleError", Math.toDegrees(RobotState.getInstance().getVisionPose().getRotation().getRadians() - RobotState.getInstance().getAngleToVirtualTarget()));
-        Logger.recordOutput("Vision/targetVirtualPose", RobotState.getInstance().getTargetPose());
+//        Logger.recordOutput("Vision/targetVirtualPose", RobotState.getInstance().getTargetPose());
     }
 
     public void applyChassisSpeeds(ChassisSpeeds speeds) {

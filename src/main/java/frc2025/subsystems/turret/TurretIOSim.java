@@ -50,6 +50,11 @@ public class TurretIOSim implements TurretIO{
     public void rezero() {}
 
     @Override
+    public void rezeroCRT() {
+
+    }
+
+    @Override
     public double toRadians(double position) {
         return 0;
     }

@@ -43,16 +43,26 @@ public class TurretSubsystem extends SubsystemBase {
 //        var visionPose = RobotState.getInstance().getVisionPose();
 //        Transform2d transform = new Transform2d(turretLimelightPose.getX(), turretLimelightPose.getY(), turretLimelightPose.getRotation());
         Logger.recordOutput("Turret/turretPose", turretLimelightPose);
-        Logger.recordOutput("Turret/fieldRelativeAngleRadians", inputs.positionRadians + RobotState.getInstance().getVisionPose().getRotation().getRadians());
+        double fieldRelativeAngleRad = inputs.positionRadians + RobotState.getInstance().getVisionPose().getRotation().getRadians();
+        Logger.recordOutput("Turret/fieldRelativeAngleRadians", fieldRelativeAngleRad);
+        Logger.recordOutput("Vision/aimAngleDiff", RobotState.getInstance().getAngleToVirtualTarget() - fieldRelativeAngleRad);
         RobotState.getInstance().setTurretLimelightPose(turretLimelightPose);
 //        RobotState.getInstance().setTurretLimelightPose(
 //
 //        );
 
-        if(!zeroed) {
-            io.rezero();
+        if(!zeroed && inputs.throughboresConnected) {
+            io.rezeroCRT();
             zeroed = true;
         }
+    }
+
+    public Command autoAim() {
+        return setPositionFieldRelative(
+                () -> {
+                    return  RobotState.getInstance().getAngleToVirtualTarget();
+                }
+        );
     }
 
     public Command setPositionFieldRelative(Supplier<Double> positionRadians) {
@@ -101,9 +111,9 @@ public class TurretSubsystem extends SubsystemBase {
 
             usingVoltage = false;
             io.setPosition(setpoint, velocityFF);
-            Logger.recordOutput("Turret/turretWantedPositionRadians", positionRadians.get());
-            Logger.recordOutput("Turret/turretClampedPositionRadians", bestAngle);
-            Logger.recordOutput("Turret/turretClampedPositionRotations", setpoint);
+//            Logger.recordOutput("Turret/turretWantedPositionRadians", positionRadians.get());
+//            Logger.recordOutput("Turret/turretClampedPositionRadians", bestAngle);
+//            Logger.recordOutput("Turret/turretClampedPositionRotations", setpoint);
         });
     }
 

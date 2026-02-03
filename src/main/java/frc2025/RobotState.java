@@ -1,5 +1,6 @@
 package frc2025;
 
+import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
@@ -13,6 +14,7 @@ import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.hood.HoodSubsystem;
 import frc2025.subsystems.shooter.ShooterSubsystem;
+import frc2025.subsystems.vision.LimelightHelpers;
 import frc2025.subsystems.vision.VisionPoseEstimator;
 import org.littletonrobotics.junction.Logger;
 
@@ -20,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RobotState {
+    //private static double velocitySampleDt = 0.05;
+
     private static RobotState instance;
 
     private Pose2d visionPoseBuiltin;
@@ -27,6 +31,10 @@ public class RobotState {
     private double speed;
     private List<VisionPoseEstimator.TimestampedVisionUpdate> visionUpdates = new ArrayList<>();
     private ChassisSpeeds robotRelativeSpeeds;
+    private ChassisSpeeds prevFieldRelativeSpeeds;
+    private ChassisSpeeds fieldRelativeSpeeds;
+    private ChassisSpeeds fieldRelativeAcceleration;
+    private double prevFieldRelativeSpeedTimestamp;
     private double angleToVirtualTarget;
 
     private boolean shuttling;
@@ -42,6 +50,10 @@ public class RobotState {
     private Pose2d turretLimelightPose;
     private Translation3d shotVectorWhileMoving = new Translation3d(0, 0, 0);
 
+    private Pose2d currentVisionPose;
+    private double prevVisionPoseTimestamp;
+    private Pose2d prevVisionPose;
+
 //    private double targetRadialVelocity;
 //    private double targetDistance;
 
@@ -52,6 +64,7 @@ public class RobotState {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
         shuttling = false;
         manual = false;
+        prevFieldRelativeSpeedTimestamp = Utils.getCurrentTimeSeconds();
     }
 
     public static RobotState getInstance() {
@@ -59,7 +72,29 @@ public class RobotState {
         return instance;
     }
 
-    public void setRobotRelativeSpeeds(ChassisSpeeds speeds) { robotRelativeSpeeds = speeds; }
+    public void setRobotRelativeSpeeds(ChassisSpeeds speeds) {
+        double now = Utils.getCurrentTimeSeconds();
+
+        robotRelativeSpeeds = speeds;
+        fieldRelativeSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeSpeeds, getVisionPose().getRotation());
+
+        if (prevFieldRelativeSpeeds != null) {
+            double vx = fieldRelativeSpeeds.vxMetersPerSecond - prevFieldRelativeSpeeds.vxMetersPerSecond;
+            double vy = fieldRelativeSpeeds.vyMetersPerSecond - prevFieldRelativeSpeeds.vyMetersPerSecond;
+            double theta = fieldRelativeSpeeds.omegaRadiansPerSecond - prevFieldRelativeSpeeds.omegaRadiansPerSecond;
+            fieldRelativeAcceleration = new ChassisSpeeds(vx, vy, theta).div(now - prevFieldRelativeSpeedTimestamp);
+        }
+
+        prevFieldRelativeSpeedTimestamp = now;
+        prevFieldRelativeSpeeds = fieldRelativeSpeeds;
+
+        Logger.recordOutput("Drive/fieldRelativeAccel", fieldRelativeAcceleration);
+    }
+
+
+    public ChassisSpeeds getFieldRelativeAcceleration() {return fieldRelativeAcceleration;}
+    public ChassisSpeeds getFieldRelativeSpeeds() {return fieldRelativeSpeeds;}
+    public ChassisSpeeds getPrevFieldRelativeSpeeds() {return prevFieldRelativeSpeeds;}
     public ChassisSpeeds getRobotRelativeSpeeds() {return robotRelativeSpeeds;}
 
     public Pose2d getShootingWhileMovingVirtualPose() {return shootingWhileMovingVirtualPose;}
@@ -163,7 +198,27 @@ public class RobotState {
     }
 
     public void updateShootingWhileMovingVirtualPose() {
+//        currentVisionPose = getVisionPose();
+//        Translation2d velocity;
+//
+//        if(prevVisionPose == null) {
+//            ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
+//                robotRelativeSpeeds,
+//                currentVisionPose.getRotation()
+//            );
+//            velocity = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+//        } else {
+//            velocity = new Translation2d(
+//                    currentVisionPose.getX() - prevVisionPose.getX(),
+//                    currentVisionPose.getY() - prevVisionPose.getY()
+//            ).div(Utils.getCurrentTimeSeconds() - prevVisionPoseTimestamp);
+//        }
+//
+//        prevVisionPose = currentVisionPose;
+//        prevVisionPoseTimestamp = Utils.getCurrentTimeSeconds();
+
         Pose2d currentPose = RobotState.getInstance().getVisionPose();
+        //Pose2d prevPose = sampleVisionPose();
         Pose2d realTargetPose = getTargetPose();
         Pose2d virtualPose = getTargetPose();
 
@@ -171,9 +226,13 @@ public class RobotState {
                 robotRelativeSpeeds,
                 currentPose.getRotation()
         );
-        Translation2d velocity = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
 
-        for (int i = 0; i < 5; i++) {
+        double vx = chassisSpeeds.vxMetersPerSecond + fieldRelativeAcceleration.vxMetersPerSecond * 0.1;
+        double vy = chassisSpeeds.vyMetersPerSecond + fieldRelativeAcceleration.vyMetersPerSecond * 0.1;
+        Translation2d velocity = new Translation2d(vx, vy);
+//        Translation2d velocity = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+
+        for (int i = 0; i < 10; i++) {
             double dx = virtualPose.getX() - currentPose.getX();
             double dy = virtualPose.getY() - currentPose.getY();
             double distance = Math.hypot(dx, dy);
@@ -187,6 +246,10 @@ public class RobotState {
             );
         }
 
+//        Vector<N2> velocityRelToTarget = new Translation2d(robotRelativeSpeeds.vxMetersPerSecond, robotRelativeSpeeds.vyMetersPerSecond).toVector();
+//        velocityRelToTarget = velocityRelToTarget.projection(virtualPose.getTranslation().toVector());
+//
+
         shootingWhileMovingVirtualPose = virtualPose;
 
         Pose2d shooterPose = getVisionShooterPose();
@@ -194,6 +257,7 @@ public class RobotState {
                 virtualPose.getY() - shooterPose.getY(),
                 virtualPose.getX() - shooterPose.getX()
         );
+        Logger.recordOutput("Drive/speed", velocity.getNorm());
         Logger.recordOutput("Vision/shootingWhileMovingVirtualPose", shootingWhileMovingVirtualPose);
         Logger.recordOutput("Vision/angleToVirtualTarget", angleToVirtualTarget);
     }

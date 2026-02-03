@@ -1,9 +1,11 @@
 package frc2025.subsystems.hood;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc2025.RobotState;
+import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 import java.util.function.Supplier;
@@ -52,6 +54,27 @@ public class HoodSubsystem extends SubsystemBase {
             usingVoltage = true;
             this.voltage = voltage.get();
             io.setVoltage(voltage.get());
+        });
+    }
+
+    public Command autoAim() {
+        return setPosition(() -> {
+            Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
+            double robotXpose = robotPose.getX();
+            double robotYpose = robotPose.getY();
+
+            boolean nearBlueUpperTrench = (robotXpose < 6.25 && robotXpose > 3.0) && robotYpose > 7.0;
+            boolean nearBlueLowerTrench = (robotXpose < 6.25 && robotXpose > 3.0) && robotYpose < 1.2;
+            boolean nearRedUpperTrench = (robotXpose < 13.5 && robotXpose > 10.25) && robotYpose > 7.0;
+            boolean nearRedLowerTrench = (robotXpose < 13.5 && robotXpose > 10.25) && robotYpose < 1.2;
+
+            if (nearBlueUpperTrench || nearBlueLowerTrench || nearRedUpperTrench || nearRedLowerTrench) {
+                return 0.0;
+            }
+
+            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
+            double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
+            return ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist);
         });
     }
 

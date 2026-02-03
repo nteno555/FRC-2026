@@ -25,12 +25,19 @@ public class ShooterTreeMap {
         lowerWheelTreeMap.put(3.8, -29.3);
         lowerWheelTreeMap.put(4.8, -31.0);
         lowerWheelTreeMap.put(5.8, -33.0);
-        tofTreeMap.put(1.0, 0.5);
-        tofTreeMap.put(2.0, 0.8);
-        tofTreeMap.put(3.0, 1.1);
-//        tofTreeMap.put(2.28, 1.09);
-        tofTreeMap.put(4.0, 1.25);
-        tofTreeMap.put(5.0, 1.33);
+
+        tofTreeMap.put(1.5, 0.92);
+        tofTreeMap.put(2.0, 1.01);
+        tofTreeMap.put(2.5, 1.18);
+        tofTreeMap.put(3.0, 1.39);
+        tofTreeMap.put(3.5, 1.17);
+        tofTreeMap.put(4.0, 1.12);
+//        tofTreeMap.put(1.0, 0.5);
+//        tofTreeMap.put(2.0, 0.8);
+//        tofTreeMap.put(3.0, 1.1);
+////        tofTreeMap.put(2.28, 1.09);
+//        tofTreeMap.put(4.0, 1.25);
+//        tofTreeMap.put(5.0, 1.33);
 
 
         // NO HOOD

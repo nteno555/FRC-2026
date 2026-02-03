@@ -102,14 +102,17 @@ public class Autos {
     public Command buildAuto(List<String> paths, boolean climb) {
         Command auto;
         if (SubsystemConstants.hasTurret) {
-                auto = AutoAimCommands.turretAutoAim(robotContainer)
-                        .alongWith(AutoAimCommands.shooterAutoSpinUp(robotContainer))
-                        .alongWith(AutoAimCommands.hoodAutoAim(robotContainer))
-                        .alongWith(AutoAimCommands.autoIndex(robotContainer));
+                auto = robotContainer.getTurret().autoAim()
+                        .alongWith(robotContainer.getShooter().autoAim())
+                        .alongWith(robotContainer.getHood().autoAim())
+                        .alongWith(AutoAimCommands.autoIndex(robotContainer))
+                        .alongWith(robotContainer.getIntake().setRollerVoltage(() -> -12.0));
         } else {
-                auto = AutoAimCommands.shooterAutoSpinUp(robotContainer)
-                        .alongWith(AutoAimCommands.hoodAutoAim(robotContainer))
-                        .alongWith(AutoAimCommands.autoIndex(robotContainer));
+                auto = robotContainer.getShooter().autoAim()
+                        .alongWith(robotContainer.getHood().autoAim())
+                        .alongWith(AutoAimCommands.autoIndex(robotContainer))
+                        .alongWith(robotContainer.getIntake().setRollerVoltage(() -> -12.0));
+            ;
         }
         
 

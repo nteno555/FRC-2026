@@ -148,14 +148,14 @@ public class AutoAimCommands {
             else {
                 return 0.0;
             }
-        }).alongWith(robotContainer.getIntake().setRollerVoltage(() -> {
+        });/*.alongWith(robotContainer.getIntake().setRollerVoltage(() -> {
                     if (readySupplier.getAsBoolean()) {
                         return 4.5;
                     }
                     else {
                         return 0.0;
                     }
-                }));
+                }));*/
    }
 
     public static Command autoAimFlush(RobotContainer robotContainer) {

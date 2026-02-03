@@ -2,7 +2,9 @@ package frc2025.subsystems.shooter;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import frc2025.RobotState;
+import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
@@ -49,6 +51,16 @@ public class ShooterSubsystem extends SubsystemBase {
         }, () -> {
             usingVoltage = false;
             io.setSpeed(0.0);
+        });
+    }
+
+    public Command autoAim() {
+        return setSpeed(() -> {
+            Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
+            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
+            double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
+            return ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist);
+//            return ShooterTreeMap.getInstance().calculateRps(0.0, dist);
         });
     }
 

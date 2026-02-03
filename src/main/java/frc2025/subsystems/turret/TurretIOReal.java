@@ -85,6 +85,7 @@ public class TurretIOReal implements TurretIO{
     public void updateInputs(TurretIOInputs inputs) {
         inputs.positionTicks = turretMotor.getPosition().getValue().in(Units.Rotation);
         inputs.positionRadians = toRadians(inputs.positionTicks);
+        inputs.throughboresConnected = throughBore1.isConnected() && throughBore2.isConnected();
 
 //        rezeroCRT();
         //inputs.current = turretMotor.getSupplyCurrent();
@@ -93,7 +94,7 @@ public class TurretIOReal implements TurretIO{
         Logger.recordOutput("Turret/current", turretMotor.getSupplyCurrent().getValue().in(Units.Amp));
         Logger.recordOutput("Turret/tb1Position", throughBore1.get());
         Logger.recordOutput("Turret/tb2Position", throughBore2.get());
-        Logger.recordOutput("Turret/RPS", turretMotor.getVelocity().getValueAsDouble());
+//        Logger.recordOutput("Turret/RPS", turretMotor.getVelocity().getValueAsDouble());
     }
 
     @Override
@@ -119,8 +120,8 @@ public class TurretIOReal implements TurretIO{
 
     @Override
     public void rezero() {
-        rezeroCRT();
-//        turretMotor.setPosition(0.0);
+//        rezeroCRT();
+        turretMotor.setPosition(0.0);
     }
 
     public void rezeroCRT() {

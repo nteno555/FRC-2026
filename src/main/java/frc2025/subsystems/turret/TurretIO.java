@@ -8,6 +8,7 @@ public interface TurretIO {
         double positionDegrees;
         double positionDegreesReal;
         double positionRadians;
+        boolean throughboresConnected;
     }
 
     public void updateInputs(TurretIOInputs inputs);
@@ -15,7 +16,9 @@ public interface TurretIO {
     public void setPosition(double position, double velocity);
     public void setVoltage(double voltage);
     public void rezero();
+    public void rezeroCRT();
 
     public double toRadians(double position);
     public double toRotations(double radians);
+
 }
