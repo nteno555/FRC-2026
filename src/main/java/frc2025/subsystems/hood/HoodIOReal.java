@@ -90,11 +90,6 @@ public class HoodIOReal implements HoodIO {
     public void updateInputs(HoodIOInputs inputs) {
         inputs.positionRotations = hoodMaster.getPosition().getValue().in(Units.Rotation);
         inputs.positionRadians = toRadians(inputs.positionRotations);
-        //inputs.positionDegreesReal = inputs.positionRadians + SubsystemConstants.hoodZeroOffsetRadians;
-
-        Logger.recordOutput("Hood/controlRequest", hoodMaster.getAppliedControl().getName());
-        Logger.recordOutput("Hood/voltage", hoodMaster.getMotorVoltage().getValue().in(Units.Volts));
-        Logger.recordOutput("Hood/current", hoodMaster.getSupplyCurrent().getValue().in(Units.Amp));
     }
 
     @Override

@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RobotState {
-    //private static double velocitySampleDt = 0.05;
-
     private static RobotState instance;
 
     private Pose2d visionPoseBuiltin;
@@ -47,18 +45,10 @@ public class RobotState {
     private boolean driveAutoAiming;
     private boolean wantAutoIntaking;
 
+    private double turretAngle;
+
     private Pose2d turretLimelightPose;
     private Translation3d shotVectorWhileMoving = new Translation3d(0, 0, 0);
-
-    private Pose2d currentVisionPose;
-    private double prevVisionPoseTimestamp;
-    private Pose2d prevVisionPose;
-
-//    private double targetRadialVelocity;
-//    private double targetDistance;
-
-//    private double shooterExitVelocity;
-//    private double hoodAngle;
 
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
@@ -110,12 +100,13 @@ public class RobotState {
 
     public Pose2d getVisionShooterPose() {
         Pose2d visionPose = visionPoseEstimator.getLatestPose();
-        Translation2d vec = SubsystemConstants.shooterToCenterPose.getTranslation().rotateBy(visionPose.getRotation());
-        return new Pose2d(
-                visionPose.getX() + vec.getX(),
-                visionPose.getY() + vec.getY(),
-                visionPose.getRotation()
-        );
+        return visionPose.transformBy(SubsystemConstants.robotToShooter);
+//        Translation2d vec = SubsystemConstants.shooterToCenterPose.getTranslation().rotateBy(visionPose.getRotation());
+//        return new Pose2d(
+//                visionPose.getX() + vec.getX(),
+//                visionPose.getY() + vec.getY(),
+//                visionPose.getRotation()
+//        );
     }
 
     public void setSpeed(double speed) { this.speed = speed; }
@@ -198,25 +189,6 @@ public class RobotState {
     }
 
     public void updateShootingWhileMovingVirtualPose() {
-//        currentVisionPose = getVisionPose();
-//        Translation2d velocity;
-//
-//        if(prevVisionPose == null) {
-//            ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
-//                robotRelativeSpeeds,
-//                currentVisionPose.getRotation()
-//            );
-//            velocity = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
-//        } else {
-//            velocity = new Translation2d(
-//                    currentVisionPose.getX() - prevVisionPose.getX(),
-//                    currentVisionPose.getY() - prevVisionPose.getY()
-//            ).div(Utils.getCurrentTimeSeconds() - prevVisionPoseTimestamp);
-//        }
-//
-//        prevVisionPose = currentVisionPose;
-//        prevVisionPoseTimestamp = Utils.getCurrentTimeSeconds();
-
         Pose2d currentPose = RobotState.getInstance().getVisionPose();
         //Pose2d prevPose = sampleVisionPose();
         Pose2d realTargetPose = getTargetPose();
@@ -230,7 +202,6 @@ public class RobotState {
         double vx = chassisSpeeds.vxMetersPerSecond + fieldRelativeAcceleration.vxMetersPerSecond * 0.1;
         double vy = chassisSpeeds.vyMetersPerSecond + fieldRelativeAcceleration.vyMetersPerSecond * 0.1;
         Translation2d velocity = new Translation2d(vx, vy);
-//        Translation2d velocity = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
 
         for (int i = 0; i < 10; i++) {
             double dx = virtualPose.getX() - currentPose.getX();
@@ -276,13 +247,10 @@ public class RobotState {
     public boolean getWantAutoIntaking() {return wantAutoIntaking;}
     public void setManual(boolean enable) {manual = enable;}
     public boolean getManual() {return manual;}
+    public void setTurretAngle(double angleRadians) {turretAngle = angleRadians;}
+    public double getTurretAngle() { return turretAngle; }
     public void setTurretLimelightPose(Pose2d pose) { turretLimelightPose = pose; }
     public Pose2d getTurretLimelightPose() { return turretLimelightPose; }
-
-//    public void setShooterExitVelocity(double velocity) { shooterExitVelocity = velocity; }
-//    public double getShooterExitVelocity() { return shooterExitVelocity; }
-//    public void setHoodAngle(double angle) { hoodAngle = angle; }
-//    public double getHoodAngle() { return hoodAngle; }
 
     public Translation3d getShotVector(double shooterExitVelocity, double hoodAngle) { // {field x, field y, height}
         Translation2d direction = getTargetPose().getTranslation().minus(getVisionShooterPose().getTranslation());

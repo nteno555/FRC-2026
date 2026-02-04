@@ -48,39 +48,27 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        //io.setControl(request.withSpeeds(applyAccelLimits()));
         io.setControl(request.withSpeeds(wantedSpeeds));
         RobotState.getInstance().addDriveData(inputs.odometryTimestamp, inputs.odometryTwist);
-        /*RobotState.getInstance().setSwervePose(inputs.swervePoseMeters);*/
 
-        //if(RobotState.getInstance().getHasNewVisionUpdate()) {
         if(RobotState.getInstance().getVisionUpdates().size() > 0) {
-//            Logger.recordOutput("Drive/fuseVisionHeartbeat", Math.random());
             io.addVisionMeasurement(RobotState.getInstance().getVisionUpdates());
             RobotState.getInstance().clearVisionUpdates();
         }
 
-        //Pose2d currentPose = io.samplePoseAt(Utils.getCurrentTimeSeconds()).get();
-        //RobotState.getInstance().setVisionPoseBuiltin(currentPose);
-
-        //RobotState.getInstance().setDriveAcceleration(io.)
 
         double speed = Math.sqrt(Math.pow(inputs.currentChassisSpeeds.vxMetersPerSecond, 2) + Math.pow(inputs.currentChassisSpeeds.vyMetersPerSecond, 2));
         RobotState.getInstance().setSpeed(speed);
         RobotState.getInstance().setRobotRelativeSpeeds(inputs.currentChassisSpeeds);
         RobotState.getInstance().updateShootingWhileMovingVirtualPose();
         RobotState.getInstance().updateShotVectorWhileMoving();
-//        Logger.recordOutput("Drive/shotAutoIndexReady", getShotReady());
         RobotState.getInstance().setDriveShotReady(getShotReady());
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);
         Logger.processInputs("RealOutputs/Drive", inputs);
-        Logger.recordOutput("Vision/autoAimAngleError", Math.toDegrees(RobotState.getInstance().getVisionPose().getRotation().getRadians() - RobotState.getInstance().getAngleToVirtualTarget()));
-//        Logger.recordOutput("Vision/targetVirtualPose", RobotState.getInstance().getTargetPose());
     }
 
     public void applyChassisSpeeds(ChassisSpeeds speeds) {
         wantedSpeeds = speeds;
-        //io.setControl(request.withSpeeds(speeds));
     }
 
     public Command applyChassisSpeedsCommand(Supplier<ChassisSpeeds> speed) {

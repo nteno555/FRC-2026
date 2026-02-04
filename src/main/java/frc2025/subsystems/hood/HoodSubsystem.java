@@ -26,15 +26,12 @@ public class HoodSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         Logger.processInputs("RealOutputs/Hood", inputs);
-//        Logger.recordOutput("Hood/positionRotations", inputs.positionRotations);
-//        Logger.recordOutput("Hood/positionRadians", inputs.positionRadians);
         Logger.recordOutput("Hood/setpoint", setpoint);
         if(DriverStation.isDisabled()) {
             setpoint = inputs.positionRotations;
         }
 
         io.updateInputs(inputs);
-//        RobotState.getInstance().setHoodAngle(getPositionRadians());
     }
 
     public Command setPositionRadians(Supplier<Double> positionRadians){

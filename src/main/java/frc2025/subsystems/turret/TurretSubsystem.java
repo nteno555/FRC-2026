@@ -32,24 +32,11 @@ public class TurretSubsystem extends SubsystemBase {
         if(DriverStation.isDisabled()) {setpoint = inputs.positionTicks;}
         io.updateInputs(inputs);
 
-        Pose2d turretLimelightPose = new Pose2d(
-                SubsystemConstants.shooterToCenterPose.getX()
-                        + SubsystemConstants.turretToLimelightRadius * Math.sin(inputs.positionRadians + SubsystemConstants.turretLimelightAngleOffsetRadians),
-                -SubsystemConstants.shooterToCenterPose.getY()
-                        + SubsystemConstants.turretToLimelightRadius * Math.cos(inputs.positionRadians + SubsystemConstants.turretLimelightAngleOffsetRadians),
-                SubsystemConstants.shooterToCenterPose.getRotation().plus(Rotation2d.fromRadians(inputs.positionRadians))//.plus(RobotState.getInstance().getVisionPose().getRotation())
-        );
-
-//        var visionPose = RobotState.getInstance().getVisionPose();
-//        Transform2d transform = new Transform2d(turretLimelightPose.getX(), turretLimelightPose.getY(), turretLimelightPose.getRotation());
-        Logger.recordOutput("Turret/turretPose", turretLimelightPose);
         double fieldRelativeAngleRad = inputs.positionRadians + RobotState.getInstance().getVisionPose().getRotation().getRadians();
         Logger.recordOutput("Turret/fieldRelativeAngleRadians", fieldRelativeAngleRad);
         Logger.recordOutput("Vision/aimAngleDiff", RobotState.getInstance().getAngleToVirtualTarget() - fieldRelativeAngleRad);
-        RobotState.getInstance().setTurretLimelightPose(turretLimelightPose);
-//        RobotState.getInstance().setTurretLimelightPose(
-//
-//        );
+
+        RobotState.getInstance().setTurretAngle(inputs.positionRadians);
 
         if(!zeroed && inputs.throughboresConnected) {
             io.rezeroCRT();

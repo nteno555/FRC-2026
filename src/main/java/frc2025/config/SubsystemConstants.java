@@ -2,6 +2,7 @@ package frc2025.config;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 
@@ -85,21 +86,6 @@ public class SubsystemConstants {
 
     public static double kMaxShootVelocity = 1;
 
-
-    //public static Pose2d shooterToCenterPose = new Pose2d(0.1016, -0.1016, Rotation2d.kZero);
-    public static Pose2d shooterToCenterPose = new Pose2d(0.0, 0.0, Rotation2d.kZero);
-//    public static Translation2d shooterToCenterPose = new Translation2d(0, 0);
-    public static double turretLimelightAngleOffsetRadians = Math.toRadians(180);
-    public static double turretToLimelightRadius = 0.15;
-    public static double turretLimelightHeight = 0.53;
-    public static double turretLimelightPitch = 15.0;
-    public static double turretLimelightRoll = 0.0;
-
-//    public static Pose2d shooterToCenterPose = new Pose2d(0.20, 0.1, Rotation2d.kZero);
-////    public static Translation2d shooterToCenterPose = new Translation2d(0, 0);
-//    public static double turretLimelightAngleOffsetRadians = Math.toRadians(180);
-//    public static double turretToLimelightRadius = 0.2;
-//    public static double turretLimelightHeight = 0.53;
-//    public static double turretLimelightPitch = 15.0;
-//    public static double turretLimelightRoll = 0.0;
+    public static Transform2d robotToShooter = new Transform2d(0.1016, -0.1016, Rotation2d.kZero);
+    public static Transform2d shooterToCamera = new Transform2d(0.1, 0.0, Rotation2d.kZero);
 }

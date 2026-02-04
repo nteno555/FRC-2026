@@ -27,7 +27,6 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         Logger.processInputs("RealOutputs/Shooter", inputs);
-        Logger.recordOutput("Shooter/shotReady", getShotReady());
         io.updateInputs(this.inputs);
         RobotState.getInstance().setShooterReady(getShotReady());
 //        RobotState.getInstance().setShooterExitVelocity(getBallExitVelocity());
@@ -60,7 +59,6 @@ public class ShooterSubsystem extends SubsystemBase {
             Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
             double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
             return ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist);
-//            return ShooterTreeMap.getInstance().calculateRps(0.0, dist);
         });
     }
 

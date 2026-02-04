@@ -200,7 +200,7 @@ public class RobotContainer {
         driverXboxController.povUp()
                         .whileTrue(
                                 new InstantCommand(() -> wantIntake = !wantIntake)
-                                        .andThen(intakeSubsystem.setPosition(() -> wantIntake ? SubsystemConstants.intakeDeployPosition : 0.0))
+                                        .andThen(intakeSubsystem.setDeployPosition(() -> wantIntake ? SubsystemConstants.intakeDeployPosition : 0.0))
                         );
 //                .toggleOnTrue(intakeSubsystem.setPosition(() -> SubsystemConstants.intakeDeployPosition))
 //                .toggleOnFalse(intakeSubsystem.setPosition(() -> 0.0));

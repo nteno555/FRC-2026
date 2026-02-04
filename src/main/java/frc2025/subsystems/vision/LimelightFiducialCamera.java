@@ -50,37 +50,23 @@ public class LimelightFiducialCamera {
 
         boolean usingMt1 = true;
         LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
-//        LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
-//
+
         Logger.recordOutput("Vision/heartbeatBeforeNullcheck", Math.random());
 
         if(poseEstimate == null) return;
         if(poseEstimate.tagCount == 0) return;
 
-//        Logger.recordOutput("Vision/mt1Pose", poseEstimate.pose);
-
-//        if(poseEstimate.avgTagDist > 2) {
-//            poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
-//            usingMt1 = false;
-//        }
-
-
         Pose2d pose = poseEstimate.pose;
         Pose2d robotToCameraPose = RobotState.getInstance().getTurretLimelightPose();
         if(turretMounted && robotToCameraPose != null) {
-//            pose = new Pose2d(
-//                    pose.getX() - robotToCameraPose.getX(),
-//                    pose.getY() - robotToCameraPose.getY(),
-//                    pose.getRotation().minus(robotToCameraPose.getRotation())
-//            );
-            Transform2d cameraToRobotTransform = new Transform2d(
-                    robotToCameraPose.getTranslation().times(-1),
-//                    robotToCameraPose.getTranslation(),
-                    robotToCameraPose.getRotation().unaryMinus()
+            Transform2d robotToShooterReal = new Transform2d(
+                    SubsystemConstants.robotToShooter.getTranslation(),
+                    SubsystemConstants.robotToShooter.getRotation().plus(Rotation2d.fromRadians(RobotState.getInstance().getTurretAngle()))
             );
 
-            //Logger.recordOutput("Vision/turretLimelightPose", );
-            Logger.recordOutput("Vision/turretMountedHeartbeaet", Math.random());
+            Transform2d cameraToRobotTransform = SubsystemConstants.shooterToCamera.inverse().plus(robotToShooterReal.inverse());
+
+            Logger.recordOutput("Vision/turretMountedHeartbeat", Math.random());
             pose = pose.transformBy(cameraToRobotTransform);
         }
 
@@ -108,13 +94,8 @@ public class LimelightFiducialCamera {
         Vector<N3> distStdDevs;
 
         double rotationStdDev = 99999999;
-//        if(!turretMounted) rotationStdDev = Math.pow(leastDistance, 2) / 10000.0;
         rotationStdDev = Math.pow(leastDistance, 2) / 10000.0;
-//        if(usingMt1) {
         distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 5.0, Math.pow(leastDistance, 2) / 5.0, rotationStdDev);
-//        } else {
-//            distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 5.0, Math.pow(leastDistance, 2) / 5.0, 999999);
-//        }
 
         VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
                 poseEstimate.timestampSeconds, pose, distStdDevs
