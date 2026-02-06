@@ -69,11 +69,6 @@ public class SubsystemConstants {
     public static double turretPeakForwardTorqueCurrent = 40;
     public static double turretPeakReverseTorqueCurrent = 40;
     public static double turretTorqueNeutralDeadband = 1;
-//    public static double turretRotationsPerRadian = 2.556750949;
-//    public static double turretRotationsPerRadian = ((14.0 / 56.0 * (44.0 / 54.0)) / (2 * Math.PI));
-    //public static double turretRotationsPerRadian = ((56.0 / 14.0) * (54.0 / 44.0)) / (2*Math.PI);
-//    public static double turretRotationsPerRadian = 14.0/56.0 * (54.0/44.0) / (2*Math.PI);
-    //public static double turretZeroOffsetRadians = -0.13;
     public static double turretZeroOffsetRadians = 0.0;
     public static double turretRotationsPerRadian = 2.53;
     public static double turretMinAngleRadians = -4.7123889804;
@@ -82,10 +77,12 @@ public class SubsystemConstants {
     public static double throughBoreZero2 = 0.555;
     public static double throughBoreRatio1 = 4.90909;
     public static double throughBoreRatio2 = 4.0; // 4 motor rotations for 1 throughgbore rotation
+    public static double turretHomeAngleRotations = 0.0; // hard stop position in motor rotations
     public static boolean hasTurret = true;
 
     public static double kMaxShootVelocity = 1;
 
-    public static Transform2d robotToShooter = new Transform2d(0.1016, -0.1016, Rotation2d.kZero);
-    public static Transform2d shooterToCamera = new Transform2d(0.1, 0.0, Rotation2d.kZero);
+    public static Transform2d robotToShooter = new Transform2d(0.1016, 0.1016, Rotation2d.kZero); // should be x = forward, y = side
+    public static Transform2d shooterToCamera = new Transform2d(0.1905, 0.0, Rotation2d.kZero);
+    public static Transform2d robotToFrontCamera = new Transform2d(0.25, 0.0, Rotation2d.kZero);
 }

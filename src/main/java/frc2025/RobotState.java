@@ -199,8 +199,8 @@ public class RobotState {
                 currentPose.getRotation()
         );
 
-        double vx = chassisSpeeds.vxMetersPerSecond + fieldRelativeAcceleration.vxMetersPerSecond * 0.1;
-        double vy = chassisSpeeds.vyMetersPerSecond + fieldRelativeAcceleration.vyMetersPerSecond * 0.1;
+        double vx = chassisSpeeds.vxMetersPerSecond;
+        double vy = chassisSpeeds.vyMetersPerSecond;
         Translation2d velocity = new Translation2d(vx, vy);
 
         for (int i = 0; i < 10; i++) {

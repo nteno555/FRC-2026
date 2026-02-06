@@ -54,7 +54,7 @@ public class TurretIOReal implements TurretIO{
         turretMotor.getConfigurator().apply(configTorque, 0.05);
         turretMotor.getConfigurator().apply(voltageConfigs, 0.05);
         turretMotor.setNeutralMode(NeutralModeValue.Brake);
-        rezero();
+//        rezero();
     }
 
     public double toRadians(double position) {
@@ -122,6 +122,11 @@ public class TurretIOReal implements TurretIO{
     public void rezero() {
 //        rezeroCRT();
         turretMotor.setPosition(0.0);
+    }
+
+    @Override
+    public void rezero(double position) {
+        turretMotor.setPosition(position);
     }
 
     public void rezeroCRT() {

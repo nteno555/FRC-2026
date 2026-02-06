@@ -16,6 +16,7 @@ public interface TurretIO {
     public void setPosition(double position, double velocity);
     public void setVoltage(double voltage);
     public void rezero();
+    public void rezero(double position);
     public void rezeroCRT();
 
     public double toRadians(double position);

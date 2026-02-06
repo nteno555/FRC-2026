@@ -52,6 +52,11 @@ public class IntakeSubsystem extends SubsystemBase {
         return this.runOnce(() -> io.rezero(0.0));
     }
 
+    public Command homeThenRezero() {
+        return setDeployVoltage(() -> -2.0)
+                .alongWith(this.run(() -> io.rezero(0.0)));
+    }
+
     public boolean getHasPiece(){
         return hasPieceTrigger.getAsBoolean();
     }

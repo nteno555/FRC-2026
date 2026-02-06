@@ -75,6 +75,10 @@ public class HoodSubsystem extends SubsystemBase {
         });
     }
 
+    public Command autoAimFlush() {
+        return setPosition(() -> ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(1.0));
+    }
+
     public Command voltageRampCommand() {
         return this.runOnce(() -> { voltageRamp = 0.0; })
                 .andThen(
@@ -87,6 +91,11 @@ public class HoodSubsystem extends SubsystemBase {
 
     public Command rezero() {
         return this.runOnce(() -> io.rezero(0.0));
+    }
+
+    public Command homeThenRezero() {
+        return setVoltage(() -> -0.5)
+                .alongWith(this.run(() -> io.rezero(0.0)));
     }
 
     public Command setFixed() {

@@ -134,6 +134,11 @@ public class TurretSubsystem extends SubsystemBase {
         return this.runOnce(() -> io.rezero());
     }
 
+    public Command homeThenRezero() {
+        return setVoltage(() -> -2.0)
+                .alongWith(this.run(() -> io.rezero(SubsystemConstants.turretHomeAngleRotations)));
+    }
+
     public Command setFixed() {
         return setPosition(() -> {
             if(usingVoltage) setpoint = inputs.positionTicks;

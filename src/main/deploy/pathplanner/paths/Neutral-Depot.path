@@ -8,36 +8,36 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.48236518238209,
-        "y": 5.612307441428856
+        "x": 6.891726721869575,
+        "y": 6.914992260403103
       },
       "isLocked": false,
       "linkedName": "high neutral"
     },
     {
       "anchor": {
-        "x": 4.663056880244503,
-        "y": 5.408064929538302
+        "x": 4.599148633603697,
+        "y": 7.425910702740705
       },
       "prevControl": {
-        "x": 5.833059279563395,
-        "y": 5.481750017986315
+        "x": 6.986680546621822,
+        "y": 7.422180670955244
       },
       "nextControl": {
-        "x": 3.2046874943485966,
-        "y": 5.316218898066768
+        "x": 2.6548548301414208,
+        "y": 7.428948265358254
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.0777262799298328,
-        "y": 5.966151706271701
+        "x": 0.7953224021063914,
+        "y": 5.9439466417100695
       },
       "prevControl": {
-        "x": 1.5572672540170178,
-        "y": 5.880727818241825
+        "x": 2.027682981985586,
+        "y": 5.901436142532915
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,20 +46,37 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.55,
-      "rotationDegrees": 135.0
-    },
-    {
-      "waypointRelativePos": 1.326319001850329,
-      "rotationDegrees": 135.0
+      "waypointRelativePos": 1.2624948601973685,
+      "rotationDegrees": 180.0
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.1342367888289036,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 240.0,
+        "maxAngularAcceleration": 360.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "stop auto aim",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 1.1894393363268276,
+      "command": null
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 240.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,

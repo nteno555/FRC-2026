@@ -62,22 +62,12 @@ public class ShooterSubsystem extends SubsystemBase {
         });
     }
 
+    public Command autoAimFlush() {
+        return setSpeed(() -> ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(1.0));
+    }
+
     public Command setTargetExitVelocity(Supplier<Double> exitVelocity) {
         return setSpeed(() -> solveExitVelocity(exitVelocity.get()));
-    }
-
-    public ShooterIO getIO() {
-        return io;
-    }
-
-    public Command setPercentOutput(Supplier<Double> percentOutput) {
-        return this.run( () -> {
-            Logger.recordOutput("Shooter/wantedPercentOutput", percentOutput.get());
-            usingVoltage = false;
-            wantedPercentOutput = percentOutput.get();
-            io.setPercentOutput(percentOutput.get());
-            }
-        );
     }
 
     public double getUpperVelocity() {

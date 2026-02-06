@@ -60,9 +60,6 @@ public class RobotContainer {
 
     Autos autos;
     Command autoCommand;
-    private boolean tuning = false;
-    private boolean wantIntake = false;
-    private boolean wantIntakeRoller = false;
 
     public RobotContainer() {
         createSubsystems();
@@ -153,8 +150,6 @@ public class RobotContainer {
         hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
         shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
         turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());
-//        indexerSubsystem.setDefaultCommand(AutoAimCommands.autoIndex(this));
-        //hoodSubsystem.setDefaultCommand(AutoAimCommands.hoodAutoAim(this, () -> RobotState.getInstance().getTargetPose()));
 
         driverXboxController.a().onTrue(new InstantCommand(() -> {
             if(!Alliance.get()){
@@ -163,98 +158,76 @@ public class RobotContainer {
                 driveSubsystem.resetOdometry(new Pose2d());
             }
         }));
+        driverXboxController
+                .x()
+                .and(driverXboxController.back().negate())
+                .onTrue(
+                hoodSubsystem.autoAimFlush()
+                        .alongWith(shooterSubsystem.autoAimFlush())
+                        .alongWith(turretSubsystem.setPosition(() -> 0.0)));
+        driverXboxController
+                .b()
+                .and(driverXboxController.back().negate())
+                .onTrue(
+                        hoodSubsystem.autoAim()
+                                .alongWith(shooterSubsystem.autoAim())
+                                .alongWith(turretSubsystem.autoAim())
+                );
 
-        
-        SmartDashboard.putNumber("Tuning/RPM", 0.0);
-        SmartDashboard.putNumber("Tuning/hoodPosition", 0.0);
-        
+        driverXboxController
+                .b()
+                .and(driverXboxController.back())
+                .whileTrue(hoodSubsystem.homeThenRezero());
+        driverXboxController
+                .x()
+                .and(driverXboxController.back())
+                .whileTrue(intakeSubsystem.homeThenRezero());
+         driverXboxController
+                .y()
+                .and(driverXboxController.back())
+                .whileTrue(turretSubsystem.homeThenRezero());
 
         driverXboxController.rightTrigger().whileTrue(
             indexerSubsystem.setVoltage(() -> -6.0, () -> -12.0))
             .whileFalse(indexerSubsystem.setVoltage(() -> 0.5, () -> 0.0));
 
-        driverXboxController.povLeft().whileTrue(
-                new InstantCommand(() -> wantIntakeRoller = !wantIntakeRoller)
-                        .andThen(intakeSubsystem.setRollerVoltage(() -> wantIntakeRoller ? -12.0 : 0.0))
-        );
+        driverXboxController.povLeft() // left bottom paddle
+                .onTrue(intakeSubsystem.setRollerVoltage(() -> -12.0));
+        driverXboxController.povDown() // right bottom paddle
+                .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
 
-        driverXboxController.povDown().whileTrue(
-                hoodSubsystem.setVoltage(() -> -0.5)
-        ).whileFalse(hoodSubsystem.rezero());
-
-//        driverXboxController.leftTrigger()
-//                        .whileTrue(
-//                                AutoAimCommands.autoAimCommand(
-//                                        this,
-//                                        () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
-//                                        () -> driveSubsystem.getTeleopSpeeds(
-//                                                (-0.5) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-//                                                (-0.5) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-//                                                 handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
-//                                        )
-//                                ,true)
-//                        );
-
-
-
-        driverXboxController.povUp()
-                        .whileTrue(
-                                new InstantCommand(() -> wantIntake = !wantIntake)
-                                        .andThen(intakeSubsystem.setDeployPosition(() -> wantIntake ? SubsystemConstants.intakeDeployPosition : 0.0))
-                        );
-//                .toggleOnTrue(intakeSubsystem.setPosition(() -> SubsystemConstants.intakeDeployPosition))
-//                .toggleOnFalse(intakeSubsystem.setPosition(() -> 0.0));
+        driverXboxController.povUp() // left middle paddle
+                .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
+        driverXboxController.povRight() // right middle paddle
+                .onTrue(intakeSubsystem.setDeployPosition(() -> 0.0));
 
         driverXboxController.rightTrigger()
-                        .whileTrue(indexerSubsystem.setVoltage(() -> -8.0, () -> -12.0)
-//                                AutoAimCommands.autoIndex(this)
-                        )
-                                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
+                .whileTrue(indexerSubsystem.setVoltage(() -> -8.0, () -> -12.0))
+                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
 
-        driverXboxController.b().onTrue(new InstantCommand(() -> {
-            RobotState.getInstance().setShuttling(!RobotState.getInstance().getShuttling());
-        }));
-
-        driverXboxController.x().onTrue(
-                intakeSubsystem.setDeployVoltage(() -> 2.0))
-                        .onFalse(intakeSubsystem.rezero()
-                                .andThen(intakeSubsystem.setDeployVoltage(() -> 0.0)));
-
-        driverXboxController.y().whileTrue(
-                turretSubsystem.setPositionFieldRelative(() -> 0.0)
-        );
+        driverXboxController.leftBumper()
+                .onTrue(Commands.runOnce(() -> RobotState.getInstance().setShuttling(false)));
+        driverXboxController.rightBumper()
+                .onTrue(Commands.runOnce(() -> RobotState.getInstance().setShuttling(true)));
 
 
-        operatorXboxController.leftTrigger()
-                .whileTrue(AutoAimCommands.autoAimFlush(this));
 
-        operatorXboxController.rightTrigger()
-                .whileTrue(indexerSubsystem.setVoltage(() -> -9.0, () -> -12.0));
 
-//        operatorXboxController.x().onTrue(
-//                        intakeSubsystem.setDeployVoltage(() -> 1.0))
-//                .onFalse(intakeSubsystem.rezero()
-//                        .andThen(intakeSubsystem.setDeployVoltage(() -> 0.0)));
-//
-//        operatorXboxController.b().onTrue(
-//                new InstantCommand(() -> {RobotState.getInstance().setManual(!RobotState.getInstance().getManual());
-//        }));
+        operatorXboxController.leftBumper()
+                .onTrue(hoodSubsystem.autoAimFlush()
+                        .alongWith(shooterSubsystem.autoAimFlush())
+                        .alongWith(turretSubsystem.setPosition(() -> 0.0))
+                );
+        operatorXboxController.rightBumper()
+                .onTrue(
+                        hoodSubsystem.autoAim()
+                                .alongWith(shooterSubsystem.autoAim())
+                                .alongWith(turretSubsystem.autoAim())
+                );
+//        operatorXboxController.rightTrigger()
+//                .whileTrue(indexerSubsystem.setVoltage(() -> -6.0, () -> -12.0));
 
-//        testSystemsController.leftBumper()
-//                        .whileTrue(shooterSubsystem.setSpeed(() -> 2400.0))
-//                                .whileFalse(shooterSubsystem.setSpeed(() -> 0.0));
-//
-//        testSystemsController.leftTrigger()
-//                        .whileTrue(shooterSubsystem.setVoltage(() -> 6.0))
-//                                .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
-//
-//        testSystemsController.rightBumper()
-//                        .whileTrue(indexerSubsystem.setVoltage(() -> -1.5, () -> -1.5))
-//                                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
-//
-//        testSystemsController.rightTrigger()
-//                        .whileTrue(intakeSubsystem.setVoltage(() -> 12.0))
-//                                .whileFalse(intakeSubsystem.setVoltage(() -> 0.0));
+
 //        tuningController.a()
 //                .whileTrue(driveSubsystem.runDriveQuasiTest(SysIdRoutine.Direction.kForward));
 //        tuningController.b()

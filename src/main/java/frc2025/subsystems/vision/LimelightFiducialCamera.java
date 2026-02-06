@@ -58,6 +58,7 @@ public class LimelightFiducialCamera {
 
         Pose2d pose = poseEstimate.pose;
         Pose2d robotToCameraPose = RobotState.getInstance().getTurretLimelightPose();
+
         if(turretMounted && robotToCameraPose != null) {
             Transform2d robotToShooterReal = new Transform2d(
                     SubsystemConstants.robotToShooter.getTranslation(),
@@ -67,6 +68,9 @@ public class LimelightFiducialCamera {
             Transform2d cameraToRobotTransform = SubsystemConstants.shooterToCamera.inverse().plus(robotToShooterReal.inverse());
 
             Logger.recordOutput("Vision/turretMountedHeartbeat", Math.random());
+            pose = pose.transformBy(cameraToRobotTransform);
+        } else {
+            Transform2d cameraToRobotTransform = SubsystemConstants.robotToFrontCamera.inverse();
             pose = pose.transformBy(cameraToRobotTransform);
         }
 
