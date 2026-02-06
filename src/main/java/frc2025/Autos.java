@@ -21,9 +21,6 @@ import java.util.function.Supplier;
 
 public class Autos {
     private DriveSubsystem drive;
-    private static Pose2d HIGH_START = new Pose2d(3.516, 5.941, Rotation2d.fromDegrees(0));
-    private static Pose2d MID_START = new Pose2d(3.445, 4.092, Rotation2d.fromDegrees(0));
-    private static Pose2d LOW_START = new Pose2d(3.516, 2.112, Rotation2d.fromDegrees(0));
 
     private RobotContainer robotContainer;
 
@@ -62,11 +59,12 @@ public class Autos {
         }
 
         PathPlannerPath finalPath = path;
-        Pose2d startPose = new Pose2d(
+        Supplier<Pose2d> startPose = startPoseSupplier(
+                new Pose2d(
                 finalPath.getStartingDifferentialPose().getTranslation(),
                 finalPath.getIdealStartingState().rotation()
-        );
-        return  drive.resetOdometryCommand(() -> startPose)
+        ));
+        return  drive.resetOdometryCommand(startPose)
                 .andThen(new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true));
                 //.raceWith(robotContainer.getIntake().setIntaking(() -> true));
     }
@@ -145,4 +143,6 @@ public class Autos {
     public Command LowStationClimb() { return buildAuto(List.of("Low-Station", "Station-Climb"), true); }
     public Command MidClimb() { return buildAuto(List.of("Mid-Climb"), true); }
     public Command LowStationNeutralClimb() { return buildAuto(List.of("Low-Station", "Station-Neutral", "Neutral-Climb (Low)"), true); }
+
+    public Command HighNeutralDepotNeutralClimb() { return buildAuto(List.of("High-Neutral", "Neutral-Depot", "Depot-Neutral", "Neutral-Climb (High)"), true);}
 }

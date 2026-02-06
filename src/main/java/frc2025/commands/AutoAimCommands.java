@@ -43,7 +43,7 @@ public class AutoAimCommands {
                     return new ChassisSpeeds(
                             unlockedSpeeds.get().vxMetersPerSecond,
                             unlockedSpeeds.get().vyMetersPerSecond,
-                            -angularVelocity
+                            angularVelocity
                     );
                 }
         );

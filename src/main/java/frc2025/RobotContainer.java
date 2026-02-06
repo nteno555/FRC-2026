@@ -141,9 +141,9 @@ public class RobotContainer {
     private void configureBindings() {
         driveSubsystem.setDefaultCommand(
                 driveSubsystem.driveTeleop(
-                        () -> (-0.5) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                        () -> (-0.5) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                        () -> (0.7) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
+                        () -> (0.5) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (0.5) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> -(0.7) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
                 )
         );
 
@@ -311,7 +311,7 @@ public class RobotContainer {
 
     public void autoInit() {
 //        autoCommand = autoChooser.getSelected();
-        autoCommand = autos.HighDepotNeutralClimb();
+        autoCommand = autos.HighNeutralDepotNeutralClimb();
         RobotState.getInstance().setShuttling(false);
         CommandScheduler.getInstance().schedule(autoCommand);
     }
