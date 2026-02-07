@@ -68,8 +68,8 @@ public class DriveSubsystem extends SubsystemBase {
         double speed = Math.sqrt(Math.pow(inputs.currentChassisSpeeds.vxMetersPerSecond, 2) + Math.pow(inputs.currentChassisSpeeds.vyMetersPerSecond, 2));
         RobotState.getInstance().setSpeed(speed);
         RobotState.getInstance().setRobotRelativeSpeeds(inputs.currentChassisSpeeds);
-        RobotState.getInstance().updateShootingWhileMovingVirtualPose();
-        RobotState.getInstance().updateShotVectorWhileMoving();
+        // RobotState.getInstance().updateShootingWhileMovingVirtualPose();
+        // RobotState.getInstance().updateShotVectorWhileMoving();
 //        Logger.recordOutput("Drive/shotAutoIndexReady", getShotReady());
         RobotState.getInstance().setDriveShotReady(getShotReady());
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);

@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
-import frc2025.subsystems.hood.HoodSubsystem;
-import frc2025.subsystems.shooter.ShooterSubsystem;
+// import frc2025.subsystems.hood.HoodSubsystem;
+// import frc2025.subsystems.shooter.ShooterSubsystem;
 import frc2025.subsystems.vision.LimelightHelpers;
 import frc2025.subsystems.vision.VisionPoseEstimator;
 import org.littletonrobotics.junction.Logger;
@@ -197,70 +197,70 @@ public class RobotState {
         }
     }
 
-    public void updateShootingWhileMovingVirtualPose() {
-//        currentVisionPose = getVisionPose();
-//        Translation2d velocity;
-//
-//        if(prevVisionPose == null) {
-//            ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
-//                robotRelativeSpeeds,
-//                currentVisionPose.getRotation()
-//            );
-//            velocity = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
-//        } else {
-//            velocity = new Translation2d(
-//                    currentVisionPose.getX() - prevVisionPose.getX(),
-//                    currentVisionPose.getY() - prevVisionPose.getY()
-//            ).div(Utils.getCurrentTimeSeconds() - prevVisionPoseTimestamp);
-//        }
-//
-//        prevVisionPose = currentVisionPose;
-//        prevVisionPoseTimestamp = Utils.getCurrentTimeSeconds();
+//     public void updateShootingWhileMovingVirtualPose() {
+// //        currentVisionPose = getVisionPose();
+// //        Translation2d velocity;
+// //
+// //        if(prevVisionPose == null) {
+// //            ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
+// //                robotRelativeSpeeds,
+// //                currentVisionPose.getRotation()
+// //            );
+// //            velocity = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+// //        } else {
+// //            velocity = new Translation2d(
+// //                    currentVisionPose.getX() - prevVisionPose.getX(),
+// //                    currentVisionPose.getY() - prevVisionPose.getY()
+// //            ).div(Utils.getCurrentTimeSeconds() - prevVisionPoseTimestamp);
+// //        }
+// //
+// //        prevVisionPose = currentVisionPose;
+// //        prevVisionPoseTimestamp = Utils.getCurrentTimeSeconds();
 
-        Pose2d currentPose = RobotState.getInstance().getVisionPose();
-        //Pose2d prevPose = sampleVisionPose();
-        Pose2d realTargetPose = getTargetPose();
-        Pose2d virtualPose = getTargetPose();
+//         Pose2d currentPose = RobotState.getInstance().getVisionPose();
+//         //Pose2d prevPose = sampleVisionPose();
+//         Pose2d realTargetPose = getTargetPose();
+//         Pose2d virtualPose = getTargetPose();
 
-        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
-                robotRelativeSpeeds,
-                currentPose.getRotation()
-        );
+//         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
+//                 robotRelativeSpeeds,
+//                 currentPose.getRotation()
+//         );
 
-        double vx = chassisSpeeds.vxMetersPerSecond + fieldRelativeAcceleration.vxMetersPerSecond * 0.1;
-        double vy = chassisSpeeds.vyMetersPerSecond + fieldRelativeAcceleration.vyMetersPerSecond * 0.1;
-        Translation2d velocity = new Translation2d(vx, vy);
-//        Translation2d velocity = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+//         double vx = chassisSpeeds.vxMetersPerSecond;
+//         double vy = chassisSpeeds.vyMetersPerSecond;
+//         Translation2d velocity = new Translation2d(vx, vy);
+// //        Translation2d velocity = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
 
-        for (int i = 0; i < 10; i++) {
-            double dx = virtualPose.getX() - currentPose.getX();
-            double dy = virtualPose.getY() - currentPose.getY();
-            double distance = Math.hypot(dx, dy);
+//         for (int i = 0; i < 10; i++) {
+//             double dx = virtualPose.getX() - currentPose.getX();
+//             double dy = virtualPose.getY() - currentPose.getY();
+//             double distance = Math.hypot(dx, dy);
 
-            double flightTime = ShooterTreeMap.getInstance().tofTreeMap.getInterpolated(distance);
+//             double flightTime = ShooterTreeMap.getInstance().tofTreeMap.getInterpolated(distance);
 
-            virtualPose = new Pose2d(
-                    realTargetPose.getX() + velocity.getX() * flightTime,
-                    realTargetPose.getY() + velocity.getY() * flightTime,
-                    realTargetPose.getRotation()
-            );
-        }
+//             virtualPose = new Pose2d(
+//                     realTargetPose.getX() + velocity.getX() * flightTime,
+//                     realTargetPose.getY() + velocity.getY() * flightTime,
+//                     realTargetPose.getRotation()
+//             );
+//         }
 
-//        Vector<N2> velocityRelToTarget = new Translation2d(robotRelativeSpeeds.vxMetersPerSecond, robotRelativeSpeeds.vyMetersPerSecond).toVector();
-//        velocityRelToTarget = velocityRelToTarget.projection(virtualPose.getTranslation().toVector());
-//
+// //        Vector<N2> velocityRelToTarget = new Translation2d(robotRelativeSpeeds.vxMetersPerSecond, robotRelativeSpeeds.vyMetersPerSecond).toVector();
+// //        velocityRelToTarget = velocityRelToTarget.projection(virtualPose.getTranslation().toVector());
+// //
 
-        shootingWhileMovingVirtualPose = virtualPose;
+//         shootingWhileMovingVirtualPose = virtualPose;
 
-        Pose2d shooterPose = getVisionShooterPose();
-        angleToVirtualTarget = Math.atan2(
-                virtualPose.getY() - shooterPose.getY(),
-                virtualPose.getX() - shooterPose.getX()
-        );
-        Logger.recordOutput("Drive/speed", velocity.getNorm());
-        Logger.recordOutput("Vision/shootingWhileMovingVirtualPose", shootingWhileMovingVirtualPose);
-        Logger.recordOutput("Vision/angleToVirtualTarget", angleToVirtualTarget);
-    }
+//         Pose2d shooterPose = getVisionShooterPose();
+//         angleToVirtualTarget = Math.atan2(
+//                 virtualPose.getY() - shooterPose.getY(),
+//                 virtualPose.getX() - shooterPose.getX()
+//         );
+//         Logger.recordOutput("Drive/speed", velocity.getNorm());
+//         Logger.recordOutput("Vision/shootingWhileMovingVirtualPose", shootingWhileMovingVirtualPose);
+//         Logger.recordOutput("Vision/angleToVirtualTarget", angleToVirtualTarget);
+//     }
 
     public double getAngleToVirtualTarget() {
         return angleToVirtualTarget;
@@ -284,68 +284,68 @@ public class RobotState {
 //    public void setHoodAngle(double angle) { hoodAngle = angle; }
 //    public double getHoodAngle() { return hoodAngle; }
 
-    public Translation3d getShotVector(double shooterExitVelocity, double hoodAngle) { // {field x, field y, height}
-        Translation2d direction = getTargetPose().getTranslation().minus(getVisionShooterPose().getTranslation());
-        direction = direction.div(direction.getNorm());
+    // public Translation3d getShotVector(double shooterExitVelocity, double hoodAngle) { // {field x, field y, height}
+    //     Translation2d direction = getTargetPose().getTranslation().minus(getVisionShooterPose().getTranslation());
+    //     direction = direction.div(direction.getNorm());
 
-        Translation2d xyVelocity = direction.times(shooterExitVelocity * Math.cos(hoodAngle));
+    //     Translation2d xyVelocity = direction.times(shooterExitVelocity * Math.cos(hoodAngle));
 
-        double zSpeed = shooterExitVelocity * Math.sin(hoodAngle);
+    //     double zSpeed = shooterExitVelocity * Math.sin(hoodAngle);
 
-        return new Translation3d(
-                xyVelocity.getX(),
-                xyVelocity.getY(),
-                zSpeed
-        );
-    }
+    //     return new Translation3d(
+    //             xyVelocity.getX(),
+    //             xyVelocity.getY(),
+    //             zSpeed
+    //     );
+    // }
 
-    public void updateShotVectorWhileMoving() {
-        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
-                robotRelativeSpeeds,
-                getVisionPose().getRotation()
-        );
+//     public void updateShotVectorWhileMoving() {
+//         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
+//                 robotRelativeSpeeds,
+//                 getVisionPose().getRotation()
+//         );
 
-        Vector<N2> velocityVector = VecBuilder.fill(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
-        Vector<N2> directionToTarget = VecBuilder.fill(
-                getTargetPose().getX() - getVisionShooterPose().getX(),
-                getTargetPose().getY() - getVisionShooterPose().getY()
-        );
-        directionToTarget = directionToTarget.div(directionToTarget.norm());
+//         Vector<N2> velocityVector = VecBuilder.fill(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+//         Vector<N2> directionToTarget = VecBuilder.fill(
+//                 getTargetPose().getX() - getVisionShooterPose().getX(),
+//                 getTargetPose().getY() - getVisionShooterPose().getY()
+//         );
+//         directionToTarget = directionToTarget.div(directionToTarget.norm());
 
-        Vector<N2> radialVelocity = velocityVector.projection(directionToTarget);
-        double targetRadialVelocity = velocityVector.dot(directionToTarget);
-        double targetDistance = Math.hypot(getTargetPose().getX() - getVisionShooterPose().getX(),
-                getTargetPose().getY() - getVisionShooterPose().getY());
-        Vector<N2> tangentialVelocity = velocityVector.minus(radialVelocity);
-//        if (tangentialVelocity.norm() < 0.05) {
-            tangentialVelocity = VecBuilder.fill(0.0, 0.0);
-//        }
+//         Vector<N2> radialVelocity = velocityVector.projection(directionToTarget);
+//         double targetRadialVelocity = velocityVector.dot(directionToTarget);
+//         double targetDistance = Math.hypot(getTargetPose().getX() - getVisionShooterPose().getX(),
+//                 getTargetPose().getY() - getVisionShooterPose().getY());
+//         Vector<N2> tangentialVelocity = velocityVector.minus(radialVelocity);
+// //        if (tangentialVelocity.norm() < 0.05) {
+//             tangentialVelocity = VecBuilder.fill(0.0, 0.0);
+// //        }
 
-//        double shooterSpeed = ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(distance);
-//        double hoodAngle = ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(distance);
-//        double shooterSpeed = ShooterTreeMap.getInstance().calculateRps(targetRadialVelocity, targetDistance);
-//        double hoodAngle = ShooterTreeMap.getInstance().calculateHoodAngle(targetRadialVelocity, targetDistance);
-        double shooterSpeed = ShooterTreeMap.getInstance().calculateRps(0.0, targetDistance);
-        double hoodAngle = ShooterTreeMap.getInstance().calculateHoodAngle(0.0, targetDistance);
+// //        double shooterSpeed = ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(distance);
+// //        double hoodAngle = ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(distance);
+// //        double shooterSpeed = ShooterTreeMap.getInstance().calculateRps(targetRadialVelocity, targetDistance);
+// //        double hoodAngle = ShooterTreeMap.getInstance().calculateHoodAngle(targetRadialVelocity, targetDistance);
+//         double shooterSpeed = ShooterTreeMap.getInstance().calculateRps(0.0, targetDistance);
+//         double hoodAngle = ShooterTreeMap.getInstance().calculateHoodAngle(0.0, targetDistance);
 
-        Translation3d shotVector = getShotVector(ShooterSubsystem.toBallExitVelocity(shooterSpeed), HoodSubsystem.toRadians(hoodAngle));
+//         Translation3d shotVector = getShotVector(ShooterSubsystem.toBallExitVelocity(shooterSpeed), HoodSubsystem.toRadians(hoodAngle));
 
 
-//        shotVectorWhileMoving = new Translation3d(
-//                shotVector.getX() - chassisSpeeds.vxMetersPerSecond,
-//                shotVector.getY() - chassisSpeeds.vyMetersPerSecond,
-//                shotVector.getZ()
-//        );
+// //        shotVectorWhileMoving = new Translation3d(
+// //                shotVector.getX() - chassisSpeeds.vxMetersPerSecond,
+// //                shotVector.getY() - chassisSpeeds.vyMetersPerSecond,
+// //                shotVector.getZ()
+// //        );
 
-        shotVectorWhileMoving = new Translation3d(
-                shotVector.getX() - tangentialVelocity.get(0),
-                shotVector.getY() - tangentialVelocity.get(1),
-                shotVector.getZ()
-        );
+//         shotVectorWhileMoving = new Translation3d(
+//                 shotVector.getX() - tangentialVelocity.get(0),
+//                 shotVector.getY() - tangentialVelocity.get(1),
+//                 shotVector.getZ()
+//         );
 
-    }
+//     }
 
-    public Translation3d getShotVectorWhileMoving() {
-        return shotVectorWhileMoving;
-    }
+    // public Translation3d getShotVectorWhileMoving() {
+    //     return shotVectorWhileMoving;
+    // }
 }

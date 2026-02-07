@@ -4,19 +4,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc2025.RobotContainer;
 
 public class SuperstructureCommands {
-    private static boolean hoodNear(RobotContainer robotContainer, double position) {
-        return Math.abs(robotContainer.getHood().getPosition() - position) < 0.05;
-    }
+    // private static boolean hoodNear(RobotContainer robotContainer, double position) {
+    //     return Math.abs(robotContainer.getHood().getPosition() - position) < 0.05;
+    // }
 
-    public static Command hoodSetpointCommand(RobotContainer robotContainer, double position) {
-        return robotContainer.getHood().setPosition(() -> position).until(() -> hoodNear(robotContainer, position));
-    }
+    // public static Command hoodSetpointCommand(RobotContainer robotContainer, double position) {
+    //     return robotContainer.getHood().setPosition(() -> position).until(() -> hoodNear(robotContainer, position));
+    // }
 
-    public static Command intakePieceCommand(RobotContainer robotContainer) {
-        return robotContainer.getIntake().setRollerVoltage(() -> 6.0);
-    }
+    // public static Command intakePieceCommand(RobotContainer robotContainer) {
+    //     return robotContainer.getIntake().setRollerVoltage(() -> 6.0);
+    // }
 
-    public static Command shootCommand(RobotContainer robotContainer) {
-        return robotContainer.getIndexer().setVoltage(() -> -3.0, () -> -3.0);
-    }
+    // public static Command shootCommand(RobotContainer robotContainer) {
+    //     return robotContainer.getIndexer().setVoltage(() -> -3.0, () -> -3.0);
+    // }
 }

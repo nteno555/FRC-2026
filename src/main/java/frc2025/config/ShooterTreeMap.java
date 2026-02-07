@@ -1,7 +1,7 @@
 package frc2025.config;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc2025.subsystems.hood.HoodSubsystem;
+// import frc2025.subsystems.hood.HoodSubsystem;
 import frc2025.util.InterpolatingTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
