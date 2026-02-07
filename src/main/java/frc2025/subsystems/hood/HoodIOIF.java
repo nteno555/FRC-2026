@@ -1,5 +1,5 @@
 package frc2025.subsystems.hood;
 
-public class HoodIOIF {
+public interface HoodIOIF {
     
 }

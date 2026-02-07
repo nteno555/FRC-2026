@@ -1,5 +1,5 @@
 package frc2025.subsystems.turret;
 
-public class TurretIOSim {
+public class TurretIOSim implements TurretIOIF {
     
 }

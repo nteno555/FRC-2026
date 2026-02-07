@@ -1,5 +1,5 @@
 package frc2025.subsystems.shooter;
 
-public class ShooterIOReal {
+public class ShooterIOReal implements ShooterIOIF {
     
 }

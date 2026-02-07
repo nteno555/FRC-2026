@@ -1,5 +1,6 @@
 package frc2025.subsystems.indexer;
 
-public class IndexerIOIF {
+public interface IndexerIOIF {
+
     
-}
+} 

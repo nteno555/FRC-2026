@@ -1,5 +1,5 @@
 package frc2025.subsystems.intake;
 
-public class IntakeIOReal {
+public class IntakeIOReal implements IntakeIOIF {
     
 }
