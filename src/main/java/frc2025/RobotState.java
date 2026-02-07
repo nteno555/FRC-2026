@@ -38,7 +38,6 @@ public class RobotState {
     private double angleToVirtualTarget;
 
     private boolean shuttling;
-    private boolean manual;
     private Pose2d shootingWhileMovingVirtualPose;
 
     private boolean driveShotReady;
@@ -46,16 +45,15 @@ public class RobotState {
     private boolean hoodReady;
     private boolean driveAutoAiming;
     private boolean wantAutoIntaking;
+    private boolean wantAutoShoot;
 
     private double turretAngle;
-
     private Pose2d turretLimelightPose;
     private Translation3d shotVectorWhileMoving = new Translation3d(0, 0, 0);
 
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
         shuttling = false;
-        manual = false;
         prevFieldRelativeSpeedTimestamp = Utils.getCurrentTimeSeconds();
     }
 
@@ -82,8 +80,6 @@ public class RobotState {
 
         Logger.recordOutput("Drive/fieldRelativeAccel", fieldRelativeAcceleration);
     }
-
-
     public ChassisSpeeds getFieldRelativeAcceleration() {return fieldRelativeAcceleration;}
     public ChassisSpeeds getFieldRelativeSpeeds() {return fieldRelativeSpeeds;}
     public ChassisSpeeds getPrevFieldRelativeSpeeds() {return prevFieldRelativeSpeeds;}
@@ -202,19 +198,25 @@ public class RobotState {
         //Pose2d prevPose = sampleVisionPose();
         Pose2d realTargetPose = getTargetPose();
         Pose2d virtualPose = getTargetPose();
+        double phaseDelay = 0.03;
 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
                 robotRelativeSpeeds,
                 currentPose.getRotation()
         );
-
         double vx = chassisSpeeds.vxMetersPerSecond;
         double vy = chassisSpeeds.vyMetersPerSecond;
+        double vOmega = chassisSpeeds.omegaRadiansPerSecond;
         Translation2d velocity = new Translation2d(vx, vy);
+        Pose2d delayedPose = currentPose.exp(
+                new Twist2d(vx * phaseDelay, vy * phaseDelay, vOmega * phaseDelay)
+        );
 
         for (int i = 0; i < 10; i++) {
-            double dx = virtualPose.getX() - currentPose.getX();
-            double dy = virtualPose.getY() - currentPose.getY();
+//            double dx = virtualPose.getX() - currentPose.getX();
+//            double dy = virtualPose.getY() - currentPose.getY();
+            double dx = virtualPose.getX() - delayedPose.getX();
+            double dy = virtualPose.getY() - delayedPose.getY();
             double distance = Math.hypot(dx, dy);
 
             double flightTime = ShooterTreeMap.getInstance().tofTreeMap.getInterpolated(distance);
@@ -233,6 +235,7 @@ public class RobotState {
         shootingWhileMovingVirtualPose = virtualPose;
 
         Pose2d shooterPose = getVisionShooterPose();
+        shooterPose = delayedPose.transformBy(SubsystemConstants.robotToShooter);
         angleToVirtualTarget = Math.atan2(
                 virtualPose.getY() - shooterPose.getY(),
                 virtualPose.getX() - shooterPose.getX()
@@ -254,8 +257,8 @@ public class RobotState {
     public boolean getDriveAutoAiming() { return driveAutoAiming; }
     public void setWantAutoIntaking(boolean want) {wantAutoIntaking = want;}
     public boolean getWantAutoIntaking() {return wantAutoIntaking;}
-    public void setManual(boolean enable) {manual = enable;}
-    public boolean getManual() {return manual;}
+    public void setWantAutoShoot(boolean want) {wantAutoIntaking = want;}
+    public boolean getWantAutoShoot() {return wantAutoShoot;}
     public void setTurretAngle(double angleRadians) {turretAngle = angleRadians;}
     public double getTurretAngle() { return turretAngle; }
     public void setTurretLimelightPose(Pose2d pose) { turretLimelightPose = pose; }

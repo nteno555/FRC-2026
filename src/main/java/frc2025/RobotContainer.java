@@ -227,6 +227,8 @@ public class RobotContainer {
                                 .alongWith(shooterSubsystem.autoAim())
                                 .alongWith(turretSubsystem.autoAim())
                 );
+        operatorXboxController.y()
+                .onTrue(Commands.runOnce(() -> RobotState.getInstance().setWantAutoShoot(!RobotState.getInstance().getWantAutoShoot())));
 //        operatorXboxController.rightTrigger()
 //                .whileTrue(indexerSubsystem.setVoltage(() -> -6.0, () -> -12.0));
 
@@ -324,7 +326,6 @@ public class RobotContainer {
         //autoCommand.cancel();
         CommandScheduler.getInstance().cancelAll();
         RobotState.getInstance().setShuttling(false);
-        RobotState.getInstance().setManual(false);
         shooterSubsystem.setSpeed(() -> 0.0);
         indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0);
         intakeSubsystem.setDeployVoltage(() -> 0.0);

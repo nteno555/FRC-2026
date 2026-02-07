@@ -20,6 +20,7 @@ public class SubsystemConstants {
     public static double bottomFlywheelDiameter = 0.1; // 4 inches in meters
     public static double flywheelEfficiency = 1;
 
+    // Hood: 50 to 85 degrees
     public static double hoodFF = 0.43;
     public static double hoodkS = 0.0;
     public static double hoodkV = 0.12;
@@ -55,6 +56,7 @@ public class SubsystemConstants {
     public static double intakeTorqueNeutralDeadband = 1;
     public static double intakeDeployPosition = -1.5;
 
+    // Turret Gear Ratio: 8:60 & 44:54
     public static double turretkS = 0.30;
     public static double turretkV = 0.12;
     public static double turretkG = 0.0;
@@ -88,6 +90,6 @@ public class SubsystemConstants {
 
     /*
     * Turret Cam: Forward 0 Right 0 Up 0.39 Roll 0 Pitch 35 Yaw 0
-    * Front Cam: Foward 0 Right 0 Up 0.1 Roll 0 Pitch 18 Yaw 0
+    * Front Cam: Forward 0 Right 0 Up 0.1 Roll 0 Pitch 18 Yaw 0
     */
 }

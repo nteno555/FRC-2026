@@ -32,13 +32,6 @@ public class ShooterTreeMap {
         tofTreeMap.put(3.0, 1.39);
         tofTreeMap.put(3.5, 1.17);
         tofTreeMap.put(4.0, 1.12);
-//        tofTreeMap.put(1.0, 0.5);
-//        tofTreeMap.put(2.0, 0.8);
-//        tofTreeMap.put(3.0, 1.1);
-////        tofTreeMap.put(2.28, 1.09);
-//        tofTreeMap.put(4.0, 1.25);
-//        tofTreeMap.put(5.0, 1.33);
-
 
         // NO HOOD
 

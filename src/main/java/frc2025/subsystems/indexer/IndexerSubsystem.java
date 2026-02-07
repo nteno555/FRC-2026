@@ -47,10 +47,10 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public Command autoShoot() {
         return this.setVoltage(() -> {
-            if (RobotState.getInstance().getDriveShotReady() && RobotState.getInstance().getDriveShotReady()) return 9.0;
+            if (RobotState.getInstance().getDriveShotReady() && RobotState.getInstance().getDriveShotReady() && RobotState.getInstance().getWantAutoShoot()) return 9.0;
             return 0.0;
         }, () -> {
-            if (RobotState.getInstance().getDriveShotReady() && RobotState.getInstance().getDriveShotReady()) return 12.0;
+            if (RobotState.getInstance().getDriveShotReady() && RobotState.getInstance().getDriveShotReady() && RobotState.getInstance().getWantAutoShoot()) return 12.0;
             return 0.0;
         });
     }

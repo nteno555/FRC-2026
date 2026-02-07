@@ -114,4 +114,3 @@ public class HoodSubsystem extends SubsystemBase {
     public static double toRotations(double radians) { return (SubsystemConstants.hoodZeroOffsetRadians - radians) * SubsystemConstants.hoodRotationsPerRadian; }
 //    public static double toRadians(double rotations) { return io.to}
 }
-//
