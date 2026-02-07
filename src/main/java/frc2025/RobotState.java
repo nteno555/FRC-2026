@@ -24,6 +24,8 @@ import java.util.List;
 public class RobotState {
     private static RobotState instance;
 
+    private DriverStation.Alliance alliance;
+
     private Pose2d visionPoseBuiltin;
     private VisionPoseEstimator visionPoseEstimator;
     private double speed;
@@ -138,7 +140,7 @@ public class RobotState {
         return this.shuttling;
     }
     public Pose2d getTargetPose() {
-        var alliance = DriverStation.Alliance.Red;
+        alliance = DriverStation.Alliance.Red;
         if(DriverStation.getAlliance().isPresent()) {
             alliance = DriverStation.getAlliance().get();
         }
@@ -186,6 +188,13 @@ public class RobotState {
                 }
             }
         }
+    }
+
+    public void updateShuttling() {
+        double xPos = RobotState.getInstance().getVisionPose().getX();
+
+        if (xPos > 4.6 && xPos < 11.9) shuttling = true;
+        else shuttling = false;
     }
 
     public void updateShootingWhileMovingVirtualPose() {
