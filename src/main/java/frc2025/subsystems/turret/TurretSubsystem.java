@@ -98,9 +98,9 @@ public class TurretSubsystem extends SubsystemBase {
 
             usingVoltage = false;
             io.setPosition(setpoint, velocityFF);
-//            Logger.recordOutput("Turret/turretWantedPositionRadians", positionRadians.get());
-//            Logger.recordOutput("Turret/turretClampedPositionRadians", bestAngle);
-//            Logger.recordOutput("Turret/turretClampedPositionRotations", setpoint);
+            Logger.recordOutput("Turret/turretWantedPositionRadians", positionRadians.get());
+            Logger.recordOutput("Turret/turretClampedPositionRadians", bestAngle);
+            Logger.recordOutput("Turret/turretClampedPositionRotations", setpoint);
         });
     }
 
@@ -130,13 +130,17 @@ public class TurretSubsystem extends SubsystemBase {
                         }));
     }
 
+    public Command rezeroCRT() {
+        return this.runOnce(() -> io.rezeroCRT());
+    }
+
     public Command rezero() {
         return this.runOnce(() -> io.rezero());
     }
 
     public Command homeThenRezero() {
         return setVoltage(() -> -2.0)
-                .alongWith(this.run(() -> io.rezero(SubsystemConstants.turretHomeAngleRotations)));
+                .andThen(this.run(() -> io.rezero(SubsystemConstants.turretHomeAngleRotations)));
     }
 
     public Command setFixed() {

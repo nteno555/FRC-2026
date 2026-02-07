@@ -59,7 +59,7 @@ public class LimelightFiducialCamera {
         Pose2d pose = poseEstimate.pose;
         Pose2d robotToCameraPose = RobotState.getInstance().getTurretLimelightPose();
 
-        if(turretMounted && robotToCameraPose != null) {
+        if(turretMounted){// && robotToCameraPose != null) {
             Transform2d robotToShooterReal = new Transform2d(
                     SubsystemConstants.robotToShooter.getTranslation(),
                     SubsystemConstants.robotToShooter.getRotation().plus(Rotation2d.fromRadians(RobotState.getInstance().getTurretAngle()))
@@ -104,6 +104,8 @@ public class LimelightFiducialCamera {
         VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
                 poseEstimate.timestampSeconds, pose, distStdDevs
         );
+
+        Logger.recordOutput("Vision/VisionPose_" + name + "_raw", poseEstimate.pose);
         Logger.recordOutput("Vision/VisionPose_" + name, pose);
 
         if(!reject) {

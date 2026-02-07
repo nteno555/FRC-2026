@@ -147,9 +147,9 @@ public class RobotContainer {
                 )
         );
 
-        hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
-        shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
-        turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());
+//        hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
+//        shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
+//        turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());
 
         driverXboxController.a().onTrue(new InstantCommand(() -> {
             if(!Alliance.get()){
@@ -195,6 +195,9 @@ public class RobotContainer {
                 .onTrue(intakeSubsystem.setRollerVoltage(() -> -12.0));
         driverXboxController.povDown() // right bottom paddle
                 .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
+
+        driverXboxController.leftTrigger()
+                        .whileTrue(turretSubsystem.autoAim());
 
         driverXboxController.povUp() // left middle paddle
                 .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
@@ -250,8 +253,9 @@ public class RobotContainer {
 //                .whileTrue(new WheelRadiusCharacterizationCommand(driveSubsystem));
 
     tuningController.leftBumper().whileTrue(
-            turretSubsystem.rezero()
+            turretSubsystem.rezeroCRT()
     );
+    SmartDashboard.putNumber("Tuning/hoodPosition", 0.0);
     tuningController.povRight()
             .whileTrue(
                     hoodSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/hoodPosition", 0.0))
@@ -262,19 +266,19 @@ public class RobotContainer {
         ).whileFalse(shooterSubsystem.setSpeed(() -> 0.0));
 
         tuningController.povLeft().whileTrue(
-                turretSubsystem.setVoltage(() -> 0.9)
+                turretSubsystem.setVoltage(() -> 2.5)
         ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
 
-        tuningController.povRight().whileTrue(
-                turretSubsystem.setVoltage(() -> -0.9)
-        ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
+//        tuningController.povRight().whileTrue(
+//                turretSubsystem.setVoltage(() -> -2.5)
+//        ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
 
         tuningController.povUp().whileTrue(
                 turretSubsystem.setPositionSafe(() -> Math.PI)
         ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
 
         tuningController.povDown().whileTrue(
-                turretSubsystem.setPositionSafe(() -> Math.PI*1.6)
+                turretSubsystem.setPositionSafe(() -> Math.PI*2.0)
         ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
 
 

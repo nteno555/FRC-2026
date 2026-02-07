@@ -42,5 +42,7 @@ public class HoodIOSim implements HoodIO {
     }
 
     @Override
-    public void rezero(double position) {}
+    public void rezero(double position) {
+        targetPosition = 0;
+    }
 }

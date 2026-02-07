@@ -54,7 +54,7 @@ public class TurretIOReal implements TurretIO{
         turretMotor.getConfigurator().apply(configTorque, 0.05);
         turretMotor.getConfigurator().apply(voltageConfigs, 0.05);
         turretMotor.setNeutralMode(NeutralModeValue.Brake);
-//        rezero();
+        rezero();
     }
 
     public double toRadians(double position) {
@@ -140,7 +140,7 @@ public class TurretIOReal implements TurretIO{
         Logger.recordOutput("Turret/initialPos2", pos2);
         double epsilon = 0.5;
 
-        while(Math.abs(pos1 - pos2) > epsilon && pos1 > -5 && pos2 > -5) {
+        while(Math.abs(pos1 - pos2) > epsilon && pos1 > -50 && pos2 > -50) {
             if(pos1 > pos2) pos1 -= SubsystemConstants.throughBoreRatio1;
             else pos2 -= SubsystemConstants.throughBoreRatio2;
         }

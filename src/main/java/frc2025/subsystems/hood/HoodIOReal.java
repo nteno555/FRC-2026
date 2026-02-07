@@ -36,12 +36,11 @@ public class HoodIOReal implements HoodIO {
         talonFXConfigs.CurrentLimits.StatorCurrentLimit = SubsystemConstants.hoodStatorCurrentLimit;
         talonFXConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
 
-//        var softLimitConfig = talonFXConfigs.SoftwareLimitSwitch;
-//        // Pbot hood has a 1:9 ratio
-//        softLimitConfig.ForwardSoftLimitThreshold = 10;
-//        softLimitConfig.ReverseSoftLimitThreshold = 0;
-//        softLimitConfig.ForwardSoftLimitEnable = true;
-//        softLimitConfig.ReverseSoftLimitEnable = true;
+        var softLimitConfig = talonFXConfigs.SoftwareLimitSwitch;
+        softLimitConfig.ForwardSoftLimitThreshold = 2.76;
+        softLimitConfig.ReverseSoftLimitThreshold = 0;
+        softLimitConfig.ForwardSoftLimitEnable = true;
+        softLimitConfig.ReverseSoftLimitEnable = true;
 
         TorqueCurrentConfigs configTorque =  new TorqueCurrentConfigs();
         configTorque.PeakForwardTorqueCurrent = SubsystemConstants.hoodPeakForwardTorqueCurrent;
@@ -50,7 +49,7 @@ public class HoodIOReal implements HoodIO {
 
         hoodMaster.getConfigurator().apply(talonFXConfigs);
         hoodMaster.getConfigurator().apply(configTorque);
-//        hoodMaster.getConfigurator().apply(softLimitConfig);
+        hoodMaster.getConfigurator().apply(softLimitConfig);
 
         //hoodMaster.setInverted(true);
         hoodMaster.setNeutralMode(NeutralModeValue.Brake);

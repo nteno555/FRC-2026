@@ -7,10 +7,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 
 public class SubsystemConstants {
-    public static double flywheelS = 0.00;
-    public static double flywheelV = 0.13;
+    public static double flywheelS = 1.27;
+    public static double flywheelV = 0.127;
     public static double flywheelA = 0.00;
-    public static double flywheelP = 0.12;
+    public static double flywheelP = 0.127;
     public static double flywheelI = 0.0;
     public static double flywheelD = 0.0;
     // NOT TUNED
@@ -20,11 +20,11 @@ public class SubsystemConstants {
     public static double bottomFlywheelDiameter = 0.1; // 4 inches in meters
     public static double flywheelEfficiency = 1;
 
-    public static double hoodFF = 0.271;
+    public static double hoodFF = 0.43;
     public static double hoodkS = 0.0;
     public static double hoodkV = 0.12;
     public static double hoodkA = 0.00;
-    public static double hoodkP = 1.0;
+    public static double hoodkP = 2.5;
     public static double hoodkI = 0.0;
     public static double hoodkD = 0.00;
     public static double hoodCruiseVelocity = 20;
@@ -70,19 +70,24 @@ public class SubsystemConstants {
     public static double turretPeakReverseTorqueCurrent = 40;
     public static double turretTorqueNeutralDeadband = 1;
     public static double turretZeroOffsetRadians = 0.0;
-    public static double turretRotationsPerRadian = 2.53;
-    public static double turretMinAngleRadians = -4.7123889804;
-    public static double turretMaxAngleRadians = 1.5707963268;
-    public static double throughBoreZero1 = 0.649;
-    public static double throughBoreZero2 = 0.555;
-    public static double throughBoreRatio1 = 4.90909;
-    public static double throughBoreRatio2 = 4.0; // 4 motor rotations for 1 throughgbore rotation
+    public static double turretRotationsPerRadian = 5.05539761;
+    public static double turretMinAngleRadians = 0;
+    public static double turretMaxAngleRadians = 2.2 * Math.PI;
+    public static double throughBoreZero1 = 0.406;
+    public static double throughBoreZero2 = 0.666;
+    public static double throughBoreRatio1 = 7.5;
+    public static double throughBoreRatio2 = 9.204;
     public static double turretHomeAngleRotations = 0.0; // hard stop position in motor rotations
     public static boolean hasTurret = true;
 
     public static double kMaxShootVelocity = 1;
 
-    public static Transform2d robotToShooter = new Transform2d(0.1016, 0.1016, Rotation2d.kZero); // should be x = forward, y = side
+    public static Transform2d robotToShooter = new Transform2d(0.1016, -0.1016, Rotation2d.kZero); // should be x = forward, y = side
     public static Transform2d shooterToCamera = new Transform2d(0.1905, 0.0, Rotation2d.kZero);
     public static Transform2d robotToFrontCamera = new Transform2d(0.25, 0.0, Rotation2d.kZero);
+
+    /*
+    * Turret Cam: Forward 0 Right 0 Up 0.39 Roll 0 Pitch 35 Yaw 0
+    * Front Cam: Foward 0 Right 0 Up 0.1 Roll 0 Pitch 18 Yaw 0
+    */
 }
