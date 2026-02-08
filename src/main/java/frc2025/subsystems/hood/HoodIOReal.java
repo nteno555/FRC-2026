@@ -4,7 +4,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import edu.wpi.first.units.Units;
@@ -12,10 +11,10 @@ import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class HoodIOReal implements HoodIO {
-    private final TalonFX hoodMaster = new TalonFX(27, "rio");
+    private final TalonFX hood = new TalonFX(SubsystemConstants.hoodID, "rio");
 
     public HoodIOReal() {
-        hoodMaster.getConfigurator().apply(new TalonFXConfiguration());
+        hood.getConfigurator().apply(new TalonFXConfiguration());
 
         var talonFXConfigs = new TalonFXConfiguration();
 
@@ -37,8 +36,8 @@ public class HoodIOReal implements HoodIO {
         talonFXConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
 
         var softLimitConfig = talonFXConfigs.SoftwareLimitSwitch;
-        softLimitConfig.ForwardSoftLimitThreshold = 2.76;
-        softLimitConfig.ReverseSoftLimitThreshold = 0;
+        softLimitConfig.ForwardSoftLimitThreshold = SubsystemConstants.hoodForwardSoftLimit;
+        softLimitConfig.ReverseSoftLimitThreshold = SubsystemConstants.hoodReverseSoftLimit;
         softLimitConfig.ForwardSoftLimitEnable = true;
         softLimitConfig.ReverseSoftLimitEnable = true;
 
@@ -47,12 +46,12 @@ public class HoodIOReal implements HoodIO {
         configTorque.PeakReverseTorqueCurrent = SubsystemConstants.hoodPeakReverseTorqueCurrent;
         configTorque.TorqueNeutralDeadband = SubsystemConstants.hoodTorqueNeutralDeadband;
 
-        hoodMaster.getConfigurator().apply(talonFXConfigs);
-        hoodMaster.getConfigurator().apply(configTorque);
-        hoodMaster.getConfigurator().apply(softLimitConfig);
+        hood.getConfigurator().apply(talonFXConfigs);
+        hood.getConfigurator().apply(configTorque);
+        hood.getConfigurator().apply(softLimitConfig);
 
         //hoodMaster.setInverted(true);
-        hoodMaster.setNeutralMode(NeutralModeValue.Brake);
+        hood.setNeutralMode(NeutralModeValue.Brake);
         rezero(0.0);
     }
 
@@ -64,47 +63,28 @@ public class HoodIOReal implements HoodIO {
         return HoodSubsystem.toRotations(radians);
     }
 
-    private ControlRequest createControlRequest(double targetValue, boolean useVoltage) {
-        double voltageFF = SubsystemConstants.hoodFF;
-        if(targetValue < hoodMaster.getPosition().getValueAsDouble()) {
-            voltageFF = -voltageFF;
-        }
-
-        if (useVoltage) {
-            return new VoltageOut(targetValue);
-        } else {
-//            return new MotionMagicVoltage(targetValue)
-//                    .withEnableFOC(true)
-//                    //.withFeedForward(voltageFF)
-//                    .withSlot(0)
-//                    .withOverrideBrakeDurNeutral(true)
-//                    .withLimitForwardMotion(false)
-//                    .withLimitReverseMotion(false);
-            return new PositionVoltage(targetValue)
-                    .withFeedForward(voltageFF);
-        }
-    }
-
     @Override
     public void updateInputs(HoodIOInputs inputs) {
-        inputs.positionRotations = hoodMaster.getPosition().getValue().in(Units.Rotation);
+        inputs.positionRotations = hood.getPosition().getValue().in(Units.Rotation);
         inputs.positionRadians = toRadians(inputs.positionRotations);
+        inputs.positionDegreesReal = Math.toDegrees(inputs.positionRadians);
     }
 
     @Override
     public void setPosition(double position) {
         Logger.recordOutput("Hood/wantedPosition", position);
-        hoodMaster.setControl(createControlRequest(position, false));
+        double voltageFF = position < hood.getPosition().getValueAsDouble() ? -SubsystemConstants.hoodFF : SubsystemConstants.hoodFF;
+        hood.setControl(new PositionVoltage(position)
+                .withFeedForward(voltageFF));
     }
-
 
     @Override
     public void setVoltage(double voltage) {
-        hoodMaster.setControl(createControlRequest(voltage, true));
+        hood.setControl(new VoltageOut(voltage));
     }
 
     @Override
     public void rezero(double position) {
-        hoodMaster.setPosition(0.0);
+        hood.setPosition(0.0);
     }
 }

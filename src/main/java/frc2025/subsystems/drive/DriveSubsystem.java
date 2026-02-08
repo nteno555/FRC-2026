@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc2025.RobotState;
+import frc2025.config.SubsystemConstants;
 import frc2025.util.Alliance;
 import frc2025.util.SwerveSysidVoltageRequest;
 import org.littletonrobotics.junction.Logger;
@@ -57,7 +58,7 @@ public class DriveSubsystem extends SubsystemBase {
         }
 
 
-        double speed = Math.sqrt(Math.pow(inputs.currentChassisSpeeds.vxMetersPerSecond, 2) + Math.pow(inputs.currentChassisSpeeds.vyMetersPerSecond, 2));
+        double speed = Math.hypot(inputs.currentChassisSpeeds.vxMetersPerSecond, inputs.currentChassisSpeeds.vyMetersPerSecond);
         RobotState.getInstance().setSpeed(speed);
         RobotState.getInstance().setRobotRelativeSpeeds(inputs.currentChassisSpeeds);
 //        RobotState.getInstance().updateShuttling();
@@ -159,7 +160,9 @@ public class DriveSubsystem extends SubsystemBase {
     public boolean getShotReady() {
         double angleToVirtualTarget = RobotState.getInstance().getAngleToVirtualTarget();
         double robotAngle = RobotState.getInstance().getVisionPose().getRotation().getRadians();
-        return Math.abs((angleToVirtualTarget - robotAngle) % (Math.PI * 2)) < Math.toRadians(15.0);
+        boolean ready = Math.abs((angleToVirtualTarget - robotAngle) % (Math.PI * 2)) < Math.toRadians(15.0);
+        ready = ready && (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed);
+        return ready;
     }
 
     // characterization

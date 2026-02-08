@@ -10,21 +10,21 @@ import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class IntakeIOReal implements IntakeIO {
-    private final TalonFX intakeDeployMaster = new TalonFX(15, "rio");
-    private final TalonFX intakeDeploySlave = new TalonFX(16, "rio");
-    private final TalonFX intakeRoller = new TalonFX(42,"rio");
+    private final TalonFX intakeDeployMaster = new TalonFX(SubsystemConstants.intakeDeployMasterID, "rio");
+    private final TalonFX intakeDeploySlave = new TalonFX(SubsystemConstants.intakeDeploySlaveID, "rio");
+    private final TalonFX intakeRoller = new TalonFX(SubsystemConstants.intakeRollerID,"rio");
 
     public IntakeIOReal() {
         var rollerConfigs = new TalonFXConfiguration();
 
-        rollerConfigs.CurrentLimits.SupplyCurrentLimit = 100;
+        rollerConfigs.CurrentLimits.SupplyCurrentLimit = SubsystemConstants.intakeSupplyCurrentLimit;
         rollerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
-        rollerConfigs.CurrentLimits.StatorCurrentLimit = 200;
+        rollerConfigs.CurrentLimits.StatorCurrentLimit = SubsystemConstants.intakeStatorCurrentLimit;
         rollerConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
 
-        rollerConfigs.TorqueCurrent.PeakForwardTorqueCurrent = 100;
-        rollerConfigs.TorqueCurrent.PeakReverseTorqueCurrent = -100;
-        rollerConfigs.TorqueCurrent.TorqueNeutralDeadband = 1;
+        rollerConfigs.TorqueCurrent.PeakForwardTorqueCurrent = SubsystemConstants.intakePeakForwardTorqueCurrent;
+        rollerConfigs.TorqueCurrent.PeakReverseTorqueCurrent = SubsystemConstants.intakePeakReverseTorqueCurrent;
+        rollerConfigs.TorqueCurrent.TorqueNeutralDeadband = SubsystemConstants.intakeTorqueNeutralDeadband;
 
         var deployConfigs = new TalonFXConfiguration();
         deployConfigs.CurrentLimits = rollerConfigs.CurrentLimits;
@@ -56,22 +56,6 @@ public class IntakeIOReal implements IntakeIO {
         intakeDeployMaster.setPosition(0.0);
     }
 
-//    private ControlRequest createControlRequest(double target, boolean useVoltage) {
-////        double voltageFF = -SubsystemConstants.intakekGFactor *
-////                Math.sin(intakePositionDegrees * Math.PI/180);
-//
-//        if (useVoltage) {
-//            return new VoltageOut(target);
-//        } else {
-////            return new MotionMagicVoltage(target)
-////                    .withEnableFOC(true)
-////                    .withSlot(0)
-////                    .withOverrideBrakeDurNeutral(true)
-////                    .withLimitForwardMotion(false)
-////                    .withLimitReverseMotion(false);
-//            return new PositionVoltage()
-//        }
-//    }
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
         inputs.voltage = intakeRoller.getMotorVoltage().getValue().in(Units.Volts);

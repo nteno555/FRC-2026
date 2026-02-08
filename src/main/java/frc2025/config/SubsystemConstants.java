@@ -1,9 +1,7 @@
 package frc2025.config;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 
 
 public class SubsystemConstants {
@@ -38,6 +36,8 @@ public class SubsystemConstants {
     public static double hoodTorqueNeutralDeadband = 1;
     public static double hoodRotationsPerRadian = 31.7131757633;
     public static double hoodZeroOffsetRadians = 1.22; // 70 degrees
+    public static double hoodForwardSoftLimit = 2.76;
+    public static double hoodReverseSoftLimit = 0.0;
 
     public static double intakekS = 0.00;
     public static double intakekG = 0.2;
@@ -50,13 +50,14 @@ public class SubsystemConstants {
     public static double intakeAcceleration = 20;
     public static double intakeJerk = 700;
     public static double intakeSupplyCurrentLimit = 100;
-    public static double intakeStatorCurrentLimit = 100;
+    public static double intakeStatorCurrentLimit = 200;
     public static double intakePeakForwardTorqueCurrent = 100;
-    public static double intakePeakReverseTorqueCurrent = 100;
+    public static double intakePeakReverseTorqueCurrent = -100;
     public static double intakeTorqueNeutralDeadband = 1;
     public static double intakeDeployPosition = -3.9;
     public static double intakeRollerVoltage = 8.0;
 
+    public static double spindexerShootVoltage = -8.0;
     public static double towerShootVoltage = -8.0;
 
     // Turret Gear Ratio: 8:60 & 44:54
@@ -85,16 +86,22 @@ public class SubsystemConstants {
     public static double turretHomeAngleRotations = 0.0; // hard stop position in motor rotations
     public static boolean hasTurret = true;
 
-    public static double kMaxShootVelocity = 1;
-
+    // Turret Cam: Forward 0 Right 0 Up 0.39 Roll 0 Pitch 29.1 Yaw 0
+    // Front Cam: Forward 0 Right 0 Up 0.1 Roll 0 Pitch 18 Yaw 0
     public static Transform2d robotToShooter = new Transform2d(0.1016, -0.1016, Rotation2d.kZero); // should be x = forward, y = side
     public static Transform2d shooterToCamera = new Transform2d(0.1905, 0.0, Rotation2d.kZero);
     public static Transform2d robotToFrontCamera = new Transform2d(0.25, 0.0, Rotation2d.kZero);
-
-
     public static double autoAimMaxSpeed = 2.0;
-    /*
-    * Turret Cam: Forward 0 Right 0 Up 0.39 Roll 0 Pitch 29.1 Yaw 0
-    * Front Cam: Forward 0 Right 0 Up 0.1 Roll 0 Pitch 18 Yaw 0
-    */
+
+    public static int hoodID = 27;
+    public static int indexerID = 21;
+    public static int towerID = 25;
+    public static int intakeDeployMasterID = 15;
+    public static int intakeDeploySlaveID = 16;
+    public static int intakeRollerID = 42;
+    public static int flywheelMasterID = 13;
+    public static int flywheelSlaveID = 17;
+    public static int turretID = 23;
+    public static int turretTb1ID = 8;
+    public static int turretTb2ID = 9;
 }

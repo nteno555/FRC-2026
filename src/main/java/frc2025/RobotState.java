@@ -195,7 +195,6 @@ public class RobotState {
 
     public void updateShootingWhileMovingVirtualPose() {
         Pose2d currentPose = RobotState.getInstance().getVisionPose();
-        //Pose2d prevPose = sampleVisionPose();
         Pose2d realTargetPose = getTargetPose();
         Pose2d virtualPose = getTargetPose();
         double phaseDelay = 0.03;
@@ -228,14 +227,9 @@ public class RobotState {
             );
         }
 
-//        Vector<N2> velocityRelToTarget = new Translation2d(robotRelativeSpeeds.vxMetersPerSecond, robotRelativeSpeeds.vyMetersPerSecond).toVector();
-//        velocityRelToTarget = velocityRelToTarget.projection(virtualPose.getTranslation().toVector());
-//
-
         shootingWhileMovingVirtualPose = virtualPose;
 
-        Pose2d shooterPose = getVisionShooterPose();
-        shooterPose = delayedPose.transformBy(SubsystemConstants.robotToShooter);
+        Pose2d shooterPose = delayedPose.transformBy(SubsystemConstants.robotToShooter);
         angleToVirtualTarget = Math.atan2(
                 virtualPose.getY() - shooterPose.getY(),
                 virtualPose.getX() - shooterPose.getX()

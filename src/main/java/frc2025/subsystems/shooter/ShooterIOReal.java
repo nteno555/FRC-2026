@@ -11,8 +11,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc2025.config.SubsystemConstants;
 
 public class ShooterIOReal implements ShooterIO {
-    private TalonFX flywheelMaster = new TalonFX(13, "rio");
-    private TalonFX flywheelSlave = new TalonFX(17, "rio");
+    private TalonFX flywheelMaster = new TalonFX(SubsystemConstants.flywheelMasterID, "rio");
+    private TalonFX flywheelSlave = new TalonFX(SubsystemConstants.flywheelSlaveID, "rio");
 
     public ShooterIOReal() {
 		flywheelMaster.getConfigurator().apply(new TalonFXConfiguration());
@@ -42,11 +42,6 @@ public class ShooterIOReal implements ShooterIO {
         flywheelSlave.setNeutralMode(NeutralModeValue.Coast);
         flywheelSlave.getConfigurator().apply(flywheelConfig, 0.050);
         flywheelSlave.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Opposed));
-    }
-
-    private ControlRequest createControlRequest(double rpm) {
-        return new VelocityVoltage(rpm);
-       // return new MotionMagicVelocityVoltage(rpm);
     }
 
     @Override

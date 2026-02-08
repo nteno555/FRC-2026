@@ -16,9 +16,9 @@ import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class TurretIOReal implements TurretIO{
-    private final TalonFX turretMotor = new TalonFX(23, "rio");
-    private final DutyCycleEncoder throughBore1 = new DutyCycleEncoder(8);
-    private final DutyCycleEncoder throughBore2 = new DutyCycleEncoder(9);
+    private final TalonFX turretMotor = new TalonFX(SubsystemConstants.turretID, "rio");
+    private final DutyCycleEncoder throughBore1 = new DutyCycleEncoder(SubsystemConstants.turretTb1ID);
+    private final DutyCycleEncoder throughBore2 = new DutyCycleEncoder(SubsystemConstants.turretTb2ID);
 
     public TurretIOReal() {
         turretMotor.getConfigurator().apply(new TalonFXConfiguration());
@@ -64,23 +64,6 @@ public class TurretIOReal implements TurretIO{
         return SubsystemConstants.turretRotationsPerRadian * radians;
     }
 
-    private ControlRequest createControlRequest(double targetValue, boolean useVoltage) {
-        if (useVoltage) {
-            return new VoltageOut(targetValue);
-        } else {
-            return new PositionVoltage(targetValue)
-                    .withSlot(0)
-                    .withEnableFOC(true);
-//            return new MotionMagicVoltage(targetValue)
-//                    .withEnableFOC(true)
-//                    .withSlot(0)
-//                    .withOverrideBrakeDurNeutral(true)
-//                    .withLimitForwardMotion(false)
-//                    .withLimitReverseMotion(false);
-        }
-    }
-
-
     @Override
     public void updateInputs(TurretIOInputs inputs) {
         inputs.positionTicks = turretMotor.getPosition().getValue().in(Units.Rotation);
@@ -99,7 +82,9 @@ public class TurretIOReal implements TurretIO{
 
     @Override
     public void setPosition(double position) {
-        turretMotor.setControl(createControlRequest(position, false));
+        turretMotor.setControl(new PositionVoltage(position)
+                .withSlot(0)
+                .withEnableFOC(true));
         Logger.recordOutput("Turret/setPosPosition", position);
     }
 
@@ -115,7 +100,7 @@ public class TurretIOReal implements TurretIO{
 
     @Override
     public void setVoltage(double voltage) {
-        turretMotor.setControl(createControlRequest(voltage, true));
+        turretMotor.setControl(new VoltageOut(voltage));
     }
 
     @Override

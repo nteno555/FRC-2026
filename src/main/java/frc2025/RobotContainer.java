@@ -203,7 +203,8 @@ public class RobotContainer {
                 .onTrue(intakeSubsystem.setDeployPosition(() -> 0.0));
 
         driverXboxController.rightTrigger()
-                .whileTrue(indexerSubsystem.setVoltage(() -> -8.0, () -> SubsystemConstants.towerShootVoltage))
+                .whileTrue(indexerSubsystem.setVoltage(() -> SubsystemConstants.spindexerShootVoltage,
+                        () -> SubsystemConstants.towerShootVoltage))
                 .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
 
         driverXboxController.leftBumper()

@@ -94,7 +94,7 @@ public class HoodSubsystem extends SubsystemBase {
 
     public Command homeThenRezero() {
         return this.run(() -> {
-            io.setVoltage(-1.0);
+            io.setVoltage(-1.5);
             io.rezero(0.0);
         });
     }
@@ -113,5 +113,4 @@ public class HoodSubsystem extends SubsystemBase {
     public double getPositionRadians() { return inputs.positionRadians; }
     public static double toRadians(double rotations) { return  -rotations / SubsystemConstants.hoodRotationsPerRadian + SubsystemConstants.hoodZeroOffsetRadians; }
     public static double toRotations(double radians) { return (SubsystemConstants.hoodZeroOffsetRadians - radians) * SubsystemConstants.hoodRotationsPerRadian; }
-//    public static double toRadians(double rotations) { return io.to}
 }

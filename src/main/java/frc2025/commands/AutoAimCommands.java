@@ -86,7 +86,7 @@ public class AutoAimCommands {
 
             if(readySupplier.getAsBoolean()) {
                 Logger.recordOutput("Indexer/ready", true);
-                return -9.0;
+                return SubsystemConstants.spindexerShootVoltage;
             } else {
                 Logger.recordOutput("Indexer/ready", false);
                 return 0.0;

@@ -2,16 +2,14 @@ package frc2025.subsystems.indexer;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
-import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
-import org.littletonrobotics.junction.Logger;
+import frc2025.config.SubsystemConstants;
 
 public class IndexerIOReal implements IndexerIO {
-    private final TalonFX indexer = new TalonFX(21, "rio");
-    private final TalonFX tower = new TalonFX(25, "rio");
+    private final TalonFX indexer = new TalonFX(SubsystemConstants.indexerID, "rio");
+    private final TalonFX tower = new TalonFX(SubsystemConstants.towerID, "rio");
 
     public IndexerIOReal() {
         indexer.getConfigurator().apply(new TalonFXConfiguration());
@@ -48,14 +46,6 @@ public class IndexerIOReal implements IndexerIO {
         tower.getConfigurator().apply(towerConfigTorque, 0.05);
     }
 
-    private ControlRequest createControlRequest(double targetValue, boolean useVoltage) {
-        if (useVoltage) {
-            return new VoltageOut(targetValue);
-        } else {
-            return new DutyCycleOut(targetValue);
-        }
-    }
-
     @Override
     public void updateInputs(IndexerIOInputs inputs) {
         inputs.indexerVoltage = indexer.getMotorVoltage().getValueAsDouble();
@@ -66,14 +56,14 @@ public class IndexerIOReal implements IndexerIO {
 
     @Override
     public void setSpeed(double indexerSpeed, double towerSpeed) {
-        indexer.setControl(createControlRequest(indexerSpeed, false));
-        tower.setControl(createControlRequest(towerSpeed, false));
+        indexer.setControl(new DutyCycleOut(indexerSpeed));
+        tower.setControl(new DutyCycleOut(towerSpeed));
     }
 
     @Override
     public void setVoltage(double indexerVoltage, double towerVoltage) {
-        indexer.setControl(createControlRequest(indexerVoltage, true));
-        tower.setControl(createControlRequest(towerVoltage, true));
+        indexer.setControl(new VoltageOut(indexerVoltage));
+        tower.setControl(new VoltageOut(towerVoltage));
     }
 
 
