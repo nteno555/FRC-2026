@@ -73,7 +73,7 @@ public class IndexerIOReal implements IndexerIO {
     @Override
     public void setVoltage(double indexerVoltage, double towerVoltage) {
         indexer.setControl(createControlRequest(indexerVoltage, true));
-        tower.setControl(createControlRequest(towerVoltage, false));
+        tower.setControl(createControlRequest(towerVoltage, true));
     }
 
 

@@ -8,6 +8,7 @@ public interface IntakeIO {
         double voltage;
         double current;
         double position;
+        boolean deployConnected;
     }
     public void updateInputs(IntakeIOInputs inputs);
     public void setSpeed(double speed);

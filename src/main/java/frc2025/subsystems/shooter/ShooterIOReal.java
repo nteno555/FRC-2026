@@ -39,7 +39,9 @@ public class ShooterIOReal implements ShooterIO {
 
 		flywheelMaster.getConfigurator().apply(flywheelConfig, 0.050);
         flywheelMaster.setNeutralMode(NeutralModeValue.Coast);
-        flywheelSlave.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Aligned));
+        flywheelSlave.setNeutralMode(NeutralModeValue.Coast);
+        flywheelSlave.getConfigurator().apply(flywheelConfig, 0.050);
+        flywheelSlave.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Opposed));
     }
 
     private ControlRequest createControlRequest(double rpm) {

@@ -1,5 +1,6 @@
 package frc2025.subsystems.indexer;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -8,8 +9,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc2025.Robot;
 import frc2025.RobotState;
+import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 
@@ -42,16 +45,6 @@ public class IndexerSubsystem extends SubsystemBase {
             io.setVoltage(indexerVoltage.get(), towerVoltage.get());
         }, () -> {
             io.setVoltage(0.0, 0.0);
-        });
-    }
-
-    public Command autoShoot() {
-        return this.setVoltage(() -> {
-            if (RobotState.getInstance().getDriveShotReady() && RobotState.getInstance().getDriveShotReady() && RobotState.getInstance().getWantAutoShoot()) return 9.0;
-            return 0.0;
-        }, () -> {
-            if (RobotState.getInstance().getDriveShotReady() && RobotState.getInstance().getDriveShotReady() && RobotState.getInstance().getWantAutoShoot()) return 12.0;
-            return 0.0;
         });
     }
 }

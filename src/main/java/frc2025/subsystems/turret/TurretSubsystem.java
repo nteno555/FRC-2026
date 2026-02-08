@@ -88,7 +88,7 @@ public class TurretSubsystem extends SubsystemBase {
                 bestAngle = maxAngle;
             }
 
-            double velocityFF = velocityRadiansPerSecond.get();
+            double velocityFF = velocityRadiansPerSecond.get() * SubsystemConstants.turretRotationsPerRadian;
 
             if(Math.abs(bestAngle - inputs.positionRadians) > Math.toRadians(180.0)){
                 velocityFF = 0;
@@ -139,8 +139,10 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     public Command homeThenRezero() {
-        return setVoltage(() -> -2.0)
-                .andThen(this.run(() -> io.rezero(SubsystemConstants.turretHomeAngleRotations)));
+        return this.run(() -> {
+            io.setVoltage(-2.0);
+            io.rezero(SubsystemConstants.turretHomeAngleRotations);
+        });
     }
 
     public Command setFixed() {
@@ -154,7 +156,7 @@ public class TurretSubsystem extends SubsystemBase {
     public double getPositionRadians() { return inputs.positionRadians; }
 
     public boolean getShotReady() {
-        return Math.abs(inputs.positionTicks - setpoint) < 0.5;
+        return Math.abs(inputs.positionTicks - setpoint) < 1;
     }
 
 }

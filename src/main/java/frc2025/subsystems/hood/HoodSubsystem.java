@@ -56,16 +56,15 @@ public class HoodSubsystem extends SubsystemBase {
 
     public Command autoAim() {
         return setPosition(() -> {
+
             Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
             double robotXpose = robotPose.getX();
             double robotYpose = robotPose.getY();
 
-            boolean nearBlueUpperTrench = (robotXpose < 6.25 && robotXpose > 3.0) && robotYpose > 7.0;
-            boolean nearBlueLowerTrench = (robotXpose < 6.25 && robotXpose > 3.0) && robotYpose < 1.2;
-            boolean nearRedUpperTrench = (robotXpose < 13.5 && robotXpose > 10.25) && robotYpose > 7.0;
-            boolean nearRedLowerTrench = (robotXpose < 13.5 && robotXpose > 10.25) && robotYpose < 1.2;
+            boolean nearBlueTrench = robotXpose < 6.25 && robotXpose > 3.0;
+            boolean nearRedTrench = robotXpose < 13.5 && robotXpose > 10.25;
 
-            if (nearBlueUpperTrench || nearBlueLowerTrench || nearRedUpperTrench || nearRedLowerTrench) {
+            if (nearRedTrench || nearBlueTrench) {
                 return 0.0;
             }
 
@@ -94,8 +93,10 @@ public class HoodSubsystem extends SubsystemBase {
     }
 
     public Command homeThenRezero() {
-        return setVoltage(() -> -0.5)
-                .andThen(rezero());
+        return this.run(() -> {
+            io.setVoltage(-1.0);
+            io.rezero(0.0);
+        });
     }
 
     public Command setFixed() {

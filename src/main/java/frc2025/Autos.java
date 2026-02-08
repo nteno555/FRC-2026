@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc2025.commands.AutoAimCommands;
 import frc2025.commands.FollowPathCommand;
 import frc2025.config.SubsystemConstants;
@@ -106,13 +107,18 @@ public class Autos {
                         .alongWith(robotContainer.getShooter().autoAim())
                         .alongWith(robotContainer.getHood().autoAim())
                         .alongWith(AutoAimCommands.autoIndex(robotContainer))
-                        .alongWith(robotContainer.getIntake().setRollerVoltage(() -> -12.0));
+                        .alongWith(
+                                robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
+                                        .until(() -> robotContainer.getIntake().getDeployReady())
+                                                .andThen(robotContainer.getIntake().setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage)));
         } else {
                 auto = robotContainer.getShooter().autoAim()
                         .alongWith(robotContainer.getHood().autoAim())
                         .alongWith(AutoAimCommands.autoIndex(robotContainer))
-                        .alongWith(robotContainer.getIntake().setRollerVoltage(() -> -12.0));
-            ;
+                        .alongWith(
+                                robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
+                                        .until(() -> robotContainer.getIntake().getDeployReady())
+                                                .andThen(robotContainer.getIntake().setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage)));
         }
         
 
@@ -145,4 +151,5 @@ public class Autos {
     public Command LowStationClimb() { return buildAuto(List.of("Low-Station", "Station-Climb"), true); }
     public Command MidClimb() { return buildAuto(List.of("Mid-Climb"), true); }
     public Command LowStationNeutralClimb() { return buildAuto(List.of("Low-Station", "Station-Neutral", "Neutral-Climb (Low)"), true); }
+    public Command LowNeutralStationNeutralClimb() { return buildAuto(List.of("Low-Neutral", "Neutral-Station", "Station-Neutral", "Neutral-Climb (Low)"), true); }
 }

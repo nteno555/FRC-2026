@@ -141,13 +141,14 @@ public class RobotContainer {
     private void configureBindings() {
         driveSubsystem.setDefaultCommand(
                 driveSubsystem.driveTeleop(
-                        () -> (-0.5) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                        () -> (-0.5) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                        () -> (0.7) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
+                        () -> (-0.5) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (-0.5) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (0.7) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
                 )
         );
 
-//        hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
+        intakeSubsystem.setDefaultCommand(intakeSubsystem.setDeployVoltage(() -> 0.0));
+        hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
 //        shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
 //        turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());
 
@@ -169,8 +170,8 @@ public class RobotContainer {
                 .b()
                 .and(driverXboxController.back().negate())
                 .onTrue(
-                        hoodSubsystem.autoAim()
-                                .alongWith(shooterSubsystem.autoAim())
+//                        hoodSubsystem.autoAim()
+                                shooterSubsystem.autoAim()
                                 .alongWith(turretSubsystem.autoAim())
                 );
 
@@ -185,19 +186,21 @@ public class RobotContainer {
          driverXboxController
                 .y()
                 .and(driverXboxController.back())
-                .whileTrue(turretSubsystem.homeThenRezero());
-
-        driverXboxController.rightTrigger().whileTrue(
-            indexerSubsystem.setVoltage(() -> -6.0, () -> -12.0))
-            .whileFalse(indexerSubsystem.setVoltage(() -> 0.5, () -> 0.0));
+                .whileTrue(turretSubsystem.rezeroCRT());
 
         driverXboxController.povLeft() // left bottom paddle
-                .onTrue(intakeSubsystem.setRollerVoltage(() -> -12.0));
+                .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));
         driverXboxController.povDown() // right bottom paddle
                 .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
 
         driverXboxController.leftTrigger()
-                        .whileTrue(turretSubsystem.autoAim());
+                .whileTrue(turretSubsystem.autoAim()
+                        .alongWith(hoodSubsystem.autoAim())
+                        .alongWith(shooterSubsystem.autoAim())
+                )
+//                .whileTrue(turretSubsystem.setPositionFieldRelative(() -> 0.0))
+                .whileFalse(turretSubsystem.setVoltage(() -> 0.0)
+                        .alongWith(shooterSubsystem.setVoltage(() -> 0.0)));
 
         driverXboxController.povUp() // left middle paddle
                 .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
@@ -205,7 +208,7 @@ public class RobotContainer {
                 .onTrue(intakeSubsystem.setDeployPosition(() -> 0.0));
 
         driverXboxController.rightTrigger()
-                .whileTrue(indexerSubsystem.setVoltage(() -> -8.0, () -> -12.0))
+                .whileTrue(indexerSubsystem.setVoltage(() -> -8.0, () -> SubsystemConstants.towerShootVoltage))
                 .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
 
         driverXboxController.leftBumper()
@@ -257,23 +260,14 @@ public class RobotContainer {
     tuningController.leftBumper().whileTrue(
             turretSubsystem.rezeroCRT()
     );
-    SmartDashboard.putNumber("Tuning/hoodPosition", 0.0);
-    tuningController.povRight()
-            .whileTrue(
-                    hoodSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/hoodPosition", 0.0))
-            );
-
-        tuningController.rightBumper().whileTrue(
-                shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/RPM", 0.0))
-        ).whileFalse(shooterSubsystem.setSpeed(() -> 0.0));
 
         tuningController.povLeft().whileTrue(
                 turretSubsystem.setVoltage(() -> 2.5)
         ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
 
-//        tuningController.povRight().whileTrue(
-//                turretSubsystem.setVoltage(() -> -2.5)
-//        ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
+        tuningController.povRight().whileTrue(
+                turretSubsystem.setVoltage(() -> -2.5)
+        ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
 
         tuningController.povUp().whileTrue(
                 turretSubsystem.setPositionSafe(() -> Math.PI)
@@ -284,10 +278,27 @@ public class RobotContainer {
         ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
 
 
+        tuningController.a().onTrue(new InstantCommand(() -> {
+            if(!Alliance.get()){
+                driveSubsystem.resetOdometry(new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
+            } else {
+                driveSubsystem.resetOdometry(new Pose2d());
+            }
+        }));
+
         SmartDashboard.putNumber("Tuning/RPM", 0.0);
+        SmartDashboard.putNumber("Tuning/hoodPosition", 0.0);
         tuningController.rightBumper()
-                .whileTrue(shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/RPM", 0.0)))
+                .whileTrue(
+                        shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/RPM", 0.0))
+                                .alongWith(hoodSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/hoodPosition", 0.0)))
+                                .alongWith(turretSubsystem.autoAim())
+                )
                 .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
+
+        tuningController.rightTrigger().whileTrue(
+            indexerSubsystem.setVoltage(() -> -6.0, () -> -12.0))
+            .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
 
     }
 
@@ -317,7 +328,8 @@ public class RobotContainer {
 
     public void autoInit() {
 //        autoCommand = autoChooser.getSelected();
-        autoCommand = autos.HighDepotNeutralClimb();
+//        autoCommand = autos.HighDepotNeutralClimb();
+        autoCommand = autos.LowNeutralStationNeutralClimb();
         RobotState.getInstance().setShuttling(false);
         CommandScheduler.getInstance().schedule(autoCommand);
     }

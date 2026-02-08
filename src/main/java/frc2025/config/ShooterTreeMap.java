@@ -13,27 +13,63 @@ public class ShooterTreeMap {
     
     public ShooterTreeMap() {
         //WITH HOOD, GOOD
-        hoodTreeMap.put(2.0, 0.0);
-        hoodTreeMap.put(2.50, 1.5);
-        hoodTreeMap.put(3.0, 3.0);
-        hoodTreeMap.put(3.5, 4.5);
-        hoodTreeMap.put(4.0, 6.0);
-        lowerWheelTreeMap.put(1.8, -24.0);
-        lowerWheelTreeMap.put(2.30, -26.0);
-        lowerWheelTreeMap.put(2.8, -27.5);
-        lowerWheelTreeMap.put(3.3, -28.5);
-        lowerWheelTreeMap.put(3.8, -29.3);
-        lowerWheelTreeMap.put(4.8, -31.0);
-        lowerWheelTreeMap.put(5.8, -33.0);
+        hoodTreeMap.put(1.63, 1.0);
+        hoodTreeMap.put(2.36, 1.3);
+        hoodTreeMap.put(3.22, 1.6);
+        hoodTreeMap.put(4.13, 1.9);
+        hoodTreeMap.put(5.2, 2.2);
+//        hoodTreeMap.put(2.02, 1.2);
+//        hoodTreeMap.put(2.58, 1.3);
+//        hoodTreeMap.put(3.07, 1.4);
+//        hoodTreeMap.put(3.74, 1.5);
+//        hoodTreeMap.put(3.96, 1.6);
+//        hoodTreeMap.put(4.5, 1.7);
+//        hoodTreeMap.put(4.735, 1.75);
 
-        tofTreeMap.put(1.5, 0.92);
-        tofTreeMap.put(2.0, 1.01);
-        tofTreeMap.put(2.5, 1.18);
-        tofTreeMap.put(3.0, 1.39);
-        tofTreeMap.put(3.5, 1.17);
-        tofTreeMap.put(4.0, 1.12);
+        lowerWheelTreeMap.put(1.63, 38.5);
+        lowerWheelTreeMap.put(2.36, 40.5);
+        lowerWheelTreeMap.put(3.22, 42.5);
+        lowerWheelTreeMap.put(4.13, 45.0);
+        lowerWheelTreeMap.put(5.2, 48.0);
+//        lowerWheelTreeMap.put(1.624, 36.0);
+//        lowerWheelTreeMap.put(2.02, 37.0);
+//        lowerWheelTreeMap.put(2.58, 39.0);
+//        lowerWheelTreeMap.put(3.07, 40.0);
+//        lowerWheelTreeMap.put(3.74, 42.0);
+//        lowerWheelTreeMap.put(3.96, 43.0);
+//        lowerWheelTreeMap.put(4.5, 45.0);
+//        lowerWheelTreeMap.put(4.735, 47.0);
+//        lowerWheelTreeMap.put(3.96, 42.0);
 
-        // NO HOOD
+//        tofTreeMap.put()
+//        hoodTreeMap.put(2.0, 0.0);
+//        hoodTreeMap.put(2.50, 1.5);
+//        hoodTreeMap.put(3.0, 3.0);
+//        hoodTreeMap.put(3.5, 4.5);
+//        hoodTreeMap.put(4.0, 6.0);
+//        lowerWheelTreeMap.put(1.8, -24.0);
+//        lowerWheelTreeMap.put(2.30, -26.0);
+//        lowerWheelTreeMap.put(2.8, -27.5);
+//        lowerWheelTreeMap.put(3.3, -28.5);
+//        lowerWheelTreeMap.put(3.8, -29.3);
+//        lowerWheelTreeMap.put(4.8, -31.0);
+//        lowerWheelTreeMap.put(5.8, -33.0);
+//
+        tofTreeMap.put(1.750, 1.17);
+        tofTreeMap.put(2.560, 1.18);
+        tofTreeMap.put(3.230, 1.22);
+        tofTreeMap.put(4.233, 1.31);
+        tofTreeMap.put(4.830, 1.41);
+//        tofTreeMap.put(1.5, 0.92);
+//        tofTreeMap.put(2.0, 1.01);
+//        tofTreeMap.put(2.5, 1.18);
+//        tofTreeMap.put(3.0, 1.39);
+//        tofTreeMap.put(3.5, 1.17);
+//        tofTreeMap.put(4.0, 1.12);
+//        tofTreeMap.put(5.0, 1.12);
+//        tofTreeMap.put(4.0, 1.12);
+//
+//        // NO HOOD
 
 //        hoodTreeMap.put(2.0, 0.0);
 //        hoodTreeMap.put(2.25, 0.0);
@@ -111,6 +147,10 @@ public class ShooterTreeMap {
             instance.lowerWheelTreeMap.remove(dist);
             updateDashboardMap();
         }
+    }
+
+    public double getMaxDistance() {
+        return 5.20;
     }
 
     private void updateDashboardMap() {

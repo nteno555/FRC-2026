@@ -42,8 +42,8 @@ public class TurretIOReal implements TurretIO{
         talonFXConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
 
         var voltageConfigs = talonFXConfigs.Voltage;
-        voltageConfigs.PeakForwardVoltage = 4.0;
-        voltageConfigs.PeakReverseVoltage = -4.0;
+        voltageConfigs.PeakForwardVoltage = 8.0;
+        voltageConfigs.PeakReverseVoltage = -8.0;
 
         TorqueCurrentConfigs configTorque =  new TorqueCurrentConfigs();
         configTorque.PeakForwardTorqueCurrent = SubsystemConstants.turretPeakForwardTorqueCurrent;

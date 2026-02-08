@@ -7,8 +7,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc2025.RobotState;
 import frc2025.config.SubsystemConstants;
+import frc2025.subsystems.drive.DriveConstants;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.List;
@@ -34,11 +36,11 @@ public class LimelightFiducialCamera {
     }
 
     public void updateSide() {
-        /*if(!Alliance.get()) {
-            LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{17, 18, 19, 20, 21, 22});
+        if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+            LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{2, 3, 4, 5, 8, 9, 10, 11});
         } else {
-            LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{6, 7, 8, 9, 10, 11});
-        }*/
+            LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{17, 18, 19, 20, 21, 24, 25, 26, 27, 28});
+        }
     }
 
     public void updatePose() {

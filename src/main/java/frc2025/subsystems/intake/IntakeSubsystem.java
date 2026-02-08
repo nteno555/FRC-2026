@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc2025.RobotState;
+import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.function.Supplier;
@@ -53,8 +54,14 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public Command homeThenRezero() {
-        return setDeployVoltage(() -> -2.0)
-                .andThen(this.run(() -> io.rezero(0.0)));
+        return this.run(() -> {
+            io.setDeployVoltage(2.0);
+            io.rezero(0.0);
+        });
+    }
+
+    public boolean getDeployReady() {
+        return inputs.position <= SubsystemConstants.intakeDeployPosition || !inputs.deployConnected;
     }
 
     public boolean getHasPiece(){

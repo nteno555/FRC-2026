@@ -8,27 +8,27 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.4116308774594915,
-        "y": 2.5888997836642798
+        "x": 7.130827904595269,
+        "y": 0.5125283903899027
       },
       "isLocked": false,
       "linkedName": "Low Neutral"
     },
     {
       "anchor": {
-        "x": 4.685577695493346,
-        "y": 2.3830877448187935
+        "x": 4.594927005909108,
+        "y": 0.6894953737612126
       },
       "prevControl": {
-        "x": 6.706482559769243,
-        "y": 2.3539356525562427
+        "x": 6.615642606513747,
+        "y": 0.7296796543980537
       },
       "nextControl": {
-        "x": 3.1287979721224968,
-        "y": 2.405544707999214
+        "x": 2.7912893693712038,
+        "y": 0.6536279409903065
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "trench low"
     },
     {
       "anchor": {
@@ -36,8 +36,8 @@
         "y": 3.7981721197057654
       },
       "prevControl": {
-        "x": 2.043259076153791,
-        "y": 2.3024329223632813
+        "x": 1.6480089269567424,
+        "y": 0.8164712320963545
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,19 +47,40 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.7,
-      "rotationDegrees": 45.0
+      "rotationDegrees": 90.0
     },
     {
-      "waypointRelativePos": 1.35,
-      "rotationDegrees": 45.0
+      "waypointRelativePos": 1.2472547029194079,
+      "rotationDegrees": 90.0
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.3574470190510797,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 240.0,
+        "maxAngularAcceleration": 360.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "stop auto aim",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": 1.3866717062915284,
+      "command": null
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 240.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,
@@ -73,7 +94,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }
