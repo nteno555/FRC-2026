@@ -12,23 +12,59 @@ public class ShooterTreeMap {
     public  InterpolatingTreeMap tofTreeMap = new InterpolatingTreeMap();
     
     public ShooterTreeMap() {
-        hoodTreeMap.put(1.63, 1.0);
-        hoodTreeMap.put(2.36, 1.3);
-        hoodTreeMap.put(3.22, 1.6);
-        hoodTreeMap.put(4.13, 1.9);
-        hoodTreeMap.put(5.2, 2.2);
+//        hoodTreeMap.put(0.9, 0.5);
+////        hoodTreeMap.put(1.15, 0.7);
+//        hoodTreeMap.put(1.32, 0.8);
+//        hoodTreeMap.put(1.51, 0.9);
+//        hoodTreeMap.put(1.63, 1.0);
+////        hoodTreeMap.put(1.84, 1.1);
+////        hoodTreeMap.put(2.22, 1.2);
+//        hoodTreeMap.put(2.36, 1.3);
+//        hoodTreeMap.put(3.22, 1.6);
+//        hoodTreeMap.put(3.93, 1.8);
+//        hoodTreeMap.put(4.13, 1.9);
+////        hoodTreeMap.put(4.38, 2.0);
+////        hoodTreeMap.put(4.85, 2.1);
+//        hoodTreeMap.put(5.2, 2.2);
 
-        lowerWheelTreeMap.put(1.63, 38.5);
-        lowerWheelTreeMap.put(2.36, 40.5);
-        lowerWheelTreeMap.put(3.22, 42.5);
-        lowerWheelTreeMap.put(4.13, 45.0);
-        lowerWheelTreeMap.put(5.2, 48.0);
+//        lowerWheelTreeMap.put(0.9, 35.0);
+////        lowerWheelTreeMap.put(1.15, 37.0);
+//        lowerWheelTreeMap.put(1.32, 37.5);
+//        lowerWheelTreeMap.put(1.51, 38.0);
+//        lowerWheelTreeMap.put(1.63, 38.5);
+////        lowerWheelTreeMap.put(1.84, 39.0);
+////        lowerWheelTreeMap.put(2.22, 40.0);
+//        lowerWheelTreeMap.put(2.36, 40.5);
+//        lowerWheelTreeMap.put(3.22, 42.5);
+////        lowerWheelTreeMap.put(3.93, 44.5);
+//        lowerWheelTreeMap.put(4.13, 45.0);
+////        lowerWheelTreeMap.put(4.38, 46.0);
+////        lowerWheelTreeMap.put(4.85, 46.5);
+//        lowerWheelTreeMap.put(5.2, 48.0);
 
-        tofTreeMap.put(1.750, 1.17);
-        tofTreeMap.put(2.560, 1.18);
-        tofTreeMap.put(3.230, 1.22);
-        tofTreeMap.put(4.233, 1.31);
-        tofTreeMap.put(4.830, 1.41);
+        hoodTreeMap.put(2.04, 1.4);
+        hoodTreeMap.put(2.27, 1.4);
+        hoodTreeMap.put(3.07, 1.4);
+        hoodTreeMap.put(3.75, 1.4);
+        hoodTreeMap.put(3.751, 2.0);
+        hoodTreeMap.put(4.11, 2.0);
+        hoodTreeMap.put(5.14, 2.0);
+
+        lowerWheelTreeMap.put(2.04, 36.0);
+        lowerWheelTreeMap.put(2.27, 38.0);
+        lowerWheelTreeMap.put(2.39, 39.0);
+        lowerWheelTreeMap.put(2.67, 40.0);
+        lowerWheelTreeMap.put(3.07, 41.0);
+        lowerWheelTreeMap.put(3.75, 45.0);
+        lowerWheelTreeMap.put(3.751, 43.0);
+        lowerWheelTreeMap.put(3.89, 43.5);
+        lowerWheelTreeMap.put(4.11, 44.0);
+        lowerWheelTreeMap.put(5.14, 51.0);
+
+        tofTreeMap.put(1.0, 1.03);
+        tofTreeMap.put(2.39, 1.17);
+        tofTreeMap.put(2.67, 1.20);
+        tofTreeMap.put(3.89, 1.26);
 
         updateDashboardMap();
         SmartDashboard.putString("Tuning/lowerWheelTree Map", lowerWheelTreeMap.toString());

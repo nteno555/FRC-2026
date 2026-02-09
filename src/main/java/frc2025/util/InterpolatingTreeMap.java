@@ -3,14 +3,12 @@ package frc2025.util;
 import java.util.TreeMap;
 
 public class InterpolatingTreeMap extends TreeMap<Double, Double> {
-    // gets interpolated value
     public double interpolate(double lower, double upper, double norm) {
         return ((upper-lower)*norm) + lower;
     }
 
-    // gets normal value from interpolated value
     public double inverseInterpolate(double lower, double upper, double interpolated) {
-        if ((upper-lower)<=0.0 || (interpolated-lower)<=0.0) return 0.0;
+        if (upper == lower) return 0.0;
         return (interpolated-lower)/(upper-lower);
     }
 
@@ -18,7 +16,8 @@ public class InterpolatingTreeMap extends TreeMap<Double, Double> {
         Double retrievedValue = get(key);
         if (retrievedValue == null) {
             // Get surrounding keys for interpolation
-            Double upperKeyBound = ceilingKey(key), lowerKeyBound = floorKey(key);
+            Double upperKeyBound = ceilingKey(key);
+            Double lowerKeyBound = floorKey(key);
             // If attempting interpolation at ends of tree, return the nearest data point
             if (upperKeyBound == null && lowerKeyBound == null) {
                 return null;
@@ -28,7 +27,8 @@ public class InterpolatingTreeMap extends TreeMap<Double, Double> {
                 return get(upperKeyBound);
             }
             // get surrounding values for interpolation
-            Double upperValue = get(upperKeyBound), lowerValue = get(lowerKeyBound);
+            Double upperValue = get(upperKeyBound);
+            Double lowerValue = get(lowerKeyBound);
             return interpolate(lowerValue, upperValue, inverseInterpolate(lowerKeyBound, upperKeyBound, key));
         } else {
             return retrievedValue;

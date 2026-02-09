@@ -94,7 +94,7 @@ public class HoodSubsystem extends SubsystemBase {
 
     public Command homeThenRezero() {
         return this.run(() -> {
-            io.setVoltage(-1.5);
+            io.setVoltage(-2.0);
             io.rezero(0.0);
         });
     }

@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 
 public class SubsystemConstants {
     public static double flywheelS = 0.0;
-    public static double flywheelV = 0.127;
+    public static double flywheelV = 0.123;
     public static double flywheelA = 0.00;
     public static double flywheelP = 0.127;
     public static double flywheelI = 0.0;
@@ -79,10 +79,10 @@ public class SubsystemConstants {
     public static double turretRotationsPerRadian = 5.05539761;
     public static double turretMinAngleRadians = 0;
     public static double turretMaxAngleRadians = 2.2 * Math.PI;
-    public static double throughBoreZero1 = 0.394;
-    public static double throughBoreZero2 = 0.663;
-    public static double throughBoreRatio1 = 7.5;
-    public static double throughBoreRatio2 = 9.204;
+    public static double throughBoreZero1 = 0.641;
+    public static double throughBoreZero2 = 0.356;
+    public static double throughBoreRatio1 = 9.204;
+    public static double throughBoreRatio2 = 7.5;
     public static double turretHomeAngleRotations = 0.0; // hard stop position in motor rotations
     public static boolean hasTurret = true;
 
@@ -103,5 +103,5 @@ public class SubsystemConstants {
     public static int flywheelSlaveID = 17;
     public static int turretID = 23;
     public static int turretTb1ID = 8;
-    public static int turretTb2ID = 9;
+    public static int turretTb2ID = 7;
 }

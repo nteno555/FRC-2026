@@ -211,11 +211,11 @@ public class RobotState {
                 new Twist2d(vx * phaseDelay, vy * phaseDelay, vOmega * phaseDelay)
         );
 
-        for (int i = 0; i < 10; i++) {
-//            double dx = virtualPose.getX() - currentPose.getX();
-//            double dy = virtualPose.getY() - currentPose.getY();
-            double dx = virtualPose.getX() - delayedPose.getX();
-            double dy = virtualPose.getY() - delayedPose.getY();
+        for (int i = 0; i < 20; i++) {
+            double dx = virtualPose.getX() - currentPose.getX();
+            double dy = virtualPose.getY() - currentPose.getY();
+//            double dx = virtualPose.getX() - delayedPose.getX();
+//            double dy = virtualPose.getY() - delayedPose.getY();
             double distance = Math.hypot(dx, dy);
 
             double flightTime = ShooterTreeMap.getInstance().tofTreeMap.getInterpolated(distance);
@@ -229,13 +229,15 @@ public class RobotState {
 
         shootingWhileMovingVirtualPose = virtualPose;
 
-        Pose2d shooterPose = delayedPose.transformBy(SubsystemConstants.robotToShooter);
+        Pose2d shooterPose = getVisionShooterPose();
+//        Pose2d shooterPose = delayedPose.transformBy(SubsystemConstants.robotToShooter);
         angleToVirtualTarget = Math.atan2(
                 virtualPose.getY() - shooterPose.getY(),
                 virtualPose.getX() - shooterPose.getX()
         );
         Logger.recordOutput("Drive/speed", velocity.getNorm());
         Logger.recordOutput("Vision/shootingWhileMovingVirtualPose", shootingWhileMovingVirtualPose);
+//        Logger.recordOutput("Vision/visionTurretPpose", getVisionPose().);
         Logger.recordOutput("Vision/angleToVirtualTarget", angleToVirtualTarget);
     }
 

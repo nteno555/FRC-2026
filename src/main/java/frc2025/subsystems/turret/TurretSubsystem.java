@@ -47,7 +47,10 @@ public class TurretSubsystem extends SubsystemBase {
     public Command autoAim() {
         return setPositionFieldRelative(
                 () -> {
-                    return  RobotState.getInstance().getAngleToVirtualTarget();
+                    double wantedAngle = RobotState.getInstance().getAngleToVirtualTarget();
+                    double visionAngle = RobotState.getInstance().getVisionPose().getRotation().getRadians();
+                    Logger.recordOutput("Turret/error", Math.abs(inputs.positionRadians + visionAngle - wantedAngle) % (2*Math.PI));
+                    return wantedAngle;
                 }
         );
     }
