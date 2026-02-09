@@ -212,10 +212,10 @@ public class RobotState {
         );
 
         for (int i = 0; i < 20; i++) {
-            double dx = virtualPose.getX() - currentPose.getX();
-            double dy = virtualPose.getY() - currentPose.getY();
-//            double dx = virtualPose.getX() - delayedPose.getX();
-//            double dy = virtualPose.getY() - delayedPose.getY();
+//            double dx = virtualPose.getX() - currentPose.getX();
+//            double dy = virtualPose.getY() - currentPose.getY();
+            double dx = virtualPose.getX() - delayedPose.getX();
+            double dy = virtualPose.getY() - delayedPose.getY();
             double distance = Math.hypot(dx, dy);
 
             double flightTime = ShooterTreeMap.getInstance().tofTreeMap.getInterpolated(distance);
@@ -229,8 +229,8 @@ public class RobotState {
 
         shootingWhileMovingVirtualPose = virtualPose;
 
-        Pose2d shooterPose = getVisionShooterPose();
-//        Pose2d shooterPose = delayedPose.transformBy(SubsystemConstants.robotToShooter);
+//        Pose2d shooterPose = getVisionShooterPose();
+        Pose2d shooterPose = delayedPose.transformBy(SubsystemConstants.robotToShooter);
         angleToVirtualTarget = Math.atan2(
                 virtualPose.getY() - shooterPose.getY(),
                 virtualPose.getX() - shooterPose.getX()

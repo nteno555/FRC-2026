@@ -61,7 +61,7 @@ public class DriveSubsystem extends SubsystemBase {
         double speed = Math.hypot(inputs.currentChassisSpeeds.vxMetersPerSecond, inputs.currentChassisSpeeds.vyMetersPerSecond);
         RobotState.getInstance().setSpeed(speed);
         RobotState.getInstance().setRobotRelativeSpeeds(inputs.currentChassisSpeeds);
-//        RobotState.getInstance().updateShuttling();
+        RobotState.getInstance().updateShuttling();
         RobotState.getInstance().updateShootingWhileMovingVirtualPose();
         RobotState.getInstance().updateShotVectorWhileMoving();
         RobotState.getInstance().setDriveShotReady(getShotReady());
