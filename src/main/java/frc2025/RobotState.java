@@ -26,9 +26,6 @@ public class RobotState {
 
     private DriverStation.Alliance alliance;
 
-    private Pose2d visionPoseBuiltin;
-    private Pose2d visionPose;
-    private Pose2d pathFollowingPose;
     private VisionPoseEstimator visionPoseEstimator;
     private double speed;
     private List<VisionPoseEstimator.TimestampedVisionUpdate> visionUpdates = new ArrayList<>();
@@ -52,9 +49,6 @@ public class RobotState {
     private double turretAngle;
     private double prevTurretAngle;
     private double prevTurretTimestamp;
-    private Pose2d turretLimelightPose;
-    private Vector<N2> radialVelocity;
-    private Translation3d shotVectorWhileMoving = new Translation3d(0, 0, 0);
 
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
@@ -86,37 +80,25 @@ public class RobotState {
 
         Logger.recordOutput("Drive/fieldRelativeAccel", fieldRelativeAcceleration);
     }
+
     public ChassisSpeeds getFieldRelativeAcceleration() {return fieldRelativeAcceleration;}
     public ChassisSpeeds getFieldRelativeSpeeds() {return fieldRelativeSpeeds;}
-    public ChassisSpeeds getPrevFieldRelativeSpeeds() {return prevFieldRelativeSpeeds;}
     public ChassisSpeeds getRobotRelativeSpeeds() {return robotRelativeSpeeds;}
 
     public Pose2d getShootingWhileMovingVirtualPose() {return shootingWhileMovingVirtualPose;}
 
-    public void setVisionPoseBuiltin(Pose2d visionPoseBuiltin) {
-        this.visionPoseBuiltin = visionPoseBuiltin;
-    }
-    public Pose2d getVisionPoseBuiltin() { return this.visionPoseBuiltin; }
-
     public Pose2d getVisionPose() {
-//        if (visionPose == null) return visionPoseEstimator.getLatestPose();
-//        return visionPose;
         return visionPoseEstimator.getLatestPose();
     }
 
     public Pose2d getVisionShooterPose() {
         Pose2d visionPose = visionPoseEstimator.getLatestPose();
         return visionPose.transformBy(SubsystemConstants.robotToShooter);
-//        Translation2d vec = SubsystemConstants.shooterToCenterPose.getTranslation().rotateBy(visionPose.getRotation());
-//        return new Pose2d(
-//                visionPose.getX() + vec.getX(),
-//                visionPose.getY() + vec.getY(),
-//                visionPose.getRotation()
-//        );
     }
 
-    public void setSpeed(double speed) { this.speed = speed; }
-    public double getSpeed() { return this.speed; }
+    public double getSpeed() {
+        return Math.hypot(fieldRelativeSpeeds.vxMetersPerSecond, fieldRelativeSpeeds.vyMetersPerSecond);
+    }
 
     public void rezero(Pose2d pose) {
         visionPoseEstimator.resetPose(pose);
@@ -127,28 +109,7 @@ public class RobotState {
     }
 
     public void addVisionData(List<VisionPoseEstimator.TimestampedVisionUpdate> update) {
-        visionUpdates.addAll(update);
         visionPoseEstimator.addVisionData(update);
-        visionPose = visionPoseEstimator.getLatestPose();
-    }
-
-    public void updatePathFollowingPose(List<VisionPoseEstimator.TimestampedVisionUpdate> update) {
-        visionUpdates.addAll(update);
-        visionPoseEstimator.addVisionData(update);
-        pathFollowingPose = visionPoseEstimator.getLatestPose();
-        Logger.recordOutput("Vision/pathFollowingPose", pathFollowingPose);
-    }
-
-    public Pose2d getPathFollowingPose() {
-        if (pathFollowingPose == null) return visionPoseEstimator.getLatestPose();
-        return pathFollowingPose;
-    }
-
-    public List<VisionPoseEstimator.TimestampedVisionUpdate> getVisionUpdates() {
-        return this.visionUpdates;
-    }
-    public void clearVisionUpdates() {
-        this.visionUpdates.clear();
     }
 
     public void setShuttling(boolean shuttling) {
@@ -157,6 +118,7 @@ public class RobotState {
     public boolean getShuttling() {
         return this.shuttling;
     }
+
     public Pose2d getTargetPose() {
         alliance = DriverStation.Alliance.Red;
         if(DriverStation.getAlliance().isPresent()) {
@@ -169,18 +131,8 @@ public class RobotState {
             } else {
                 if(visionPoseEstimator.getLatestPose().getY() > FieldConstants.yHalfLine) {
                     return FieldConstants.redShuttlePosUpper;
-//                    return new Pose2d(
-//                            FieldConstants.redShuttlePosUpper.getX(),
-//                            8 - visionPoseEstimator.getLatestPose().getY() + 4 - 0.3,
-//                            Rotation2d.kZero
-//                    );
                 } else {
                     return FieldConstants.redShuttlePosLower;
-//                    return new Pose2d(
-//                            FieldConstants.redShuttlePosLower.getX(),
-//                            4 - visionPoseEstimator.getLatestPose().getY() + 0.3,
-//                            Rotation2d.kZero
-//                    );
                 }
             }
         } else {
@@ -189,20 +141,9 @@ public class RobotState {
             } else {
                 if(visionPoseEstimator.getLatestPose().getY() > FieldConstants.yHalfLine) {
                     return FieldConstants.blueShuttlePosUpper;
-//                    return new Pose2d(
-//                            FieldConstants.blueShuttlePosUpper.getX(),
-//                            8 - visionPoseEstimator.getLatestPose().getY() + 4 - 0.3,
-//                            Rotation2d.kZero
-//                    );
                 }
                 else {
                     return FieldConstants.blueShuttlePosLower;
-//                    return new Pose2d(
-//                            FieldConstants.blueShuttlePosLower.getX(),
-//                            4 - visionPoseEstimator.getLatestPose().getY() + 0.3,
-////                            -FieldConstants.yHalfLine + visionPoseEstimator.getLatestPose().getY(),
-//                            Rotation2d.kZero
-//                    );
                 }
             }
         }
@@ -239,8 +180,6 @@ public class RobotState {
         );
 
         for (int i = 0; i < 20; i++) {
-//            double dx = virtualPose.getX() - currentPose.getX();
-//            double dy = virtualPose.getY() - currentPose.getY();
             double dx = virtualPose.getX() - delayedPose.getX();
             double dy = virtualPose.getY() - delayedPose.getY();
             double distance = Math.hypot(dx, dy);
@@ -253,18 +192,8 @@ public class RobotState {
                     realTargetPose.getRotation()
             );
         }
-
-        Vector<N2> velocityVector = VecBuilder.fill(vx, vy);
-        Vector<N2> directionToTarget = VecBuilder.fill(
-                getTargetPose().getX() - getVisionShooterPose().getX(),
-                getTargetPose().getY() - getVisionShooterPose().getY()
-        );
-        directionToTarget = directionToTarget.div(directionToTarget.norm());
-        radialVelocity = velocityVector.projection(directionToTarget);
-
         shootingWhileMovingVirtualPose = virtualPose;
 
-//        Pose2d shooterPose = getVisionShooterPose();
         Pose2d shooterPose = delayedPose.transformBy(SubsystemConstants.robotToShooter);
         angleToVirtualTarget = Math.atan2(
                 virtualPose.getY() - shooterPose.getY(),
@@ -272,7 +201,6 @@ public class RobotState {
         );
         Logger.recordOutput("Drive/speed", velocity.getNorm());
         Logger.recordOutput("Vision/shootingWhileMovingVirtualPose", shootingWhileMovingVirtualPose);
-//        Logger.recordOutput("Vision/visionTurretPpose", getVisionPose().);
         Logger.recordOutput("Vision/angleToVirtualTarget", angleToVirtualTarget);
     }
 
@@ -280,16 +208,10 @@ public class RobotState {
         return angleToVirtualTarget;
     }
 
-    public void setDriveShotReady(boolean ready) { driveShotReady = ready; }
-    public boolean getDriveShotReady() { return driveShotReady; }
-    public void setShooterReady(boolean ready) { shooterReady = ready; }
-    public boolean getShooterReady() { return shooterReady; }
-    public void setDriveAutoAiming(boolean ready) { driveAutoAiming = ready; }
-    public boolean getDriveAutoAiming() { return driveAutoAiming; }
-    public void setWantAutoIntaking(boolean want) {wantAutoIntaking = want;}
     public boolean getWantAutoIntaking() {return wantAutoIntaking;}
     public void setWantAutoShoot(boolean want) {wantAutoShoot = want;}
     public boolean getWantAutoShoot() {return wantAutoShoot;}
+
     public void setTurretAngle(double angleRadians) {
         prevTurretAngle = turretAngle;
         prevTurretTimestamp = Utils.getCurrentTimeSeconds();
@@ -302,8 +224,7 @@ public class RobotState {
     }
 
     public double getTurretAngle() { return turretAngle; }
-    public void setTurretLimelightPose(Pose2d pose) { turretLimelightPose = pose; }
-    public Pose2d getTurretLimelightPose() { return turretLimelightPose; }
+
     public double getRadialVelocity() {
         ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(
                 robotRelativeSpeeds,
@@ -321,68 +242,4 @@ public class RobotState {
 
     }
 
-    public Translation3d getShotVector(double shooterExitVelocity, double hoodAngle) { // {field x, field y, height}
-        Translation2d direction = getTargetPose().getTranslation().minus(getVisionShooterPose().getTranslation());
-        direction = direction.div(direction.getNorm());
-
-        Translation2d xyVelocity = direction.times(shooterExitVelocity * Math.cos(hoodAngle));
-
-        double zSpeed = shooterExitVelocity * Math.sin(hoodAngle);
-
-        return new Translation3d(
-                xyVelocity.getX(),
-                xyVelocity.getY(),
-                zSpeed
-        );
-    }
-
-    public void updateShotVectorWhileMoving() {
-        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
-                robotRelativeSpeeds,
-                getVisionPose().getRotation()
-        );
-
-        Vector<N2> velocityVector = VecBuilder.fill(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
-        Vector<N2> directionToTarget = VecBuilder.fill(
-                getTargetPose().getX() - getVisionShooterPose().getX(),
-                getTargetPose().getY() - getVisionShooterPose().getY()
-        );
-        directionToTarget = directionToTarget.div(directionToTarget.norm());
-
-        Vector<N2> radialVelocity = velocityVector.projection(directionToTarget);
-        double targetRadialVelocity = velocityVector.dot(directionToTarget);
-        double targetDistance = Math.hypot(getTargetPose().getX() - getVisionShooterPose().getX(),
-                getTargetPose().getY() - getVisionShooterPose().getY());
-        Vector<N2> tangentialVelocity = velocityVector.minus(radialVelocity);
-//        if (tangentialVelocity.norm() < 0.05) {
-            tangentialVelocity = VecBuilder.fill(0.0, 0.0);
-//        }
-
-//        double shooterSpeed = ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(distance);
-//        double hoodAngle = ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(distance);
-//        double shooterSpeed = ShooterTreeMap.getInstance().calculateRps(targetRadialVelocity, targetDistance);
-//        double hoodAngle = ShooterTreeMap.getInstance().calculateHoodAngle(targetRadialVelocity, targetDistance);
-        double shooterSpeed = ShooterTreeMap.getInstance().calculateRps(0.0, targetDistance);
-        double hoodAngle = ShooterTreeMap.getInstance().calculateHoodAngle(0.0, targetDistance);
-
-        Translation3d shotVector = getShotVector(ShooterSubsystem.toBallExitVelocity(shooterSpeed), HoodSubsystem.toRadians(hoodAngle));
-
-
-//        shotVectorWhileMoving = new Translation3d(
-//                shotVector.getX() - chassisSpeeds.vxMetersPerSecond,
-//                shotVector.getY() - chassisSpeeds.vyMetersPerSecond,
-//                shotVector.getZ()
-//        );
-
-        shotVectorWhileMoving = new Translation3d(
-                shotVector.getX() - tangentialVelocity.get(0),
-                shotVector.getY() - tangentialVelocity.get(1),
-                shotVector.getZ()
-        );
-
-    }
-
-    public Translation3d getShotVectorWhileMoving() {
-        return shotVectorWhileMoving;
-    }
 }

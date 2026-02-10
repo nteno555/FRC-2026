@@ -90,8 +90,20 @@ public class SubsystemConstants {
     // Front Cam: Forward 0 Right 0 Up 0.1 Roll 0 Pitch 18 Yaw 0
     public static Transform2d robotToShooter = new Transform2d(0.1016, -0.1016, Rotation2d.kZero); // should be x = forward, y = side
     public static Transform2d shooterToCamera = new Transform2d(0.1905, 0.0, Rotation2d.kZero);
+    public static double robotToTurretCameraUp = 0.39;
+    public static double robotToTurretCameraPitch = 29.1;
+    public static double robotToTurretCameraRoll = 0.0;
+
     public static Transform2d robotToFrontCamera = new Transform2d(0.25, 0.0, Rotation2d.kZero);
+    public static double robotToFrontCameraForward = 0.25;
+    public static double robotToFrontCameraRight = 0.1;
+    public static double robotToFrontCameraUp = 0.1;
+    public static double robotToFrontCameraYaw = 0.0;
+    public static double robotToFrontCameraPitch = 18.0;
+    public static double robotToFrontCameraRoll = 0.0;
+
     public static double autoAimMaxSpeed = 2.0;
+    public static double autoAimMaxAccel = 1.0;
 
     public static int hoodID = 27;
     public static int indexerID = 21;

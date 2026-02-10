@@ -30,7 +30,6 @@ public class ShooterSubsystem extends SubsystemBase {
     public void periodic() {
         Logger.processInputs("RealOutputs/Shooter", inputs);
         io.updateInputs(this.inputs);
-        RobotState.getInstance().setShooterReady(getShotReady());
 //        RobotState.getInstance().setShooterExitVelocity(getBallExitVelocity());
     }
 

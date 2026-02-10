@@ -159,7 +159,7 @@ public class TurretSubsystem extends SubsystemBase {
     public double getPositionRadians() { return inputs.positionRadians; }
 
     public boolean getShotReady() {
-        return Math.abs(inputs.positionTicks - setpoint) < 1;
+        return Math.abs(inputs.positionRadians - io.toRadians(setpoint)) < 0.1;
     }
 
 }

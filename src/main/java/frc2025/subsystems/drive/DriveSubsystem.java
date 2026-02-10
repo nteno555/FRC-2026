@@ -52,19 +52,9 @@ public class DriveSubsystem extends SubsystemBase {
         io.setControl(request.withSpeeds(wantedSpeeds));
         RobotState.getInstance().addDriveData(inputs.odometryTimestamp, inputs.odometryTwist);
 
-        if(RobotState.getInstance().getVisionUpdates().size() > 0) {
-            io.addVisionMeasurement(RobotState.getInstance().getVisionUpdates());
-            RobotState.getInstance().clearVisionUpdates();
-        }
-
-
-        double speed = Math.hypot(inputs.currentChassisSpeeds.vxMetersPerSecond, inputs.currentChassisSpeeds.vyMetersPerSecond);
-        RobotState.getInstance().setSpeed(speed);
         RobotState.getInstance().setRobotRelativeSpeeds(inputs.currentChassisSpeeds);
         RobotState.getInstance().updateShuttling();
         RobotState.getInstance().updateShootingWhileMovingVirtualPose();
-        RobotState.getInstance().updateShotVectorWhileMoving();
-        RobotState.getInstance().setDriveShotReady(getShotReady());
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);
         Logger.processInputs("RealOutputs/Drive", inputs);
     }

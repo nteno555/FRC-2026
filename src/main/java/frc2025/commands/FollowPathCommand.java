@@ -91,25 +91,17 @@ public class FollowPathCommand extends Command {
 
         double pathProgress = currentTime / trajectory.getTotalTimeSeconds() * (path.getWaypoints().size() - 1);
         boolean autoAimOverride = true;
-        // RobotState.getInstance().setWantAutoIntaking(true);
         for(EventMarker marker : eventMarkers) {
             if (pathProgress >= marker.position() && pathProgress <= marker.endPosition()) {
                 if (marker.triggerName().equals("stop auto aim")) {
                     autoAimOverride = false;
                 }
-//                if (marker.triggerName().equals("stop intake")) {
-//                    RobotState.getInstance().setWantAutoIntaking(false);
-//                }
             }
         }
 
         Logger.recordOutput("Drive/pathProgress", pathProgress);
-        // Logger.recordOutput("Drive/autoAimOverride", autoAimOverride);
-
         Logger.recordOutput("Drive/FollowPath/wantedVelocity", desiredState.linearVelocity);
         Logger.recordOutput("Drive/FollowPath/currentVelocity", RobotState.getInstance().getSpeed());
-
-        RobotState.getInstance().setDriveAutoAiming(autoAimOverride);
 
         if(!SubsystemConstants.hasTurret && autoAimOverride) {
             virtualTarget = RobotState.getInstance().getShootingWhileMovingVirtualPose();

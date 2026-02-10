@@ -56,41 +56,44 @@ public class AutoAimCommands {
         BooleanSupplier readySupplier = () -> {
             boolean good;
             if(!SubsystemConstants.hasTurret) {
-                good = RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady();
+                good = robotContainer.getShooter().getShotReady() && robotContainer.getDrive().getShotReady();
             } else {
-                Logger.recordOutput("Indexer/autoShooterReady", RobotState.getInstance().getShooterReady());
-                Logger.recordOutput("Indexer/autoTurretReady", robotContainer.getTurret().getShotReady());
-                good = RobotState.getInstance().getShooterReady() && robotContainer.getTurret().getShotReady();
+                good = robotContainer.getShooter().getShotReady() && robotContainer.getTurret().getShotReady();
             }
-
-//            if(DriverStation.isAutonomous()) good = good && RobotState.getInstance().getDriveAutoAiming();
-//            good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed);
 
             Pose2d pose = RobotState.getInstance().getVisionPose();
             Pose2d virtualPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
-            boolean inBlueZone = pose.getX() < 3.0;
-            boolean inRedZone = pose.getX() > 13.25;
 
-            if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-                good = good && inBlueZone;
-            } else {
-                good = good && inRedZone;
+            if(DriverStation.isAutonomous()) {
+                boolean inBlueZone = pose.getX() < 3.0;
+                boolean inRedZone = pose.getX() > 13.25;
+
+                if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+                    Logger.recordOutput("Indexer/autoIndex/autoInZone", inBlueZone);
+                    good = good && inBlueZone;
+                } else {
+                    Logger.recordOutput("Indexer/autoIndex/autoInZone", inRedZone);
+                    good = good && inRedZone;
+                }
             }
 
-//            good = good && (pose.getTranslation().getDistance(virtualPose.getTranslation()) < ShooterTreeMap.getInstance().getMaxDistance());
+            good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed);
+            var accel = RobotState.getInstance().getFieldRelativeAcceleration();
+            double a = Math.hypot(accel.vxMetersPerSecond, accel.vyMetersPerSecond);
+            good = good && (a < SubsystemConstants.autoAimMaxAccel);
+
+            Logger.recordOutput("Indexer/autoIndex/shooterReady", robotContainer.getShooter().getShotReady());
+            Logger.recordOutput("Indexer/autoIndex/turretReady", robotContainer.getTurret().getShotReady());
+            Logger.recordOutput("Indexer/autoIndex/speedReady", (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed));
+            Logger.recordOutput("Indexer/autoIndex/accelReady", (a < SubsystemConstants.autoAimMaxSpeed));
 
             return good;
         };
 
         return robotContainer.getIndexer().setVoltage(() -> {
-            Logger.recordOutput("Indexer/autoIndexShooterReady", RobotState.getInstance().getShooterReady());
-            Logger.recordOutput("Indexer/autoIndexDriveReady", RobotState.getInstance().getDriveShotReady());
-
             if(readySupplier.getAsBoolean()) {
-                Logger.recordOutput("Indexer/ready", true);
                 return SubsystemConstants.spindexerShootVoltage;
             } else {
-                Logger.recordOutput("Indexer/ready", false);
                 return 0.0;
             }
         }, () -> {
