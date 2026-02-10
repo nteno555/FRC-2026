@@ -54,12 +54,14 @@ public class AutoAimCommands {
 
    public static Command autoIndex(RobotContainer robotContainer) {
         BooleanSupplier readySupplier = () -> {
-            boolean good = true;
-//            if(!SubsystemConstants.hasTurret) {
-//                good = good && RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady();
-//            } else {
-//                good = good && RobotState.getInstance().getShooterReady() && robotContainer.getTurret().getShotReady();
-//            }
+            boolean good;
+            if(!SubsystemConstants.hasTurret) {
+                good = RobotState.getInstance().getShooterReady() && RobotState.getInstance().getDriveShotReady();
+            } else {
+                Logger.recordOutput("Indexer/autoShooterReady", RobotState.getInstance().getShooterReady());
+                Logger.recordOutput("Indexer/autoTurretReady", robotContainer.getTurret().getShotReady());
+                good = RobotState.getInstance().getShooterReady() && robotContainer.getTurret().getShotReady();
+            }
 
 //            if(DriverStation.isAutonomous()) good = good && RobotState.getInstance().getDriveAutoAiming();
 //            good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed);
@@ -75,7 +77,7 @@ public class AutoAimCommands {
                 good = good && inRedZone;
             }
 
-            good = good && (pose.getTranslation().getDistance(virtualPose.getTranslation()) < ShooterTreeMap.getInstance().getMaxDistance());
+//            good = good && (pose.getTranslation().getDistance(virtualPose.getTranslation()) < ShooterTreeMap.getInstance().getMaxDistance());
 
             return good;
         };

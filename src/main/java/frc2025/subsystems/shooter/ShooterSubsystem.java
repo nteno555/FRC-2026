@@ -2,7 +2,9 @@ package frc2025.subsystems.shooter;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.numbers.N2;
 import frc2025.RobotState;
 import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
@@ -58,7 +60,17 @@ public class ShooterSubsystem extends SubsystemBase {
             Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
             Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
             double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
-            return ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist);
+            double wantedRPS = ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist);
+
+            double radialVelocity = RobotState.getInstance().getRadialVelocity();
+            double rpsCorrection = 0.0;
+            if (Math.abs(radialVelocity) > 0.05) {
+                rpsCorrection = ShooterTreeMap.getInstance().radialVelocityTreeaMap.getInterpolated(radialVelocity);
+            }
+
+            Logger.recordOutput("Shooter/radialVelocity", radialVelocity);
+            Logger.recordOutput("Shooter/radialVelocityRPSCorrection", rpsCorrection);
+            return wantedRPS + rpsCorrection;
         });
     }
 

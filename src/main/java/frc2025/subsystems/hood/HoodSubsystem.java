@@ -63,8 +63,9 @@ public class HoodSubsystem extends SubsystemBase {
 
             boolean nearBlueTrench = robotXpose < 6.25 && robotXpose > 3.0;
             boolean nearRedTrench = robotXpose < 13.5 && robotXpose > 10.25;
+            boolean nearTrenchY = robotYpose < 1.2 || robotXpose > 7.0;
 
-            if (nearRedTrench || nearBlueTrench) {
+            if ((nearRedTrench || nearBlueTrench) && nearTrenchY) {
                 return 0.0;
             }
 

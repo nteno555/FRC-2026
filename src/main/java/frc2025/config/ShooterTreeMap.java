@@ -7,9 +7,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ShooterTreeMap {
     private static ShooterTreeMap instance;
-    public  InterpolatingTreeMap hoodTreeMap = new InterpolatingTreeMap();
-    public  InterpolatingTreeMap lowerWheelTreeMap = new InterpolatingTreeMap();
-    public  InterpolatingTreeMap tofTreeMap = new InterpolatingTreeMap();
+    public InterpolatingTreeMap hoodTreeMap = new InterpolatingTreeMap();
+    public InterpolatingTreeMap lowerWheelTreeMap = new InterpolatingTreeMap();
+    public InterpolatingTreeMap tofTreeMap = new InterpolatingTreeMap();
+    public InterpolatingTreeMap radialVelocityTreeaMap = new InterpolatingTreeMap();
     
     public ShooterTreeMap() {
 //        hoodTreeMap.put(0.9, 0.5);
@@ -65,6 +66,11 @@ public class ShooterTreeMap {
         tofTreeMap.put(2.39, 1.17);
         tofTreeMap.put(2.67, 1.20);
         tofTreeMap.put(3.89, 1.26);
+
+        radialVelocityTreeaMap.put(-0.10, 1.0);
+        radialVelocityTreeaMap.put(-0.40, 2.0);
+        radialVelocityTreeaMap.put(0.10, 1.0);
+        radialVelocityTreeaMap.put(0.4, 2.0);
 
         updateDashboardMap();
         SmartDashboard.putString("Tuning/lowerWheelTree Map", lowerWheelTreeMap.toString());

@@ -27,6 +27,8 @@ public class RobotState {
     private DriverStation.Alliance alliance;
 
     private Pose2d visionPoseBuiltin;
+    private Pose2d visionPose;
+    private Pose2d pathFollowingPose;
     private VisionPoseEstimator visionPoseEstimator;
     private double speed;
     private List<VisionPoseEstimator.TimestampedVisionUpdate> visionUpdates = new ArrayList<>();
@@ -48,13 +50,17 @@ public class RobotState {
     private boolean wantAutoShoot;
 
     private double turretAngle;
+    private double prevTurretAngle;
+    private double prevTurretTimestamp;
     private Pose2d turretLimelightPose;
+    private Vector<N2> radialVelocity;
     private Translation3d shotVectorWhileMoving = new Translation3d(0, 0, 0);
 
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
         shuttling = false;
         prevFieldRelativeSpeedTimestamp = Utils.getCurrentTimeSeconds();
+        prevTurretTimestamp = -1;
     }
 
     public static RobotState getInstance() {
@@ -93,6 +99,8 @@ public class RobotState {
     public Pose2d getVisionPoseBuiltin() { return this.visionPoseBuiltin; }
 
     public Pose2d getVisionPose() {
+//        if (visionPose == null) return visionPoseEstimator.getLatestPose();
+//        return visionPose;
         return visionPoseEstimator.getLatestPose();
     }
 
@@ -121,7 +129,21 @@ public class RobotState {
     public void addVisionData(List<VisionPoseEstimator.TimestampedVisionUpdate> update) {
         visionUpdates.addAll(update);
         visionPoseEstimator.addVisionData(update);
+        visionPose = visionPoseEstimator.getLatestPose();
     }
+
+    public void updatePathFollowingPose(List<VisionPoseEstimator.TimestampedVisionUpdate> update) {
+        visionUpdates.addAll(update);
+        visionPoseEstimator.addVisionData(update);
+        pathFollowingPose = visionPoseEstimator.getLatestPose();
+        Logger.recordOutput("Vision/pathFollowingPose", pathFollowingPose);
+    }
+
+    public Pose2d getPathFollowingPose() {
+        if (pathFollowingPose == null) return visionPoseEstimator.getLatestPose();
+        return pathFollowingPose;
+    }
+
     public List<VisionPoseEstimator.TimestampedVisionUpdate> getVisionUpdates() {
         return this.visionUpdates;
     }
@@ -189,6 +211,11 @@ public class RobotState {
     public void updateShuttling() {
         double xPos = RobotState.getInstance().getVisionPose().getX();
 
+        if (DriverStation.isAutonomousEnabled()) {
+            shuttling = false;
+            return;
+        }
+
         if (xPos > 4.6 && xPos < 11.9) shuttling = true;
         else shuttling = false;
     }
@@ -227,6 +254,14 @@ public class RobotState {
             );
         }
 
+        Vector<N2> velocityVector = VecBuilder.fill(vx, vy);
+        Vector<N2> directionToTarget = VecBuilder.fill(
+                getTargetPose().getX() - getVisionShooterPose().getX(),
+                getTargetPose().getY() - getVisionShooterPose().getY()
+        );
+        directionToTarget = directionToTarget.div(directionToTarget.norm());
+        radialVelocity = velocityVector.projection(directionToTarget);
+
         shootingWhileMovingVirtualPose = virtualPose;
 
 //        Pose2d shooterPose = getVisionShooterPose();
@@ -253,12 +288,38 @@ public class RobotState {
     public boolean getDriveAutoAiming() { return driveAutoAiming; }
     public void setWantAutoIntaking(boolean want) {wantAutoIntaking = want;}
     public boolean getWantAutoIntaking() {return wantAutoIntaking;}
-    public void setWantAutoShoot(boolean want) {wantAutoIntaking = want;}
+    public void setWantAutoShoot(boolean want) {wantAutoShoot = want;}
     public boolean getWantAutoShoot() {return wantAutoShoot;}
-    public void setTurretAngle(double angleRadians) {turretAngle = angleRadians;}
+    public void setTurretAngle(double angleRadians) {
+        prevTurretAngle = turretAngle;
+        prevTurretTimestamp = Utils.getCurrentTimeSeconds();
+        turretAngle = angleRadians;
+    }
+
+    public double getTurretVelocity() {
+       if (prevTurretTimestamp == -1) return 0.0;
+       return (turretAngle - prevTurretAngle)/(Utils.getCurrentTimeSeconds() - prevTurretTimestamp);
+    }
+
     public double getTurretAngle() { return turretAngle; }
     public void setTurretLimelightPose(Pose2d pose) { turretLimelightPose = pose; }
     public Pose2d getTurretLimelightPose() { return turretLimelightPose; }
+    public double getRadialVelocity() {
+        ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(
+                robotRelativeSpeeds,
+                getVisionPose().getRotation()
+        );
+
+        Translation2d velocity = new Translation2d(
+                speeds.vxMetersPerSecond,
+                speeds.vyMetersPerSecond
+        );
+        Translation2d target = getTargetPose().getTranslation().minus(getVisionShooterPose().getTranslation())
+                .div(getTargetPose().getTranslation().minus(getVisionShooterPose().getTranslation()).getNorm());
+
+        return velocity.getX()*target.getX() + velocity.getY()*target.getY();
+
+    }
 
     public Translation3d getShotVector(double shooterExitVelocity, double hoodAngle) { // {field x, field y, height}
         Translation2d direction = getTargetPose().getTranslation().minus(getVisionShooterPose().getTranslation());
