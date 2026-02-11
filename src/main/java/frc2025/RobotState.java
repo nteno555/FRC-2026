@@ -109,7 +109,13 @@ public class RobotState {
     }
 
     public void addVisionData(List<VisionPoseEstimator.TimestampedVisionUpdate> update) {
-        visionPoseEstimator.addVisionData(update);
+        visionUpdates.addAll(update);
+//        visionPoseEstimator.addVisionData(update);
+    }
+
+    public void updateVisionPose() {
+        visionPoseEstimator.addVisionData(visionUpdates);
+        visionUpdates.clear();
     }
 
     public void setShuttling(boolean shuttling) {

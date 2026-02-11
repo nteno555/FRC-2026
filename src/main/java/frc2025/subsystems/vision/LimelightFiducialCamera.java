@@ -46,7 +46,10 @@ public class LimelightFiducialCamera {
     public void updateReefAlign() {}
 
     public void writeGyro() {
-        LimelightHelpers.SetIMUMode(name, 4);
+        String prefix = "Vision/" + name + "_mt2/";
+
+//        LimelightHelpers.SetIMUMode(name, 4);
+        LimelightHelpers.SetIMUMode(name, 0);
 
         if(turretMounted){// && robotToCameraPose != null) {
             Transform2d robotToShooterReal = new Transform2d(
@@ -57,15 +60,21 @@ public class LimelightFiducialCamera {
             Transform2d cameraToRobotTransform = SubsystemConstants.shooterToCamera.inverse().plus(robotToShooterReal.inverse());
             Transform2d robotToCameraTransform = cameraToRobotTransform.inverse();
 
-            Logger.recordOutput("Vision/turretMountedHeartbeat", Math.random());
+//            Logger.recordOutput("Vision/turretMountedHeartbeat", Math.random());
 
-            LimelightHelpers.setCameraPose_RobotSpace(name, robotToCameraTransform.getX(), robotToCameraTransform.getY(), this.robotToCameraUp,
-                    this.robotToCameraRoll, this.robotToCameraPitch, robotToCameraTransform.getRotation().getDegrees());
+            LimelightHelpers.setCameraPose_RobotSpace(name, 0.0, 0.0, this.robotToCameraUp,
+                    this.robotToCameraRoll, this.robotToCameraPitch, 0.0);
+//            LimelightHelpers.setCameraPose_RobotSpace(name, robotToCameraTransform.getX(), robotToCameraTransform.getY(), this.robotToCameraUp,
+//                    this.robotToCameraRoll, this.robotToCameraPitch, this.robotToCameraYaw);
+//                    this.robotToCameraRoll, this.robotToCameraPitch, robotToCameraTransform.getRotation().getDegrees());
 
             double omega = RobotState.getInstance().getTurretVelocity() + RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
             omega = Units.radiansToDegrees(omega);
 
-            LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getVisionPose().getRotation().getDegrees(), omega, 0, 0, 0, 0);
+            LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getVisionPose().getRotation().getDegrees() + robotToCameraTransform.getRotation().getDegrees(), omega, 0, 0, 0, 0);
+
+            Logger.recordOutput(prefix + "mt2RobotOrientation", RobotState.getInstance().getVisionPose().getRotation().getDegrees() + robotToCameraTransform.getRotation().getDegrees());
+            Logger.recordOutput(prefix + "mt2UpdateGyroHeartbeat", Math.random());
         } else {
             LimelightHelpers.setCameraPose_RobotSpace(name, this.robotToCameraForward, this.robotToCameraRight, this.robotToCameraUp,
                     this.robotToCameraRoll, this.robotToCameraPitch, this.robotToCameraYaw);
@@ -74,6 +83,7 @@ public class LimelightFiducialCamera {
             omega = Units.radiansToDegrees(omega);
 
             LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getVisionPose().getRotation().getDegrees(), omega, 0, 0, 0, 0);
+            Logger.recordOutput(prefix + "mt2UpdateGyroHeartbeat", Math.random());
         }
     }
 
@@ -85,18 +95,44 @@ public class LimelightFiducialCamera {
         }
     }
 
+    private Pose2d transformTurretPose(Pose2d pose) {
+        Transform2d robotToShooterReal = new Transform2d(
+                    SubsystemConstants.robotToShooter.getTranslation(),
+                    SubsystemConstants.robotToShooter.getRotation().plus(Rotation2d.fromRadians(RobotState.getInstance().getTurretAngle()))
+            );
+
+        Transform2d cameraToRobotTransform = SubsystemConstants.shooterToCamera.inverse().plus(robotToShooterReal.inverse());
+
+        return pose.transformBy(cameraToRobotTransform);
+    }
+
     public void addVisionUpdateMt1(LimelightHelpers.PoseEstimate poseEstimate) {
         String prefix = "Vision/" + name + "_mt1/";
 
         double maxMeanDistance = 2.5;
-        double maxMeanAmbiguity = 0.5;
-        double minMeanArea = 0.1;
+        double maxMeanAmbiguity = 0.2;
+        double minMeanArea = 0.0;
         double maxYawRate = Math.PI * 2;
 
-        if(poseEstimate == null || poseEstimate.tagCount < 2) return;
+        Logger.recordOutput(prefix + "heartbeat1", Math.random());
+
+        if(poseEstimate == null) return;
+
+        Logger.recordOutput(prefix + "heartbeat2", Math.random());
+        Logger.recordOutput(prefix + "tagCount", poseEstimate.tagCount);
 
         boolean reject = false;
+
+        if(poseEstimate.tagCount < 2) {
+            reject = true;
+        }
+
         Pose2d pose = poseEstimate.pose;
+
+        if(turretMounted) {
+            pose = transformTurretPose(pose);
+        }
+
         double meanDistance = 0;
         double meanAmbiguity = 0;
         double meanArea = 0;
@@ -135,7 +171,7 @@ public class LimelightFiducialCamera {
 
         if(!reject) {
             Vector<N3> distStdDevs;
-            distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 5.0, Math.pow(meanDistance, 2) / 5.0, Math.pow(meanDistance, 2) / 100.0); // maybe use least distance instead
+            distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 5.0, Math.pow(meanDistance, 2) / 5.0, Math.pow(meanDistance, 2) / 1000.0); // maybe use least distance instead
             VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
                     poseEstimate.timestampSeconds, pose, distStdDevs
             );
@@ -148,10 +184,20 @@ public class LimelightFiducialCamera {
         String prefix = "Vision/" + name + "_mt2/";
         double maxYawRate = Math.PI * 2;
 
-        if(poseEstimate == null) return;
+        Logger.recordOutput(prefix + "heartbeat1", Math.random());
+
+        if(poseEstimate == null || poseEstimate.tagCount < 1) return;
+
+        Logger.recordOutput(prefix + "heartbeat2", Math.random());
+        Logger.recordOutput(prefix + "tagCount", poseEstimate.tagCount);
+
+        Pose2d pose = poseEstimate.pose;
+
+        if(turretMounted) {
+            pose = transformTurretPose(pose);
+        }
 
         boolean reject = false;
-        Pose2d pose = poseEstimate.pose;
         double meanDistance = 0;
         for(var f: poseEstimate.rawFiducials) {
             meanDistance += f.distToCamera;

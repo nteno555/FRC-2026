@@ -69,6 +69,8 @@ public class TurretIOReal implements TurretIO{
         inputs.positionTicks = turretMotor.getPosition().getValue().in(Units.Rotation);
         inputs.positionRadians = toRadians(inputs.positionTicks);
         inputs.throughboresConnected = throughBore1.isConnected() && throughBore2.isConnected();
+        inputs.tb1Connected = throughBore1.isConnected();
+        inputs.tb2Connected = throughBore2.isConnected();
 
 //        rezeroCRT();
         //inputs.current = turretMotor.getSupplyCurrent();
@@ -115,30 +117,38 @@ public class TurretIOReal implements TurretIO{
     }
 
     public void rezeroCRT() {
-        double pos1 = ((throughBore1.get() - SubsystemConstants.throughBoreZero1 + 1) % 1) * SubsystemConstants.throughBoreRatio1;
-        double pos2 = ((throughBore2.get() - SubsystemConstants.throughBoreZero2 + 1) % 1) * SubsystemConstants.throughBoreRatio2;
-        Logger.recordOutput("Turret/tb1NoOffset", throughBore1.get());
-        Logger.recordOutput("Turret/tb2NoOffset", throughBore2.get());
-        Logger.recordOutput("Turret/tb1WithOffset", throughBore1.get() - SubsystemConstants.throughBoreZero1);
-        Logger.recordOutput("Turret/tb2WithOffset", throughBore2.get() - SubsystemConstants.throughBoreZero2);
-        Logger.recordOutput("Turret/initialPos1", pos1);
-        Logger.recordOutput("Turret/initialPos2", pos2);
-        double epsilon = 0.5;
+        if(throughBore1.isConnected() && throughBore2.isConnected()) {
+            double pos1 = ((throughBore1.get() - SubsystemConstants.throughBoreZero1 + 1) % 1) * SubsystemConstants.throughBoreRatio1;
+            double pos2 = ((throughBore2.get() - SubsystemConstants.throughBoreZero2 + 1) % 1) * SubsystemConstants.throughBoreRatio2;
+            Logger.recordOutput("Turret/tb1NoOffset", throughBore1.get());
+            Logger.recordOutput("Turret/tb2NoOffset", throughBore2.get());
+            Logger.recordOutput("Turret/tb1WithOffset", throughBore1.get() - SubsystemConstants.throughBoreZero1);
+            Logger.recordOutput("Turret/tb2WithOffset", throughBore2.get() - SubsystemConstants.throughBoreZero2);
+            Logger.recordOutput("Turret/initialPos1", pos1);
+            Logger.recordOutput("Turret/initialPos2", pos2);
+            double epsilon = 0.5;
 
-        while(Math.abs(pos1 - pos2) > epsilon && pos1 > -50 && pos2 > -50) {
-            if(pos1 > pos2) pos1 -= SubsystemConstants.throughBoreRatio1;
-            else pos2 -= SubsystemConstants.throughBoreRatio2;
+            while (Math.abs(pos1 - pos2) > epsilon && pos1 > -50 && pos2 > -50) {
+                if (pos1 > pos2) pos1 -= SubsystemConstants.throughBoreRatio1;
+                else pos2 -= SubsystemConstants.throughBoreRatio2;
+            }
+
+            while (Math.abs(pos1 - pos2) > epsilon) {
+                if (pos1 < pos2) pos1 += SubsystemConstants.throughBoreRatio1;
+                else pos2 += SubsystemConstants.throughBoreRatio2;
+            }
+
+            turretMotor.setPosition(-(pos1 - toRotations(SubsystemConstants.turretZeroOffsetRadians)));
+
+            Logger.recordOutput("Turret/finalPos1", pos1);
+            Logger.recordOutput("Turret/finalPos2", pos2);
+        } else if (throughBore1.isConnected()) {
+            double pos1 = ((throughBore1.get() - SubsystemConstants.throughBoreZero1 + 1) % 1) * SubsystemConstants.throughBoreRatio1;
+            turretMotor.setPosition(-(pos1 - toRotations(SubsystemConstants.turretZeroOffsetRadians)));
+        } else {
+            double pos2 = ((throughBore2.get() - SubsystemConstants.throughBoreZero2 + 1) % 1) * SubsystemConstants.throughBoreRatio2;
+            turretMotor.setPosition(-(pos2 - toRotations(SubsystemConstants.turretZeroOffsetRadians)));
         }
-
-        while(Math.abs(pos1 - pos2) > epsilon) {
-            if(pos1 < pos2) pos1 += SubsystemConstants.throughBoreRatio1;
-            else pos2 += SubsystemConstants.throughBoreRatio2;
-        }
-
-        turretMotor.setPosition(-(pos1 - toRotations(SubsystemConstants.turretZeroOffsetRadians)));
-
-        Logger.recordOutput("Turret/finalPos1", pos1);
-        Logger.recordOutput("Turret/finalPos2", pos2);
     }
 
 //    @Override

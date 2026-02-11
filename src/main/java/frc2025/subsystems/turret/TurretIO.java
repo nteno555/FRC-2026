@@ -9,6 +9,8 @@ public interface TurretIO {
         double positionDegreesReal;
         double positionRadians;
         boolean throughboresConnected;
+        boolean tb1Connected;
+        boolean tb2Connected;
     }
 
     public void updateInputs(TurretIOInputs inputs);
