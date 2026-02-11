@@ -60,13 +60,8 @@ public class LimelightFiducialCamera {
             Transform2d cameraToRobotTransform = SubsystemConstants.shooterToCamera.inverse().plus(robotToShooterReal.inverse());
             Transform2d robotToCameraTransform = cameraToRobotTransform.inverse();
 
-//            Logger.recordOutput("Vision/turretMountedHeartbeat", Math.random());
-
             LimelightHelpers.setCameraPose_RobotSpace(name, 0.0, 0.0, this.robotToCameraUp,
                     this.robotToCameraRoll, this.robotToCameraPitch, 0.0);
-//            LimelightHelpers.setCameraPose_RobotSpace(name, robotToCameraTransform.getX(), robotToCameraTransform.getY(), this.robotToCameraUp,
-//                    this.robotToCameraRoll, this.robotToCameraPitch, this.robotToCameraYaw);
-//                    this.robotToCameraRoll, this.robotToCameraPitch, robotToCameraTransform.getRotation().getDegrees());
 
             double omega = RobotState.getInstance().getTurretVelocity() + RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
             omega = Units.radiansToDegrees(omega);
@@ -171,7 +166,7 @@ public class LimelightFiducialCamera {
 
         if(!reject) {
             Vector<N3> distStdDevs;
-            distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 5.0, Math.pow(meanDistance, 2) / 5.0, Math.pow(meanDistance, 2) / 1000.0); // maybe use least distance instead
+            distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 1000.0); // maybe use least distance instead
             VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
                     poseEstimate.timestampSeconds, pose, distStdDevs
             );

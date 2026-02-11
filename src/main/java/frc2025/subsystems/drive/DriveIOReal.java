@@ -41,6 +41,8 @@ import java.util.List;
 public class DriveIOReal extends SwerveDrivetrain implements DriveIO{
     private double[] lastModulePositionsMeters = new double[] { 0.0, 0.0, 0.0, 0.0 };
     private Rotation2d lastGyroYaw = null;
+    private Pose2d lastOdometryPose = null;
+    private double lastOdometryPoseTimestamp = 0;
 
     public DriveIOReal(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(TalonFX::new, TalonFX::new, CANcoder::new, driveTrainConstants, modules);
