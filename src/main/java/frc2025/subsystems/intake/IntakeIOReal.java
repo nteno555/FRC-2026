@@ -3,6 +3,7 @@ package frc2025.subsystems.intake;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -31,23 +32,69 @@ import org.littletonrobotics.junction.Logger;
 public class IntakeIOReal implements IntakeIOIF {
     private double towerVoltage = 0;
     private double towerCurrent = 0;
+    private double towerPosition = 0;
     private double rollerVoltage = 0;
     private double rollerCurrent = 0;
-    private double position = 0;
+    private double rollerPosition = 0;
+
+    private TalonFXConfigurator config = new TalonFXConfigurator(new DeviceIdentifier());
+    private TalonFX towerMotor = new TalonFX(0,new CANBus("rio"));
+    {
+        TorqueCurrentConfigs current = new TorqueCurrentConfigs();
+        current.PeakForwardTorqueCurrent = 40;
+        current.PeakReverseTorqueCurrent = -40;
+        current.TorqueNeutralDeadband = 1;
+        towerMotor.getConfigurator().apply(current);
+
+        CurrentLimitsConfigs limits = new CurrentLimitsConfigs();
+        limits.StatorCurrentLimit = 40;
+        limits.StatorCurrentLimitEnable = true;
+        limits.SupplyCurrentLimit = 40;
+        limits.SupplyCurrentLimitEnable = true;
+        limits.SupplyCurrentLowerLimit = 20;
+        limits.SupplyCurrentLowerTime = 10;
+        towerMotor.getConfigurator().apply(limits);
+    }
+    private TalonFX rollerMotor = new TalonFX(2,new CANBus("rio"));
+    {        
+        TorqueCurrentConfigs current = new TorqueCurrentConfigs();
+        current.PeakForwardTorqueCurrent = 40;
+        current.PeakReverseTorqueCurrent = -40;
+        current.TorqueNeutralDeadband = 1;
+        rollerMotor.getConfigurator().apply(current);
+
+        CurrentLimitsConfigs limits = new CurrentLimitsConfigs();
+        limits.StatorCurrentLimit = 40;
+        limits.StatorCurrentLimitEnable = true;
+        limits.SupplyCurrentLimit = 40;
+        limits.SupplyCurrentLimitEnable = true;
+        limits.SupplyCurrentLowerLimit = 20;
+        limits.SupplyCurrentLowerTime = 10;
+        rollerMotor.getConfigurator().apply(limits);
+    }
 
     public IntakeIOReal() {
 
     }
 
+    public void periodic() {
+        towerMotor.setVoltage(this.towerVoltage);
+        towerMotor.setPosition(this.towerPosition);
+        rollerMotor.setVoltage(this.rollerVoltage);
+        rollerMotor.setPosition(this.rollerPosition);
+    }
+
     @Override public void setTowerVoltage(double voltage) {this.towerVoltage = voltage;}
     @Override public void setTowerCurrent(double current) {this.towerCurrent = current;}
+    @Override public void setTowerPosition(double position) {this.towerPosition = position;}
     @Override public void setRollerVoltage(double voltage) {this.rollerVoltage = voltage;}
     @Override public void setRollerCurrent(double current) {this.rollerCurrent = current;}
-    @Override public void setPosition(double position) {this.position = position;}
+    @Override public void setRollerPosition(double position) {this.rollerPosition = position;}
 
     @Override public double getTowerVoltage() {return towerVoltage;}
     @Override public double getTowerCurrent() {return towerCurrent;}
+    @Override public double getTowerPosition() {return towerPosition;}
     @Override public double getRollerVoltage() {return rollerVoltage;}
     @Override public double getRollerCurrent() {return rollerCurrent;}    
-    @Override public double getPosition() {return position;}
+    @Override public double getRollerPosition() {return rollerPosition;}
 }

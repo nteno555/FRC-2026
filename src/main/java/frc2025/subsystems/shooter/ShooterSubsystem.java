@@ -28,10 +28,7 @@ import java.util.function.Supplier;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
-public class ShooterSubsystem {
-    private TalonFXConfigurator config = new TalonFXConfigurator(new DeviceIdentifier());
-    private TalonFX motorController = new TalonFX(1,new CANBus("rio"));
-
+public class ShooterSubsystem extends SubsystemBase{
     private ShooterIOIF io;
 
     public ShooterSubsystem(ShooterIOIF io) {
@@ -39,7 +36,7 @@ public class ShooterSubsystem {
     }
 
     public void periodic() {
-
+        io.periodic();
     }
 
     public void setVoltage(double voltage) {this.io.setVoltage(voltage);}

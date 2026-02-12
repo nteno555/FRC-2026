@@ -29,9 +29,6 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 public class IntakeSubsystem extends SubsystemBase{
-    private TalonFXConfigurator config = new TalonFXConfigurator(new DeviceIdentifier());
-    private TalonFX motorController = new TalonFX(0,new CANBus("rio"));
-
     IntakeIOIF io;
 
     public IntakeSubsystem(IntakeIOIF io) {
@@ -39,7 +36,7 @@ public class IntakeSubsystem extends SubsystemBase{
     }   
 
     public void periodic() {
-        
+        io.periodic();
     }
 
     public void rezero() {
