@@ -8,8 +8,8 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 public class IndexerIOReal implements IndexerIOIF {
-    private final TalonFX indexer = new TalonFX(,"rio");
-    private final TalonFX tower = new TalonFX(,"rio");
+    private final TalonFX indexer = new TalonFX(0,"rio");
+
 
     public void IndexerIoReal() {
         indexer.getConfigurator().apply(new TalonFXConfiguration());
@@ -22,6 +22,7 @@ public class IndexerIOReal implements IndexerIOIF {
         configTorque.PeakForwardTorqueCurrent = 40;
         configTorque.PeakReverseTorqueCurrent = 40;
         configTorque.TorqueNeutralDeadband = 1;
+        indexer.getConfigurator().apply(indexerConfigs);
     }
 
     private ControlRequest createControlRequest(double targetValue, boolean useVoltage) {

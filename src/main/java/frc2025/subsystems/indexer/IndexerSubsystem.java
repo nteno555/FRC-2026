@@ -25,14 +25,14 @@ public class IndexerSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
     }
 
-    public Command setSpeed(Supplier<Double> indexerSpeed, Supplier<Double> towerSpeed) {
+    public Command setSpeed(Supplier<Double> indexerSpeed) {
         return this.run(() -> {
             usingVoltage = false;
             io.setSpeed(indexerSpeed.get());
         });
     }
 
-    public Command setVoltage(Supplier<Double> indexerVoltage, Supplier<Double> towerVoltage) {
+    public Command setVoltage(Supplier<Double> indexerVoltage) {
         return this.runEnd(() -> {
             usingVoltage = true;
             io.setVoltage(indexerVoltage.get());
