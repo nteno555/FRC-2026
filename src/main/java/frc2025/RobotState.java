@@ -67,18 +67,22 @@ public class RobotState {
 
         robotRelativeSpeeds = speeds;
         fieldRelativeSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeSpeeds, getVisionPose().getRotation());
+        double dt = now - prevFieldRelativeSpeedTimestamp;
 
-        if (prevFieldRelativeSpeeds != null) {
+        if (prevFieldRelativeSpeeds != null && dt > 0.1) {
             double vx = fieldRelativeSpeeds.vxMetersPerSecond - prevFieldRelativeSpeeds.vxMetersPerSecond;
             double vy = fieldRelativeSpeeds.vyMetersPerSecond - prevFieldRelativeSpeeds.vyMetersPerSecond;
             double theta = fieldRelativeSpeeds.omegaRadiansPerSecond - prevFieldRelativeSpeeds.omegaRadiansPerSecond;
-            fieldRelativeAcceleration = new ChassisSpeeds(vx, vy, theta).div(now - prevFieldRelativeSpeedTimestamp);
+            fieldRelativeAcceleration = new ChassisSpeeds(vx, vy, theta).div(dt);
         }
 
         prevFieldRelativeSpeedTimestamp = now;
         prevFieldRelativeSpeeds = fieldRelativeSpeeds;
 
         Logger.recordOutput("Drive/fieldRelativeAccel", fieldRelativeAcceleration);
+        if (fieldRelativeAcceleration != null) {
+            Logger.recordOutput("Drive/acceleration", Math.hypot(fieldRelativeAcceleration.vxMetersPerSecond, fieldRelativeAcceleration.vyMetersPerSecond));
+        }
     }
 
     public ChassisSpeeds getFieldRelativeAcceleration() {return fieldRelativeAcceleration;}

@@ -32,11 +32,11 @@
     },
     {
       "anchor": {
-        "x": 0.6333679286815508,
+        "x": 0.5858323290789573,
         "y": 0.630632474546079
       },
       "prevControl": {
-        "x": 2.6082559746636287,
+        "x": 2.5607203750610332,
         "y": 0.6979058238841866
       },
       "nextControl": null,
@@ -60,7 +60,7 @@
       "minWaypointRelativePos": 1.2129206356416111,
       "maxWaypointRelativePos": 2.0,
       "constraints": {
-        "maxVelocity": 1.5,
+        "maxVelocity": 1.2,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 240.0,
         "maxAngularAcceleration": 360.0,
@@ -74,7 +74,7 @@
     {
       "name": "stop auto aim",
       "waypointRelativePos": 0.0,
-      "endWaypointRelativePos": 1.191837754360465,
+      "endWaypointRelativePos": 2.0,
       "command": null
     }
   ],

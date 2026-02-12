@@ -64,6 +64,7 @@ public class AutoAimCommands {
             Pose2d pose = RobotState.getInstance().getVisionPose();
             Pose2d virtualPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
 
+
             if(DriverStation.isAutonomous()) {
                 boolean inBlueZone = pose.getX() < 3.0;
                 boolean inRedZone = pose.getX() > 13.25;
@@ -76,16 +77,19 @@ public class AutoAimCommands {
                     good = good && inRedZone;
                 }
             }
+            else {
+                good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed);
+            }
 
-            good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed);
             var accel = RobotState.getInstance().getFieldRelativeAcceleration();
             double a = Math.hypot(accel.vxMetersPerSecond, accel.vyMetersPerSecond);
             good = good && (a < SubsystemConstants.autoAimMaxAccel);
 
+            Logger.recordOutput("Indexer/autoIndex/accelReady", (a < SubsystemConstants.autoAimMaxSpeed));
             Logger.recordOutput("Indexer/autoIndex/shooterReady", robotContainer.getShooter().getShotReady());
             Logger.recordOutput("Indexer/autoIndex/turretReady", robotContainer.getTurret().getShotReady());
             Logger.recordOutput("Indexer/autoIndex/speedReady", (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed));
-            Logger.recordOutput("Indexer/autoIndex/accelReady", (a < SubsystemConstants.autoAimMaxSpeed));
+            Logger.recordOutput("Indexer/autoIndexReady", good);
 
             return good;
         };

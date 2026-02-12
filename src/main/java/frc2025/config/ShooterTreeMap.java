@@ -66,6 +66,7 @@ public class ShooterTreeMap {
         tofTreeMap.put(2.39, 1.17);
         tofTreeMap.put(2.67, 1.20);
         tofTreeMap.put(3.89, 1.26);
+        tofTreeMap.put(5.22, 1.52);
 
         radialVelocityTreeaMap.put(-0.10, 1.0);
         radialVelocityTreeaMap.put(-0.40, 2.0);

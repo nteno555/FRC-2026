@@ -39,8 +39,6 @@ public class LimelightFiducialCamera {
         this.robotToCameraRoll = robotToCameraRoll;
     }
 
-    public void resetGyro() {}
-
     public void setUseGyro() {}
 
     public void updateReefAlign() {}
@@ -50,6 +48,7 @@ public class LimelightFiducialCamera {
 
 //        LimelightHelpers.SetIMUMode(name, 4);
         LimelightHelpers.SetIMUMode(name, 0);
+//        if(RobotState.getInstance().)
 
         if(turretMounted){// && robotToCameraPose != null) {
             Transform2d robotToShooterReal = new Transform2d(
@@ -86,7 +85,7 @@ public class LimelightFiducialCamera {
         if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
             LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{2, 3, 4, 5, 8, 9, 10, 11});
         } else {
-            LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{17, 18, 19, 20, 21, 24, 25, 26, 27, 28});
+            LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{17, 18, 19, 20, 21, 24, 25, 26, 27});
         }
     }
 
@@ -194,8 +193,10 @@ public class LimelightFiducialCamera {
 
         boolean reject = false;
         double meanDistance = 0;
+        double leastDistance = 999999999;
         for(var f: poseEstimate.rawFiducials) {
             meanDistance += f.distToCamera;
+            leastDistance = Math.min(leastDistance, f.distToCamera);
         }
         meanDistance /= poseEstimate.tagCount;
 
@@ -214,13 +215,14 @@ public class LimelightFiducialCamera {
         }
 
         Logger.recordOutput(prefix + "meanDistance", meanDistance);
+        Logger.recordOutput(prefix + "leastDistance", leastDistance);
         Logger.recordOutput(prefix + "omega", omega);
         Logger.recordOutput(prefix + "rejected", reject);
         Logger.recordOutput(prefix + "rawPose", pose);
 
         if(!reject) {
             Vector<N3> distStdDevs;
-            distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 5.0, Math.pow(meanDistance, 2) / 5.0, 999999999); // maybe use least distance instead
+            distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 2.0, Math.pow(leastDistance, 2) / 2.0, 999999999); // maybe use least distance instead
             VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
                     poseEstimate.timestampSeconds, pose, distStdDevs
             );

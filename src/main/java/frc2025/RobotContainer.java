@@ -148,7 +148,7 @@ public class RobotContainer {
         );
 
         intakeSubsystem.setDefaultCommand(intakeSubsystem.setDeployVoltage(() -> 0.0));
-//        hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
+        hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
 //        shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
 //        turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());
 
@@ -178,7 +178,8 @@ public class RobotContainer {
         driverXboxController
                 .b()
                 .and(driverXboxController.back())
-                .whileTrue(hoodSubsystem.homeThenRezero());
+                .whileTrue(hoodSubsystem.homeThenRezero())
+                .whileFalse(hoodSubsystem.setVoltage(() -> 0.0));
         driverXboxController
                 .x()
                 .and(driverXboxController.back())
@@ -196,8 +197,8 @@ public class RobotContainer {
         driverXboxController.leftTrigger()
                 .whileTrue(shooterSubsystem.autoAim()
                         .alongWith(turretSubsystem.autoAim())
-                        .alongWith(hoodSubsystem.autoAim()))
-//                        .alongWith(AutoAimCommands.autoIndex(this)))
+                        .alongWith(hoodSubsystem.autoAim())
+                        .alongWith(AutoAimCommands.autoIndex(this)))
                 .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
         driverXboxController.povUp() // left middle paddle
@@ -205,10 +206,10 @@ public class RobotContainer {
         driverXboxController.povRight() // right middle paddle
                 .onTrue(intakeSubsystem.setDeployPosition(() -> 0.0));
 
-        driverXboxController.rightTrigger()
-                .whileTrue(indexerSubsystem.setVoltage(() -> SubsystemConstants.spindexerShootVoltage,
-                        () -> SubsystemConstants.towerShootVoltage))
-                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
+//        driverXboxController.rightTrigger()
+//                .whileTrue(indexerSubsystem.setVoltage(() -> SubsystemConstants.spindexerShootVoltage,
+//                        () -> SubsystemConstants.towerShootVoltage))
+//                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
 
         driverXboxController.leftBumper()
                 .onTrue(Commands.runOnce(() -> RobotState.getInstance().setShuttling(false)));

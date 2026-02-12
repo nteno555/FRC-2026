@@ -35,6 +35,7 @@ public class IntakeSubsystem extends SubsystemBase {
         return this.run(() -> {
             usingVoltage = true;
             io.setVoltage(voltage.get());
+//            io.setDeployVoltage(SubsystemConstants.intakekS);
         });
     }
 
