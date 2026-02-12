@@ -39,16 +39,18 @@ public class LimelightFiducialCamera {
         this.robotToCameraRoll = robotToCameraRoll;
     }
 
-    public void setUseGyro() {}
+    public void rezero() {
+        LimelightHelpers.SetIMUMode(name, 1);
+        RobotState.getInstance().setWantRezero(false);
+    }
 
     public void updateReefAlign() {}
 
     public void writeGyro() {
         String prefix = "Vision/" + name + "_mt2/";
 
-//        LimelightHelpers.SetIMUMode(name, 4);
-        LimelightHelpers.SetIMUMode(name, 0);
-//        if(RobotState.getInstance().)
+        LimelightHelpers.SetIMUMode(name, 4);
+//        LimelightHelpers.SetIMUMode(name, 0);
 
         if(turretMounted){// && robotToCameraPose != null) {
             Transform2d robotToShooterReal = new Transform2d(

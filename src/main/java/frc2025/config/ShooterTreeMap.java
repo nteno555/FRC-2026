@@ -69,9 +69,9 @@ public class ShooterTreeMap {
         tofTreeMap.put(5.22, 1.52);
 
         radialVelocityTreeMap.put(-0.10, 0.5);
-        radialVelocityTreeMap.put(-0.40, 1.0);
+        radialVelocityTreeMap.put(-0.50, 1.0);
         radialVelocityTreeMap.put(0.10, -0.5);
-        radialVelocityTreeMap.put(0.4, -1.0);
+        radialVelocityTreeMap.put(0.50, -1.0);
 
         updateDashboardMap();
         SmartDashboard.putString("Tuning/lowerWheelTree Map", lowerWheelTreeMap.toString());

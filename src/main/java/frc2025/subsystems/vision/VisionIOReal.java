@@ -26,6 +26,10 @@ public class VisionIOReal implements VisionIO {
     @Override
     public void updateInputs(VisionIOInputs inputs) {
         for(var cam: cameras) {
+            if (RobotState.getInstance().getWantRezero()) {
+                cam.rezero();
+            }
+
             cam.writeGyro();
             cam.updatePose();
         }

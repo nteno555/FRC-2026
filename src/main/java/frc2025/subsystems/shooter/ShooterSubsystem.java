@@ -63,7 +63,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
             double radialVelocity = RobotState.getInstance().getRadialVelocity();
             double rpsCorrection = 0.0;
-            if (Math.abs(radialVelocity) > 0.05) {
+            if (Math.abs(radialVelocity) > 0.1) {
                 rpsCorrection = ShooterTreeMap.getInstance().radialVelocityTreeMap.getInterpolated(radialVelocity);
             }
 
