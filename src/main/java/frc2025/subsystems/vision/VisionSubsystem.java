@@ -32,4 +32,8 @@ public class VisionSubsystem extends SubsystemBase {
 //        Logger.recordOutput("Vision/testtesttest", poseEstimate.tagCount);
 
     }
+
+    public void resetOdometry() {
+        io.resetOdometry();
+    }
 }

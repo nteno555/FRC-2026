@@ -39,9 +39,8 @@ public class LimelightFiducialCamera {
         this.robotToCameraRoll = robotToCameraRoll;
     }
 
-    public void rezero() {
+    public void resetOdometry() {
         LimelightHelpers.SetIMUMode(name, 1);
-        RobotState.getInstance().setWantRezero(false);
     }
 
     public void updateReefAlign() {}

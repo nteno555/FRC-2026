@@ -11,6 +11,6 @@ public interface VisionIO {
     }
 
     public void updateInputs(VisionIOInputs inputs);
-//    public void resetOdometry()
+    public void resetOdometry();
     //public void writeGyros(double yaw);
 }

@@ -38,7 +38,6 @@ public class RobotState {
     private Pose2d shootingWhileMovingVirtualPose;
 
     private boolean wantAutoShoot;
-    private boolean wantRezero;
 
     private double turretAngle;
     private double prevTurretAngle;
@@ -197,8 +196,6 @@ public class RobotState {
 
     public void setWantAutoShoot(boolean want) {wantAutoShoot = want;}
     public boolean getWantAutoShoot() {return wantAutoShoot;}
-    public void setWantRezero(boolean want) {wantRezero = want;}
-    public boolean getWantRezero() {return wantRezero;}
 
     public void setTurretAngle(double angleRadians) {
         prevTurretAngle = turretAngle;

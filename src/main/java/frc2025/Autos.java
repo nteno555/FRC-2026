@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc2025.commands.AutoAimCommands;
 import frc2025.commands.FollowPathCommand;
+import frc2025.commands.SuperstructureCommands;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveSubsystem;
 import frc2025.util.Alliance;
@@ -67,7 +68,7 @@ public class Autos {
                 finalPath.getStartingDifferentialPose().getTranslation(),
                 finalPath.getIdealStartingState().rotation()
         );
-        return  drive.resetOdometryCommand(() -> startPose)
+        return  SuperstructureCommands.resetOdometry(robotContainer, () -> startPose)
                 .andThen(new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true));
                 //.raceWith(robotContainer.getIntake().setIntaking(() -> true));
     }

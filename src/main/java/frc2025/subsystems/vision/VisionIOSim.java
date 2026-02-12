@@ -5,4 +5,9 @@ public class VisionIOSim implements VisionIO{
     public void updateInputs(VisionIOInputs inputs) {
 
     }
+
+    @Override
+    public void resetOdometry() {
+
+    }
 }

@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc2025.commands.AutoAimCommands;
+import frc2025.commands.SuperstructureCommands;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveIOReal;
 import frc2025.subsystems.drive.DriveIOSim;
@@ -154,9 +155,9 @@ public class RobotContainer {
 
         driverXboxController.a().onTrue(new InstantCommand(() -> {
             if(!Alliance.get()){
-                driveSubsystem.resetOdometry(new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
+                SuperstructureCommands.resetOdometry(this, () -> new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
             } else {
-                driveSubsystem.resetOdometry(new Pose2d());
+                SuperstructureCommands.resetOdometry(this, Pose2d::new);
             }
         }));
         driverXboxController
@@ -283,9 +284,9 @@ public class RobotContainer {
 
         tuningController.a().onTrue(new InstantCommand(() -> {
             if(!Alliance.get()){
-                driveSubsystem.resetOdometry(new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
+                SuperstructureCommands.resetOdometry(this, () -> new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
             } else {
-                driveSubsystem.resetOdometry(new Pose2d());
+                SuperstructureCommands.resetOdometry(this, Pose2d::new);
             }
         }));
 
