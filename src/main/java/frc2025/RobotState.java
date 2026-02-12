@@ -30,30 +30,23 @@ public class RobotState {
     private double speed;
     private List<VisionPoseEstimator.TimestampedVisionUpdate> visionUpdates = new ArrayList<>();
     private ChassisSpeeds robotRelativeSpeeds;
-    private ChassisSpeeds prevFieldRelativeSpeeds;
     private ChassisSpeeds fieldRelativeSpeeds;
-    private ChassisSpeeds fieldRelativeAcceleration;
-    private double prevFieldRelativeSpeedTimestamp;
+    private double pigeonAcceleration;
     private double angleToVirtualTarget;
 
     private boolean shuttling;
     private Pose2d shootingWhileMovingVirtualPose;
 
-    private boolean driveShotReady;
-    private boolean shooterReady;
-    private boolean hoodReady;
-    private boolean driveAutoAiming;
-    private boolean wantAutoIntaking;
     private boolean wantAutoShoot;
 
     private double turretAngle;
     private double prevTurretAngle;
     private double prevTurretTimestamp;
 
+
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
         shuttling = false;
-        prevFieldRelativeSpeedTimestamp = Utils.getCurrentTimeSeconds();
         prevTurretTimestamp = -1;
     }
 
@@ -63,29 +56,13 @@ public class RobotState {
     }
 
     public void setRobotRelativeSpeeds(ChassisSpeeds speeds) {
-        double now = Utils.getCurrentTimeSeconds();
-
         robotRelativeSpeeds = speeds;
         fieldRelativeSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeSpeeds, getVisionPose().getRotation());
-        double dt = now - prevFieldRelativeSpeedTimestamp;
-
-        if (prevFieldRelativeSpeeds != null && dt > 0.1) {
-            double vx = fieldRelativeSpeeds.vxMetersPerSecond - prevFieldRelativeSpeeds.vxMetersPerSecond;
-            double vy = fieldRelativeSpeeds.vyMetersPerSecond - prevFieldRelativeSpeeds.vyMetersPerSecond;
-            double theta = fieldRelativeSpeeds.omegaRadiansPerSecond - prevFieldRelativeSpeeds.omegaRadiansPerSecond;
-            fieldRelativeAcceleration = new ChassisSpeeds(vx, vy, theta).div(dt);
-        }
-
-        prevFieldRelativeSpeedTimestamp = now;
-        prevFieldRelativeSpeeds = fieldRelativeSpeeds;
-
-        Logger.recordOutput("Drive/fieldRelativeAccel", fieldRelativeAcceleration);
-        if (fieldRelativeAcceleration != null) {
-            Logger.recordOutput("Drive/acceleration", Math.hypot(fieldRelativeAcceleration.vxMetersPerSecond, fieldRelativeAcceleration.vyMetersPerSecond));
-        }
     }
 
-    public ChassisSpeeds getFieldRelativeAcceleration() {return fieldRelativeAcceleration;}
+    public void setPigeonAcceleration(double accel) { pigeonAcceleration = accel; }
+    public double getPigeonAcceleration() { return pigeonAcceleration; }
+
     public ChassisSpeeds getFieldRelativeSpeeds() {return fieldRelativeSpeeds;}
     public ChassisSpeeds getRobotRelativeSpeeds() {return robotRelativeSpeeds;}
 
@@ -114,7 +91,6 @@ public class RobotState {
 
     public void addVisionData(List<VisionPoseEstimator.TimestampedVisionUpdate> update) {
         visionUpdates.addAll(update);
-//        visionPoseEstimator.addVisionData(update);
     }
 
     public void updateVisionPose() {
@@ -218,7 +194,6 @@ public class RobotState {
         return angleToVirtualTarget;
     }
 
-    public boolean getWantAutoIntaking() {return wantAutoIntaking;}
     public void setWantAutoShoot(boolean want) {wantAutoShoot = want;}
     public boolean getWantAutoShoot() {return wantAutoShoot;}
 

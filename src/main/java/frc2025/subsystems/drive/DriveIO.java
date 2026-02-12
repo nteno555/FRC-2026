@@ -28,6 +28,7 @@ public interface DriveIO{
         public Pose2d swervePoseMeters = new Pose2d(); // odometry only
         public double odometryTimestamp;
         public Twist2d odometryTwist;
+        public double pigeonAcceleration;
     }
 
     public void updateInputs(DriveIOInputs inputs);

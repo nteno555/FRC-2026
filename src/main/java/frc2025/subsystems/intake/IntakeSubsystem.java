@@ -26,9 +26,9 @@ public class IntakeSubsystem extends SubsystemBase {
         Logger.processInputs("RealOutputs/Intake", inputs);
         io.updateInputs(inputs);
 
-        if (DriverStation.isAutonomousEnabled() && RobotState.getInstance().getWantAutoIntaking()) {
-            io.setVoltage(0.0);
-        }
+//        if (DriverStation.isAutonomousEnabled() && RobotState.getInstance().getWantAutoIntaking()) {
+//            io.setVoltage(0.0);
+//        }
     }
 
     public Command setRollerVoltage(Supplier<Double> voltage) {
