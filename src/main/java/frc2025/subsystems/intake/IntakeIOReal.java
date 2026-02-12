@@ -1,9 +1,10 @@
 package frc2025.subsystems.intake;
 
 import com.ctre.phoenix6.CANBus;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -12,6 +13,13 @@ import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -29,74 +37,88 @@ import frc2025.subsystems.vision.VisionIO;
 import frc2025.subsystems.vision.VisionPoseEstimator;
 import org.littletonrobotics.junction.Logger;
 
-public class IntakeIOReal implements IntakeIOIF {
-    private double towerVoltage = 0;
-    private double towerCurrent = 0;
-    private double rollerVoltage = 0;
-    private double rollerCurrent = 0;
-    private double position = 0;
+import frc2025.config.SubsystemConstants;
 
-    private TalonFX towerMotor = new TalonFX(0,new CANBus("rio"));
-    {
-        TorqueCurrentConfigs current = new TorqueCurrentConfigs();
-        current.PeakForwardTorqueCurrent = 40;
-        current.PeakReverseTorqueCurrent = -40;
-        current.TorqueNeutralDeadband = 1;
-        towerMotor.getConfigurator().apply(current);
+public class IntakeIOReal implements IntakeIO {
+    TalonFX intakeRoller = new TalonFX(SubsystemConstants.intakeRollerMotorID);
+    TalonFX intakeDeployMaster = new TalonFX(SubsystemConstants.intakeDeployMasterMotorID);
+    TalonFX intakeDeploySlave = new TalonFX(SubsystemConstants.intakeDeploySlaveMotorID);
 
-        CurrentLimitsConfigs limits = new CurrentLimitsConfigs();
-        limits.StatorCurrentLimit = 40;
-        limits.StatorCurrentLimitEnable = true;
-        limits.SupplyCurrentLimit = 40;
-        limits.SupplyCurrentLimitEnable = true;
-        limits.SupplyCurrentLowerLimit = 20;
-        limits.SupplyCurrentLowerTime = 10;
-        towerMotor.getConfigurator().apply(limits);
-    }
-    private TalonFX rollerMotor = new TalonFX(2,new CANBus("rio"));
-    {        
-        TorqueCurrentConfigs current = new TorqueCurrentConfigs();
-        current.PeakForwardTorqueCurrent = 40;
-        current.PeakReverseTorqueCurrent = -40;
-        current.TorqueNeutralDeadband = 1;
-        rollerMotor.getConfigurator().apply(current);
+    IntakeIOReal() {
+        TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
 
-        CurrentLimitsConfigs limits = new CurrentLimitsConfigs();
-        limits.StatorCurrentLimit = 40;
-        limits.StatorCurrentLimitEnable = true;
-        limits.SupplyCurrentLimit = 40;
-        limits.SupplyCurrentLimitEnable = true;
-        limits.SupplyCurrentLowerLimit = 20;
-        limits.SupplyCurrentLowerTime = 10;
-        rollerMotor.getConfigurator().apply(limits);
-    }
-    private TalonFXConfigurator config = new TalonFXConfigurator(new DeviceIdentifier());
+        rollerConfig.CurrentLimits.StatorCurrentLimit = SubsystemConstants.intakeStatorCurrentLimit;
+        rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        rollerConfig.CurrentLimits.SupplyCurrentLimit = SubsystemConstants.intakeSupplyCurrentLimit;
+        rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        
+        rollerConfig.TorqueCurrent.PeakForwardTorqueCurrent = SubsystemConstants.intakePeakForwardTorqueCurrent;
+        rollerConfig.TorqueCurrent.PeakReverseTorqueCurrent = SubsystemConstants.intakePeakReverseTorqueCurrent;
+        rollerConfig.TorqueCurrent.TorqueNeutralDeadband = SubsystemConstants.intakeTorqueNeutralDeadband;
+        
+        TalonFXConfiguration deployConfig = new TalonFXConfiguration();
 
-    public IntakeIOReal() {
+        deployConfig.CurrentLimits = rollerConfig.CurrentLimits;
+        deployConfig.TorqueCurrent = rollerConfig.TorqueCurrent;
 
-    }
+        Slot0Configs slot0 = deployConfig.Slot0;
+        slot0.kA = SubsystemConstants.intakekA;
+        slot0.kP = SubsystemConstants.intakekP;
+        slot0.kI = SubsystemConstants.intakekI;
+        slot0.kD = SubsystemConstants.intakekD;
+        slot0.kV = SubsystemConstants.intakekV;
+        slot0.kS = SubsystemConstants.intakekS;
+        slot0.kG = SubsystemConstants.intakekG;
 
-    public void periodic() {
-        towerMotor.setVoltage(this.towerVoltage);
-        towerMotor.setPosition(this.position);
-        rollerMotor.setVoltage(this.rollerVoltage);
-        rollerMotor.setPosition(this.position);
-        config.setPosition(this.position);
+        deployConfig.MotionMagic.MotionMagicAcceleration = SubsystemConstants.intakeAcceleration;
+        deployConfig.MotionMagic.MotionMagicCruiseVelocity = SubsystemConstants.intakeCruiseVelocity;
+        deployConfig.MotionMagic.MotionMagicJerk = SubsystemConstants.intakeJerk;
+
+        intakeRoller.getConfigurator().apply(rollerConfig);
+        intakeDeployMaster.getConfigurator().apply(deployConfig);
+        intakeDeploySlave.getConfigurator().apply(deployConfig);
+
+        intakeDeployMaster.setNeutralMode(NeutralModeValue.Brake);
+        intakeDeploySlave.setNeutralMode(NeutralModeValue.Brake);
+
+        intakeDeploySlave.setControl(new Follower(intakeDeployMaster.getDeviceID(), MotorAlignmentValue.Opposed));
+
+        intakeDeployMaster.setPosition(SubsystemConstants.intakeDeployPosition);
     }
 
-    @Override public void setTowerVoltage(double voltage) {this.towerVoltage = voltage;}
-    @Override public void setTowerCurrent(double current) {this.towerCurrent = current;}
-    @Override public void setRollerVoltage(double voltage) {this.rollerVoltage = voltage;}
-    @Override public void setRollerCurrent(double current) {this.rollerCurrent = current;}
-    @Override public void setPosition(double position) {this.position = position;}
+    @Override
+    public void updateInputs(IntakeIOInputs inputs) {
+        inputs.voltage = intakeRoller.getMotorVoltage().getValue().in(Units.Volts);
+        inputs.position = intakeDeployMaster.getPosition().getValueAsDouble();
+    }
 
-    @Override public double getTowerVoltage() {return towerVoltage;}
-    @Override public double getTowerCurrent() {return towerCurrent;}
-    @Override public double getRollerVoltage() {return rollerVoltage;}
-    @Override public double getRollerCurrent() {return rollerCurrent;}    
-    @Override public double getPosition() {return position;}
+    @Override
+    public void setPosition(double position) {
+        intakeDeployMaster.setPosition(position);
+    }
 
-    public TalonFX getTowerMotor() {return this.towerMotor;}
-    public TalonFX getRollerMotor() {return this.rollerMotor;}
-    public TalonFXConfigurator getConfig() {return this.config;}
+    @Override
+    public void setSpeed(double speed) {
+        intakeRoller.setControl(new DutyCycleOut(speed));
+    }
+
+    @Override
+    public void setVoltage(double voltage) {
+        intakeRoller.setControl(new VoltageOut(voltage));
+    }
+
+    @Override
+    public void setDeplyVoltage(double voltage) {
+        intakeDeployMaster.setControl(new VoltageOut(voltage));
+    }
+
+    @Override
+    public void setDeplyPosition(double position) {
+        intakeDeployMaster.setControl(new PositionVoltage(position).withSlot(0));
+    }
+
+    @Override
+    public void rezero(double position) {
+        intakeDeployMaster.setPosition(position);
+    }
 }

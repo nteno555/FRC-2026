@@ -29,9 +29,9 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 public class ShooterSubsystem extends SubsystemBase{
-    private ShooterIOIF io;
+    private ShooterIO io;
 
-    public ShooterSubsystem(ShooterIOIF io) {
+    public ShooterSubsystem(ShooterIO io) {
         this.io = io;
     }
 
@@ -42,5 +42,5 @@ public class ShooterSubsystem extends SubsystemBase{
     public void setVoltage(double voltage) {this.io.setVoltage(voltage);}
     public double getVoltage() {return this.io.getVoltage();}
 
-    public ShooterIOIF getIO() {return this.io;}
+    public ShooterIO getIO() {return this.io;}
 }

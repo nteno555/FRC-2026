@@ -2,7 +2,7 @@ package frc2025.subsystems.shooter;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.DeviceIdentifier;
@@ -12,6 +12,12 @@ import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -24,49 +30,57 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import frc2025.RobotState;
 import frc2025.subsystems.vision.VisionIO;
 import frc2025.subsystems.vision.VisionPoseEstimator;
 import org.littletonrobotics.junction.Logger;
 
-public class ShooterIOReal implements ShooterIOIF {
-    private double voltage = 0;
-    private double current = 0;
-    private double position = 0;
+import frc2025.config.SubsystemConstants;
 
-    private TalonFXConfigurator config = new TalonFXConfigurator(new DeviceIdentifier());
-    private TalonFX shooterMotor = new TalonFX(1,new CANBus("rio"));
-    {
-        TorqueCurrentConfigs current = new TorqueCurrentConfigs();
-        current.PeakForwardTorqueCurrent = 40;
-        current.PeakReverseTorqueCurrent = -40;
-        current.TorqueNeutralDeadband = 1;
-        shooterMotor.getConfigurator().apply(current);
+public class ShooterIOReal implements ShooterIO {
+    TalonFX flywheelMaster = new TalonFX(SubsystemConstants.shooterMasterMotorID);
+    TalonFX flywheelSlave = new TalonFX(SubsystemConstants.shooterSlaveMotorID);
 
-        CurrentLimitsConfigs limits = new CurrentLimitsConfigs();
-        limits.StatorCurrentLimit = 40;
-        limits.StatorCurrentLimitEnable = true;
-        limits.SupplyCurrentLimit = 40;
-        limits.SupplyCurrentLimitEnable = true;
-        limits.SupplyCurrentLowerLimit = 20;
-        limits.SupplyCurrentLowerTime = 10;
-        shooterMotor.getConfigurator().apply(limits);
+    ShooterIOReal() {
+        TalonFXConfiguration config = new TalonFXConfiguration();
+
+        var slot0 = config.Slot0;
+        slot0.kP = SubsystemConstants.flywheelP;
+        slot0.kI = SubsystemConstants.flywheelI;
+        slot0.kD = SubsystemConstants.flywheelD;
+        slot0.kS = SubsystemConstants.flywheelS;
+        slot0.kV = SubsystemConstants.flywheelV;
+        slot0.kA = SubsystemConstants.flywheelA;
+
+        //?????
+
+        flywheelMaster.getConfigurator().apply(config);
     }
 
-    public void periodic() {
-        shooterMotor.setVoltage(this.voltage);
-        shooterMotor.setPosition(this.position);
-        config.setPosition(this.position);
+    @Override
+    public void updateInputs(ShooterIOInputs inputs) {
+        inputs.position = flywheelMaster.getPosition().getValueAsDouble();
+        inputs.voltage = flywheelMaster.getMotorVoltage().getValue().in(Units.Volts);
     }
 
-    @Override public void setVoltage(double voltage) {this.voltage = voltage;}
-    @Override public void setCurrent(double current) {this.current = current;}
-    @Override public void setPosition(double position) {this.position = position;}
+    @Override
+    public void setVoltage(double voltage) {
+        flywheelMaster.setControl(new VoltageOut(voltage));
+    }
 
-    @Override public double getVoltage() {return this.voltage;}
-    @Override public double getCurrent() {return this.current;}
-    @Override public double getPosition() {return this.position;}
+    @Override
+    public void setCurrent(double current) {
+        flywheelMaster.setControl(new VoltageOut(current));
+    }
 
-    public TalonFXConfigurator getConfig() {return this.config;}
-    public TalonFX getMotor() {return this.shooterMotor;}
+    @Override
+    public void setPosition(double position) {
+        flywheelMaster.setControl(new PositionVoltage(position).withSlot(0));
+    }
+
+    @Override
+    public void rezero(double position) {
+        flywheelMaster.setPosition(position);
+    }
 }

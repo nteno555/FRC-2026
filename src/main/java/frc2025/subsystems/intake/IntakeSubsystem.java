@@ -29,9 +29,9 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 public class IntakeSubsystem extends SubsystemBase{
-    IntakeIOIF io;
+    IntakeIO io;
 
-    public IntakeSubsystem(IntakeIOIF io) {
+    public IntakeSubsystem(IntakeIO io) {
         this.io = io;
     }   
 
@@ -53,5 +53,5 @@ public class IntakeSubsystem extends SubsystemBase{
     public double getDeployVoltage() {return io.getTowerVoltage();}
     public double getPosition() {return io.getPosition();}
 
-    public IntakeIOIF getIO() {return this.io;}
+    public IntakeIO getIO() {return this.io;}
 }
