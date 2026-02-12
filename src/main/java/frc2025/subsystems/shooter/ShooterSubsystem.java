@@ -42,4 +42,5 @@ public class ShooterSubsystem extends SubsystemBase{
     public void setVoltage(double voltage) {this.io.setVoltage(voltage);}
     public double getVoltage() {return this.io.getVoltage();}
 
+    public ShooterIOIF getIO() {return this.io;}
 }

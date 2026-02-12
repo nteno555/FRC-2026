@@ -66,4 +66,7 @@ public class ShooterIOReal implements ShooterIOIF {
     @Override public double getVoltage() {return this.voltage;}
     @Override public double getCurrent() {return this.current;}
     @Override public double getPosition() {return this.position;}
+
+    public TalonFXConfigurator getConfig() {return this.config;}
+    public TalonFX getMotor() {return this.shooterMotor;}
 }

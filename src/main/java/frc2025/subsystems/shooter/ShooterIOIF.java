@@ -12,4 +12,6 @@ public interface ShooterIOIF {
     double getVoltage();
     double getCurrent();
     double getPosition();
+
+    void periodic();
 }

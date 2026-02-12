@@ -52,4 +52,6 @@ public class IntakeSubsystem extends SubsystemBase{
     public double getRollerVoltage() {return io.getRollerVoltage();}
     public double getDeployVoltage() {return io.getTowerVoltage();}
     public double getPosition() {return io.getPosition();}
+
+    public IntakeIOIF getIO() {return this.io;}
 }
