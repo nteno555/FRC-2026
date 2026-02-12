@@ -56,6 +56,7 @@ public class ShooterIOReal implements ShooterIOIF {
     public void periodic() {
         shooterMotor.setVoltage(this.voltage);
         shooterMotor.setPosition(this.position);
+        config.setPosition(this.position);
     }
 
     @Override public void setVoltage(double voltage) {this.voltage = voltage;}

@@ -37,7 +37,7 @@ public class IntakeIOReal implements IntakeIOIF {
     private double rollerCurrent = 0;
     private double rollerPosition = 0;
 
-    private TalonFXConfigurator config = new TalonFXConfigurator(new DeviceIdentifier());
+    private TalonFXConfigurator towerConfig = new TalonFXConfigurator(new DeviceIdentifier());
     private TalonFX towerMotor = new TalonFX(0,new CANBus("rio"));
     {
         TorqueCurrentConfigs current = new TorqueCurrentConfigs();
@@ -55,6 +55,7 @@ public class IntakeIOReal implements IntakeIOIF {
         limits.SupplyCurrentLowerTime = 10;
         towerMotor.getConfigurator().apply(limits);
     }
+    private TalonFXConfigurator rollerConfig = new TalonFXConfigurator(new DeviceIdentifier());
     private TalonFX rollerMotor = new TalonFX(2,new CANBus("rio"));
     {        
         TorqueCurrentConfigs current = new TorqueCurrentConfigs();
@@ -80,8 +81,10 @@ public class IntakeIOReal implements IntakeIOIF {
     public void periodic() {
         towerMotor.setVoltage(this.towerVoltage);
         towerMotor.setPosition(this.towerPosition);
+        towerConfig.setPosition(this.towerPosition);
         rollerMotor.setVoltage(this.rollerVoltage);
         rollerMotor.setPosition(this.rollerPosition);
+        rollerConfig.setPosition(this.rollerPosition);
     }
 
     @Override public void setTowerVoltage(double voltage) {this.towerVoltage = voltage;}
