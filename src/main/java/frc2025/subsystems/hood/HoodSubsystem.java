@@ -5,9 +5,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc2025.RobotState;
+import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
+
+import java.lang.reflect.Field;
 import java.util.function.Supplier;
 
 public class HoodSubsystem extends SubsystemBase {
@@ -61,8 +64,8 @@ public class HoodSubsystem extends SubsystemBase {
             double robotXpose = robotPose.getX();
             double robotYpose = robotPose.getY();
 
-            boolean nearBlueTrench = robotXpose < 6.25 && robotXpose > 3.75;
-            boolean nearRedTrench = robotXpose < 13.5 && robotXpose > 10.25;
+            boolean nearBlueTrench = Math.abs(robotXpose - FieldConstants.blueTrenchX) < 0.5;
+            boolean nearRedTrench = Math.abs(robotXpose - FieldConstants.redTrenchX) < 0.5;
             boolean nearTrenchY = robotYpose < 1.2 || robotXpose > 7.0;
 
             if ((nearRedTrench || nearBlueTrench) && nearTrenchY) {

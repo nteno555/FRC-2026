@@ -14,4 +14,7 @@ public class FieldConstants {
     public static Pose2d redShuttlePosUpper = new Pose2d(13.995, 6.50, new Rotation2d(0));
     public static Pose2d redShuttlePosLower = new Pose2d(13.995, 1.50, new Rotation2d(0));
     public static double yHalfLine = 4.044;
+
+    public static double blueTrenchX = 4.628;
+    public static double redTrenchX = 11.916;
 }

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc2025.Robot;
 import frc2025.RobotContainer;
 import frc2025.RobotState;
+import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.hood.HoodSubsystem;
@@ -67,8 +68,8 @@ public class AutoAimCommands {
 
 
             if(DriverStation.isAutonomous()) {
-                boolean inBlueZone = pose.getX() < 3.0;
-                boolean inRedZone = pose.getX() > 13.25;
+                boolean inBlueZone = pose.getX() < FieldConstants.blueTrenchX;
+                boolean inRedZone = pose.getX() > FieldConstants.redTrenchX;
 
                 if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
                     Logger.recordOutput("Indexer/autoIndex/autoInZone", inBlueZone);
@@ -78,17 +79,17 @@ public class AutoAimCommands {
                     good = good && inRedZone;
                 }
             }
-            else {
-                good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed);
-            }
 
             double a = RobotState.getInstance().getPigeonAcceleration();
             good = good && (a < SubsystemConstants.autoAimMaxAccel);
+            good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed);
 
-            Logger.recordOutput("Indexer/autoIndex/accelReady", (a < SubsystemConstants.autoAimMaxSpeed));
+            Logger.recordOutput("Indexer/autoIndex/accelReady", (a < SubsystemConstants.autoAimMaxAccel));
             Logger.recordOutput("Indexer/autoIndex/shooterReady", robotContainer.getShooter().getShotReady());
             Logger.recordOutput("Indexer/autoIndex/turretReady", robotContainer.getTurret().getShotReady());
             Logger.recordOutput("Indexer/autoIndex/speedReady", (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed));
+            Logger.recordOutput("Indexer/autoIndex/speed", RobotState.getInstance().getSpeed());
+            Logger.recordOutput("Indexer/autoIndex/accel", a);
             Logger.recordOutput("Indexer/autoIndexReady", good);
 
             return good;

@@ -48,7 +48,7 @@ public class LimelightFiducialCamera {
     public void writeGyro() {
         String prefix = "Vision/" + name + "_mt2/";
 
-        LimelightHelpers.SetIMUMode(name, 4);
+        LimelightHelpers.SetIMUMode(name, 0);
 //        LimelightHelpers.SetIMUMode(name, 0);
 
         if(turretMounted){// && robotToCameraPose != null) {

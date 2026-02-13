@@ -155,9 +155,9 @@ public class RobotContainer {
 
         driverXboxController.a().onTrue(new InstantCommand(() -> {
             if(!Alliance.get()){
-                SuperstructureCommands.resetOdometry(this, () -> new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
+                driveSubsystem.resetOdometry(new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
             } else {
-                SuperstructureCommands.resetOdometry(this, Pose2d::new);
+                driveSubsystem.resetOdometry(new Pose2d());
             }
         }));
         driverXboxController
@@ -284,9 +284,9 @@ public class RobotContainer {
 
         tuningController.a().onTrue(new InstantCommand(() -> {
             if(!Alliance.get()){
-                SuperstructureCommands.resetOdometry(this, () -> new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
+                driveSubsystem.resetOdometry(new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
             } else {
-                SuperstructureCommands.resetOdometry(this, Pose2d::new);
+                driveSubsystem.resetOdometry(new Pose2d());
             }
         }));
 

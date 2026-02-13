@@ -102,7 +102,7 @@ public class SubsystemConstants {
     public static double robotToFrontCameraPitch = 18.0;
     public static double robotToFrontCameraRoll = 0.0;
 
-    public static double autoAimMaxSpeed = 2.5;
+    public static double autoAimMaxSpeed = 2.0;
     public static double autoAimMaxAccel = 3.0;
 
     public static int hoodID = 27;
