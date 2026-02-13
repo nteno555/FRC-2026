@@ -86,7 +86,7 @@ public class LimelightFiducialCamera {
         if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
             LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{2, 3, 4, 5, 8, 9, 10, 11});
         } else {
-            LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{17, 18, 19, 20, 21, 24, 25, 26, 27});
+            LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{18, 19, 20, 21, 24, 25, 26, 27});
         }
     }
 

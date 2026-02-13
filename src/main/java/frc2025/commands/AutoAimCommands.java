@@ -63,9 +63,10 @@ public class AutoAimCommands {
                 good = robotContainer.getShooter().getShotReady() && robotContainer.getTurret().getShotReady();
             }
 
-            Pose2d pose = RobotState.getInstance().getVisionPose();
-            Pose2d virtualPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
-
+            Pose2d pose = RobotState.getInstance().getVisionShooterPose();
+            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
+            double dist = pose.getTranslation().getDistance(targetPose.getTranslation());
+            good = good && (dist < ShooterTreeMap.getInstance().getMaxDistance());
 
             if(DriverStation.isAutonomous()) {
                 boolean inBlueZone = pose.getX() < FieldConstants.blueTrenchX;

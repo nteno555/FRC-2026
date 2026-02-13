@@ -80,7 +80,7 @@ public class SubsystemConstants {
     public static double turretMinAngleRadians = 0;
     public static double turretMaxAngleRadians = 2.2 * Math.PI;
     public static double throughBoreZero1 = 0.641;
-    public static double throughBoreZero2 = 0.356;
+    public static double throughBoreZero2 = 0.776;
     public static double throughBoreRatio1 = 9.204;
     public static double throughBoreRatio2 = 7.5;
     public static double turretHomeAngleRotations = 0.0; // hard stop position in motor rotations
@@ -103,7 +103,7 @@ public class SubsystemConstants {
     public static double robotToFrontCameraRoll = 0.0;
 
     public static double autoAimMaxSpeed = 2.0;
-    public static double autoAimMaxAccel = 3.0;
+    public static double autoAimMaxAccel = 10.0;
 
     public static int hoodID = 27;
     public static int indexerID = 21;

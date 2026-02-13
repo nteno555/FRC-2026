@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.5858323290789573,
+        "x": 1.4390393812391498,
         "y": 0.630632474546079
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6544387591326684,
+        "x": 2.5076458112928606,
         "y": 0.6529667098433891
       },
       "isLocked": false,
@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 0.7953224021063914,
-        "y": 5.9439466417100695
+        "x": 1.0407122005886507,
+        "y": 5.978622833251953
       },
       "prevControl": {
-        "x": 1.7136186904907231,
-        "y": 5.057242849844473
+        "x": 4.92457943725586,
+        "y": 5.0976128054018375
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "stop auto aim",
-      "waypointRelativePos": 0.7580817846760797,
+      "waypointRelativePos": 0.8481842750726746,
       "endWaypointRelativePos": 1.0,
       "command": null
     }

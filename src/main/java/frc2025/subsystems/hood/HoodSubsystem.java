@@ -64,8 +64,8 @@ public class HoodSubsystem extends SubsystemBase {
             double robotXpose = robotPose.getX();
             double robotYpose = robotPose.getY();
 
-            boolean nearBlueTrench = Math.abs(robotXpose - FieldConstants.blueTrenchX) < 0.5;
-            boolean nearRedTrench = Math.abs(robotXpose - FieldConstants.redTrenchX) < 0.5;
+            boolean nearBlueTrench = Math.abs(robotXpose - FieldConstants.blueTrenchX) < 0.8;
+            boolean nearRedTrench = Math.abs(robotXpose - FieldConstants.redTrenchX) < 0.8;
             boolean nearTrenchY = robotYpose < 1.2 || robotXpose > 7.0;
 
             if ((nearRedTrench || nearBlueTrench) && nearTrenchY) {
