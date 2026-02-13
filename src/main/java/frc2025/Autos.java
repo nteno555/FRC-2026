@@ -23,9 +23,6 @@ import java.util.function.Supplier;
 
 public class Autos {
     private DriveSubsystem drive;
-    private static Pose2d HIGH_START = new Pose2d(3.516, 5.941, Rotation2d.fromDegrees(0));
-    private static Pose2d MID_START = new Pose2d(3.445, 4.092, Rotation2d.fromDegrees(0));
-    private static Pose2d LOW_START = new Pose2d(3.516, 2.112, Rotation2d.fromDegrees(0));
 
     private RobotContainer robotContainer;
 
@@ -126,7 +123,11 @@ public class Autos {
         Command pathCommands = intakePathResetOdometry(paths.get(0));
 
         for(int i = 1; i < paths.size(); i++) {
-            pathCommands = pathCommands.andThen(intakePath(paths.get(i)));
+            if(paths.get(i).equals("wait 2s")) {
+                pathCommands = pathCommands.andThen(Commands.waitSeconds(2));
+            } else {
+                pathCommands = pathCommands.andThen(intakePath(paths.get(i)));
+            }
         }
 
         if(!SubsystemConstants.hasTurret) {
@@ -156,4 +157,6 @@ public class Autos {
     public Command LowNeutralStationClimb() {return buildAuto(List.of("Low-Neutral", "Neutral-Station", "Station-Climb"), true); }
     public Command MidDepotNeutralClimb() {return buildAuto(List.of("Mid-Depot", "Depot-Neutral", "Neutral-Climb (Low)"), true);}
     public Command MidStationNeutralClimb() {return buildAuto(List.of("Mid-Station", "Station-Neutral", "Neutral-Climb (Low)"), true);}
+
+    public Command HighStealHighNeutralClimb() { return buildAuto(List.of("High-Steal", "Steal-High", "wait 2s", "High-Neutral", "Neutral-Climb (High)"), true); }
 }
