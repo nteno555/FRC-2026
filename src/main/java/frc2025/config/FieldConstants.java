@@ -17,4 +17,7 @@ public class FieldConstants {
 
     public static double blueTrenchX = 4.628;
     public static double redTrenchX = 11.916;
+
+    public static double inBlueZoneX = 3.637;
+    public static double inRedZoneX = 12.924;
 }

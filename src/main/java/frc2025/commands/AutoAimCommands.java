@@ -69,8 +69,8 @@ public class AutoAimCommands {
             good = good && (dist < ShooterTreeMap.getInstance().getMaxDistance());
 
             if(DriverStation.isAutonomous()) {
-                boolean inBlueZone = pose.getX() < FieldConstants.blueTrenchX;
-                boolean inRedZone = pose.getX() > FieldConstants.redTrenchX;
+                boolean inBlueZone = pose.getX() < FieldConstants.inBlueZoneX;
+                boolean inRedZone = pose.getX() > FieldConstants.inRedZoneX;
 
                 if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
                     Logger.recordOutput("Indexer/autoIndex/autoInZone", inBlueZone);
