@@ -46,9 +46,15 @@ public class Autos {
         }
 
         PathPlannerPath finalPath = path;
+        if (Robot.isSimulation()) {
+            return new FollowPathCommand(drive, () -> finalPath, () -> false, true);
+            //.raceWith(robotContainer.getIntake().setIntaking(() -> true));
+            //.andThen(new WaitCommand(0.2));
+        }
+
         return new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true);
-                //.raceWith(robotContainer.getIntake().setIntaking(() -> true));
-                //.andThen(new WaitCommand(0.2));
+        //.raceWith(robotContainer.getIntake().setIntaking(() -> true));
+        //.andThen(new WaitCommand(0.2));
     }
 
     private Command intakePathResetOdometry(String pathName) {
@@ -65,6 +71,12 @@ public class Autos {
                 finalPath.getStartingDifferentialPose().getTranslation(),
                 finalPath.getIdealStartingState().rotation()
         );
+
+        if (Robot.isSimulation()) {
+            return  SuperstructureCommands.resetOdometry(robotContainer, () -> startPose)
+                    .andThen(new FollowPathCommand(drive, () -> finalPath, () -> false, true));
+        }
+
         return  SuperstructureCommands.resetOdometry(robotContainer, () -> startPose)
                 .andThen(new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true));
                 //.raceWith(robotContainer.getIntake().setIntaking(() -> true));

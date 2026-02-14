@@ -10,12 +10,13 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc2025.RobotState;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveSubsystem;
 import org.littletonrobotics.junction.Logger;
 
-import java.util.List;
+import java.util.*;
 import java.util.function.Supplier;
 
 import static frc2025.subsystems.drive.DriveSubsystem.getPPConfig;
@@ -27,6 +28,11 @@ public class FollowPathCommand extends Command {
     private PathPlannerPath path;
     private PathPlannerTrajectory trajectory;
     private List<EventMarker> eventMarkers;
+    private boolean autoAimOverride;
+
+    private double distanceTraveled;
+    private Pose2d lastPose;
+    private List<String> firedMarkers;
 
     private PIDController rotationPID;
 
@@ -46,6 +52,8 @@ public class FollowPathCommand extends Command {
 
         addRequirements(this.driveSubsystem);
         this.useTimeout = useTimeout;
+        this.autoAimOverride = true;
+        this.firedMarkers = new ArrayList<>();
     }
 
     @Override
@@ -63,8 +71,11 @@ public class FollowPathCommand extends Command {
                 driveSubsystem.getRobotRelativeSpeeds(), RobotState.getInstance().getVisionPose().getRotation(), getPPConfig());
         this.timer.restart();
 
+        this.distanceTraveled = 0;
+        this.lastPose = trajectory.sample(0).pose;
+        this.firedMarkers.clear();
+
         Logger.recordOutput("Drive/followPathEnd", new Pose2d(path.getPathPoses().get(path.getPathPoses().size()-1).getTranslation(), path.getGoalEndState().rotation()));
-        //Logger.recordOutput("Drive/path", path.getPathPoses());
     }
 
     private double modAngle(double angle) {
@@ -87,33 +98,29 @@ public class FollowPathCommand extends Command {
         double omegaFeedback = rotationPID.calculate(
                 currentPose.getRotation().getRadians(), desiredState.pose.getRotation().getRadians());
 
-        Pose2d virtualTarget;
+        double pathProgress = (currentTime/trajectory.getTotalTimeSeconds()) * (path.getWaypoints().size() - 1);
+        pathProgress = Math.min(pathProgress, path.getWaypoints().size()-1);
+        Logger.recordOutput("Drive/pathProgress", pathProgress);
 
-        double pathProgress = currentTime / trajectory.getTotalTimeSeconds() * (path.getWaypoints().size() - 1);
-        boolean autoAimOverride = false;
         for(EventMarker marker : eventMarkers) {
+            Logger.recordOutput("Drive/markerStart", marker.position());
+            Logger.recordOutput("Drive/markerEnd", marker.endPosition());
             if (pathProgress >= marker.position() && pathProgress <= marker.endPosition()) {
-                if (marker.triggerName().equals("stop auto aim")) {
-                    autoAimOverride = false;
-                }
+                autoAimOverride = !marker.triggerName().equals("stop auto aim");
+            } else {
+                autoAimOverride = true;
             }
+            Logger.recordOutput("Drive/autoAutoAimOverride", autoAimOverride);
         }
-
-//        RobotState.getInstance().
 
         Logger.recordOutput("Drive/pathProgress", pathProgress);
         Logger.recordOutput("Drive/FollowPath/wantedVelocity", desiredState.linearVelocity);
         Logger.recordOutput("Drive/FollowPath/currentVelocity", RobotState.getInstance().getSpeed());
 
         if(!SubsystemConstants.hasTurret && autoAimOverride) {
-            virtualTarget = RobotState.getInstance().getShootingWhileMovingVirtualPose();
-            //double angleToTarget = Math.atan2(virtualTarget.getY() - currentPose.getY(), virtualTarget.getX() - currentPose.getX());
             double angleToTarget = RobotState.getInstance().getAngleToVirtualTarget();
             omegaFeedback = rotationPID.calculate(modAngle(currentPose.getRotation().getRadians()), modAngle(angleToTarget));
         }
-        else {virtualTarget = null;}
-
-//        Logger.recordOutput("Drive/autoVirtualTarget", virtualTarget);
 
         double dist = Math.sqrt(Math.pow(currentPose.getX() - desiredState.pose.getX(), 2) + Math.pow(currentPose.getY() - desiredState.pose.getY(), 2));
 
@@ -121,9 +128,12 @@ public class FollowPathCommand extends Command {
                 desiredState.fieldSpeeds.vxMetersPerSecond * -1.0,
                 desiredState.fieldSpeeds.vyMetersPerSecond * -1.0,
                 desiredState.fieldSpeeds.omegaRadiansPerSecond * -1.0
-                //omegaFeedback * -1
+//                omegaFeedback * -1
         );
-        if(!SubsystemConstants.hasTurret && autoAimOverride) desiredStateFlipped.omegaRadiansPerSecond = 0;
+
+        if(!SubsystemConstants.hasTurret && autoAimOverride) {
+            desiredStateFlipped.omegaRadiansPerSecond = omegaFeedback * -1.0;
+        }
 
         Logger.recordOutput("Drive/PathFollowingError", dist);
 
@@ -133,7 +143,6 @@ public class FollowPathCommand extends Command {
         );
 
         driveSubsystem.applyChassisSpeeds(chassisSpeeds);
-
     }
 
     @Override

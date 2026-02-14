@@ -154,13 +154,23 @@ public class RobotContainer {
 //        shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
 //        turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());
 
-        driverXboxController.a().onTrue(new InstantCommand(() -> {
-            if(!Alliance.get()){
-                driveSubsystem.resetOdometry(new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
-            } else {
-                driveSubsystem.resetOdometry(new Pose2d());
-            }
-        }));
+//        driverXboxController.a().onTrue(new InstantCommand(() -> {
+//            if(!Alliance.get()){
+//                driveSubsystem.resetOdometry(new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
+//            } else {
+//                driveSubsystem.resetOdometry(new Pose2d());
+//            }
+//        }));
+
+        driverXboxController.a().onTrue(
+                SuperstructureCommands.resetOdometry(
+                        this,
+                        () -> !Alliance.get()
+                                ? new Pose2d(new Translation2d(), new Rotation2d(Math.PI))
+                                : new Pose2d()
+                )
+        );
+
         driverXboxController
                 .x()
                 .and(driverXboxController.back().negate())
@@ -300,13 +310,22 @@ public class RobotContainer {
 //                turretSubsystem.autoAim()
 //        );
 
-        tuningController.a().onTrue(new InstantCommand(() -> {
-            if(!Alliance.get()){
-                driveSubsystem.resetOdometry(new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
-            } else {
-                driveSubsystem.resetOdometry(new Pose2d());
-            }
-        }));
+//        tuningController.a().onTrue(new InstantCommand(() -> {
+//            if(!Alliance.get()){
+//                driveSubsystem.resetOdometry(new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
+//            } else {
+//                driveSubsystem.resetOdometry(new Pose2d());
+//            }
+//        }));
+
+        tuningController.a().onTrue(
+                SuperstructureCommands.resetOdometry(
+                        this,
+                        () -> !Alliance.get()
+                                ? new Pose2d(new Translation2d(), new Rotation2d(Math.PI))
+                                : new Pose2d()
+                )
+        );
 
         SmartDashboard.putNumber("Tuning/RPM", 0.0);
         SmartDashboard.putNumber("Tuning/hoodPosition", 0.0);

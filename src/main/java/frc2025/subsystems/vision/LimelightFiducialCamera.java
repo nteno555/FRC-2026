@@ -48,8 +48,8 @@ public class LimelightFiducialCamera {
     public void writeGyro() {
         String prefix = "Vision/" + name + "_mt2/";
 
-        LimelightHelpers.SetIMUMode(name, 0);
 //        LimelightHelpers.SetIMUMode(name, 0);
+        LimelightHelpers.SetIMUMode(name, 4);
 
         if(turretMounted && SubsystemConstants.hasTurret){// && robotToCameraPose != null) {
             Transform2d robotToShooterReal = new Transform2d(

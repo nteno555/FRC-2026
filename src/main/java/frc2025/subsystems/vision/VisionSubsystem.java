@@ -2,6 +2,7 @@ package frc2025.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc2025.Robot;
 import frc2025.RobotState;
@@ -31,6 +32,12 @@ public class VisionSubsystem extends SubsystemBase {
 //        LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-front");
 //        Logger.recordOutput("Vision/testtesttest", poseEstimate.tagCount);
 
+    }
+
+    public Command resetOdometryCommand() {
+        return this.runOnce(() -> {
+            resetOdometry();
+        });
     }
 
     public void resetOdometry() {
