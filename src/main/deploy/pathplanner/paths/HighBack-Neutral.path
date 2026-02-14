@@ -3,16 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.6172138626663775,
-        "y": 7.247137379399053
+        "x": 3.3288349236382384,
+        "y": 7.340703124434859
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.0927256130642355,
-        "y": 7.205049760606554
+        "x": 4.071497967755353,
+        "y": 7.641677089549877
       },
       "isLocked": false,
       "linkedName": "high driveback"
+    },
+    {
+      "anchor": {
+        "x": 4.629439683702258,
+        "y": 7.293771090472186
+      },
+      "prevControl": {
+        "x": 3.5635883834273736,
+        "y": 7.265179763228805
+      },
+      "nextControl": {
+        "x": 6.350107737632126,
+        "y": 7.339927794877811
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,8 +36,8 @@
         "y": 4.592663896348742
       },
       "prevControl": {
-        "x": 7.9426731544777205,
-        "y": 7.984774554217303
+        "x": 7.733153095386648,
+        "y": 6.704091304637768
       },
       "nextControl": null,
       "isLocked": false,
@@ -36,10 +52,17 @@
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "stop auto aim",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 1.0,
+      "command": null
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 2.5,
-    "maxAcceleration": 2.5,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

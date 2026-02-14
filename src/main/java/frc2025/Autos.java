@@ -76,11 +76,19 @@ public class Autos {
                                 robotContainer,
                                 () -> RobotState.getInstance().getTargetPose(),
                                 () -> new ChassisSpeeds(0,0,0)
-                        );
+                        ).alongWith(AutoAimCommands.autoIndex(robotContainer));
                 } else {
                         //return AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getTargetPose(), null);
                     return Commands.none();
                 }
+    }
+
+    private Command driveAutoAim() {
+        return AutoAimCommands.driveAutoAim(
+                robotContainer,
+                () -> RobotState.getInstance().getTargetPose(),
+                () -> new ChassisSpeeds(0,0,0)
+        ).alongWith(AutoAimCommands.autoIndex(robotContainer));
     }
 
 
@@ -112,7 +120,7 @@ public class Autos {
         } else {
                 auto = robotContainer.getShooter().autoAim()
                         .alongWith(robotContainer.getHood().autoAim())
-                        .alongWith(AutoAimCommands.autoIndex(robotContainer))
+//                        .alongWith(AutoAimCommands.autoIndex(robotContainer))
                         .alongWith(
                                 robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
                                         .until(() -> robotContainer.getIntake().getDeployReady())
@@ -124,7 +132,14 @@ public class Autos {
 
         for(int i = 1; i < paths.size(); i++) {
             if(paths.get(i).equals("wait 2s")) {
-                pathCommands = pathCommands.andThen(Commands.waitSeconds(2));
+                if(SubsystemConstants.hasTurret) {
+                    pathCommands = pathCommands.andThen(Commands.waitSeconds(2));
+                } else {
+                    pathCommands = pathCommands.andThen(
+                            driveAutoAim()
+                                    .withTimeout(2.5)
+                    );
+                }
             } else {
                 pathCommands = pathCommands.andThen(intakePath(paths.get(i)));
             }
@@ -155,6 +170,7 @@ public class Autos {
     public Command LowStationNeutralClimb() { return buildAuto(List.of("Low-Station", "Station-Neutral", "Neutral-Climb (Low)"), true); }
     public Command LowNeutralStationNeutralClimb() { return buildAuto(List.of("Low-Neutral", "Neutral-Station", "Station-Neutral", "Neutral-Climb (Low)"), true); }
     public Command LowNeutralStationClimb() {return buildAuto(List.of("Low-Neutral", "Neutral-Station", "Station-Climb"), true); }
+    public Command LowStealLowNeutralClimb() {return buildAuto(List.of("Low-Steal", "Steal-Low", "wait 2s", "Low-Neutral", "Neutral-Climb (Low)"), true);}
     public Command MidDepotNeutralClimb() {return buildAuto(List.of("Mid-Depot", "Depot-Neutral", "Neutral-Climb (Low)"), true);}
     public Command MidStationNeutralClimb() {return buildAuto(List.of("Mid-Station", "Station-Neutral", "Neutral-Climb (Low)"), true);}
     public Command HighStealHighNeutralClimb() { return buildAuto(List.of("High-Steal", "Steal-HighBack", "wait 2s", "HighBack-Neutral", "Neutral-Climb (Trench High)"), true); }

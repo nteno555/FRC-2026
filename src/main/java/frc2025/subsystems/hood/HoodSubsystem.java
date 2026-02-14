@@ -1,6 +1,8 @@
 package frc2025.subsystems.hood;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -59,16 +61,33 @@ public class HoodSubsystem extends SubsystemBase {
 
     public Command autoAim() {
         return setPosition(() -> {
+            ChassisSpeeds robotVelocity = RobotState.getInstance().getFieldRelativeSpeeds();
+            double dt = 1.0;
 
             Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
             double robotXpose = robotPose.getX();
             double robotYpose = robotPose.getY();
 
-            boolean nearBlueTrench = Math.abs(robotXpose - FieldConstants.blueTrenchX) < 1.0;
-            boolean nearRedTrench = Math.abs(robotXpose - FieldConstants.redTrenchX) < 1.0;
-            boolean nearTrenchY = robotYpose < 1.2 || robotYpose > 7.0;
+            Pose2d futureRobotPose = new Pose2d(
+                    robotXpose + robotVelocity.vxMetersPerSecond * dt,
+                    robotYpose + robotVelocity.vyMetersPerSecond * dt,
+                    Rotation2d.kZero
+            );
+
+            boolean nearBlueTrench = Math.abs(robotXpose - FieldConstants.blueTrenchX) < 1;
+            boolean nearRedTrench = Math.abs(robotXpose - FieldConstants.redTrenchX) < 1;
+            boolean nearTrenchY = robotYpose < 1.982 || robotYpose > 6.170;
+
+            boolean currentBlueTrench = (robotXpose - FieldConstants.blueTrenchX) < 0.0;
+            boolean futureBlueTrench = (futureRobotPose.getX() - FieldConstants.blueTrenchX) < 0.0;
+            boolean currentRedTrench = (robotXpose - FieldConstants.redTrenchX) < 0.0;
+            boolean futureRedTrench = (futureRobotPose.getX() - FieldConstants.redTrenchX) < 0.0;
 
             if ((nearRedTrench || nearBlueTrench) && nearTrenchY) {
+                return 0.0;
+            }
+
+            if(DriverStation.isAutonomous() && (currentBlueTrench != futureBlueTrench || currentRedTrench != futureRedTrench)) {
                 return 0.0;
             }
 

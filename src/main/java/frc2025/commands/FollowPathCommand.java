@@ -40,7 +40,7 @@ public class FollowPathCommand extends Command {
         this.driveSubsystem = drive;
         this.flip = flip;
 
-        translationPID = new PIDController(2.0, 0, 0);
+        translationPID = new PIDController(3.0, 0, 0);
         rotationPID = new PIDController(5, 0, 0);
         rotationPID.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -90,7 +90,7 @@ public class FollowPathCommand extends Command {
         Pose2d virtualTarget;
 
         double pathProgress = currentTime / trajectory.getTotalTimeSeconds() * (path.getWaypoints().size() - 1);
-        boolean autoAimOverride = true;
+        boolean autoAimOverride = false;
         for(EventMarker marker : eventMarkers) {
             if (pathProgress >= marker.position() && pathProgress <= marker.endPosition()) {
                 if (marker.triggerName().equals("stop auto aim")) {
@@ -113,7 +113,7 @@ public class FollowPathCommand extends Command {
         }
         else {virtualTarget = null;}
 
-        Logger.recordOutput("Drive/autoVirtualTarget", virtualTarget);
+//        Logger.recordOutput("Drive/autoVirtualTarget", virtualTarget);
 
         double dist = Math.sqrt(Math.pow(currentPose.getX() - desiredState.pose.getX(), 2) + Math.pow(currentPose.getY() - desiredState.pose.getY(), 2));
 

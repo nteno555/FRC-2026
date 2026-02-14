@@ -8,20 +8,36 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.91657436907733,
-        "y": 7.734765107896592
+        "x": 8.47647942097982,
+        "y": 7.344975497775607
       },
       "isLocked": false,
       "linkedName": "steal (high)"
     },
     {
       "anchor": {
-        "x": 2.6172138626663775,
-        "y": 7.247137379399053
+        "x": 4.626195037841797,
+        "y": 7.340703124434859
       },
       "prevControl": {
-        "x": 6.478683816415292,
-        "y": 7.177317008689599
+        "x": 7.792029321741175,
+        "y": 7.352580681129738
+      },
+      "nextControl": {
+        "x": 4.342355921794867,
+        "y": 7.339638218665717
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.3288349236382384,
+        "y": 7.340703124434859
+      },
+      "prevControl": {
+        "x": 3.5786682414932227,
+        "y": 7.349830735818474
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,30 +46,23 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.7600643760279608,
+      "waypointRelativePos": 0.8617399516858554,
       "rotationDegrees": -90.0
     }
   ],
-  "constraintZones": [
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
     {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.7693511861503326,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 1.5,
-        "maxAngularVelocity": 720.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
+      "name": "stop auto aim",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 1.403753439057309,
+      "command": null
     }
   ],
-  "pointTowardsZones": [],
-  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.5,
-    "maxAcceleration": 2.5,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

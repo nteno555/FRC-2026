@@ -32,7 +32,7 @@ public class AutoAimCommands {
     public static Command driveAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {
         return robotContainer.getDrive().driveFieldRelative(
                 () -> {
-                    PIDController angleController = new PIDController(5, 0.0, 0.0);
+                    PIDController angleController = new PIDController(3, 0.0, 0.0);
                     angleController.enableContinuousInput(-Math.PI, Math.PI);
 
                     Pose2d shooterPose = RobotState.getInstance().getVisionShooterPose();

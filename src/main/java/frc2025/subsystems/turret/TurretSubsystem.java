@@ -38,9 +38,16 @@ public class TurretSubsystem extends SubsystemBase {
 
         RobotState.getInstance().setTurretAngle(inputs.positionRadians);
 
-        if(!zeroed && inputs.throughboresConnected) {
-            io.rezeroCRT();
-            zeroed = true;
+        if(SubsystemConstants.hasTurret) {
+            if (!zeroed && inputs.throughboresConnected) {
+                io.rezeroCRT();
+                zeroed = true;
+            }
+        } else {
+            if (!zeroed) {
+                io.rezero(0.0);
+                zeroed = true;
+            }
         }
     }
 

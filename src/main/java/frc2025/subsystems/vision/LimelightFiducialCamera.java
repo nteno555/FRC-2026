@@ -51,7 +51,7 @@ public class LimelightFiducialCamera {
         LimelightHelpers.SetIMUMode(name, 0);
 //        LimelightHelpers.SetIMUMode(name, 0);
 
-        if(turretMounted){// && robotToCameraPose != null) {
+        if(turretMounted && SubsystemConstants.hasTurret){// && robotToCameraPose != null) {
             Transform2d robotToShooterReal = new Transform2d(
                     SubsystemConstants.robotToShooter.getTranslation(),
                     SubsystemConstants.robotToShooter.getRotation().plus(Rotation2d.fromRadians(RobotState.getInstance().getTurretAngle()))
@@ -124,7 +124,7 @@ public class LimelightFiducialCamera {
 
         Pose2d pose = poseEstimate.pose;
 
-        if(turretMounted) {
+        if(turretMounted && SubsystemConstants.hasTurret) {
             pose = transformTurretPose(pose);
         }
 
@@ -151,7 +151,7 @@ public class LimelightFiducialCamera {
         }
 
         double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
-        if(turretMounted) {
+        if(turretMounted && SubsystemConstants.hasTurret) {
             omega += RobotState.getInstance().getTurretVelocity();
         }
         if(omega > maxYawRate) {
@@ -188,7 +188,7 @@ public class LimelightFiducialCamera {
 
         Pose2d pose = poseEstimate.pose;
 
-        if(turretMounted) {
+        if(turretMounted && SubsystemConstants.hasTurret) {
             pose = transformTurretPose(pose);
         }
 
@@ -207,7 +207,7 @@ public class LimelightFiducialCamera {
         }
 
         double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
-        if(turretMounted) {
+        if(turretMounted && SubsystemConstants.hasTurret) {
             omega += RobotState.getInstance().getTurretVelocity();
         }
 

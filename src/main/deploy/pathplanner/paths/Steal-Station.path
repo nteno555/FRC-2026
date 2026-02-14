@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 4.645241570366754,
-        "y": 0.630632474546079
+        "x": 4.618840507224754,
+        "y": 0.6666690594708484
       },
       "prevControl": {
-        "x": 5.523602572970921,
-        "y": 0.636871626112196
+        "x": 5.497201509828921,
+        "y": 0.6729082110369655
       },
       "nextControl": {
-        "x": 3.5855422809058943,
-        "y": 0.6231052454661782
+        "x": 3.5591412177638944,
+        "y": 0.6591418303909476
       },
       "isLocked": false,
       "linkedName": "trench low"
@@ -79,8 +79,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.5,
-    "maxAcceleration": 2.5,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
