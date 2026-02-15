@@ -18,8 +18,10 @@ public class VisionIOReal implements VisionIO {
         this.cameras = List.of(
                 new LimelightFiducialCamera("limelight-front", false, SubsystemConstants.robotToFrontCameraForward, SubsystemConstants.robotToFrontCameraRight, SubsystemConstants.robotToFrontCameraUp,
                         SubsystemConstants.robotToFrontCameraYaw, SubsystemConstants.robotToFrontCameraPitch, SubsystemConstants.robotToFrontCameraRoll),
-                new LimelightFiducialCamera("limelight-turret", true, 0.0, 0.0, SubsystemConstants.robotToTurretCameraUp,
-                        0.0, SubsystemConstants.robotToTurretCameraPitch, SubsystemConstants.robotToTurretCameraRoll)
+//                new LimelightFiducialCamera("limelight-turret", true, 0.0, 0.0, SubsystemConstants.robotToTurretCameraUp,
+//                        0.0, SubsystemConstants.robotToTurretCameraPitch, SubsystemConstants.robotToTurretCameraRoll)
+                new LimelightFiducialCamera("limelight-turret", false, SubsystemConstants.robotToTurretCameraForward, SubsystemConstants.robotToTurretCameraRight, SubsystemConstants.robotToTurretCameraUp,
+                        SubsystemConstants.robotToTurretCameraYaw, SubsystemConstants.robotToTurretCameraPitch, SubsystemConstants.robotToTurretCameraRoll)
         );
     }
 

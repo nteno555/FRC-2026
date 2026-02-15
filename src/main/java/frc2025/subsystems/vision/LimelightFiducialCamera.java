@@ -48,10 +48,10 @@ public class LimelightFiducialCamera {
     public void writeGyro() {
         String prefix = "Vision/" + name + "_mt2/";
 
+        LimelightHelpers.SetIMUMode(name, 0);
 //        LimelightHelpers.SetIMUMode(name, 0);
-        LimelightHelpers.SetIMUMode(name, 4);
 
-        if(turretMounted && SubsystemConstants.hasTurret){// && robotToCameraPose != null) {
+        if(turretMounted){// && robotToCameraPose != null) {
             Transform2d robotToShooterReal = new Transform2d(
                     SubsystemConstants.robotToShooter.getTranslation(),
                     SubsystemConstants.robotToShooter.getRotation().plus(Rotation2d.fromRadians(RobotState.getInstance().getTurretAngle()))
@@ -223,7 +223,7 @@ public class LimelightFiducialCamera {
 
         if(!reject) {
             Vector<N3> distStdDevs;
-            distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 2.0, Math.pow(leastDistance, 2) / 2.0, 999999999); // maybe use least distance instead
+            distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 2.0, Math.pow(leastDistance, 2) / 2.0, 999999999);
             VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
                     poseEstimate.timestampSeconds, pose, distStdDevs
             );

@@ -151,7 +151,7 @@ public class DriveSubsystem extends SubsystemBase {
     public boolean getShotReady() {
         double angleToVirtualTarget = RobotState.getInstance().getAngleToVirtualTarget();
         double robotAngle = RobotState.getInstance().getVisionPose().getRotation().getRadians();
-        boolean ready = Math.abs((angleToVirtualTarget - robotAngle) % (Math.PI * 2)) < Math.toRadians(15.0);
+        boolean ready = (Math.abs((angleToVirtualTarget - robotAngle) % (Math.PI * 2))) < Math.toRadians(15.0);
         ready = ready && (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed);
         return ready;
     }

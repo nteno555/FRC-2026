@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 4.618840507224754,
-        "y": 0.6666690594708484
+        "x": 4.636350318060981,
+        "y": 0.7610139295789928
       },
       "prevControl": {
-        "x": 6.121991131817853,
-        "y": 0.6937159762912337
+        "x": 6.13950094265408,
+        "y": 0.7880608463993781
       },
       "nextControl": {
-        "x": 3.113588515461771,
-        "y": 0.6395843317337639
+        "x": 3.131098326297998,
+        "y": 0.7339292018419084
       },
       "isLocked": false,
       "linkedName": "trench low"
@@ -64,7 +64,7 @@
     {
       "name": "stop auto aim",
       "waypointRelativePos": 0.0,
-      "endWaypointRelativePos": 1.2706254217711788,
+      "endWaypointRelativePos": 2.0,
       "command": null
     }
   ],

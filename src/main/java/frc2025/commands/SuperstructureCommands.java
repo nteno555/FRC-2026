@@ -25,7 +25,7 @@ public class SuperstructureCommands {
     }
 
     public static Command resetOdometry(RobotContainer robotContainer, Supplier<Pose2d> pose) {
-        return robotContainer.getDrive().resetOdometryCommand(pose)
-                .alongWith(robotContainer.getVision().resetOdometryCommand());
+        return robotContainer.getDrive().resetOdometryCommand(pose);
+//                .alongWith(robotContainer.getVision().resetOdometryCommand());
     }
 }

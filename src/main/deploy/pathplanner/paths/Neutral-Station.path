@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.774683537235967,
-        "y": 2.3422687671802667
+        "x": 7.788615523726852,
+        "y": 2.6811512677228007
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.6462058128074375,
-        "y": 0.4536649785924831
+        "x": 7.846568076804832,
+        "y": 0.9316597482186775
       },
       "isLocked": false,
       "linkedName": "Low Neutral"
     },
     {
       "anchor": {
-        "x": 4.618840507224754,
-        "y": 0.6666690594708484
+        "x": 4.636350318060981,
+        "y": 0.7610139295789928
       },
       "prevControl": {
-        "x": 6.054227753815828,
-        "y": 0.6900469122992638
+        "x": 6.473923977322049,
+        "y": 0.7207198361997258
       },
       "nextControl": {
-        "x": 3.8341950233084328,
-        "y": 0.6538897020611736
+        "x": 3.9074065996209155,
+        "y": 0.7769981194431778
       },
       "isLocked": false,
       "linkedName": "trench low"
     },
     {
       "anchor": {
-        "x": 1.4390393812391498,
-        "y": 0.630632474546079
+        "x": 1.1092280493842237,
+        "y": 0.7099873883282704
       },
       "prevControl": {
-        "x": 2.0898835607458053,
-        "y": 0.6068640340169269
+        "x": 2.5999393270987055,
+        "y": 0.6800156769929118
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,35 +46,17 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.6807379471628291,
-      "rotationDegrees": 90.0
-    },
-    {
-      "waypointRelativePos": 1.2,
+      "waypointRelativePos": 0.8191104286595399,
       "rotationDegrees": 90.0
     }
   ],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.8086878374169425,
-      "maxWaypointRelativePos": 2.0,
-      "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 240.0,
-        "maxAngularAcceleration": 360.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "stop auto aim",
       "waypointRelativePos": 0.0,
-      "endWaypointRelativePos": 2.0,
+      "endWaypointRelativePos": 1.3168750648878738,
       "command": null
     }
   ],

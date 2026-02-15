@@ -113,6 +113,8 @@ public class FollowPathCommand extends Command {
             Logger.recordOutput("Drive/autoAutoAimOverride", autoAimOverride);
         }
 
+        autoAimOverride = false;
+
         Logger.recordOutput("Drive/pathProgress", pathProgress);
         Logger.recordOutput("Drive/FollowPath/wantedVelocity", desiredState.linearVelocity);
         Logger.recordOutput("Drive/FollowPath/currentVelocity", RobotState.getInstance().getSpeed());

@@ -3,32 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4390393812391498,
-        "y": 0.630632474546079
+        "x": 1.1092280493842237,
+        "y": 0.7099873883282704
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5076458112928606,
-        "y": 0.6529667098433891
+        "x": 1.9551461814597808,
+        "y": 0.7186264501448523
       },
       "isLocked": false,
       "linkedName": "station"
     },
     {
       "anchor": {
-        "x": 1.0407122005886507,
-        "y": 5.978622833251953
+        "x": 1.2422441773591222,
+        "y": 5.979450141059028
       },
       "prevControl": {
-        "x": 4.92457943725586,
-        "y": 5.0976128054018375
+        "x": 3.607448511759441,
+        "y": 4.538344013915288
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "depot"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.46992348118832256,
+      "rotationDegrees": 29.999999999999996
+    },
+    {
+      "waypointRelativePos": 0.7588057668585528,
+      "rotationDegrees": -29.999999999999996
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
