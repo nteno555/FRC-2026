@@ -187,6 +187,7 @@ public class Autos {
     public Command MidStationNeutralClimb() {return buildAuto(List.of("Mid-Station", "Station-Neutral", "Neutral-Climb (Low)"), true);}
     public Command MidStationDepotClimb() { return buildAuto(List.of("Mid-Station", "Station-Depot", "Depot-Climb"), true); }
     public Command MidStationDepot() {return buildAuto(List.of("Mid-Station", "Station-Depot"), false);}
+    public Command MidStationDepotForward() {return buildAuto(List.of("Mid-Station", "Station-Depot", "Depot-Forward"), false);}
 
     public Command HighDepotStationClimb() { return buildAuto(List.of("High-Depot", "Depot-Station", "Station-Climb"), true); }
     public Command HighDepotNeutralClimb() { return buildAuto(List.of("High-Depot", "Depot-Neutral", "Neutral-Climb (High)"), true); }

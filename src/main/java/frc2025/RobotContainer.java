@@ -370,7 +370,7 @@ public class RobotContainer {
     public void autoInit() {
 //        autoCommand = autoChooser.getSelected();
 //        autoCommand = autos.HighDepotNeutralClimb();
-        autoCommand = autos.MidStationDepot();
+        autoCommand = autos.MidStationDepotForward();
 //        autoCommand = autos.HighStealHighNeutralClimb();
         RobotState.getInstance().setShuttling(false);
         CommandScheduler.getInstance().schedule(autoCommand);
