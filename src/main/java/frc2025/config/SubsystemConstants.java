@@ -38,6 +38,7 @@ public class SubsystemConstants {
     public static double hoodZeroOffsetRadians = 1.22; // 70 degrees
     public static double hoodForwardSoftLimit = 2.84;
     public static double hoodReverseSoftLimit = 0.0;
+    public static double hoodRezeroVoltage = -3.5;
 
     public static double intakekS = 0.00;
     public static double intakekG = 0.2;
@@ -57,7 +58,7 @@ public class SubsystemConstants {
     public static double intakeDeployPosition = -3.9;
     public static double intakeRollerVoltage = 8.0;
 
-    public static double spindexerShootVoltage = -8.0;
+    public static double spindexerShootVoltage = -12.0;
     public static double towerShootVoltage = -8.0;
 
     // Turret Gear Ratio: 8:60 & 44:54

@@ -190,8 +190,7 @@ public class RobotContainer {
         driverXboxController
                 .b()
                 .and(driverXboxController.back())
-                .whileTrue(hoodSubsystem.homeThenRezero())
-                .whileFalse(hoodSubsystem.setVoltage(() -> 0.0));
+                .whileTrue(hoodSubsystem.homeThenRezero());
         driverXboxController
                 .x()
                 .and(driverXboxController.back())
@@ -370,7 +369,7 @@ public class RobotContainer {
     public void autoInit() {
 //        autoCommand = autoChooser.getSelected();
 //        autoCommand = autos.HighDepotNeutralClimb();
-        autoCommand = autos.LowNeutralLowNeutralMidLow();
+        autoCommand = autos.MidStationDepotForward();
 //        autoCommand = autos.HighStealHighNeutralClimb();
         RobotState.getInstance().setShuttling(false);
         CommandScheduler.getInstance().schedule(autoCommand);

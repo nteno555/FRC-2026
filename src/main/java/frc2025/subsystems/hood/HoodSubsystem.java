@@ -61,9 +61,12 @@ public class HoodSubsystem extends SubsystemBase {
 
     public Command autoAim() {
         return setPosition(() -> {
+            if (usingVoltage) {
+                return inputs.positionRotations;
+            }
+
             ChassisSpeeds robotVelocity = RobotState.getInstance().getFieldRelativeSpeeds();
             double dt = 1.0;
-
             Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
             double robotXpose = robotPose.getX();
             double robotYpose = robotPose.getY();
@@ -122,8 +125,11 @@ public class HoodSubsystem extends SubsystemBase {
 
     public Command homeThenRezero() {
         return this.run(() -> {
-            io.setVoltage(-3.0);
+            usingVoltage = true;
+            io.setVoltage(SubsystemConstants.hoodRezeroVoltage);
+        }).finallyDo(() -> {
             io.rezero(0.0);
+            usingVoltage = false;
         });
     }
 
