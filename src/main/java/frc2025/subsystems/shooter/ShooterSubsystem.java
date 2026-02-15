@@ -59,6 +59,11 @@ public class ShooterSubsystem extends SubsystemBase {
             Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
             Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
             double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
+
+            if (RobotState.getInstance().getShuttling()) {
+                return ShooterTreeMap.getInstance().shuttlingRPSTreeMap.getInterpolated(dist);
+            }
+
             double wantedRPS = ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist);
 
             double radialVelocity = RobotState.getInstance().getRadialVelocity();

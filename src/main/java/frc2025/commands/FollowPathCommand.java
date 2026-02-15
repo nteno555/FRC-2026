@@ -62,8 +62,9 @@ public class FollowPathCommand extends Command {
         translationPID.reset();
 
         path = pathSupplier.get();
-        if(this.flip.get())
+        if(this.flip.get()) {
             path = path.flipPath();
+        }
 
         this.eventMarkers = path.getEventMarkers();
 

@@ -16,6 +16,7 @@ import frc2025.subsystems.hood.HoodSubsystem;
 import frc2025.subsystems.shooter.ShooterSubsystem;
 import frc2025.subsystems.vision.LimelightHelpers;
 import frc2025.subsystems.vision.VisionPoseEstimator;
+import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.ArrayList;
@@ -143,8 +144,14 @@ public class RobotState {
             return;
         }
 
-        if (xPos > 4.6 && xPos < 11.9) shuttling = true;
-        else shuttling = false;
+        boolean inBlueZone = xPos < FieldConstants.inBlueZoneX && !Alliance.get();
+        boolean inRedZone = xPos > FieldConstants.inRedZoneX && Alliance.get();
+
+        Logger.recordOutput("Shooter/inBlueZone", inBlueZone);
+        Logger.recordOutput("Shooter/inRedZone", inRedZone);
+
+        if (inBlueZone || inRedZone) shuttling = false;
+        else shuttling = true;
     }
 
     public void updateShootingWhileMovingVirtualPose() {

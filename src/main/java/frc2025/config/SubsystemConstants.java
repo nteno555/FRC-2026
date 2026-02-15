@@ -36,7 +36,7 @@ public class SubsystemConstants {
     public static double hoodTorqueNeutralDeadband = 1;
     public static double hoodRotationsPerRadian = 31.7131757633;
     public static double hoodZeroOffsetRadians = 1.22; // 70 degrees
-    public static double hoodForwardSoftLimit = 2.76;
+    public static double hoodForwardSoftLimit = 2.84;
     public static double hoodReverseSoftLimit = 0.0;
 
     public static double intakekS = 0.00;

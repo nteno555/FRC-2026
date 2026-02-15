@@ -47,7 +47,7 @@ public class Autos {
 
         PathPlannerPath finalPath = path;
         if (Robot.isSimulation()) {
-            return new FollowPathCommand(drive, () -> finalPath, () -> false, true);
+            return new FollowPathCommand(drive, () -> finalPath, () -> true, true);
             //.raceWith(robotContainer.getIntake().setIntaking(() -> true));
             //.andThen(new WaitCommand(0.2));
         }
@@ -72,12 +72,7 @@ public class Autos {
                 finalPath.getIdealStartingState().rotation()
         );
 
-        if (Robot.isSimulation()) {
-            return  SuperstructureCommands.resetOdometry(robotContainer, () -> startPose)
-                    .andThen(new FollowPathCommand(drive, () -> finalPath, () -> false, true));
-        }
-
-        return  SuperstructureCommands.resetOdometry(robotContainer, () -> startPose)
+        return  SuperstructureCommands.resetOdometry(robotContainer, startPoseSupplier(startPose))
                 .andThen(new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true));
                 //.raceWith(robotContainer.getIntake().setIntaking(() -> true));
     }

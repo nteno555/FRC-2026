@@ -66,19 +66,16 @@ public class AutoAimCommands {
             Pose2d pose = RobotState.getInstance().getVisionShooterPose();
             Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
             double dist = pose.getTranslation().getDistance(targetPose.getTranslation());
-            good = good && (dist < ShooterTreeMap.getInstance().getMaxDistance());
+
+            boolean inBlueZone = pose.getX() < FieldConstants.inBlueZoneX && !Alliance.get();
+            boolean inRedZone = pose.getX() > FieldConstants.inRedZoneX && Alliance.get();
+
+            if (inBlueZone || inRedZone) {
+                good = good && (dist < ShooterTreeMap.getInstance().getMaxDistance());
+            }
 
             if(DriverStation.isAutonomous()) {
-                boolean inBlueZone = pose.getX() < FieldConstants.inBlueZoneX;
-                boolean inRedZone = pose.getX() > FieldConstants.inRedZoneX;
-
-                if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-                    Logger.recordOutput("Indexer/autoIndex/autoInZone", inBlueZone);
-                    good = good && inBlueZone;
-                } else {
-                    Logger.recordOutput("Indexer/autoIndex/autoInZone", inRedZone);
-                    good = good && inRedZone;
-                }
+                good = good && (inBlueZone || inRedZone);
             }
 
             double a = RobotState.getInstance().getPigeonAcceleration();

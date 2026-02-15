@@ -93,6 +93,11 @@ public class HoodSubsystem extends SubsystemBase {
 
             Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
             double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
+
+            if (RobotState.getInstance().getShuttling()) {
+                return ShooterTreeMap.getInstance().shuttlingHoodTreeMap.getInterpolated(dist);
+            }
+
             return ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist);
         });
     }
