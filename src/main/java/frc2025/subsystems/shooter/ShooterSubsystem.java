@@ -29,18 +29,18 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 public class ShooterSubsystem extends SubsystemBase{
-    private ShooterIO io;
+    // private ShooterIO io;
 
-    public ShooterSubsystem(ShooterIO io) {
-        this.io = io;
-    }
+    // public ShooterSubsystem(ShooterIO io) {
+    //     this.io = io;
+    // }
 
-    public void periodic() {
-        io.periodic();
-    }
+    // public void periodic() {
+    //     io.periodic();
+    // }
 
-    public void setVoltage(double voltage) {this.io.setVoltage(voltage);}
-    public double getVoltage() {return this.io.getVoltage();}
+    // public void setVoltage(double voltage) {this.io.setVoltage(voltage);}
+    // public double getVoltage() {return this.io.getVoltage();}
 
-    public ShooterIO getIO() {return this.io;}
+    // public ShooterIO getIO() {return this.io;}
 }

@@ -144,11 +144,27 @@ public class RobotContainer {
     private void configureBindings() {
         driveSubsystem.setDefaultCommand(
                 driveSubsystem.driveTeleop(
-                        () -> (0.2) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                        () -> (0.2) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                        () -> (-0.7) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
+                        () -> (0.3) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (0.3) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (-1.0) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
                 )
         );
+
+        driverXboxController.a().onTrue(new InstantCommand(() -> {
+            // if(!Alliance.get()){
+            //     driveSubsystem.resetOdometry(new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
+            // } else {
+                driveSubsystem.resetOdometry(new Pose2d());
+            // }
+        }));
+
+        driverXboxController.b().onTrue(new InstantCommand(() -> {
+            // if(!Alliance.get()){
+            //     driveSubsystem.resetOdometry(new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
+            // } else {
+                driveSubsystem.resetOdometry(new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
+            // }
+        }));
     }
         // hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
         // shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
@@ -156,13 +172,7 @@ public class RobotContainer {
 //        indexerSubsystem.setDefaultCommand(AutoAimCommands.autoIndex(this));
         //hoodSubsystem.setDefaultCommand(AutoAimCommands.hoodAutoAim(this, () -> RobotState.getInstance().getTargetPose()));
 
-        // driverXboxController.a().onTrue(new InstantCommand(() -> {
-        //     if(!Alliance.get()){
-        //         driveSubsystem.resetOdometry(new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
-        //     } else {
-        //         driveSubsystem.resetOdometry(new Pose2d());
-        //     }
-        // }));
+
 
         
         // SmartDashboard.putNumber("Tuning/RPM", 0.0);
