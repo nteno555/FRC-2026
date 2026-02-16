@@ -5,17 +5,33 @@ import edu.wpi.first.math.geometry.Transform2d;
 
 
 public class SubsystemConstants {
-    public static double flywheelS = 0.0;
-    public static double flywheelV = 0.123;
-    public static double flywheelA = 0.00;
-    public static double flywheelP = 0.127;
-    public static double flywheelI = 0.0;
-    public static double flywheelD = 0.0;
+    public static double climberFF = 1.0;
+    public static double climberkS = 0.0;
+    public static double climberkV = 0.12;
+    public static double climberkA = 0.0;
+    public static double climberkP = 6.0;
+    public static double climberkI = 0.0;
+    public static double climberkD = 0.0;
+    public static double climberSupplyCurrentLimit = 100;
+    public static double climberStatorCurrentLimit = 200;
+    public static double climbersMetersPerRotation = 0.5;
+    public static double climberMotionMagicCruiseVelocity = 60;
+    public static double climberMotionMagicAcceleration = 150;
+    public static double climberMotionMagicJerk = 700;
+
+    public static double flywheelkS = 0.0;
+    public static double flywheelkV = 0.123;
+    public static double flywheelkA = 0.00;
+    public static double flywheelkP = 0.127;
+    public static double flywheelkI = 0.0;
+    public static double flywheelkD = 0.0;
     public static double topFlywheelGearRatio = 1.0;
     public static double bottomFlywheelGearRatio = 2.0;
     public static double topFlywheelDiameter = 0.05; // 2 inches in meters
     public static double bottomFlywheelDiameter = 0.1; // 4 inches in meters
     public static double flywheelEfficiency = 0.80;
+    public static double flywheelSupplyCurrentLimit = 100;
+    public static double flywheelStatorCurrentLimit = 200;
 
     // Hood: 50 to 85 degrees
     public static double hoodFF = 0.35;
@@ -25,9 +41,6 @@ public class SubsystemConstants {
     public static double hoodkP = 2.5;
     public static double hoodkI = 0.0;
     public static double hoodkD = 0.00;
-    public static double hoodCruiseVelocity = 20;
-    public static double hoodAcceleration = 40;
-    public static double hoodJerk = 700;
     public static double hoodSupplyCurrentLimit = 40;
     public static double hoodStatorCurrentLimit = 40;
     public static double hoodPeakForwardTorqueCurrent = 40;
@@ -42,7 +55,6 @@ public class SubsystemConstants {
     public static double hoodMaxAngleRotations = 2.84;
     public static double hoodMinAngleRadians = 1.48;
     public static double hoodMaxAngleRadians = 0.87;
-//    public static double hoodRezeroVoltage = -2.5;
 
     public static double intakekS = 0.00;
     public static double intakekG = 0.2;
@@ -113,14 +125,15 @@ public class SubsystemConstants {
     public static double autoAimMaxSpeed = 2.0;
     public static double autoAimMaxAccel = 10.0;
 
+    public static int climberID = 19;
+    public static int flywheelMasterID = 13;
+    public static int flywheelSlaveID = 17;
     public static int hoodID = 27;
     public static int indexerID = 21;
-    public static int towerID = 25;
     public static int intakeDeployMasterID = 15;
     public static int intakeDeploySlaveID = 16;
     public static int intakeRollerID = 42;
-    public static int flywheelMasterID = 13;
-    public static int flywheelSlaveID = 17;
+    public static int towerID = 25;
     public static int turretID = 23;
     public static int turretTb1ID = 8;
     public static int turretTb2ID = 7;

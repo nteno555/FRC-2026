@@ -21,6 +21,9 @@ import frc2025.commands.AutoAimCommands;
 import frc2025.commands.DriveCommands;
 import frc2025.commands.SuperstructureCommands;
 import frc2025.config.SubsystemConstants;
+import frc2025.subsystems.climber.ClimberIOReal;
+import frc2025.subsystems.climber.ClimberIOSim;
+import frc2025.subsystems.climber.ClimberSubsystem;
 import frc2025.subsystems.drive.DriveIOReal;
 import frc2025.subsystems.drive.DriveIOSim;
 import frc2025.subsystems.drive.DriveSubsystem;
@@ -55,6 +58,7 @@ public class RobotContainer {
 
     DriveSubsystem driveSubsystem;
     VisionSubsystem visionSubsystem;
+    ClimberSubsystem climberSubsystem;
     IndexerSubsystem indexerSubsystem;
     IntakeSubsystem intakeSubsystem;
     HoodSubsystem hoodSubsystem;
@@ -86,6 +90,7 @@ public class RobotContainer {
         if(RobotBase.isReal()) {
             driveSubsystem = new DriveSubsystem(new DriveIOReal(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOReal());
+            climberSubsystem = new ClimberSubsystem(new ClimberIOReal());
             indexerSubsystem = new IndexerSubsystem(new IndexerIOReal());
             intakeSubsystem = new IntakeSubsystem(new IntakeIOReal());
             hoodSubsystem = new HoodSubsystem(new HoodIOReal());
@@ -94,6 +99,7 @@ public class RobotContainer {
         } else {
             driveSubsystem = new DriveSubsystem(new DriveIOSim(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOSim());
+            climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
             indexerSubsystem = new IndexerSubsystem(new IndexerIOSim());
             intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
             hoodSubsystem = new HoodSubsystem(new HoodIOSim());

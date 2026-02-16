@@ -25,11 +25,6 @@ public class HoodIOReal implements HoodIO {
         slot0Configs.kI = SubsystemConstants.hoodkI;
         slot0Configs.kD = SubsystemConstants.hoodkD;
 
-        var motionMagicConfigs = talonFXConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = SubsystemConstants.hoodCruiseVelocity; // Target cruise velocity of 80 rps
-        motionMagicConfigs.MotionMagicAcceleration = SubsystemConstants.hoodAcceleration; // Target acceleration of 160 rps/s (0.5 seconds)
-        motionMagicConfigs.MotionMagicJerk = SubsystemConstants.hoodJerk; // Target jerk of 1600 rps/s/s (0.1 seconds)
-
         talonFXConfigs.CurrentLimits.SupplyCurrentLimit = SubsystemConstants.hoodSupplyCurrentLimit;
         talonFXConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
         talonFXConfigs.CurrentLimits.StatorCurrentLimit = SubsystemConstants.hoodStatorCurrentLimit;

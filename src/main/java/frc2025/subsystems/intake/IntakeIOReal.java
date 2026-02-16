@@ -39,11 +39,6 @@ public class IntakeIOReal implements IntakeIO {
         slot0.kI = SubsystemConstants.intakekI;
         slot0.kD = SubsystemConstants.intakekD;
 
-        deployConfigs.MotionMagic.MotionMagicCruiseVelocity = SubsystemConstants.intakeCruiseVelocity;
-        deployConfigs.MotionMagic.MotionMagicAcceleration = SubsystemConstants.intakeAcceleration;
-        deployConfigs.MotionMagic.MotionMagicJerk = SubsystemConstants.intakeJerk;
-
-
         intakeRoller.getConfigurator().apply(rollerConfigs);
         intakeDeployMaster.getConfigurator().apply(deployConfigs);
         intakeDeploySlave.getConfigurator().apply(deployConfigs);

@@ -2,12 +2,12 @@ package frc2025.subsystems.shooter;
 
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
-import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc2025.config.SubsystemConstants;
 
 public class ShooterIOReal implements ShooterIO {
@@ -16,31 +16,25 @@ public class ShooterIOReal implements ShooterIO {
 
     public ShooterIOReal() {
 		flywheelMaster.getConfigurator().apply(new TalonFXConfiguration());
-		flywheelSlave.setNeutralMode(NeutralModeValue.Coast);
 
 		var flywheelConfig = new TalonFXConfiguration();
 
-        flywheelConfig.Slot0.kS = SubsystemConstants.flywheelS;
-        flywheelConfig.Slot0.kV = SubsystemConstants.flywheelV;
-        flywheelConfig.Slot0.kA = SubsystemConstants.flywheelA;
-        flywheelConfig.Slot0.kP = SubsystemConstants.flywheelP;
-        flywheelConfig.Slot0.kI = SubsystemConstants.flywheelI;
-        flywheelConfig.Slot0.kD = SubsystemConstants.flywheelD;
+        flywheelConfig.Slot0.kS = SubsystemConstants.flywheelkS;
+        flywheelConfig.Slot0.kV = SubsystemConstants.flywheelkV;
+        flywheelConfig.Slot0.kA = SubsystemConstants.flywheelkA;
+        flywheelConfig.Slot0.kP = SubsystemConstants.flywheelkP;
+        flywheelConfig.Slot0.kI = SubsystemConstants.flywheelkI;
+        flywheelConfig.Slot0.kD = SubsystemConstants.flywheelkD;
 
-        var motionMagicConfigs = flywheelConfig.MotionMagic;
-        motionMagicConfigs.MotionMagicAcceleration = 400; // Target acceleration of 400 rps/s (0.25 seconds to max)
-        motionMagicConfigs.MotionMagicJerk = 4000; // Target jerk of 4000 rps/s/s (0.1 seconds)
-
-
-		flywheelConfig.CurrentLimits.SupplyCurrentLimit = 100;
+		flywheelConfig.CurrentLimits.SupplyCurrentLimit = SubsystemConstants.flywheelSupplyCurrentLimit;
 		flywheelConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-		flywheelConfig.CurrentLimits.StatorCurrentLimit = 200;
+		flywheelConfig.CurrentLimits.StatorCurrentLimit = SubsystemConstants.flywheelStatorCurrentLimit;
 		flywheelConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
 		flywheelMaster.getConfigurator().apply(flywheelConfig, 0.050);
+        flywheelSlave.getConfigurator().apply(flywheelConfig, 0.050);
         flywheelMaster.setNeutralMode(NeutralModeValue.Coast);
         flywheelSlave.setNeutralMode(NeutralModeValue.Coast);
-        flywheelSlave.getConfigurator().apply(flywheelConfig, 0.050);
         flywheelSlave.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Opposed));
     }
 
