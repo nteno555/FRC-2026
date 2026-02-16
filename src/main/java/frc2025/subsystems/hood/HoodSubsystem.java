@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc2025.RobotState;
 import frc2025.config.FieldConstants;
@@ -145,6 +146,15 @@ public class HoodSubsystem extends SubsystemBase {
     }
     public double getPosition() { return inputs.positionRotations; }
     public double getPositionRadians() { return inputs.positionRadians; }
-    public static double toRadians(double rotations) { return  -rotations / SubsystemConstants.hoodRotationsPerRadian + SubsystemConstants.hoodZeroOffsetRadians; }
-    public static double toRotations(double radians) { return (SubsystemConstants.hoodZeroOffsetRadians - radians) * SubsystemConstants.hoodRotationsPerRadian; }
+
+    public static double toRadians(double rotations) {
+        double m = (SubsystemConstants.hoodMaxAngleRadians - SubsystemConstants.hoodMinAngleRadians) / (SubsystemConstants.hoodMaxAngleRotations - SubsystemConstants.hoodMinAngleRotations);
+        return (rotations - SubsystemConstants.hoodMinAngleRotations) * m + SubsystemConstants.hoodMinAngleRadians;
+    }
+    public static double toRotations(double radians) {
+        double m = (SubsystemConstants.hoodMaxAngleRotations - SubsystemConstants.hoodMinAngleRotations) / (SubsystemConstants.hoodMaxAngleRadians - SubsystemConstants.hoodMinAngleRadians);
+        return (radians - SubsystemConstants.hoodMinAngleRadians) * m + SubsystemConstants.hoodMinAngleRotations;
+    }
+//    public static double toRadians(double rotations) { return  -rotations / SubsystemConstants.hoodRotationsPerRadian + SubsystemConstants.hoodZeroOffsetRadians; }
+//    public static double toRotations(double radians) { return (SubsystemConstants.hoodZeroOffsetRadians - radians) * SubsystemConstants.hoodRotationsPerRadian; }
 }

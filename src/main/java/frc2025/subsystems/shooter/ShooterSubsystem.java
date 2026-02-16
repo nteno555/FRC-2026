@@ -101,11 +101,8 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public double solveExitVelocity(double wantedExitVelocity) {
-        // (top + bottom) / 2 * efficiency = wantedExitVelocity
-
-
         Logger.recordOutput("Shooter/wantedExitVelocity", wantedExitVelocity);
-        double res = -wantedExitVelocity*2.0 / (SubsystemConstants.flywheelEfficiency) /
+        double res = wantedExitVelocity*2.0 / (SubsystemConstants.flywheelEfficiency) /
                (SubsystemConstants.topFlywheelGearRatio * SubsystemConstants.topFlywheelDiameter * Math.PI +
                 SubsystemConstants.bottomFlywheelGearRatio * SubsystemConstants.bottomFlywheelDiameter * Math.PI);
         Logger.recordOutput("Shooter/solvedRps", res);
@@ -115,6 +112,6 @@ public class ShooterSubsystem extends SubsystemBase {
     public static double toBallExitVelocity(double wheelRPM) {
         double topVelocity = SubsystemConstants.topFlywheelGearRatio * wheelRPM * SubsystemConstants.topFlywheelDiameter * Math.PI;
         double bottomVelocity = SubsystemConstants.bottomFlywheelGearRatio * wheelRPM * SubsystemConstants.bottomFlywheelDiameter * Math.PI;
-        return -(topVelocity + bottomVelocity) / 2.0 * SubsystemConstants.flywheelEfficiency;
+        return (topVelocity + bottomVelocity) / 2.0 * SubsystemConstants.flywheelEfficiency;
     }
 }

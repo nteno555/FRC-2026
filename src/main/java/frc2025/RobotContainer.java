@@ -205,29 +205,40 @@ public class RobotContainer {
         driverXboxController.povDown() // right bottom paddle
                 .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
 
-        if(SubsystemConstants.hasTurret) {
-            driverXboxController.leftTrigger()
-                    .whileTrue(shooterSubsystem.autoAim()
-                            .alongWith(turretSubsystem.autoAim())
-                            .alongWith(hoodSubsystem.autoAim())
-                            .alongWith(AutoAimCommands.autoIndex(this)))
-                    .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
-        } else {
-            driverXboxController.leftTrigger()
-                    .whileTrue(shooterSubsystem.autoAim()
-                            .alongWith(AutoAimCommands.driveAutoAim(
-                                    this,
-                                    () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
-                                    () -> driveSubsystem.getTeleopSpeeds(
-                                            (-0.5) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                                            (-0.5) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                                            (0.7) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
-                                    )
-                            ))
-                            .alongWith(hoodSubsystem.autoAim())
-                            .alongWith(AutoAimCommands.autoIndex(this)))
-                    .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
-        }
+        driverXboxController.leftTrigger()
+                .whileTrue(
+                        AutoAimCommands.autoAimVector(
+                                this,
+                                () -> driveSubsystem.getTeleopSpeeds(
+                                        (-0.5) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                                        (-0.5) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                                        (0.7) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
+                                ))
+                                .alongWith(AutoAimCommands.autoIndex(this)));
+
+//        if(SubsystemConstants.hasTurret) {
+//            driverXboxController.leftTrigger()
+//                    .whileTrue(shooterSubsystem.autoAim()
+//                            .alongWith(turretSubsystem.autoAim())
+//                            .alongWith(hoodSubsystem.autoAim())
+//                            .alongWith(AutoAimCommands.autoIndex(this)))
+//                    .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
+//        } else {
+//            driverXboxController.leftTrigger()
+//                    .whileTrue(shooterSubsystem.autoAim()
+//                            .alongWith(AutoAimCommands.driveAutoAim(
+//                                    this,
+//                                    () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
+//                                    () -> driveSubsystem.getTeleopSpeeds(
+//                                            (-0.5) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+//                                            (-0.5) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+//                                            (0.7) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
+//                                    )
+//                            ))
+//                            .alongWith(hoodSubsystem.autoAim())
+//                            .alongWith(AutoAimCommands.autoIndex(this)))
+//                    .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
+//        }
 
         driverXboxController.povUp() // left middle paddle
                 .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));

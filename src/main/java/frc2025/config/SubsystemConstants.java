@@ -11,14 +11,12 @@ public class SubsystemConstants {
     public static double flywheelP = 0.127;
     public static double flywheelI = 0.0;
     public static double flywheelD = 0.0;
-    // NOT TUNED
     public static double topFlywheelGearRatio = 1.0;
-    public static double bottomFlywheelGearRatio = 1.0;
+    public static double bottomFlywheelGearRatio = 2.0;
     public static double topFlywheelDiameter = 0.05; // 2 inches in meters
     public static double bottomFlywheelDiameter = 0.1; // 4 inches in meters
-    public static double flywheelEfficiency = 1;
+    public static double flywheelEfficiency = 0.90;
 
-    // Hood: 50 to 85 degrees
     public static double hoodFF = 0.35;
     public static double hoodkS = 0.0;
     public static double hoodkV = 0.12;
@@ -39,6 +37,10 @@ public class SubsystemConstants {
     public static double hoodForwardSoftLimit = 2.84;
     public static double hoodReverseSoftLimit = 0.0;
     public static double hoodRezeroVoltage = -3.5;
+    public static double hoodMinAngleRotations = 0;
+    public static double hoodMaxAngleRotations = 2.84;
+    public static double hoodMinAngleRadians = 1.48;
+    public static double hoodMaxAngleRadians = 0.87;
 
     public static double intakekS = 0.00;
     public static double intakekG = 0.2;

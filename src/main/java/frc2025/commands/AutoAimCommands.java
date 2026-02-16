@@ -3,6 +3,7 @@ package frc2025.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,6 +15,7 @@ import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.hood.HoodSubsystem;
+import frc2025.subsystems.shooter.ShooterSubsystem;
 import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
 
@@ -107,5 +109,77 @@ public class AutoAimCommands {
                 return 0.0;
             }
         });
+   }
+
+   public static Command autoAimVector(RobotContainer robotContainer, Supplier<ChassisSpeeds> unlockedSpeeds) {
+        Supplier<Translation3d> shotVectorSupplier = () -> {
+            Pose2d currentPose = RobotState.getInstance().getVisionPose();
+            Pose2d targetPose = RobotState.getInstance().getTargetPose();
+            double phaseDelay = 0.03;
+
+            ChassisSpeeds chassisSpeeds = RobotState.getInstance().getFieldRelativeSpeeds();
+            double vx = chassisSpeeds.vxMetersPerSecond;
+            double vy = chassisSpeeds.vyMetersPerSecond;
+            double vOmega = chassisSpeeds.omegaRadiansPerSecond;
+            Pose2d delayedPose = currentPose.exp(
+                    new Twist2d(vx * phaseDelay, vy * phaseDelay, vOmega * phaseDelay)
+            );
+
+            double dist = delayedPose.getTranslation().getDistance(targetPose.getTranslation());
+
+            double flywheelVelocity = ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist);
+            double hoodAngle = ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist);
+            double turretAngle = Math.atan2(targetPose.getY() - delayedPose.getY(), targetPose.getX() - delayedPose.getX());
+
+            double exitVelocity = ShooterSubsystem.toBallExitVelocity(flywheelVelocity);
+            double realHoodAngle = HoodSubsystem.toRadians(hoodAngle);
+
+            Translation3d shotVector = new Translation3d(
+                    exitVelocity * Math.cos(realHoodAngle) * Math.cos(turretAngle),
+                    exitVelocity * Math.cos(realHoodAngle) * Math.sin(turretAngle),
+                    exitVelocity * Math.sin(realHoodAngle)
+            );
+
+            Translation3d velocityVector = new Translation3d(vx, vy, 0);
+
+            return shotVector.minus(velocityVector);
+        };
+
+        if(SubsystemConstants.hasTurret) {
+            return robotContainer.getShooter().setTargetExitVelocity(() -> shotVectorSupplier.get().getNorm())
+                    .alongWith(
+                        robotContainer.getHood().setPositionRadians(
+                                () -> Math.atan2(shotVectorSupplier.get().getZ(), Math.hypot(shotVectorSupplier.get().getX(), shotVectorSupplier.get().getY())))
+                    ).alongWith(
+                            robotContainer.getTurret().setPositionFieldRelative(() -> Math.atan2(shotVectorSupplier.get().getY(), shotVectorSupplier.get().getX()))
+                    );
+        } else {
+            return robotContainer.getShooter().setTargetExitVelocity(() -> shotVectorSupplier.get().getNorm())
+                    .alongWith(
+                            robotContainer.getHood().setPositionRadians(
+                                    () -> Math.atan2(shotVectorSupplier.get().getZ(), Math.hypot(shotVectorSupplier.get().getX(), shotVectorSupplier.get().getY())))
+                    ).alongWith(
+                            robotContainer.getDrive().driveFieldRelative(
+                                    () -> {
+                                        PIDController angleController = new PIDController(3, 0.0, 0.0);
+                                        angleController.enableContinuousInput(-Math.PI, Math.PI);
+
+                                        Pose2d shooterPose = RobotState.getInstance().getVisionShooterPose();
+                                        double turretAngle = Math.atan2(shotVectorSupplier.get().getY(), shotVectorSupplier.get().getX());
+                                        double angleToTarget = turretAngle;
+
+                                        Logger.recordOutput("Drive/hubTargetPose", RobotState.getInstance().getTargetPose());
+                                        Logger.recordOutput("Drive/robotRotation", modAngle(shooterPose.getRotation().getRadians()));
+                                        Logger.recordOutput("Drive/robotRotationUnmodded", shooterPose.getRotation().getRadians());
+
+                                        return new ChassisSpeeds(
+                                                unlockedSpeeds.get().vxMetersPerSecond,
+                                                unlockedSpeeds.get().vyMetersPerSecond,
+                                                -angleController.calculate(modAngle(shooterPose.getRotation().getRadians()), modAngle(angleToTarget))
+                                        );
+                                    }
+                            )
+                    );
+        }
    }
 }
