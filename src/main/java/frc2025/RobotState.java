@@ -176,7 +176,7 @@ public class RobotState {
         vx += -vOmega * shooterFieldRelative.getY();
         vy += vOmega * shooterFieldRelative.getX();
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 5; i++) {
             double dx = virtualPose.getX() - delayedPose.getX();
             double dy = virtualPose.getY() - delayedPose.getY();
             double distance = Math.hypot(dx, dy);

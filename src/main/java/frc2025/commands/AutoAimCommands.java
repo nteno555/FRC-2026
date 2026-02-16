@@ -142,7 +142,10 @@ public class AutoAimCommands {
 
             Translation3d velocityVector = new Translation3d(vx, vy, 0);
 
-            return shotVector.minus(velocityVector);
+            Logger.recordOutput("ShootWhileMoving/shotVector", shotVector);
+            Logger.recordOutput("ShootWhileMoving/velocityVector", velocityVector);
+
+            return shotVector.plus(velocityVector);
         };
 
         if(SubsystemConstants.hasTurret) {
@@ -161,7 +164,7 @@ public class AutoAimCommands {
                     ).alongWith(
                             robotContainer.getDrive().driveFieldRelative(
                                     () -> {
-                                        PIDController angleController = new PIDController(3, 0.0, 0.0);
+                                        PIDController angleController = new PIDController(5, 0.0, 0.0);
                                         angleController.enableContinuousInput(-Math.PI, Math.PI);
 
                                         Pose2d shooterPose = RobotState.getInstance().getVisionShooterPose();
