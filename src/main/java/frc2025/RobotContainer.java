@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc2025.commands.AutoAimCommands;
+import frc2025.commands.DriveCommands;
 import frc2025.commands.SuperstructureCommands;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveIOReal;
@@ -178,6 +179,10 @@ public class RobotContainer {
                 )
         );
 
+        driverXboxController.b().onTrue(
+                DriveCommands.autoTrench(this)
+        );
+
         driverXboxController
                 .x()
                 .and(driverXboxController.back().negate())
@@ -185,14 +190,6 @@ public class RobotContainer {
                 hoodSubsystem.autoAimFlush()
                         .alongWith(shooterSubsystem.autoAimFlush())
                         .alongWith(turretSubsystem.setPosition(() -> 0.0)));
-        driverXboxController
-                .b()
-                .and(driverXboxController.back().negate())
-                .onTrue(
-                        hoodSubsystem.autoAim()
-                                .alongWith(shooterSubsystem.autoAim())
-                                .alongWith(turretSubsystem.autoAim())
-                );
 
         driverXboxController
                 .b()

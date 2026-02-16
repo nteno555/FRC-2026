@@ -71,7 +71,9 @@ public class DriveToPoseCommand extends Command {
         }
 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                new ChassisSpeeds(xFeedback, yFeedback, omegaFeedback),
+                xFeedback,
+                yFeedback,
+                omegaFeedback,
                 currentPose.getRotation()
         );
 
