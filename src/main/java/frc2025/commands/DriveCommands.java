@@ -8,6 +8,7 @@ import frc2025.RobotState;
 import frc2025.config.FieldConstants;
 import org.littletonrobotics.junction.Logger;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -35,13 +36,14 @@ public class DriveCommands {
             endTrench = FieldConstants.trenchPoses[trenchID - 1];
         }
 
-        Pose2d finalClosestStartTrench = closestStartTrench;
-        Command driveTrench = new DriveToPoseCommand(robotContainer.getDrive(), () -> finalClosestStartTrench);
+//        Pose2d finalClosestStartTrench = closestStartTrench;
+//        Command driveTrench = new DriveToPoseCommand(robotContainer.getDrive(), () -> finalClosestStartTrench);
 
         Logger.recordOutput("Drive/autoTrenchStart", closestStartTrench);
         Logger.recordOutput("Drive/autoTrenchEnd", endTrench);
 
-        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(finalClosestStartTrench, endTrench);
+        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPose, closestStartTrench, endTrench);
+//        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(finalClosestStartTrench, endTrench);
         PathConstraints constraints = new PathConstraints(2.0, 2.0, 2*Math.PI, 2*Math.PI);
         IdealStartingState idealStartingState = new IdealStartingState(0, closestStartTrench.getRotation());
         GoalEndState goalEndState = new GoalEndState(0, endTrench.getRotation());
@@ -54,8 +56,10 @@ public class DriveCommands {
                 false
         );
 
-        return driveTrench.andThen(
-                new FollowPathCommand(robotContainer.getDrive(), () -> p, () -> false, false)
-        );
+        return new FollowPathCommand(robotContainer.getDrive(), () -> p, () -> false, false);
+
+//        return driveTrench.andThen(
+//                new FollowPathCommand(robotContainer.getDrive(), () -> p, () -> false, false)
+//        );
     }
 }
