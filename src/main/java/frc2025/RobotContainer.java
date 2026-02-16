@@ -332,9 +332,33 @@ public class RobotContainer {
                 .whileTrue(
                         shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/RPM", 0.0))
                                 .alongWith(hoodSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/hoodPosition", 0.0)))
-                                .alongWith(turretSubsystem.autoAim())
+                                .alongWith()
+//                                .alongWith(turretSubsystem.autoAim())
                 )
                 .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
+
+        if(SubsystemConstants.hasTurret) {
+            tuningController.rightBumper()
+                    .whileTrue(shooterSubsystem.autoAim()
+                            .alongWith(turretSubsystem.autoAim())
+                            .alongWith(hoodSubsystem.autoAim())
+                            .alongWith(AutoAimCommands.autoIndex(this)))
+                    .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
+        } else {
+            tuningController.rightBumper()
+                    .whileTrue(shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/RPM", 0.0))
+                            .alongWith(AutoAimCommands.driveAutoAim(
+                                    this,
+                                    () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
+                                    () -> driveSubsystem.getTeleopSpeeds(
+                                            (-0.5) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                                            (-0.5) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                                            (0.7) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
+                                    )
+                            ))
+                            .alongWith(hoodSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/hoodPosition", 0.0))))
+                    .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
+        }
 
         tuningController.rightTrigger().whileTrue(
             indexerSubsystem.setVoltage(() -> -6.0, () -> -12.0))

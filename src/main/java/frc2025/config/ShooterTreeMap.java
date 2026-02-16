@@ -15,6 +15,29 @@ public class ShooterTreeMap {
     public InterpolatingTreeMap shuttlingHoodTreeMap = new InterpolatingTreeMap();
     
     public ShooterTreeMap() {
+        hoodTreeMap.put(1.13, 0.5);
+        hoodTreeMap.put(1.45, 0.6);
+        hoodTreeMap.put(1.8499, 1.0);
+        hoodTreeMap.put(1.85, 0.5);
+        hoodTreeMap.put(2.22, 0.7);
+        hoodTreeMap.put(2.96, 1.05);
+        hoodTreeMap.put(3.78, 1.5);
+        hoodTreeMap.put(4.30, 2.2);
+        hoodTreeMap.put(5.0, 2.6);
+
+        lowerWheelTreeMap.put(1.13, 39.0);
+        lowerWheelTreeMap.put(1.8499, 39.0);
+        lowerWheelTreeMap.put(1.85, 46.0);
+        lowerWheelTreeMap.put(5.0, 46.0);
+
+
+        tofTreeMap.put(0.93, 1.32);
+        tofTreeMap.put(2.18, 1.50);
+        tofTreeMap.put(3.30, 1.45);
+        tofTreeMap.put(4.03, 1.43);
+        tofTreeMap.put(4.88, 1.27);
+
+        /*
         hoodTreeMap.put(0.5, 0.5);
         hoodTreeMap.put(1.50, 0.5);
         hoodTreeMap.put(1.501, 1.4);
@@ -22,7 +45,6 @@ public class ShooterTreeMap {
         hoodTreeMap.put(3.75, 1.4);
         hoodTreeMap.put(3.751, 2.0);
         hoodTreeMap.put(6.0, 2.0);
-
         lowerWheelTreeMap.put(0.5, 38.0);
         lowerWheelTreeMap.put(1.50, 40.0);
         lowerWheelTreeMap.put(1.501, 35.0);
@@ -37,7 +59,6 @@ public class ShooterTreeMap {
         lowerWheelTreeMap.put(4.11, 44.0);
         lowerWheelTreeMap.put(5.14, 51.0);
         lowerWheelTreeMap.put(6.0, 56.0);
-
         tofTreeMap.put(1.0, 1.03);
         tofTreeMap.put(2.39, 1.17);
         tofTreeMap.put(2.67, 1.20);
@@ -47,6 +68,7 @@ public class ShooterTreeMap {
         tofTreeMap.put(3.89, 1.26);
         tofTreeMap.put(5.22, 1.52);
         tofTreeMap.put(6.0, 1.60);
+        */
 
         radialVelocityTreeMap.put(-0.10, 0.50);
         radialVelocityTreeMap.put(-0.5, 1.5);
