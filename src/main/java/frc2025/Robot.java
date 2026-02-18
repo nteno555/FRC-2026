@@ -27,6 +27,7 @@ import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+import sun.misc.Signal;
 
 public class Robot extends LoggedRobot {
 	RobotContainer robotContainer;
@@ -40,6 +41,8 @@ public class Robot extends LoggedRobot {
 	}
 	@Override
 	public void robotInit() {
+		SignalLogger.setPath("/home/lvuser/logs/");
+		SignalLogger.start();
 		RobotController.setBrownoutVoltage(5.5);
         System.out.println("Yay you deployed");
 		FollowPathCommand.warmupCommand().schedule();
@@ -59,5 +62,10 @@ public class Robot extends LoggedRobot {
 	@Override
 	public void teleopInit() {
 		robotContainer.teleopInit();
+	}
+
+	@Override
+	public void disabledInit() {
+		SignalLogger.stop();
 	}
 }

@@ -1,5 +1,6 @@
 package frc2025.subsystems.drive;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -163,7 +164,15 @@ public class DriveSubsystem extends SubsystemBase {
 
 	private SysIdRoutine m_driveSysIdRoutine =
 			new SysIdRoutine(
-					new SysIdRoutine.Config(),
+					new SysIdRoutine.Config(
+                            null,
+                            null,
+                            null,
+                            (state) -> {
+                                SignalLogger.start();
+                                SignalLogger.writeString("drive-state", state.toString());
+                            }
+                    ),
 					new SysIdRoutine.Mechanism(
 							(Voltage volts) -> this.io.setControl(driveVoltageRequest.withVoltage(volts.in(Volts))),
 							null,
@@ -173,7 +182,15 @@ public class DriveSubsystem extends SubsystemBase {
 
 	private SysIdRoutine m_steerSysIdRoutine =
 			new SysIdRoutine(
-					new SysIdRoutine.Config(),
+					new SysIdRoutine.Config(
+                            null,
+                            null,
+                            null,
+                            (state) -> {
+                                SignalLogger.start();
+                                SignalLogger.writeString("steer/steer-state", state.toString());
+                            }
+                    ),
 					new SysIdRoutine.Mechanism(
 							(Voltage volts) -> this.io.setControl(steerVoltageRequest.withVoltage(volts.in(Volts))),
 							null,

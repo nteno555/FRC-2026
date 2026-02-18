@@ -17,8 +17,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc2025.commands.AutoAimCommands;
 import frc2025.commands.SuperstructureCommands;
+import frc2025.commands.WheelRadiusCharacterizationCommand;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveIOReal;
 import frc2025.subsystems.drive.DriveIOSim;
@@ -50,6 +52,7 @@ public class RobotContainer {
     private final CommandXboxController operatorXboxController = new CommandXboxController(1);
     private final CommandXboxController testSystemsController = new CommandXboxController(2);
     private final CommandXboxController tuningController = new CommandXboxController(3);
+    private final CommandXboxController driveTuningController = new CommandXboxController(4);
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
     DriveSubsystem driveSubsystem;
@@ -288,26 +291,26 @@ public class RobotContainer {
 //                .whileTrue(indexerSubsystem.setVoltage(() -> -6.0, () -> -12.0));
 
 
-//        tuningController.a()
-//                .whileTrue(driveSubsystem.runDriveQuasiTest(SysIdRoutine.Direction.kForward));
-//        tuningController.b()
-//                .whileTrue(driveSubsystem.runDriveDynamicTest(SysIdRoutine.Direction.kForward));
-//        tuningController.x()
-//                .whileTrue(driveSubsystem.runSteerQuasiTest(SysIdRoutine.Direction.kForward));
-//        tuningController.y()
-//                .whileTrue(driveSubsystem.runSteerDynamicTest(SysIdRoutine.Direction.kForward));
-//        tuningController.povLeft()
-//                .whileTrue(driveSubsystem.runDriveQuasiTest(SysIdRoutine.Direction.kReverse));
-//        tuningController.povUp()
-//                .whileTrue(driveSubsystem.runDriveDynamicTest(SysIdRoutine.Direction.kReverse));
-//        tuningController.povDown()
-//                .whileTrue(driveSubsystem.runSteerQuasiTest(SysIdRoutine.Direction.kReverse));
-//        tuningController.povRight()
-//                .whileTrue(driveSubsystem.runSteerDynamicTest(SysIdRoutine.Direction.kReverse));
-//        tuningController.leftBumper()
-//                .whileTrue(driveSubsystem.runDriveSlipTest());
-//        tuningController.rightBumper()
-//                .whileTrue(new WheelRadiusCharacterizationCommand(driveSubsystem));
+        driveTuningController.a()
+                .whileTrue(driveSubsystem.runDriveQuasiTest(SysIdRoutine.Direction.kForward));
+        driveTuningController.b()
+                .whileTrue(driveSubsystem.runDriveDynamicTest(SysIdRoutine.Direction.kForward));
+        driveTuningController.x()
+                .whileTrue(driveSubsystem.runSteerQuasiTest(SysIdRoutine.Direction.kForward));
+        driveTuningController.y()
+                .whileTrue(driveSubsystem.runSteerDynamicTest(SysIdRoutine.Direction.kForward));
+        driveTuningController.povLeft()
+                .whileTrue(driveSubsystem.runDriveQuasiTest(SysIdRoutine.Direction.kReverse));
+        driveTuningController.povUp()
+                .whileTrue(driveSubsystem.runDriveDynamicTest(SysIdRoutine.Direction.kReverse));
+        driveTuningController.povDown()
+                .whileTrue(driveSubsystem.runSteerQuasiTest(SysIdRoutine.Direction.kReverse));
+        driveTuningController.povRight()
+                .whileTrue(driveSubsystem.runSteerDynamicTest(SysIdRoutine.Direction.kReverse));
+        driveTuningController.leftBumper()
+                .whileTrue(driveSubsystem.runDriveSlipTest());
+        driveTuningController.rightBumper()
+                .whileTrue(new WheelRadiusCharacterizationCommand(driveSubsystem));
 
     tuningController.leftBumper().whileTrue(
             turretSubsystem.rezeroCRT()
