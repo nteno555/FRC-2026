@@ -101,26 +101,42 @@ public class SubsystemConstants {
     public static double throughBoreRatio1 = 9.204;
     public static double throughBoreRatio2 = 7.5;
     public static double turretHomeAngleRotations = 0.0; // hard stop position in motor rotations
-    public static boolean hasTurret = false;
+    public static boolean hasTurret = true;
 
     // Turret Cam: Forward 0 Right 0 Up 0.39 Roll 0 Pitch 29.1 Yaw 0
     // Front Cam: Forward 0 Right 0 Up 0.1 Roll 0 Pitch 18 Yaw 0
-    public static Transform2d robotToShooter = new Transform2d(0.1016, -0.1016, Rotation2d.kZero); // should be x = forward, y = side
-    public static Transform2d shooterToCamera = new Transform2d(0.1705, 0.0, Rotation2d.kZero);
-    public static double robotToTurretCameraForward = 0.22;
-    public static double robotToTurretCameraRight = 0.1;
-    public static double robotToTurretCameraUp = 0.43;
+    public static Transform2d robotToShooter = new Transform2d(0.09087, -0.0838, Rotation2d.kZero); // should be x = forward, y = side
+    public static Transform2d shooterToCamera = new Transform2d(0.1671, 0.0, Rotation2d.kZero);
+    public static double robotToTurretCameraForward = 0.0;
+    public static double robotToTurretCameraRight = 0.0;
+    public static double robotToTurretCameraUp = 0.5062;
     public static double robotToTurretCameraYaw = 0.0;
-    public static double robotToTurretCameraPitch = 29.1;
+    public static double robotToTurretCameraPitch = 30.0;
     public static double robotToTurretCameraRoll = 0.0;
 
-    public static Transform2d robotToFrontCamera = new Transform2d(0.25, 0.0, Rotation2d.kZero);
-    public static double robotToFrontCameraForward = 0.25;
-    public static double robotToFrontCameraRight = 0.1;
-    public static double robotToFrontCameraUp = 0.1;
-    public static double robotToFrontCameraYaw = 0.0;
-    public static double robotToFrontCameraPitch = 18.0;
-    public static double robotToFrontCameraRoll = 0.0;
+    public static Transform2d robotToLeftCamera = new Transform2d(-0.326, -0.0277, Rotation2d.kZero);
+    public static double robotToLeftCameraForward = robotToLeftCamera.getX();
+    public static double robotToLeftCameraRight = robotToLeftCamera.getY();
+    public static double robotToLeftCameraUp = 0.1273;
+    public static double robotToLeftCameraYaw = 0.0;
+    public static double robotToLeftCameraPitch = 28.0;
+    public static double robotToLeftCameraRoll = 0.0;
+
+    public static Transform2d robotToRightCamera = new Transform2d(0.326, 0.1015, Rotation2d.kZero);
+    public static double robotToRightCameraForward = robotToRightCamera.getX();
+    public static double robotToRightCameraRight = robotToRightCamera.getY();
+    public static double robotToRightCameraUp = 0.13;
+    public static double robotToRightCameraYaw = 0.0;
+    public static double robotToRightCameraPitch = 28.0;
+    public static double robotToRightCameraRoll = 0.0;
+
+    public static Transform2d robotToBackCamera = new Transform2d(0.3274, 0.1015, Rotation2d.kZero);
+    public static double robotToBackCameraForward = robotToBackCamera.getX();
+    public static double robotToBackCameraRight = robotToBackCamera.getY();
+    public static double robotToBackCameraUp = 0.1273;
+    public static double robotToBackCameraYaw = 0.0;
+    public static double robotToBackCameraPitch = 18.0; // to be updated
+    public static double robotToBackCameraRoll = 0.0;
 
     public static double autoAimMaxSpeed = 2.0;
     public static double autoAimMaxAccel = 10.0;

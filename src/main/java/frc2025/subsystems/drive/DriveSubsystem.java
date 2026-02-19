@@ -41,6 +41,7 @@ public class DriveSubsystem extends SubsystemBase {
             .withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
             .withSteerRequestType(SwerveModule.SteerRequestType.Position);
     private double prevTimestamp = 0;
+    private boolean sysidActive = false;
 
     public DriveSubsystem(DriveIO io) {
         this.io = io;
@@ -49,7 +50,9 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        io.setControl(request.withSpeeds(wantedSpeeds));
+        if (!sysidActive) {
+            io.setControl(request.withSpeeds(wantedSpeeds));
+        }
         RobotState.getInstance().addDriveData(inputs.odometryTimestamp, inputs.odometryTwist);
 
         RobotState.getInstance().setRobotRelativeSpeeds(inputs.currentChassisSpeeds);
@@ -187,21 +190,29 @@ public class DriveSubsystem extends SubsystemBase {
 							null,
 							this));
 
-	public Command runDriveQuasiTest(SysIdRoutine.Direction direction) {
-		return m_driveSysIdRoutine.quasistatic(direction);
-	}
+    public Command runDriveQuasiTest(SysIdRoutine.Direction direction) {
+        return m_driveSysIdRoutine.quasistatic(direction)
+                .beforeStarting(() -> {sysidActive = true;})
+                .finallyDo(() -> {sysidActive = false;});
+    }
 
-	public Command runDriveDynamicTest(SysIdRoutine.Direction direction) {
-		return m_driveSysIdRoutine.dynamic(direction);
-	}
+    public Command runDriveDynamicTest(SysIdRoutine.Direction direction) {
+        return m_driveSysIdRoutine.dynamic(direction)
+                .beforeStarting(() -> {sysidActive = true;})
+                .finallyDo(() -> {sysidActive = false;});
+    }
 
-	public Command runSteerQuasiTest(SysIdRoutine.Direction direction) {
-		return m_steerSysIdRoutine.quasistatic(direction);
-	}
+    public Command runSteerQuasiTest(SysIdRoutine.Direction direction) {
+        return m_steerSysIdRoutine.quasistatic(direction)
+                .beforeStarting(() -> {sysidActive = true;})
+                .finallyDo(() -> {sysidActive = false;});
+    }
 
-	public Command runSteerDynamicTest(SysIdRoutine.Direction direction) {
-		return m_steerSysIdRoutine.dynamic(direction);
-	}
+    public Command runSteerDynamicTest(SysIdRoutine.Direction direction) {
+        return m_steerSysIdRoutine.dynamic(direction)
+                .beforeStarting(() -> {sysidActive = true;})
+                .andThen(() -> {sysidActive = false;});
+    }
 
 	public Command runDriveSlipTest() {
 		return m_slipSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);

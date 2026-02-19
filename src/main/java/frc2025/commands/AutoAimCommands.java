@@ -31,6 +31,21 @@ public class AutoAimCommands {
         return angle;
     }
 
+    public static Command autoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {
+        Command autoAimCommand = robotContainer.getShooter().autoAim()
+                .alongWith(robotContainer.getHood().autoAim())
+                .alongWith(autoIndex(robotContainer));
+
+        if (SubsystemConstants.hasTurret) {
+            autoAimCommand = autoAimCommand.alongWith(robotContainer.getTurret().autoAim());
+        }
+        else {
+            autoAimCommand = autoAimCommand.alongWith(driveAutoAim(robotContainer, targetPoseSupplier, unlockedSpeeds));
+        }
+
+        return autoAimCommand;
+    }
+
     public static Command driveAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {
         return robotContainer.getDrive().driveFieldRelative(
                 () -> {
