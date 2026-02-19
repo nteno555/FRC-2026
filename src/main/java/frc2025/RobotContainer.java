@@ -292,25 +292,26 @@ public class RobotContainer {
 
 
         driveTuningController.a()
-                .whileTrue(driveSubsystem.runDriveQuasiTest(SysIdRoutine.Direction.kForward));
-        driveTuningController.b()
                 .whileTrue(driveSubsystem.runDriveDynamicTest(SysIdRoutine.Direction.kForward));
-        driveTuningController.x()
-                .whileTrue(driveSubsystem.runSteerQuasiTest(SysIdRoutine.Direction.kForward));
-        driveTuningController.y()
-                .whileTrue(driveSubsystem.runSteerDynamicTest(SysIdRoutine.Direction.kForward));
-        driveTuningController.povLeft()
-                .whileTrue(driveSubsystem.runDriveQuasiTest(SysIdRoutine.Direction.kReverse));
-        driveTuningController.povUp()
+        driveTuningController.b()
                 .whileTrue(driveSubsystem.runDriveDynamicTest(SysIdRoutine.Direction.kReverse));
-        driveTuningController.povDown()
-                .whileTrue(driveSubsystem.runSteerQuasiTest(SysIdRoutine.Direction.kReverse));
-        driveTuningController.povRight()
+        driveTuningController.x()
+                .whileTrue(driveSubsystem.runDriveQuasiTest(SysIdRoutine.Direction.kForward));
+        driveTuningController.y()
+                .whileTrue(driveSubsystem.runDriveQuasiTest(SysIdRoutine.Direction.kReverse));
+        driveTuningController.povLeft()
+                .whileTrue(driveSubsystem.runSteerDynamicTest(SysIdRoutine.Direction.kForward));
+        driveTuningController.povUp()
                 .whileTrue(driveSubsystem.runSteerDynamicTest(SysIdRoutine.Direction.kReverse));
-        driveTuningController.leftBumper()
-                .whileTrue(driveSubsystem.runDriveSlipTest());
-        driveTuningController.rightBumper()
-                .whileTrue(new WheelRadiusCharacterizationCommand(driveSubsystem));
+        driveTuningController.povDown()
+                .whileTrue(driveSubsystem.runSteerQuasiTest(SysIdRoutine.Direction.kForward));
+        driveTuningController.povRight()
+                .whileTrue(driveSubsystem.runSteerQuasiTest(SysIdRoutine.Direction.kReverse));
+
+//        driveTuningController.leftBumper()
+//                .whileTrue(driveSubsystem.runDriveSlipTest());
+//        driveTuningController.rightBumper()
+//                .whileTrue(new WheelRadiusCharacterizationCommand(driveSubsystem));
 
     tuningController.leftBumper().whileTrue(
             turretSubsystem.rezeroCRT()

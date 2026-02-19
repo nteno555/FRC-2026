@@ -2,6 +2,7 @@ package frc2025.util;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest;
@@ -10,7 +11,11 @@ import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 public class SwerveSysidVoltageRequest implements SwerveRequest {
-    private final MotionMagicVoltage m_motionMagicControl = new MotionMagicVoltage(0).withEnableFOC(false).withFeedForward(0).withOverrideBrakeDurNeutral(false).withSlot(0);
+    private final MotionMagicVoltage m_motionMagicControl = new MotionMagicVoltage(0)
+        .withEnableFOC(false)
+        .withFeedForward(0)
+        .withOverrideBrakeDurNeutral(false)
+        .withSlot(0);
     private final VoltageOut m_voltageOutControl = new VoltageOut(0.0);
 
     private double m_targetVoltage = 0.0;
@@ -18,10 +23,6 @@ public class SwerveSysidVoltageRequest implements SwerveRequest {
 
     public SwerveSysidVoltageRequest(boolean driveType) {
         m_driveType = driveType;
-    }
-
-    public SwerveSysidVoltageRequest() {
-        m_driveType = true;
     }
 
     /**
@@ -39,17 +40,15 @@ public class SwerveSysidVoltageRequest implements SwerveRequest {
         for (var module : legacySwerveModules)
         {
             if (m_driveType) {
-                // Command steer motor to zero
                 module.getSteerMotor().setControl(m_motionMagicControl);
 
                 // Command drive motor to voltage
-                module.getDriveMotor().setControl(m_voltageOutControl.withOutput(m_targetVoltage));
+                module.getDriveMotor().setControl(m_voltageOutControl.withOutput(m_targetVoltage).withEnableFOC(true));
             }
             else {
                 // Command steer motor to voltage
-                module.getSteerMotor().setControl(m_voltageOutControl.withOutput(m_targetVoltage));
+                module.getSteerMotor().setControl(m_voltageOutControl.withOutput(m_targetVoltage).withEnableFOC(true));
 
-                // Command drive motor to zero
                 module.getDriveMotor().setControl(m_motionMagicControl);
             }
         }

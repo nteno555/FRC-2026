@@ -9,8 +9,12 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.VoltageUnit;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -19,6 +23,7 @@ import frc2025.config.SubsystemConstants;
 import frc2025.util.Alliance;
 import frc2025.util.SwerveSysidVoltageRequest;
 import org.littletonrobotics.junction.Logger;
+import sun.misc.Signal;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -42,6 +47,7 @@ public class DriveSubsystem extends SubsystemBase {
             .withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
             .withSteerRequestType(SwerveModule.SteerRequestType.Position);
     private double prevTimestamp = 0;
+    private boolean sysIdActive = false;
 
     public DriveSubsystem(DriveIO io) {
         this.io = io;
@@ -50,7 +56,9 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        io.setControl(request.withSpeeds(wantedSpeeds));
+        if (!sysIdActive) {
+            io.setControl(request.withSpeeds(wantedSpeeds));
+        }
         RobotState.getInstance().addDriveData(inputs.odometryTimestamp, inputs.odometryTwist);
 
         RobotState.getInstance().setRobotRelativeSpeeds(inputs.currentChassisSpeeds);
@@ -166,7 +174,7 @@ public class DriveSubsystem extends SubsystemBase {
 			new SysIdRoutine(
 					new SysIdRoutine.Config(
                             null,
-                            null,
+                            Volts.of(7),
                             null,
                             (state) -> {
                                 SignalLogger.start();
@@ -175,7 +183,7 @@ public class DriveSubsystem extends SubsystemBase {
                     ),
 					new SysIdRoutine.Mechanism(
 							(Voltage volts) -> this.io.setControl(driveVoltageRequest.withVoltage(volts.in(Volts))),
-							null,
+                            null,
 							this));
 
 	private SwerveSysidVoltageRequest steerVoltageRequest = new SwerveSysidVoltageRequest(false);
@@ -184,16 +192,16 @@ public class DriveSubsystem extends SubsystemBase {
 			new SysIdRoutine(
 					new SysIdRoutine.Config(
                             null,
-                            null,
+                            Volts.of(7),
                             null,
                             (state) -> {
                                 SignalLogger.start();
-                                SignalLogger.writeString("steer/steer-state", state.toString());
+                                SignalLogger.writeString("steer-state", state.toString());
                             }
                     ),
 					new SysIdRoutine.Mechanism(
 							(Voltage volts) -> this.io.setControl(steerVoltageRequest.withVoltage(volts.in(Volts))),
-							null,
+                            null,
 							this));
 
 	private SysIdRoutine m_slipSysIdRoutine =
@@ -205,29 +213,30 @@ public class DriveSubsystem extends SubsystemBase {
 							this));
 
 	public Command runDriveQuasiTest(SysIdRoutine.Direction direction) {
-		return m_driveSysIdRoutine.quasistatic(direction);
+		return m_driveSysIdRoutine.quasistatic(direction)
+                .beforeStarting(() -> {sysIdActive = true;})
+                .finallyDo(() -> {sysIdActive = false;});
 	}
 
 	public Command runDriveDynamicTest(SysIdRoutine.Direction direction) {
-		return m_driveSysIdRoutine.dynamic(direction);
+		return m_driveSysIdRoutine.dynamic(direction)
+                .beforeStarting(() -> {sysIdActive = true;})
+                .finallyDo(() -> {sysIdActive = false;});
 	}
 
 	public Command runSteerQuasiTest(SysIdRoutine.Direction direction) {
-		return m_steerSysIdRoutine.quasistatic(direction);
+		return m_steerSysIdRoutine.quasistatic(direction)
+                .beforeStarting(() -> {sysIdActive = true;})
+                .finallyDo(() -> {sysIdActive = false;});
 	}
 
 	public Command runSteerDynamicTest(SysIdRoutine.Direction direction) {
-		return m_steerSysIdRoutine.dynamic(direction);
+		return m_steerSysIdRoutine.dynamic(direction)
+                .beforeStarting(() -> {sysIdActive = true;})
+                .andThen(() -> {sysIdActive = false;});
 	}
 
 	public Command runDriveSlipTest() {
 		return m_slipSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
 	}
-
-    public Translation2d getVisionVelocity() {
-        double currentTime = Utils.getCurrentTimeSeconds();
-        Pose2d currentPose = io.samplePoseAt(currentTime).get();
-        Pose2d previousPose = io.samplePoseAt(currentTime - 0.02).get();
-        return currentPose.minus(previousPose).div(0.02).getTranslation();
-    }
 }

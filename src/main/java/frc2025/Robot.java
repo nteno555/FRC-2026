@@ -37,16 +37,14 @@ public class Robot extends LoggedRobot {
 		Logger.addDataReceiver(new NT4Publisher());
 		Logger.start();
 		robotContainer = new RobotContainer();
-
 	}
 	@Override
 	public void robotInit() {
-		SignalLogger.setPath("/home/lvuser/logs/");
-		SignalLogger.start();
 		RobotController.setBrownoutVoltage(5.5);
-        System.out.println("Yay you deployed");
 		FollowPathCommand.warmupCommand().schedule();
-	}
+        SignalLogger.setPath("/home/lvuser/logs/");
+        SignalLogger.start();
+    }
 
 	@Override
 	public void robotPeriodic() {
