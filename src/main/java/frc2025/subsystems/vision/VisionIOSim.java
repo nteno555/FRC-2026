@@ -9,8 +9,4 @@ public class VisionIOSim implements VisionIO{
 
     }
 
-    @Override
-    public Pose2d detectObjectPose() {
-        return null;
-    }
 }

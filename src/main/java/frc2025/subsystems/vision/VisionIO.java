@@ -12,6 +12,6 @@ public interface VisionIO {
     }
 
     public void updateInputs(VisionIOInputs inputs);
-    public Pose2d detectObjectPose();
+
     //public void writeGyros(double yaw);
 }

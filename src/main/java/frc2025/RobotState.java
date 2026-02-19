@@ -17,6 +17,7 @@ import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.vision.LimelightHelpers;
 import frc2025.subsystems.vision.VisionPoseEstimator;
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +55,7 @@ public class RobotState {
     private double prevVisionPoseTimestamp;
     private Pose2d prevVisionPose;
 
+    private PhotonTrackedTarget ballTarget;
 //    private double targetRadialVelocity;
 //    private double targetDistance;
 
@@ -146,6 +148,7 @@ public class RobotState {
     public boolean getShuttling() {
         return this.shuttling;
     }
+
     public Pose2d getTargetPose() {
         var alliance = DriverStation.Alliance.Red;
         if(DriverStation.getAlliance().isPresent()) {
@@ -278,6 +281,14 @@ public class RobotState {
     public boolean getManual() {return manual;}
     public void setTurretLimelightPose(Pose2d pose) { turretLimelightPose = pose; }
     public Pose2d getTurretLimelightPose() { return turretLimelightPose; }
+
+    public PhotonTrackedTarget getBallTarget() {
+        return this.ballTarget;
+    }
+    
+    public void setBallTarget(PhotonTrackedTarget target) {
+        ballTarget = target;
+    }
 
 //    public void setShooterExitVelocity(double velocity) { shooterExitVelocity = velocity; }
 //    public double getShooterExitVelocity() { return shooterExitVelocity; }

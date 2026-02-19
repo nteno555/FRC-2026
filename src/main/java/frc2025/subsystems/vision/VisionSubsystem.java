@@ -22,7 +22,6 @@ public class VisionSubsystem extends SubsystemBase {
         Logger.recordOutput("Vision/shooterVisionPose", RobotState.getInstance().getVisionShooterPose());
         //Logger.recordOutput("Vision/shooterVisionPose", RobotState.getInstance().getVisionShooterPose());
         Logger.recordOutput("Vision/visionPoseBuiltin", RobotState.getInstance().getVisionPoseBuiltin());
-        Logger.recordOutput("Vision/objectPose", io.detectObjectPose());
         Pose2d pose = RobotState.getInstance().getVisionShooterPose();;
         Pose2d target = RobotState.getInstance().getTargetPose();
         double distance = Math.hypot(pose.getX() - target.getX(), pose.getY() - target.getY());
