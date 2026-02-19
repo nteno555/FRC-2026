@@ -10,7 +10,7 @@ public class ShooterTreeMap {
     public  InterpolatingTreeMap hoodTreeMap = new InterpolatingTreeMap();
     public  InterpolatingTreeMap lowerWheelTreeMap = new InterpolatingTreeMap();
     public  InterpolatingTreeMap tofTreeMap = new InterpolatingTreeMap();
-    
+    public InterpolatingTreeMap areaToDistance = new InterpolatingTreeMap();
     public ShooterTreeMap() {
         //WITH HOOD, GOOD
         hoodTreeMap.put(2.0, 0.0);
@@ -32,6 +32,13 @@ public class ShooterTreeMap {
         tofTreeMap.put(3.0, 1.39);
         tofTreeMap.put(3.5, 1.17);
         tofTreeMap.put(4.0, 1.12);
+
+        areaToDistance.put(13.0, 0.0254);
+        areaToDistance.put(0.77, 0.7366);
+        areaToDistance.put(0.30, 1.143);
+        areaToDistance.put(0.20, 1.3462);
+
+
 //        tofTreeMap.put(1.0, 0.5);
 //        tofTreeMap.put(2.0, 0.8);
 //        tofTreeMap.put(3.0, 1.1);

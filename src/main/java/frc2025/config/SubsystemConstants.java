@@ -2,6 +2,7 @@ package frc2025.config;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 
@@ -100,6 +101,8 @@ public class SubsystemConstants {
     public static final double turretLimelightHeight = 0.53;
     public static final double turretLimelightPitch = 15.0;
     public static final double turretLimelightRoll = 0.0;
+
+    public static final Transform2d robotToCamTransform = new Transform2d(0.0, 0.0, Rotation2d.kZero);
 
 //    public static final Pose2d shooterToCenterPose = new Pose2d(0.20, 0.1, Rotation2d.kZero);
 ////    public static final Translation2d shooterToCenterPose = new Translation2d(0, 0);
