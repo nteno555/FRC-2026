@@ -54,13 +54,17 @@ public class VisionIOReal implements VisionIO {
             double yaw = Math.toRadians(target.getYaw());
 
             double area = target.getArea();
-            Logger.recordOutput("Vision/area", area);
+            
             double distance = ShooterTreeMap.getInstance().areaToDistance.getInterpolated(area);
             
             double x = distance * Math.cos(yaw);
             double y = distance * Math.sin(yaw);
 
+            Logger.recordOutput("Vision/area", area);
+            Logger.recordOutput("Vision/distance", distance);
+
             return new Pose2d(x, y, new Rotation2d(Math.toRadians(target.getSkew())));
+            
 
             
         } else {

@@ -34,8 +34,12 @@ public class ShooterTreeMap {
         tofTreeMap.put(4.0, 1.12);
 
         areaToDistance.put(13.0, 0.0254);
+        areaToDistance.put(9.29, 0.2413);
+        areaToDistance.put(3.83, 0.3556);
+        areaToDistance.put(2.01, 0.4572);
+        areaToDistance.put(1.78, 0.5080);
         areaToDistance.put(0.77, 0.7366);
-        areaToDistance.put(0.30, 1.143);
+        areaToDistance.put(0.30, 1.1430);
         areaToDistance.put(0.20, 1.3462);
 
 
