@@ -18,6 +18,7 @@ import frc2025.subsystems.vision.LimelightHelpers;
 import frc2025.subsystems.vision.VisionPoseEstimator;
 import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,8 @@ public class RobotState {
     private double turretAngle;
     private double prevTurretAngle;
     private double prevTurretTimestamp;
+
+    private List<PhotonTrackedTarget> ballTargets;
 
 
     public RobotState() {
@@ -236,6 +239,14 @@ public class RobotState {
 
         return velocity.getX()*target.getX() + velocity.getY()*target.getY();
 
+    }
+
+    public List<PhotonTrackedTarget> getBallTargets() {
+        return this.ballTargets;
+    }
+
+    public void setBallTargets(List<PhotonTrackedTarget> targets) {
+        this.ballTargets = targets;
     }
 
 }

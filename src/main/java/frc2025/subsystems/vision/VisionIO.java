@@ -1,6 +1,7 @@
 package frc2025.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 
 import java.util.List;
 

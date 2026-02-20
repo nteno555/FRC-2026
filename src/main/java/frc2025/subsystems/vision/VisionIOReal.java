@@ -5,9 +5,22 @@ import frc2025.RobotState;
 import frc2025.config.SubsystemConstants;
 
 import java.util.List;
+import java.util.Optional;
+
+import org.littletonrobotics.junction.Logger;
+import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 
 public class VisionIOReal implements VisionIO {
     List<LimelightFiducialCamera> cameras;
+    PhotonCamera photonCamera;
 
     public VisionIOReal() {
         this.cameras = List.of(
@@ -52,6 +65,8 @@ public class VisionIOReal implements VisionIO {
                         SubsystemConstants.robotToLeftCameraRoll
                 )
         );
+        photonCamera = new PhotonCamera("colorCamera");
+        
     }
 
     @Override
@@ -60,6 +75,7 @@ public class VisionIOReal implements VisionIO {
             cam.writeGyro();
             cam.updatePose();
         }
+        RobotState.getInstance().setBallTargets(photonCamera.getLatestResult().getTargets());
     }
 
     @Override
