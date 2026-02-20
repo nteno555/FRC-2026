@@ -42,7 +42,7 @@ public class VisionIOReal implements VisionIO {
             cam.writeGyro();
             cam.updatePose();
         }
-        RobotState.getInstance().setBallTarget(photonCamera.getLatestResult().getBestTarget());
+        RobotState.getInstance().setBallTarget(photonCamera.getLatestResult().getTargets());
     }
 
 }

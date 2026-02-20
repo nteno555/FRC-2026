@@ -1,14 +1,19 @@
 
 package frc2025.commands;
 
+import java.util.List;
+
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc2025.RobotState;
 import frc2025.subsystems.drive.DriveSubsystem;
 
-public class DriveToBallCommand extends Command {
+public class DriveToClusterCommand extends Command {
 
     private final DriveSubsystem drive;
 
@@ -22,7 +27,7 @@ public class DriveToBallCommand extends Command {
     private static final double alignTolerance = 4.0;
     private static final double areaThreshold = 13.0;
 
-    public DriveToBallCommand(DriveSubsystem drive) {
+    public DriveToClusterCommand(DriveSubsystem drive) {
         this.drive = drive;
 
         yawPID = new PIDController(0.03, 0, 0);
@@ -35,18 +40,30 @@ public class DriveToBallCommand extends Command {
         yawPID.reset();
     }
 
+    public Pair<Double, Double> calculateAverageYawAndTotalArea(List<PhotonTrackedTarget> targets) {
+        double weightedYawSum = 0.0;
+        double totalArea = 0.0;
+        for (int i = 0; i < targets.size(); i++) {
+            double yaw = targets.get(i).getYaw();
+            double area = targets.get(i).getArea();
+            weightedYawSum += (yaw * area);
+            totalArea += area;
+        }
+        return new Pair<>((weightedYawSum) / (totalArea), totalArea);
+    }
+
     @Override
     public void execute() {
 
-        var target = RobotState.getInstance().getBallTarget();
+        List<PhotonTrackedTarget> targets = RobotState.getInstance().getBallTargets();
 
-        if (target == null) {
+        if (targets.isEmpty()) {
             drive.applyChassisSpeeds(new ChassisSpeeds());
             return;
         }
-
-        double yaw = target.getYaw();
-        double area = target.getArea();
+        
+        double yaw = calculateAverageYawAndTotalArea(targets).getFirst();
+        double area = calculateAverageYawAndTotalArea(targets).getSecond();
 
         double omega = yawPID.calculate(yaw, 0);
         omega = MathUtil.clamp(omega, -maxOmega, maxOmega);
@@ -54,7 +71,7 @@ public class DriveToBallCommand extends Command {
         double forward = 0.0;
 
         if (Math.abs(yaw) < alignTolerance) {
-            forward = (1.0 / (area)) * speedScaleFactor;
+            forward = (1.0 / (area + 0.001)) * speedScaleFactor;
             forward = MathUtil.clamp(forward, 0, maxForward);
         }
 
@@ -66,13 +83,13 @@ public class DriveToBallCommand extends Command {
     @Override
     public boolean isFinished() {
 
-        var target = RobotState.getInstance().getBallTarget();
+        List<PhotonTrackedTarget> targets = RobotState.getInstance().getBallTargets();
 
-        if (target == null) {
+        if (targets.isEmpty()) {
             return false;
         }
 
-        return (target.getArea() > areaThreshold);
+        return (calculateAverageYawAndTotalArea(targets).getSecond() > areaThreshold);
     }
 
     @Override
