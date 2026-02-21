@@ -3,6 +3,7 @@ package frc2025.commands;
 
 import java.util.List;
 
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.MathUtil;
@@ -32,7 +33,7 @@ public class DriveToClusterCommand extends Command {
     public DriveToClusterCommand(DriveSubsystem drive) {
         this.drive = drive;
 
-        yawPID = new PIDController(0.03, 0, 0);
+        yawPID = new PIDController(0.2, 0, 0);
 
         addRequirements(drive);
     }
@@ -42,13 +43,17 @@ public class DriveToClusterCommand extends Command {
         yawPID.reset();
     }
 
-    public Pair<Double, Double> calculateAverageYawAndTotalArea(List<PhotonTrackedTarget> targets) {
-        double weightedYawSum = 0.0;
+    public Pair<Double, Double> calculateClusterYawAndTotalArea(List<PhotonTrackedTarget> targets) {
+        double sumX = 0.0;
+        double sumY = 0.0;
         double totalArea = 0.0;
-        for (int i = 0; i < targets.size(); i++) {
-            double yaw = targets.get(i).getYaw();
-            double area = targets.get(i).getArea();
-            weightedYawSum += (yaw * area);
+
+        for (PhotonTrackedTarget t : targets) {
+            double yawRad = Math.toRadians(t.getYaw());
+            double area = t.getArea();
+
+            sumX += area * Math.cos(yawRad);
+            sumY += area * Math.sin(yawRad);
             totalArea += area;
         }
 
@@ -56,7 +61,10 @@ public class DriveToClusterCommand extends Command {
             return new Pair<>(0.0, 0.0);
         }
 
-        return new Pair<>((weightedYawSum) / (totalArea), totalArea);
+        double clusterYawRad = Math.atan2(sumY, sumX);
+        double clusterYawDeg = Math.toDegrees(clusterYawRad);
+
+        return new Pair<>(clusterYawDeg, totalArea);
     }
 
     @Override
@@ -69,7 +77,7 @@ public class DriveToClusterCommand extends Command {
             return;
         }
         
-        Pair<Double, Double> stats = calculateAverageYawAndTotalArea(targets);
+        Pair<Double, Double> stats = calculateClusterYawAndTotalArea(targets);
         double yaw = stats.getFirst();
         double area = stats.getSecond();
 
@@ -81,15 +89,27 @@ public class DriveToClusterCommand extends Command {
         double omega = yawPID.calculate(yaw, 0);
         omega = MathUtil.clamp(omega, -maxOmega, maxOmega);
 
-        double forward = 0.0;
+        Logger.recordOutput("Cluster/clusterYaw", yaw);
+        Logger.recordOutput("Cluster/clusterYaw", area);
+        Logger.recordOutput("Cluster/omega", omega);
 
+        double speed = 0.0;
+        double vx = 0.0;
+        double vy = 0.0;
 
         if (Math.abs(yaw) < alignTolerance) {
-            forward = speedScaleFactor / (area + 1.0);
-            forward = MathUtil.clamp(forward, 0.2, maxForward);
+            speed = speedScaleFactor / (area + 1.0);
+            speed = MathUtil.clamp(speed, 0.2, maxForward);
         }
 
-        ChassisSpeeds speeds = new ChassisSpeeds(forward ,0, omega);
+        double yawRad = Math.toRadians(yaw);
+        vx = speed * Math.cos(yawRad);
+        vy = speed * Math.sin(yawRad);
+
+        Logger.recordOutput("Cluster/forward", vx);
+        Logger.recordOutput("Cluster/side", vy);
+
+        ChassisSpeeds speeds = new ChassisSpeeds(-vx ,-vy, omega);
 
         drive.applyChassisSpeeds(speeds);
     }
@@ -103,7 +123,7 @@ public class DriveToClusterCommand extends Command {
             return false;
         }
 
-        double area = calculateAverageYawAndTotalArea(targets).getSecond();
+        double area = calculateClusterYawAndTotalArea(targets).getSecond();
 
         return (area > areaThreshold);
     }

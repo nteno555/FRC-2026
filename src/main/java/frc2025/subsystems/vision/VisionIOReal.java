@@ -20,7 +20,8 @@ import edu.wpi.first.math.geometry.Transform3d;
 
 public class VisionIOReal implements VisionIO {
     List<LimelightFiducialCamera> cameras;
-    PhotonCamera photonCamera;
+    PhotonCamera colorCamera;
+    PhotonVisionFiducialCamera photonCamera;
 
     public VisionIOReal() {
         this.cameras = List.of(
@@ -65,7 +66,20 @@ public class VisionIOReal implements VisionIO {
                         SubsystemConstants.robotToLeftCameraRoll
                 )
         );
-        photonCamera = new PhotonCamera("colorCamera");
+
+        photonCamera = 
+            new PhotonVisionFiducialCamera(
+                "backLeft", 
+                true, 
+                SubsystemConstants.robotToPhotonCameraForward, 
+                SubsystemConstants.robotToPhotonCameraSide, 
+                SubsystemConstants.robotToPhotonCameraUp, 
+                SubsystemConstants.robotToPhotonCameraYaw, 
+                SubsystemConstants.robotToPhotonCameraPitch, 
+                SubsystemConstants.robotToPhotonCameraRoll
+            );
+
+        colorCamera = new PhotonCamera("colorCamera");
         
     }
 
@@ -75,7 +89,8 @@ public class VisionIOReal implements VisionIO {
             cam.writeGyro();
             cam.updatePose();
         }
-        RobotState.getInstance().setBallTargets(photonCamera.getLatestResult().getTargets());
+        photonCamera.updatePose();
+        RobotState.getInstance().setBallTargets(colorCamera.getLatestResult().getTargets());
     }
 
     @Override

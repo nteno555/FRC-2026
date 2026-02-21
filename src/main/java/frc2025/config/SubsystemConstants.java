@@ -138,6 +138,14 @@ public class SubsystemConstants {
     public static double robotToBackCameraPitch = 18.0; // to be updated
     public static double robotToBackCameraRoll = 0.0;
 
+    public static Transform2d robotToPhotonCamera = new Transform2d(0.0, 0.0, Rotation2d.kZero);
+    public static double robotToPhotonCameraForward = robotToPhotonCamera.getX();
+    public static double robotToPhotonCameraSide = robotToPhotonCamera.getY();
+    public static double robotToPhotonCameraUp = 0.0;
+    public static double robotToPhotonCameraYaw = 0.0;
+    public static double robotToPhotonCameraPitch = 0.0;
+    public static double robotToPhotonCameraRoll = 0.0;
+
     public static double autoAimMaxSpeed = 2.0;
     public static double autoAimMaxAccel = 10.0;
 

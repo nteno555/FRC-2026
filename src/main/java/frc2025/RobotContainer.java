@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc2025.commands.AutoAimCommands;
 import frc2025.commands.DriveCommands;
+import frc2025.commands.DriveToClusterCommand;
 import frc2025.commands.SuperstructureCommands;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.climber.ClimberIOReal;
@@ -70,7 +71,7 @@ public class RobotContainer {
     Autos autos;
     Command autoCommand;
 
-    private double driveSpeed = 0.5;
+    private double driveSpeed = 0.2;
     private double rotationSpeed = 0.7;
 
     public RobotContainer() {
@@ -158,8 +159,8 @@ public class RobotContainer {
     private void configureBindings() {
         driveSubsystem.setDefaultCommand(
                 driveSubsystem.driveTeleop(
-                        () -> (-driveSpeed) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                        () -> (-driveSpeed) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (driveSpeed) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (driveSpeed) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
                         () -> (rotationSpeed) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
                 )
         );
@@ -187,70 +188,76 @@ public class RobotContainer {
                 )
         );
 
-        driverXboxController.b().onTrue(
-                DriveCommands.autoTrench(this)
+        driverXboxController.rightTrigger().whileTrue(
+                new DriveToClusterCommand(driveSubsystem)
+        ).whileFalse(
+                driveSubsystem.applyChassisSpeedsCommand(() -> new ChassisSpeeds())
         );
 
-        driverXboxController
-                .x()
-                .and(driverXboxController.back().negate())
-                .onTrue(
-                hoodSubsystem.autoAimFlush()
-                        .alongWith(shooterSubsystem.autoAimFlush())
-                        .alongWith(turretSubsystem.setPosition(() -> 0.0)));
+//         driverXboxController.b().onTrue(
+//                 DriveCommands.autoTrench(this)
+//         );
 
-        driverXboxController
-                .b()
-                .and(driverXboxController.back())
-                .whileTrue(hoodSubsystem.homeThenRezero());
-        driverXboxController
-                .x()
-                .and(driverXboxController.back())
-                .whileTrue(intakeSubsystem.homeThenRezero());
-         driverXboxController
-                .y()
-                .and(driverXboxController.back())
-                .whileTrue(turretSubsystem.rezeroCRT());
+//         driverXboxController
+//                 .x()
+//                 .and(driverXboxController.back().negate())
+//                 .onTrue(
+//                 hoodSubsystem.autoAimFlush()
+//                         .alongWith(shooterSubsystem.autoAimFlush())
+//                         .alongWith(turretSubsystem.setPosition(() -> 0.0)));
 
-        driverXboxController.povLeft() // left bottom paddle
-                .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));
-        driverXboxController.povDown() // right bottom paddle
-                .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
+//         driverXboxController
+//                 .b()
+//                 .and(driverXboxController.back())
+//                 .whileTrue(hoodSubsystem.homeThenRezero());
+//         driverXboxController
+//                 .x()
+//                 .and(driverXboxController.back())
+//                 .whileTrue(intakeSubsystem.homeThenRezero());
+//          driverXboxController
+//                 .y()
+//                 .and(driverXboxController.back())
+//                 .whileTrue(turretSubsystem.rezeroCRT());
 
-        driverXboxController.leftTrigger()
-                .whileTrue(AutoAimCommands.autoAim(
-                                this,
-                                () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
-                                () -> driveSubsystem.getTeleopSpeeds(
-                                        (-0.5) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                                        (-0.5) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                                        (0.7) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
-                                )
-                        ))
-                .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
+//         driverXboxController.povLeft() // left bottom paddle
+//                 .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));
+//         driverXboxController.povDown() // right bottom paddle
+//                 .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
 
-        driverXboxController.povUp() // left middle paddle
-                .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
-        driverXboxController.povRight() // right middle paddle
-                .onTrue(intakeSubsystem.setDeployPosition(() -> 0.0));
+//         driverXboxController.leftTrigger()
+//                 .whileTrue(AutoAimCommands.autoAim(
+//                                 this,
+//                                 () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
+//                                 () -> driveSubsystem.getTeleopSpeeds(
+//                                         (-0.5) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+//                                         (-0.5) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+//                                         (0.7) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
+//                                 )
+//                         ))
+//                 .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
-//        driverXboxController.rightTrigger()
-//                .whileTrue(indexerSubsystem.setVoltage(() -> SubsystemConstants.spindexerShootVoltage,
-//                        () -> SubsystemConstants.towerShootVoltage))
-//                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
+//         driverXboxController.povUp() // left middle paddle
+//                 .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
+//         driverXboxController.povRight() // right middle paddle
+//                 .onTrue(intakeSubsystem.setDeployPosition(() -> 0.0));
 
-        driverXboxController.leftBumper()
-            .onTrue(Commands.runOnce(() -> {
-                driveSpeed = 0.5;
-                rotationSpeed = 0.7;
-            }));
+// //        driverXboxController.rightTrigger()
+// //                .whileTrue(indexerSubsystem.setVoltage(() -> SubsystemConstants.spindexerShootVoltage,
+// //                        () -> SubsystemConstants.towerShootVoltage))
+// //                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
 
-        driverXboxController.rightBumper()
-                .onTrue(Commands.runOnce(
-                        () -> {
-                            driveSpeed = 0.3;
-                            rotationSpeed = 0.5;
-                        }));
+//         driverXboxController.leftBumper()
+//             .onTrue(Commands.runOnce(() -> {
+//                 driveSpeed = 0.5;
+//                 rotationSpeed = 0.7;
+//             }));
+
+//         driverXboxController.rightBumper()
+//                 .onTrue(Commands.runOnce(
+//                         () -> {
+//                             driveSpeed = 0.3;
+//                             rotationSpeed = 0.5;
+//                         }));
 
         operatorXboxController.leftBumper()
                 .onTrue(hoodSubsystem.autoAimFlush()
