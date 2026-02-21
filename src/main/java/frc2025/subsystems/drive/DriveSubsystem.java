@@ -61,7 +61,6 @@ public class DriveSubsystem extends SubsystemBase {
         RobotState.getInstance().setPigeonAcceleration(inputs.pigeonAcceleration);
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);
         Logger.processInputs("RealOutputs/Drive", inputs);
-        Logger.recordOutput("Shooter/shuttling", RobotState.getInstance().getShuttling());
     }
 
     public void applyChassisSpeeds(ChassisSpeeds speeds) {

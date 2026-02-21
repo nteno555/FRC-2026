@@ -78,16 +78,11 @@ public class Autos {
     }
 
     private Command finalAutoAim() {
-                if (!SubsystemConstants.hasTurret) {
-                        return AutoAimCommands.driveAutoAim(
-                                robotContainer,
-                                () -> RobotState.getInstance().getTargetPose(),
-                                () -> new ChassisSpeeds(0,0,0)
-                        ).alongWith(AutoAimCommands.autoIndex(robotContainer));
-                } else {
-                        //return AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getTargetPose(), null);
-                    return Commands.none();
-                }
+        return AutoAimCommands.autoAim(
+                robotContainer,
+                () -> RobotState.getInstance().getTargetPose(),
+                () -> new ChassisSpeeds(0, 0, 0)
+        );
     }
 
     private Command driveAutoAim() {

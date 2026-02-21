@@ -67,9 +67,8 @@ public class IntakeIOReal implements IntakeIO {
     @Override
     public void setDeployPosition(double position) {
         Logger.recordOutput("Intake/wantedPositionRotations", position);
-        intakeDeployMaster.setControl(
-        new PositionVoltage(position)
-                        .withSlot(0)
+        intakeDeployMaster.setControl(new PositionVoltage(position)
+                .withSlot(0)
         );
     }
 

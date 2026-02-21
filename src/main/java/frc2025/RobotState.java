@@ -107,43 +107,22 @@ public class RobotState {
     }
 
     public Pose2d getTargetPose() {
-        alliance = DriverStation.Alliance.Red;
-        if(DriverStation.getAlliance().isPresent()) {
-            alliance = DriverStation.getAlliance().get();
+        if (!shuttling) {
+            return (Alliance.get()) ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
         }
-
-        if(alliance == DriverStation.Alliance.Red) {
-            if(!shuttling) {
-                return FieldConstants.redNetPos;
-            } else {
-                if(visionPoseEstimator.getLatestPose().getY() > FieldConstants.yHalfLine) {
-                    return FieldConstants.redShuttlePosUpper;
-                } else {
-                    return FieldConstants.redShuttlePosLower;
-                }
-            }
-        } else {
-            if(!shuttling) {
-                return FieldConstants.blueNetPos;
-            } else {
-                if(visionPoseEstimator.getLatestPose().getY() > FieldConstants.yHalfLine) {
-                    return FieldConstants.blueShuttlePosUpper;
-                }
-                else {
-                    return FieldConstants.blueShuttlePosLower;
-                }
-            }
+        if (visionPoseEstimator.getLatestPose().getY() > FieldConstants.yHalfLine) {
+            return (Alliance.get()) ? FieldConstants.redShuttlePosUpper : FieldConstants.blueShuttlePosUpper;
         }
+        return (Alliance.get()) ? FieldConstants.redShuttlePosLower : FieldConstants.blueShuttlePosLower;
     }
 
     public void updateShuttling() {
-        double xPos = RobotState.getInstance().getVisionPose().getX();
-
         if (DriverStation.isAutonomousEnabled()) {
             shuttling = false;
             return;
         }
 
+        double xPos = RobotState.getInstance().getVisionPose().getX();
         boolean inBlueZone = xPos < FieldConstants.inBlueZoneX && !Alliance.get();
         boolean inRedZone = xPos > FieldConstants.inRedZoneX && Alliance.get();
 
@@ -152,6 +131,7 @@ public class RobotState {
 
         if (inBlueZone || inRedZone) shuttling = false;
         else shuttling = true;
+        Logger.recordOutput("Shooter/shuttling", RobotState.getInstance().getShuttling());
     }
 
     public void updateShootingWhileMovingVirtualPose() {
@@ -171,17 +151,20 @@ public class RobotState {
                 new Twist2d(vx * phaseDelay, vy * phaseDelay, vOmega * phaseDelay)
         );
 
-        Translation2d shooterFieldRelative = SubsystemConstants.robotToShooter.getTranslation().rotateBy(delayedPose.getRotation());
+        if (!SubsystemConstants.hasTurret) {
+            Translation2d shooterFieldRelative = SubsystemConstants.robotToShooter.getTranslation().rotateBy(delayedPose.getRotation());
 
-        vx += -vOmega * shooterFieldRelative.getY();
-        vy += vOmega * shooterFieldRelative.getX();
+            vx += -vOmega * shooterFieldRelative.getY();
+            vy += vOmega * shooterFieldRelative.getX();
+        }
 
+        double distance, dx, dy, flightTime = 0.0;
         for (int i = 0; i < 20; i++) {
-            double dx = virtualPose.getX() - delayedPose.getX();
-            double dy = virtualPose.getY() - delayedPose.getY();
-            double distance = Math.hypot(dx, dy);
+            dx = virtualPose.getX() - delayedPose.getX();
+            dy = virtualPose.getY() - delayedPose.getY();
+            distance = Math.hypot(dx, dy);
 
-            double flightTime = ShooterTreeMap.getInstance().tofTreeMap.getInterpolated(distance);
+            flightTime = ShooterTreeMap.getInstance().tofTreeMap.getInterpolated(distance);
 
             virtualPose = new Pose2d(
                     realTargetPose.getX() + vx * flightTime,
@@ -196,6 +179,12 @@ public class RobotState {
                 virtualPose.getY() - shooterPose.getY(),
                 virtualPose.getX() - shooterPose.getX()
         );
+
+        if (SubsystemConstants.hasTurret) {
+            angleToVirtualTarget -= vOmega * (flightTime + phaseDelay);
+            Logger.recordOutput("Vision/turretRotCorrection", -vOmega * (flightTime + phaseDelay));
+        }
+
         Logger.recordOutput("Drive/speed", Math.hypot(vx, vy));
         Logger.recordOutput("Vision/shootingWhileMovingVirtualPose", shootingWhileMovingVirtualPose);
         Logger.recordOutput("Vision/angleToVirtualTarget", angleToVirtualTarget);
@@ -235,7 +224,6 @@ public class RobotState {
                 .div(getTargetPose().getTranslation().minus(getVisionShooterPose().getTranslation()).getNorm());
 
         return velocity.getX()*target.getX() + velocity.getY()*target.getY();
-
     }
 
 }

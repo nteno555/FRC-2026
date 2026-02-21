@@ -173,9 +173,9 @@ public class RobotContainer {
                 )
         );
 
-        driverXboxController.b().onTrue(
-                DriveCommands.autoTrench(this)
-        );
+//        driverXboxController.b().onTrue(
+//                DriveCommands.autoTrench(this)
+//        );
 
         driverXboxController
                 .x()
@@ -285,11 +285,11 @@ public class RobotContainer {
     ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
 
     tuningController.povUp().whileTrue(
-            turretSubsystem.setPositionSafe(() -> Math.PI)
+            turretSubsystem.setPositionSafe(() -> -Math.PI)
     ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
 
     tuningController.povDown().whileTrue(
-            turretSubsystem.setPositionSafe(() -> Math.PI*2.0)
+            turretSubsystem.setPositionSafe(() -> Math.PI*-2.0)
     ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
 
 //        tuningController.leftBumper().whileTrue(

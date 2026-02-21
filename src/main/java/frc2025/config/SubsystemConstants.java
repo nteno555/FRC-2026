@@ -90,7 +90,7 @@ public class SubsystemConstants {
     public static double turretPeakReverseTorqueCurrent = 40;
     public static double turretTorqueNeutralDeadband = 1;
     public static double turretZeroOffsetRadians = 0.0;
-    public static double turretRotationsPerRadian = 1.6498001401;
+    public static double turretRotationsPerRadian = 1.6578639905;
     public static double turretMinAngleRadians = -2.2 * Math.PI;
     public static double turretMaxAngleRadians = 0;
     public static double throughBoreZero1 = 0.382;
