@@ -11,7 +11,6 @@ import static frc2025.subsystems.drive.DriveConstants.kSpeedAt12Volts;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -77,12 +76,6 @@ public class RobotContainer {
         createSubsystems();
         configureBindings();
         configureAutoCommands();
-//        autoCommand = autos.MidStationDepotShootWhileMoving();
-        //autoCommand = autos.MidDepotNeutralClimbShootWhileMoving();
-//        autoCommand = autos.MidDepotShootWhileMoving();
-//        configureAutoCommands();
-        //autoCommand = autos.LowShootPreload();
-//        autoCommand = Autos.LowStationDepotClimb;
     }
 
     public void periodic() {
@@ -165,18 +158,11 @@ public class RobotContainer {
         );
 
         intakeSubsystem.setDefaultCommand(intakeSubsystem.setDeployVoltage(() -> 0.0));
-        hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
+//        hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
         shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
         indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
 //        turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());
 
-//        driverXboxController.a().onTrue(new InstantCommand(() -> {
-//            if(!Alliance.get()){
-//                driveSubsystem.resetOdometry(new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
-//            } else {
-//                driveSubsystem.resetOdometry(new Pose2d());
-//            }
-//        }));
 
         driverXboxController.a().onTrue(
                 SuperstructureCommands.resetOdometry(

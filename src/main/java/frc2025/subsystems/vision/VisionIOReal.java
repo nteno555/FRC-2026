@@ -1,7 +1,5 @@
 package frc2025.subsystems.vision;
 
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc2025.RobotState;
 import frc2025.config.SubsystemConstants;
 
 import java.util.List;
@@ -42,14 +40,14 @@ public class VisionIOReal implements VisionIO {
                         SubsystemConstants.robotToRightCameraRoll
                 ),
                 new LimelightFiducialCamera(
-                        "limelight-left",
+                        "limelight-front",
                         false,
-                        SubsystemConstants.robotToLeftCameraForward,
-                        SubsystemConstants.robotToLeftCameraRight,
-                        SubsystemConstants.robotToLeftCameraUp,
-                        SubsystemConstants.robotToLeftCameraYaw,
-                        SubsystemConstants.robotToLeftCameraPitch,
-                        SubsystemConstants.robotToLeftCameraRoll
+                        SubsystemConstants.robotToFrontCameraForward,
+                        SubsystemConstants.robotToFrontCameraRight,
+                        SubsystemConstants.robotToFrontCameraUp,
+                        SubsystemConstants.robotToFrontCameraYaw,
+                        SubsystemConstants.robotToFrontCameraPitch,
+                        SubsystemConstants.robotToFrontCameraRoll
                 )
         );
     }
