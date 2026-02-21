@@ -34,13 +34,4 @@ public class ShooterSubsystem extends SubsystemBase{
     public ShooterSubsystem(ShooterIO io) {
         this.io = io;
     }
-
-    public void periodic() {
-        io.periodic();
-    }
-
-    public void setVoltage(double voltage) {this.io.setVoltage(voltage);}
-    public double getVoltage() {return this.io.getVoltage();}
-
-    public ShooterIO getIO() {return this.io;}
 }
