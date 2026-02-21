@@ -28,8 +28,12 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc2025.RobotState;
 import frc2025.subsystems.vision.VisionIO;
 import frc2025.subsystems.vision.VisionPoseEstimator;
@@ -46,6 +50,27 @@ public class DriveIOReal extends SwerveDrivetrain implements DriveIO{
 
     public DriveIOReal(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(TalonFX::new, TalonFX::new, CANcoder::new, driveTrainConstants, modules);
+
+        SmartDashboard.putData("Swerve Drive", new Sendable() {
+            @Override
+            public void initSendable(SendableBuilder builder) {
+                builder.setSmartDashboardType("SwerveDrive");
+
+                builder.addDoubleProperty("Front Left Angle", () -> getState().ModuleStates[0].angle.getRadians(), null);
+                builder.addDoubleProperty("Front Left Velocity", () -> getState().ModuleStates[0].speedMetersPerSecond, null);
+
+                builder.addDoubleProperty("Front Right Angle", () -> getState().ModuleStates[1].angle.getRadians(), null);
+                builder.addDoubleProperty("Front Right Velocity", () -> getState().ModuleStates[1].speedMetersPerSecond, null);
+
+                builder.addDoubleProperty("Back Left Angle", () -> getState().ModuleStates[2].angle.getRadians(), null);
+                builder.addDoubleProperty("Back Left Velocity", () -> getState().ModuleStates[2].speedMetersPerSecond, null);
+
+                builder.addDoubleProperty("Back Right Angle", () -> getState().ModuleStates[3].angle.getRadians(), null);
+                builder.addDoubleProperty("Back Right Velocity", () -> getState().ModuleStates[3].speedMetersPerSecond, null);
+
+                builder.addDoubleProperty("Robot Angle", () -> getPigeon2().getRotation2d().getRadians(), null);
+            }
+        });
     }
 
 
@@ -80,6 +105,7 @@ public class DriveIOReal extends SwerveDrivetrain implements DriveIO{
         Logger.recordOutput("Drive/SwerveModuleStatesWanted", getState().ModuleTargets);
 
 //        Logger.recordOutput("Drive/")
+
     }
 
     @Override

@@ -34,6 +34,7 @@ public class HoodSubsystem extends SubsystemBase {
     public void periodic() {
         Logger.processInputs("RealOutputs/Hood", inputs);
         Logger.recordOutput("Hood/setpoint", setpoint);
+        Logger.recordOutput("Hood/angle", Math.round(inputs.positionDegreesReal));
         if(DriverStation.isDisabled()) {
             setpoint = inputs.positionRotations;
         }

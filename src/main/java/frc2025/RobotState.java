@@ -19,8 +19,10 @@ import frc2025.subsystems.vision.VisionPoseEstimator;
 import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
 
+import java.lang.StackWalker.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class RobotState {
     private static RobotState instance;
@@ -44,11 +46,14 @@ public class RobotState {
     private double prevTurretAngle;
     private double prevTurretTimestamp;
 
+    private ArrayList<String> states;
+    private String matchState;
 
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
         shuttling = false;
         prevTurretTimestamp = -1;
+        states = new ArrayList<String>();
     }
 
     public static RobotState getInstance() {
@@ -238,4 +243,103 @@ public class RobotState {
 
     }
 
+    public boolean isHubActive() {
+        Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
+        // If we have no alliance, we cannot be enabled, therefore no hub.
+        if (alliance.isEmpty()) {
+            return false;
+        }
+        // Hub is always enabled in autonomous.
+        if (DriverStation.isAutonomousEnabled()) {
+            return true;
+        }
+        // At this point, if we're not teleop enabled, there is no hub.
+        if (!DriverStation.isTeleopEnabled()) {
+            return false;
+        }
+
+        // We're teleop enabled, compute.
+        double matchTime = DriverStation.getMatchTime();
+        String gameData = DriverStation.getGameSpecificMessage();
+        // If we have no game data, we cannot compute, assume hub is active, as its likely early in teleop.
+        if (gameData.isEmpty()) {
+            return true;
+        }
+        boolean redInactiveFirst = false;
+        switch (gameData.charAt(0)) {
+            case 'R' -> redInactiveFirst = true;
+            case 'B' -> redInactiveFirst = false;
+            default -> {
+            // If we have invalid game data, assume hub is active.
+            return true;
+            }
+        }
+
+        // Shift was is active for blue if red won auto, or red if blue won auto.
+        boolean shift1Active = switch (alliance.get()) {
+            case Red -> !redInactiveFirst;
+            case Blue -> redInactiveFirst;
+        };
+
+        if (matchTime > 130) {
+            // Transition shift, hub is active.
+            return true;
+        } else if (matchTime > 105) {
+            // Shift 1
+            return shift1Active;
+        } else if (matchTime > 80) {
+            // Shift 2
+            return !shift1Active;
+        } else if (matchTime > 55) {
+            // Shift 3
+            return shift1Active;
+        } else if (matchTime > 30) {
+            // Shift 4
+            return !shift1Active;
+        } else {
+            return true;
+        }
+    }
+
+    public void updateStates(){
+        Logger.recordOutput("DriverStation/thehub", isHubActive());
+        //hub
+        if(isHubActive()) addState("HUB_ACTIVE"); 
+        else removeState("HUB_ACTIVE"); 
+
+        //Shuttling
+        Logger.recordOutput("DriverStation/shuttling", shuttling);
+        if (shuttling) addState("SHUTTLING");
+        else if (!shuttling) removeState("SHUTTLING");
+        
+        //Autoshooing
+        if(wantAutoShoot) addState("AUTO_SHOOTING");
+        else removeState("AUTO_SHOOTING");
+
+    }
+
+    public void addState(String state) {
+        if(!states.contains(state)){
+            states.add(state);
+        }
+    }
+
+    public void removeState(String state) {
+        states.remove(state);
+    }
+
+    public ArrayList<String> getStates() {
+        return states;
+    }
+
+    public void updateMatchState(){
+        double matchTime = DriverStation.getMatchTime();
+        if(DriverStation.isAutonomous()) matchState = "AUTONOMOUS";
+        if(DriverStation.isTeleop() && matchTime < 130) matchState = "TELEOP";
+        if(matchTime > 130) matchState = "ENDGAME";
+    }
+
+    public String getMatchState(){
+        return matchState;
+    }
 }

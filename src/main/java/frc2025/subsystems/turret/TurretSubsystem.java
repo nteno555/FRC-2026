@@ -38,6 +38,9 @@ public class TurretSubsystem extends SubsystemBase {
 
         RobotState.getInstance().setTurretAngle(inputs.positionRadians);
 
+        Logger.recordOutput("Turret/fieldRelativeAngleDegrees", Math.round(fieldRelativeAngleRad / Math.PI * 180));
+        Logger.recordOutput("Turret/AngleDegrees", inputs.positionRadians / Math.PI * 180);
+
         if(SubsystemConstants.hasTurret) {
             if (!zeroed && inputs.throughboresConnected) {
                 io.rezeroCRT();

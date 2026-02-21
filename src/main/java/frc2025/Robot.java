@@ -11,6 +11,8 @@ import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
+
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -36,13 +38,13 @@ public class Robot extends LoggedRobot {
 		Logger.addDataReceiver(new NT4Publisher());
 		Logger.start();
 		robotContainer = new RobotContainer();
-
 	}
 	@Override
 	public void robotInit() {
 		RobotController.setBrownoutVoltage(5.5);
         System.out.println("Yay you deployed");
 		FollowPathCommand.warmupCommand().schedule();
+		CameraServer.startAutomaticCapture();
 	}
 
 	@Override

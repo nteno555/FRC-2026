@@ -8,11 +8,14 @@ import static frc2025.subsystems.drive.DriveConstants.FrontLeft;
 import static frc2025.subsystems.drive.DriveConstants.FrontRight;
 import static frc2025.subsystems.drive.DriveConstants.kSpeedAt12Volts;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -47,6 +50,7 @@ import frc2025.subsystems.vision.VisionIOReal;
 import frc2025.subsystems.vision.VisionIOSim;
 import frc2025.subsystems.vision.VisionSubsystem;
 import frc2025.util.Alliance;
+import java.util.ArrayList;
 
 public class RobotContainer {
     public static final double DEAD_BAND_DRIVER = 0.1;
@@ -77,6 +81,7 @@ public class RobotContainer {
         createSubsystems();
         configureBindings();
         configureAutoCommands();
+        initLogger();
 //        autoCommand = autos.MidStationDepotShootWhileMoving();
         //autoCommand = autos.MidDepotNeutralClimbShootWhileMoving();
 //        autoCommand = autos.MidDepotShootWhileMoving();
@@ -86,6 +91,7 @@ public class RobotContainer {
     }
 
     public void periodic() {
+        loggingPeriodic();
     }
 
     private void createSubsystems() {
@@ -230,9 +236,13 @@ public class RobotContainer {
                 .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
         driverXboxController.povUp() // left middle paddle
-                .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
+                .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
+                        .andThen(Commands.runOnce(()-> Logger.recordOutput("DriverStation/Intake Deployed?",true)))
+                );
         driverXboxController.povRight() // right middle paddle
-                .onTrue(intakeSubsystem.setDeployPosition(() -> 0.0));
+                .onTrue(intakeSubsystem.setDeployPosition(() -> 0.0)
+                        .andThen(Commands.runOnce(()-> Logger.recordOutput("DriverStation/Intake Deployed?",false)))
+                );
 
 //        driverXboxController.rightTrigger()
 //                .whileTrue(indexerSubsystem.setVoltage(() -> SubsystemConstants.spindexerShootVoltage,
@@ -378,6 +388,21 @@ public class RobotContainer {
 
     public double getDriverLeftX() {
         return driverXboxController.getLeftX();
+    }
+
+    public void initLogger(){
+        Logger.recordOutput("DriverStation/Intake Deployed?",false);
+    }
+
+    public void loggingPeriodic(){
+        RobotState.getInstance().updateStates();
+        RobotState.getInstance().updateMatchState();
+        ArrayList<String> array = RobotState.getInstance().getStates();
+        SmartDashboard.putStringArray("DriverStation/STATES", array.toArray(new String[array.size()]));
+        
+        Logger.recordOutput("DriverStation/MatchState", RobotState.getInstance().getMatchState());        
+        Logger.recordOutput("DriverStation/TurretAngle", Math.round(RobotState.getInstance().getTurretAngle() * 180 / Math.PI));
+        Logger.recordOutput("DriverStation/BatteryVoltage", RobotController.getBatteryVoltage());
     }
 
     public void autoInit() {

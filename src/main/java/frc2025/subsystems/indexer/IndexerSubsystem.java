@@ -30,6 +30,7 @@ public class IndexerSubsystem extends SubsystemBase {
     public void periodic() {
         Logger.processInputs("RealOutputs/Indexer", inputs);
         io.updateInputs(inputs);
+        Logger.recordOutput("Indexer/Moving", inputs.indexerVoltage != 0);
     }
 
     public Command setSpeed(Supplier<Double> indexerSpeed, Supplier<Double> towerSpeed) {
