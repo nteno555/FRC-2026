@@ -73,13 +73,13 @@ public class SubsystemConstants {
     public static double intakeRollerVoltage = 11.0;
 
     public static double spindexerShootVoltage = -12.0;
-    public static double towerShootVoltage = -12.0;
+    public static double towerShootVoltage = 12.0;
 
     // Turret Gear Ratio: 12:24 & 44:54 & 36:125
     public static double turretkS = 0.29;
     public static double turretkV = 0.128;
     public static double turretkG = 0.0;
-    public static double turretkP = 2.0;
+    public static double turretkP = 4.0;
     public static double turretkI = 0.0;
     public static double turretkD = 0.0;
     public static double turretCruiseVelocity = 60;
@@ -93,9 +93,9 @@ public class SubsystemConstants {
     public static double turretZeroOffsetRadians = 0.0;
     public static double turretRotationsPerRadian = 1.6578639911;
     public static double turretMinAngleRadians = -Math.PI / 2;
-    public static double turretMaxAngleRadians = 3*Math.PI / 2 + 0.4;
-    public static double throughBoreZero2 = 0.705;
-    public static double throughBoreZero1 = 0.177;
+    public static double turretMaxAngleRadians = 3*Math.PI / 2;
+    public static double throughBoreZero2 = 0.717;
+    public static double throughBoreZero1 = 0.206;
     // to be updated
 //    public static double throughBoreRatio1 = 3.6667;
 //    public static double throughBoreRatio2 = 4.5;

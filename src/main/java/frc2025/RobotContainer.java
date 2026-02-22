@@ -159,7 +159,7 @@ public class RobotContainer {
         );
 
         intakeSubsystem.setDefaultCommand(intakeSubsystem.setDeployVoltage(() -> 0.0));
-//        hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
+        hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
         shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
         indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
 //        turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());

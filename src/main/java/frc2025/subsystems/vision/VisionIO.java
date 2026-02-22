@@ -12,5 +12,7 @@ public interface VisionIO {
 
     public void updateInputs(VisionIOInputs inputs);
     public void resetOdometry();
+
+    public void toggleClimbTags(boolean climbing);
     //public void writeGyros(double yaw);
 }

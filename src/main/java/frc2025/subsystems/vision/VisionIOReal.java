@@ -66,4 +66,11 @@ public class VisionIOReal implements VisionIO {
             cam.resetOdometry();
         }
     }
+
+    @Override
+    public void toggleClimbTags(boolean climbing) {
+        for (var cam: cameras) {
+            cam.toggleClimbTags(climbing);
+        }
+    }
 }

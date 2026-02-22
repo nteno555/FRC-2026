@@ -36,6 +36,7 @@ public class RobotState {
     private double angleToVirtualTarget;
 
     private boolean shuttling;
+    private boolean climbing;
     private Pose2d shootingWhileMovingVirtualPose;
 
     private boolean wantAutoShoot;
@@ -171,10 +172,12 @@ public class RobotState {
                 new Twist2d(vx * phaseDelay, vy * phaseDelay, vOmega * phaseDelay)
         );
 
-        Translation2d shooterFieldRelative = SubsystemConstants.robotToShooter.getTranslation().rotateBy(delayedPose.getRotation());
+        if (!SubsystemConstants.hasTurret) {
+            Translation2d shooterFieldRelative = SubsystemConstants.robotToShooter.getTranslation().rotateBy(delayedPose.getRotation());
 
-        vx += -vOmega * shooterFieldRelative.getY();
-        vy += vOmega * shooterFieldRelative.getX();
+            vx += -vOmega * shooterFieldRelative.getY();
+            vy += vOmega * shooterFieldRelative.getX();
+        }
 
         for (int i = 0; i < 20; i++) {
             double dx = virtualPose.getX() - delayedPose.getX();
@@ -184,8 +187,8 @@ public class RobotState {
             double flightTime = ShooterTreeMap.getInstance().tofTreeMap.getInterpolated(distance);
 
             virtualPose = new Pose2d(
-                    realTargetPose.getX() + vx * flightTime,
-                    realTargetPose.getY() + vy * flightTime,
+                    realTargetPose.getX() - vx * flightTime,
+                    realTargetPose.getY() - vy * flightTime,
                     realTargetPose.getRotation()
             );
         }

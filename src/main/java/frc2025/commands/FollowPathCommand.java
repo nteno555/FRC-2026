@@ -114,7 +114,7 @@ public class FollowPathCommand extends Command {
             Logger.recordOutput("Drive/autoAutoAimOverride", autoAimOverride);
         }
 
-        autoAimOverride = false;
+        autoAimOverride = (SubsystemConstants.hasTurret);
 
         Logger.recordOutput("Drive/pathProgress", pathProgress);
         Logger.recordOutput("Drive/FollowPath/wantedVelocity", desiredState.linearVelocity);
@@ -160,7 +160,6 @@ public class FollowPathCommand extends Command {
         Pose2d endPose = trajectory.getEndState().pose;
 
         if(!useTimeout) {
-            // check reef side to side distance
             Translation2d translation = currentPose.getTranslation().minus(endPose.getTranslation());
             double rotationDistance = Math.abs(currentPose.getRotation().minus(endPose.getRotation()).getDegrees());
             Logger.recordOutput("Vision/alignDistance", translation.getNorm());

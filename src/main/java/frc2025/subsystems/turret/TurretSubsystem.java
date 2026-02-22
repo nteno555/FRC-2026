@@ -32,7 +32,7 @@ public class TurretSubsystem extends SubsystemBase {
         if(DriverStation.isDisabled()) {setpoint = inputs.positionTicks;}
         io.updateInputs(inputs);
 
-        double fieldRelativeAngleRad = inputs.positionRadians + RobotState.getInstance().getVisionPose().getRotation().getRadians();
+        double fieldRelativeAngleRad = -inputs.positionRadians + RobotState.getInstance().getVisionPose().getRotation().getRadians();
         Logger.recordOutput("Turret/fieldRelativeAngleRadians", fieldRelativeAngleRad);
         Logger.recordOutput("Vision/aimAngleDiff", RobotState.getInstance().getAngleToVirtualTarget() - fieldRelativeAngleRad);
 
@@ -63,8 +63,9 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     public Command setPositionFieldRelative(Supplier<Double> positionRadians) {
-        return setPositionSafe(() -> positionRadians.get() - RobotState.getInstance().getVisionPose().getRotation().getRadians(),
-                () -> -RobotState.getInstance().getRobotRelativeSpeeds().omegaRadiansPerSecond);
+        return setPositionSafe(() -> -(positionRadians.get() - RobotState.getInstance().getVisionPose().getRotation().getRadians()),
+                () -> 0.0);
+//                () -> RobotState.getInstance().getRobotRelativeSpeeds().omegaRadiansPerSecond);
     }
 
     public Command setPositionSafe(Supplier<Double> positionRadians) {

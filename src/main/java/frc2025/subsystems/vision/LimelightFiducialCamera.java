@@ -95,6 +95,24 @@ public class LimelightFiducialCamera {
         }
     }
 
+    public void toggleClimbTags(boolean climbing) {
+        if (climbing) {
+            if (Alliance.get()) {
+                LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{15, 16});
+            }
+            else {
+                LimelightHelpers.SetFiducialIDFiltersOverride(name,  new int[]{31, 32});
+            }
+        }
+        else {
+            if(Alliance.get()) {
+                LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{2, 3, 4, 5, 8, 9, 10, 11, 25, 26});
+            } else {
+                LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{9, 10, 18, 19, 20, 21, 24, 25, 26, 27});
+            }
+        }
+    }
+
     private Pose2d transformTurretPose(Pose2d pose) {
         Transform2d robotToShooterReal = new Transform2d(
                     SubsystemConstants.robotToShooter.getTranslation(),

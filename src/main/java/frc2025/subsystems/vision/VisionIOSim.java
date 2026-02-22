@@ -10,4 +10,9 @@ public class VisionIOSim implements VisionIO{
     public void resetOdometry() {
 
     }
+
+    @Override
+    public void toggleClimbTags(boolean climbing) {
+
+    }
 }

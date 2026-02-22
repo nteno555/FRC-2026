@@ -15,15 +15,15 @@ public class ShooterTreeMap {
     public InterpolatingTreeMap shuttlingHoodTreeMap = new InterpolatingTreeMap();
     
     public ShooterTreeMap() {
-        hoodTreeMap.put(1.13, 0.5);
-        hoodTreeMap.put(1.45, 0.6);
-        hoodTreeMap.put(1.8499, 1.0);
-        hoodTreeMap.put(1.85, 0.5);
-        hoodTreeMap.put(2.22, 0.7);
-        hoodTreeMap.put(2.96, 1.05);
-        hoodTreeMap.put(3.78, 1.5);
-        hoodTreeMap.put(4.30, 2.2);
-        hoodTreeMap.put(5.0, 2.6);
+        hoodTreeMap.put(1.13, 0.6);
+        hoodTreeMap.put(1.45, 0.7);
+        hoodTreeMap.put(1.8499, 1.1);
+        hoodTreeMap.put(1.85, 0.6);
+        hoodTreeMap.put(2.22, 0.8);
+        hoodTreeMap.put(2.96, 1.15);
+        hoodTreeMap.put(3.78, 1.6);
+        hoodTreeMap.put(4.30, 2.3);
+        hoodTreeMap.put(5.0, 2.7);
 
         lowerWheelTreeMap.put(1.13, 39.0);
         lowerWheelTreeMap.put(1.8499, 39.0);

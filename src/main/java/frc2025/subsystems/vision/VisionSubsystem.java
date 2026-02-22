@@ -8,6 +8,8 @@ import frc2025.Robot;
 import frc2025.RobotState;
 import org.littletonrobotics.junction.Logger;
 
+import java.util.function.Supplier;
+
 public class VisionSubsystem extends SubsystemBase {
     VisionIO io;
     VisionIO.VisionIOInputs inputs = new VisionIO.VisionIOInputs();
@@ -42,5 +44,9 @@ public class VisionSubsystem extends SubsystemBase {
 
     public void resetOdometry() {
         io.resetOdometry();
+    }
+
+    public void toggleClimbTags(Supplier<Boolean> climbing) {
+        io.toggleClimbTags(climbing.get());
     }
 }
