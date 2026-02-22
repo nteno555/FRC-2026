@@ -91,7 +91,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "low start",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 90.0

@@ -6,6 +6,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.units.Units;
 import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
@@ -24,6 +25,7 @@ public class HoodIOReal implements HoodIO {
         slot0Configs.kP = SubsystemConstants.hoodkP;
         slot0Configs.kI = SubsystemConstants.hoodkI;
         slot0Configs.kD = SubsystemConstants.hoodkD;
+        slot0Configs.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
 
         talonFXConfigs.CurrentLimits.SupplyCurrentLimit = SubsystemConstants.hoodSupplyCurrentLimit;
         talonFXConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -69,11 +71,10 @@ public class HoodIOReal implements HoodIO {
     public void setPosition(double position) {
         Logger.recordOutput("Hood/wantedPosition", position);
 
-        if (Math.abs(position - hood.getPosition().getValueAsDouble()) < 0.05) return;
+//        if (Math.abs(position - hood.getPosition().getValueAsDouble()) < 0.05) return;
 
-        double voltageFF = position < hood.getPosition().getValueAsDouble() ? -SubsystemConstants.hoodFF : SubsystemConstants.hoodFF;
+//        double voltageFF = position < hood.getPosition().getValueAsDouble() ? -SubsystemConstants.hoodFF : SubsystemConstants.hoodFF;
         hood.setControl(new PositionVoltage(position)
-                .withFeedForward(voltageFF)
                 .withEnableFOC(true));
     }
 

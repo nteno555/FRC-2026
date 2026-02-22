@@ -55,23 +55,25 @@ public class LimelightFiducialCamera {
 //        LimelightHelpers.SetIMUMode(name, 0);
 
         if(turretMounted){// && robotToCameraPose != null) {
-            Transform2d robotToShooterReal = new Transform2d(
-                    SubsystemConstants.robotToShooter.getTranslation(),
-                    SubsystemConstants.robotToShooter.getRotation().plus(Rotation2d.fromRadians(RobotState.getInstance().getTurretAngle()))
-            );
-
-            Transform2d cameraToRobotTransform = SubsystemConstants.shooterToCamera.inverse().plus(robotToShooterReal.inverse());
-            Transform2d robotToCameraTransform = cameraToRobotTransform.inverse();
+//            Transform2d robotToShooterReal = new Transform2d(
+//                    SubsystemConstants.robotToShooter.getTranslation(),
+//                    SubsystemConstants.robotToShooter.getRotation().plus(Rotation2d.fromRadians(RobotState.getInstance().getTurretAngle()))
+//            );
+//
+//            Transform2d cameraToRobotTransform = SubsystemConstants.shooterToCamera.inverse().plus(robotToShooterReal.inverse());
+//            Transform2d robotToCameraTransform = cameraToRobotTransform.inverse();
 
             LimelightHelpers.setCameraPose_RobotSpace(name, 0.0, 0.0, this.robotToCameraUp,
                     this.robotToCameraRoll, this.robotToCameraPitch, 0.0);
 
-            double omega = RobotState.getInstance().getTurretVelocity() + RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
+            double orientation =  RobotState.getInstance().getVisionPose().getRotation().getDegrees() - Units.radiansToDegrees(RobotState.getInstance().getTurretAngle());
+
+            double omega = RobotState.getInstance().getTurretVelocity() - RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
             omega = Units.radiansToDegrees(omega);
 
-            LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getVisionPose().getRotation().getDegrees() + robotToCameraTransform.getRotation().getDegrees(), omega, 0, 0, 0, 0);
+            LimelightHelpers.SetRobotOrientation(name, orientation, omega, 0, 0, 0, 0);
 
-            Logger.recordOutput(prefix + "mt2RobotOrientation", RobotState.getInstance().getVisionPose().getRotation().getDegrees() + robotToCameraTransform.getRotation().getDegrees());
+            Logger.recordOutput(prefix + "mt2RobotOrientation", orientation);
             Logger.recordOutput(prefix + "mt2UpdateGyroHeartbeat", Math.random());
         } else {
             LimelightHelpers.setCameraPose_RobotSpace(name, this.robotToCameraForward, this.robotToCameraRight, this.robotToCameraUp,
@@ -96,10 +98,11 @@ public class LimelightFiducialCamera {
     private Pose2d transformTurretPose(Pose2d pose) {
         Transform2d robotToShooterReal = new Transform2d(
                     SubsystemConstants.robotToShooter.getTranslation(),
-                    SubsystemConstants.robotToShooter.getRotation().plus(Rotation2d.fromRadians(RobotState.getInstance().getTurretAngle()))
+                    SubsystemConstants.robotToShooter.getRotation().plus(Rotation2d.fromRadians(-RobotState.getInstance().getTurretAngle()))
             );
 
-        Transform2d cameraToRobotTransform = SubsystemConstants.shooterToCamera.inverse().plus(robotToShooterReal.inverse());
+//        Transform2d cameraToRobotTransform = SubsystemConstants.shooterToCamera.inverse().plus(robotToShooterReal.inverse());
+        Transform2d cameraToRobotTransform = robotToShooterReal.plus(SubsystemConstants.shooterToCamera).inverse();
 
         return pose.transformBy(cameraToRobotTransform);
     }
@@ -128,6 +131,7 @@ public class LimelightFiducialCamera {
         Pose2d pose = poseEstimate.pose;
 
         if(turretMounted && SubsystemConstants.hasTurret) {
+            Logger.recordOutput(prefix + "untransformedPose", pose);
             pose = transformTurretPose(pose);
         }
 

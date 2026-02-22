@@ -29,6 +29,8 @@ public class IntakeIOReal implements IntakeIO {
         var deployConfigs = new TalonFXConfiguration();
         deployConfigs.CurrentLimits = rollerConfigs.CurrentLimits;
         deployConfigs.TorqueCurrent = rollerConfigs.TorqueCurrent;
+        deployConfigs.Voltage.PeakReverseVoltage = -3.5;
+        deployConfigs.Voltage.PeakForwardVoltage = 3.5;
 
         var slot0 = deployConfigs.Slot0;
         slot0.kS = SubsystemConstants.intakekS;
@@ -46,9 +48,12 @@ public class IntakeIOReal implements IntakeIO {
         intakeDeployMaster.setNeutralMode(NeutralModeValue.Brake);
         intakeDeploySlave.setNeutralMode(NeutralModeValue.Brake);
 
+        intakeDeployMaster.setPosition(0.0);
+        intakeDeploySlave.setPosition(0.0);
+
         intakeDeploySlave.setControl(new Follower(intakeDeployMaster.getDeviceID(), MotorAlignmentValue.Opposed));
 
-        intakeDeployMaster.setPosition(0.0);
+
     }
 
     @Override
@@ -68,9 +73,21 @@ public class IntakeIOReal implements IntakeIO {
     public void setDeployPosition(double position) {
         Logger.recordOutput("Intake/wantedPositionRotations", position);
         intakeDeployMaster.setControl(
-        new PositionVoltage(position)
+                new PositionVoltage(position)
                         .withSlot(0)
         );
+//        double masterPos = intakeDeployMaster.getPosition().getValueAsDouble();
+//        double slavePos = -intakeDeploySlave.getPosition().getValueAsDouble();
+//        intakeDeployMaster.setControl(
+//            new PositionVoltage(position)
+//                        .withSlot(0)
+//                    .withFeedForward(slavePos - masterPos)
+//        );
+//        intakeDeploySlave.setControl(
+//                new PositionVoltage(-position)
+//                        .withSlot(0)
+//                        .withFeedForward(-(masterPos - slavePos))
+//        );
     }
 
     @Override

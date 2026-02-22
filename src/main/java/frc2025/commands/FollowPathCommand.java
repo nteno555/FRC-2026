@@ -127,21 +127,21 @@ public class FollowPathCommand extends Command {
 
         double dist = Math.sqrt(Math.pow(currentPose.getX() - desiredState.pose.getX(), 2) + Math.pow(currentPose.getY() - desiredState.pose.getY(), 2));
 
-        ChassisSpeeds desiredStateFlipped = new ChassisSpeeds(
-                desiredState.fieldSpeeds.vxMetersPerSecond * -1.0,
-                desiredState.fieldSpeeds.vyMetersPerSecond * -1.0,
-                desiredState.fieldSpeeds.omegaRadiansPerSecond * -1.0
+        ChassisSpeeds desiredSpeeds = new ChassisSpeeds(
+                desiredState.fieldSpeeds.vxMetersPerSecond,
+                desiredState.fieldSpeeds.vyMetersPerSecond,
+                desiredState.fieldSpeeds.omegaRadiansPerSecond
 //                omegaFeedback * -1
         );
 
         if(!SubsystemConstants.hasTurret && autoAimOverride) {
-            desiredStateFlipped.omegaRadiansPerSecond = omegaFeedback * -1.0;
+            desiredSpeeds.omegaRadiansPerSecond = 0.0;
         }
 
         Logger.recordOutput("Drive/PathFollowingError", dist);
 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                desiredStateFlipped.plus(new ChassisSpeeds(xFeedback * -1.0, yFeedback * -1.0, -omegaFeedback)),
+                desiredSpeeds.plus(new ChassisSpeeds(xFeedback, yFeedback, omegaFeedback)),
                 currentPose.getRotation()
         );
 
