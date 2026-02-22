@@ -179,9 +179,9 @@ public class LimelightFiducialCamera {
 
         double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
         if(turretMounted && SubsystemConstants.hasTurret) {
-            omega += RobotState.getInstance().getTurretVelocity();
+            omega -= RobotState.getInstance().getTurretVelocity();
         }
-        if(omega > maxYawRate) {
+        if(Math.abs(omega) > maxYawRate) {
             reject = true;
         }
 
@@ -244,7 +244,7 @@ public class LimelightFiducialCamera {
             omega += RobotState.getInstance().getTurretVelocity();
         }
 
-        if(omega > maxYawRate) {
+        if(Math.abs(omega) > maxYawRate) {
             reject = true;
         }
 

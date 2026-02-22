@@ -42,14 +42,15 @@ public class RobotState {
     private boolean wantAutoShoot;
 
     private double turretAngle;
-    private double prevTurretAngle;
-    private double prevTurretTimestamp;
+//    private double prevTurretAngle;
+//    private double prevTurretTimestamp;
+    private double turretVelocity;
 
 
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
         shuttling = false;
-        prevTurretTimestamp = -1;
+//        prevTurretTimestamp = -1;
     }
 
     public static RobotState getInstance() {
@@ -108,33 +109,15 @@ public class RobotState {
     }
 
     public Pose2d getTargetPose() {
-        alliance = DriverStation.Alliance.Red;
-        if(DriverStation.getAlliance().isPresent()) {
-            alliance = DriverStation.getAlliance().get();
+        if (!shuttling) {
+            return (Alliance.get()) ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
         }
 
-        if(alliance == DriverStation.Alliance.Red) {
-            if(!shuttling) {
-                return FieldConstants.redNetPos;
-            } else {
-                if(visionPoseEstimator.getLatestPose().getY() > FieldConstants.yHalfLine) {
-                    return FieldConstants.redShuttlePosUpper;
-                } else {
-                    return FieldConstants.redShuttlePosLower;
-                }
-            }
-        } else {
-            if(!shuttling) {
-                return FieldConstants.blueNetPos;
-            } else {
-                if(visionPoseEstimator.getLatestPose().getY() > FieldConstants.yHalfLine) {
-                    return FieldConstants.blueShuttlePosUpper;
-                }
-                else {
-                    return FieldConstants.blueShuttlePosLower;
-                }
-            }
+        if (visionPoseEstimator.getLatestPose().getY() > FieldConstants.yHalfLine) {
+            return (Alliance.get()) ? FieldConstants.redShuttlePosUpper : FieldConstants.blueShuttlePosUpper;
         }
+
+        return (Alliance.get()) ? FieldConstants.redShuttlePosLower : FieldConstants.blueShuttlePosLower;
     }
 
     public void updateShuttling() {
@@ -211,15 +194,20 @@ public class RobotState {
     public void setWantAutoShoot(boolean want) {wantAutoShoot = want;}
     public boolean getWantAutoShoot() {return wantAutoShoot;}
 
-    public void setTurretAngle(double angleRadians) {
-        prevTurretAngle = turretAngle;
-        prevTurretTimestamp = Utils.getCurrentTimeSeconds();
-        turretAngle = angleRadians;
+//    public void setTurretAngle(double angleRadians) {
+//        prevTurretAngle = turretAngle;
+//        prevTurretTimestamp = Utils.getCurrentTimeSeconds();
+//        turretAngle = angleRadians;
+//    }
+
+    public void setTurretVelocity(double vel) {
+        turretVelocity = vel;
     }
 
     public double getTurretVelocity() {
-       if (prevTurretTimestamp == -1) return 0.0;
-       return (turretAngle - prevTurretAngle)/(Utils.getCurrentTimeSeconds() - prevTurretTimestamp);
+//       if (prevTurretTimestamp == -1) return 0.0;
+//       return (turretAngle - prevTurretAngle)/(Utils.getCurrentTimeSeconds() - prevTurretTimestamp);
+        return turretVelocity;
     }
 
     public double getTurretAngle() { return turretAngle; }

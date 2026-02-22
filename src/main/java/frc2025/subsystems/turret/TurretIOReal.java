@@ -14,6 +14,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc2025.RobotState;
 import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
@@ -94,6 +95,7 @@ public class TurretIOReal implements TurretIO{
         inputs.throughboresConnected = throughBore1.isConnected() && throughBore2.isConnected();
         inputs.tb1Connected = throughBore1.isConnected();
         inputs.tb2Connected = throughBore2.isConnected();
+        inputs.velocity = turretMotor.getVelocity().getValueAsDouble() / SubsystemConstants.turretRotationsPerRadian;
 
         Logger.recordOutput("Turret/voltage", turretMotor.getMotorVoltage().getValue().in(Units.Volts));
         Logger.recordOutput("Turret/current", turretMotor.getSupplyCurrent().getValue().in(Units.Amp));
