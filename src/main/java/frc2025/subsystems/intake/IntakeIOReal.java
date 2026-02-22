@@ -32,6 +32,12 @@ public class IntakeIOReal implements IntakeIO {
         deployConfigs.Voltage.PeakReverseVoltage = -3.5;
         deployConfigs.Voltage.PeakForwardVoltage = 3.5;
 
+        deployConfigs.MotionMagic.MotionMagicCruiseVelocity =  SubsystemConstants.intakeMotionMagicCruiseVelocity;
+        deployConfigs.MotionMagic.MotionMagicAcceleration = SubsystemConstants.intakeMotionMagicAcceleration;
+        deployConfigs.MotionMagic.MotionMagicJerk = SubsystemConstants.intakeMotionMagicJerk;
+
+        deployConfigs.MotionMagic.MotionMagicJerk = SubsystemConstants.intakeMotionMagicJerk;
+
         var slot0 = deployConfigs.Slot0;
         slot0.kS = SubsystemConstants.intakekS;
         slot0.kV = SubsystemConstants.intakekV;
@@ -52,8 +58,6 @@ public class IntakeIOReal implements IntakeIO {
         intakeDeploySlave.setPosition(0.0);
 
         intakeDeploySlave.setControl(new Follower(intakeDeployMaster.getDeviceID(), MotorAlignmentValue.Opposed));
-
-
     }
 
     @Override
@@ -62,6 +66,9 @@ public class IntakeIOReal implements IntakeIO {
         inputs.position = intakeDeployMaster.getPosition().getValueAsDouble();
         inputs.deployConnected = intakeDeployMaster.isConnected() && intakeDeploySlave.isConnected();
         Logger.recordOutput("Intake/deployVoltage", intakeDeployMaster.getMotorVoltage().getValue().in(Units.Volts));
+
+        Logger.recordOutput("Intake/masterPosition", intakeDeployMaster.getPosition().getValueAsDouble());
+        Logger.recordOutput("intake/slavePosition", intakeDeploySlave.getPosition().getValueAsDouble());
     }
 
     @Override
@@ -73,20 +80,15 @@ public class IntakeIOReal implements IntakeIO {
     public void setDeployPosition(double position) {
         Logger.recordOutput("Intake/wantedPositionRotations", position);
         intakeDeployMaster.setControl(
-                new PositionVoltage(position)
+                new MotionMagicVoltage(position)
+                        .withEnableFOC(true)
                         .withSlot(0)
         );
-//        double masterPos = intakeDeployMaster.getPosition().getValueAsDouble();
-//        double slavePos = -intakeDeploySlave.getPosition().getValueAsDouble();
-//        intakeDeployMaster.setControl(
-//            new PositionVoltage(position)
-//                        .withSlot(0)
-//                    .withFeedForward(slavePos - masterPos)
-//        );
+
 //        intakeDeploySlave.setControl(
-//                new PositionVoltage(-position)
+//                new MotionMagicVoltage(-position)
+//                        .withEnableFOC(true)
 //                        .withSlot(0)
-//                        .withFeedForward(-(masterPos - slavePos))
 //        );
     }
 

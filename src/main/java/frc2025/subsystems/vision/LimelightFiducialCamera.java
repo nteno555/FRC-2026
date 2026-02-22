@@ -122,6 +122,8 @@ public class LimelightFiducialCamera {
 //        Transform2d cameraToRobotTransform = SubsystemConstants.shooterToCamera.inverse().plus(robotToShooterReal.inverse());
         Transform2d cameraToRobotTransform = robotToShooterReal.plus(SubsystemConstants.shooterToCamera).inverse();
 
+        Logger.recordOutput("Vision/" + name + "_mt2/cameraPose", RobotState.getInstance().getVisionPose().transformBy(cameraToRobotTransform.inverse()));
+
         return pose.transformBy(cameraToRobotTransform);
     }
 
@@ -191,7 +193,13 @@ public class LimelightFiducialCamera {
 
         if(!reject) {
             Vector<N3> distStdDevs;
-            distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 1000.0); // maybe use least distance instead
+            if(!turretMounted) {
+                distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 0.0000001);
+            }
+            else {
+                distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 99999999999.0);
+            }
+
             VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
                     poseEstimate.timestampSeconds, pose, distStdDevs
             );

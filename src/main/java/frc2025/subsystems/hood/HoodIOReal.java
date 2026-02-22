@@ -71,7 +71,7 @@ public class HoodIOReal implements HoodIO {
     public void setPosition(double position) {
         Logger.recordOutput("Hood/wantedPosition", position);
 
-//        if (Math.abs(position - hood.getPosition().getValueAsDouble()) < 0.05) return;
+        if (Math.abs(position - hood.getPosition().getValueAsDouble()) < 0.02) return;
 
 //        double voltageFF = position < hood.getPosition().getValueAsDouble() ? -SubsystemConstants.hoodFF : SubsystemConstants.hoodFF;
         hood.setControl(new PositionVoltage(position)

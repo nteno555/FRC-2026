@@ -56,7 +56,7 @@ public class SubsystemConstants {
     public static double hoodMinAngleRadians = 1.48;
     public static double hoodMaxAngleRadians = 0.87;
 
-    public static double intakekS = 0.00;
+    public static double intakekS = 0.1;
     public static double intakekG = 0.0;
     public static double intakekV = 0.07;
     public static double intakekA = 0.0;
@@ -65,15 +65,19 @@ public class SubsystemConstants {
     public static double intakekD = 0.0;
     public static double intakeSupplyCurrentLimit = 100;
     public static double intakeStatorCurrentLimit = 200;
-    public static double intakePeakForwardTorqueCurrent = 100;
-    public static double intakePeakReverseTorqueCurrent = -100;
+    public static double intakeMotionMagicCruiseVelocity = 60;
+    public static double intakeMotionMagicAcceleration = 150;
+    public static double intakeMotionMagicJerk = 700;
+    public static double intakePeakForwardTorqueCurrent = 800;
+    public static double intakePeakReverseTorqueCurrent = -800;
     public static double intakeTorqueNeutralDeadband = 1;
     public static double intakeRetractPosition = 0.3;
     public static double intakeDeployPosition = 4.0;
-    public static double intakeRollerVoltage = 11.0;
+    public static double intakeRollerVoltage = 8.0;
+    public static double intakeHalfPosition = 2.5;
 
-    public static double spindexerShootVoltage = -12.0;
-    public static double towerShootVoltage = 12.0;
+    public static double spindexerShootVoltage = -8.0;
+    public static double towerShootVoltage = 8.0;
 
     // Turret Gear Ratio: 12:24 & 44:54 & 36:125
     public static double turretkS = 0.29;
@@ -138,7 +142,7 @@ public class SubsystemConstants {
     public static double robotToRightCameraPitch = 28.0; // to be updated
     public static double robotToRightCameraRoll = 180.0;
 
-    public static double autoAimMaxSpeed = 0.1;
+    public static double autoAimMaxSpeed = 2.0;
     public static double autoAimMaxAccel = 10.0;
 
     public static int climberID = 22;

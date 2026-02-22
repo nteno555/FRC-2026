@@ -1,5 +1,6 @@
 package frc2025.subsystems.drive;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -41,7 +42,7 @@ public class DriveSubsystem extends SubsystemBase {
             .withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
             .withSteerRequestType(SwerveModule.SteerRequestType.Position);
     private double prevTimestamp = 0;
-    private boolean sysidActive = false;
+    private boolean sysIdActive = false;
 
     public DriveSubsystem(DriveIO io) {
         this.io = io;
@@ -50,7 +51,7 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        if (!sysidActive) {
+        if (!sysIdActive) {
             io.setControl(request.withSpeeds(wantedSpeeds));
         }
         RobotState.getInstance().addDriveData(inputs.odometryTimestamp, inputs.odometryTwist);
@@ -164,64 +165,74 @@ public class DriveSubsystem extends SubsystemBase {
 
     private SwerveSysidVoltageRequest driveVoltageRequest = new SwerveSysidVoltageRequest(true);
 
-	private SysIdRoutine m_driveSysIdRoutine =
-			new SysIdRoutine(
-					new SysIdRoutine.Config(),
-					new SysIdRoutine.Mechanism(
-							(Voltage volts) -> this.io.setControl(driveVoltageRequest.withVoltage(volts.in(Volts))),
-							null,
-							this));
+    private SysIdRoutine m_driveSysIdRoutine =
+            new SysIdRoutine(
+                    new SysIdRoutine.Config(
+                            null,
+                            Volts.of(7),
+                            null,
+                            (state) -> {
+                                SignalLogger.start();
+                                SignalLogger.writeString("drive-state", state.toString());
+                            }
+                    ),
+                    new SysIdRoutine.Mechanism(
+                            (Voltage volts) -> this.io.setControl(driveVoltageRequest.withVoltage(volts.in(Volts))),
+                            null,
+                            this));
 
-	private SwerveSysidVoltageRequest steerVoltageRequest = new SwerveSysidVoltageRequest(false);
+    private SwerveSysidVoltageRequest steerVoltageRequest = new SwerveSysidVoltageRequest(false);
 
-	private SysIdRoutine m_steerSysIdRoutine =
-			new SysIdRoutine(
-					new SysIdRoutine.Config(),
-					new SysIdRoutine.Mechanism(
-							(Voltage volts) -> this.io.setControl(steerVoltageRequest.withVoltage(volts.in(Volts))),
-							null,
-							this));
+    private SysIdRoutine m_steerSysIdRoutine =
+            new SysIdRoutine(
+                    new SysIdRoutine.Config(
+                            null,
+                            Volts.of(7),
+                            null,
+                            (state) -> {
+                                SignalLogger.start();
+                                SignalLogger.writeString("steer-state", state.toString());
+                            }
+                    ),
+                    new SysIdRoutine.Mechanism(
+                            (Voltage volts) -> this.io.setControl(steerVoltageRequest.withVoltage(volts.in(Volts))),
+                            null,
+                            this));
 
-	private SysIdRoutine m_slipSysIdRoutine =
-			new SysIdRoutine(
-					new SysIdRoutine.Config(Volts.of(0.25).per(Seconds.of(1).unit()), null, null),
-					new SysIdRoutine.Mechanism(
-							(Voltage volts) -> this.io.setControl(driveVoltageRequest.withVoltage(volts.in(Volts))),
-							null,
-							this));
+    private SysIdRoutine m_slipSysIdRoutine =
+            new SysIdRoutine(
+                    new SysIdRoutine.Config(Volts.of(0.25).per(Seconds.of(1).unit()), null, null),
+                    new SysIdRoutine.Mechanism(
+                            (Voltage volts) -> this.io.setControl(driveVoltageRequest.withVoltage(volts.in(Volts))),
+                            null,
+                            this));
 
     public Command runDriveQuasiTest(SysIdRoutine.Direction direction) {
         return m_driveSysIdRoutine.quasistatic(direction)
-                .beforeStarting(() -> {sysidActive = true;})
-                .finallyDo(() -> {sysidActive = false;});
+                .beforeStarting(() -> {sysIdActive = true;})
+                .finallyDo(() -> {sysIdActive = false;});
     }
 
     public Command runDriveDynamicTest(SysIdRoutine.Direction direction) {
         return m_driveSysIdRoutine.dynamic(direction)
-                .beforeStarting(() -> {sysidActive = true;})
-                .finallyDo(() -> {sysidActive = false;});
+                .beforeStarting(() -> {sysIdActive = true;})
+                .finallyDo(() -> {sysIdActive = false;});
     }
 
     public Command runSteerQuasiTest(SysIdRoutine.Direction direction) {
         return m_steerSysIdRoutine.quasistatic(direction)
-                .beforeStarting(() -> {sysidActive = true;})
-                .finallyDo(() -> {sysidActive = false;});
+                .beforeStarting(() -> {sysIdActive = true;})
+                .finallyDo(() -> {sysIdActive = false;});
     }
 
     public Command runSteerDynamicTest(SysIdRoutine.Direction direction) {
         return m_steerSysIdRoutine.dynamic(direction)
-                .beforeStarting(() -> {sysidActive = true;})
-                .andThen(() -> {sysidActive = false;});
+                .beforeStarting(() -> {sysIdActive = true;})
+                .andThen(() -> {sysIdActive = false;});
     }
 
-	public Command runDriveSlipTest() {
-		return m_slipSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
-	}
-
-    public Translation2d getVisionVelocity() {
-        double currentTime = Utils.getCurrentTimeSeconds();
-        Pose2d currentPose = io.samplePoseAt(currentTime).get();
-        Pose2d previousPose = io.samplePoseAt(currentTime - 0.02).get();
-        return currentPose.minus(previousPose).div(0.02).getTranslation();
+    public Command runDriveSlipTest() {
+        return m_slipSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
     }
+
 }

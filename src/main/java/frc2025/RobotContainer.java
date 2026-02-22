@@ -174,9 +174,10 @@ public class RobotContainer {
                 )
         );
 
-//        driverXboxController.b().onTrue(
-//                DriveCommands.autoTrench(this)
-//        );
+//        driverXboxController.b()
+//                .and(driverXboxController.back().negate())
+//                .onTrue(
+//                DriveCommands.autoTrench(this));
 
         driverXboxController
                 .x()
@@ -209,12 +210,15 @@ public class RobotContainer {
                                 this,
                                 () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
                                 () -> driveSubsystem.getTeleopSpeeds(
-                                        (0.5) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                                        (0.5) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                                        (-0.7) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
+                                        (1.0) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                                        (1.0) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                                        (-1.0) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
                                 )
                         ))
                 .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
+
+        driverXboxController.rightTrigger()
+                        .whileTrue(intakeSubsystem.oscillateIntake());
 
         driverXboxController.povUp() // left middle paddle
                 .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
@@ -274,9 +278,9 @@ public class RobotContainer {
                 .whileTrue(driveSubsystem.runSteerQuasiTest(SysIdRoutine.Direction.kReverse));
 
 
-    tuningController.leftBumper().whileTrue(
-            turretSubsystem.rezeroCRT()
-    );
+//    tuningController.leftBumper().whileTrue(
+//            turretSubsystem.rezeroCRT()
+//    );
     tuningController.povLeft().whileTrue(
             turretSubsystem.setVoltage(() -> 2.0)
     ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
@@ -297,9 +301,10 @@ public class RobotContainer {
     ).whileFalse(
             intakeSubsystem.setDeployVoltage(() -> 0.0)
     );
-//        tuningController.leftBumper().whileTrue(
-//                turretSubsystem.autoAim()
-//        );
+
+    tuningController.leftBumper().whileTrue(
+            turretSubsystem.autoAim()
+    );
 
 //        tuningController.a().onTrue(new InstantCommand(() -> {
 //            if(!Alliance.get()){
@@ -325,7 +330,7 @@ public class RobotContainer {
                         shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/RPM", 0.0))
                                 .alongWith(hoodSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/hoodPosition", 0.0)))
                                 .alongWith()
-//                                .alongWith(turretSubsystem.autoAim())
+                                .alongWith(turretSubsystem.autoAim())
                 )
                 .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
@@ -342,7 +347,7 @@ public class RobotContainer {
 //                .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
         tuningController.rightTrigger().whileTrue(
-            indexerSubsystem.setVoltage(() -> -6.0, () -> -12.0))
+            indexerSubsystem.setVoltage(() -> SubsystemConstants.spindexerShootVoltage, () -> SubsystemConstants.towerShootVoltage))
             .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
 
     }
