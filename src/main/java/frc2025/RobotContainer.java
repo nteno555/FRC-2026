@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc2025.commands.AutoAimCommands;
-import frc2025.commands.DriveCommands;
 import frc2025.commands.SuperstructureCommands;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.climber.ClimberIOReal;
@@ -113,6 +112,7 @@ public class RobotContainer {
         autoChooser.addOption("Mid Station Depot", autos.MidStationDepotClimb());
         autoChooser.addOption("High Neutral (no steal)", autos.HighNeutralHighNeutralMid());
         autoChooser.addOption("High Neutral (steal)", autos.HighStealHighNeutralClimb());
+        autoChooser.addOption("High Neutral Depot Dump", autos.HighNeutralDepot());
 //        autoChooser.addOption("HighShootIntakeClimb", autos.HighShootIntakeClimb());
 //        autoChooser.addOption("LowShuttleAuto", autos.LowShuttleAuto());
 //        autoChooser.addOption("Taxi", autos.Taxi());
@@ -206,7 +206,7 @@ public class RobotContainer {
                 .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
 
         driverXboxController.leftTrigger()
-                .whileTrue(AutoAimCommands.autoAim(
+                .whileTrue(AutoAimCommands.autoShoot(
                                 this,
                                 () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
                                 () -> driveSubsystem.getTeleopSpeeds(

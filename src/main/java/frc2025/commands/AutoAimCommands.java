@@ -7,8 +7,6 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc2025.Robot;
 import frc2025.RobotContainer;
 import frc2025.RobotState;
 import frc2025.config.FieldConstants;
@@ -19,7 +17,6 @@ import frc2025.subsystems.shooter.ShooterSubsystem;
 import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
 
-import java.sql.Driver;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -31,19 +28,15 @@ public class AutoAimCommands {
         return angle;
     }
 
-    public static Command autoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {
-        Command autoAimCommand = robotContainer.getShooter().autoAim()
+    public static Command autoShoot(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {
+        return (SubsystemConstants.hasTurret) ? turretAutoAim(robotContainer) : driveAutoAim(robotContainer, targetPoseSupplier, unlockedSpeeds);
+    }
+
+    public static Command turretAutoAim(RobotContainer robotContainer) {
+        return robotContainer.getTurret().autoAim()
                 .alongWith(robotContainer.getHood().autoAim())
+                .alongWith(robotContainer.getShooter().autoAim())
                 .alongWith(autoIndex(robotContainer));
-
-        if (SubsystemConstants.hasTurret) {
-            autoAimCommand = autoAimCommand.alongWith(robotContainer.getTurret().autoAim());
-        }
-        else {
-            autoAimCommand = autoAimCommand.alongWith(driveAutoAim(robotContainer, targetPoseSupplier, unlockedSpeeds));
-        }
-
-        return autoAimCommand;
     }
 
     public static Command driveAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {

@@ -48,13 +48,9 @@ public class Autos {
         PathPlannerPath finalPath = path;
         if (Robot.isSimulation()) {
             return new FollowPathCommand(drive, () -> finalPath, () -> true, true);
-            //.raceWith(robotContainer.getIntake().setIntaking(() -> true));
-            //.andThen(new WaitCommand(0.2));
         }
 
         return new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true);
-        //.raceWith(robotContainer.getIntake().setIntaking(() -> true));
-        //.andThen(new WaitCommand(0.2));
     }
 
     private Command intakePathResetOdometry(String pathName) {
@@ -72,32 +68,17 @@ public class Autos {
                 finalPath.getIdealStartingState().rotation()
         );
 
-        return  SuperstructureCommands.resetOdometry(robotContainer, startPoseSupplier(startPose))
+        return SuperstructureCommands.resetOdometry(robotContainer, startPoseSupplier(startPose))
                 .andThen(new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true));
-                //.raceWith(robotContainer.getIntake().setIntaking(() -> true));
     }
 
-    private Command finalAutoAim() {
-                if (!SubsystemConstants.hasTurret) {
-                        return AutoAimCommands.driveAutoAim(
-                                robotContainer,
-                                () -> RobotState.getInstance().getTargetPose(),
-                                () -> new ChassisSpeeds(0,0,0)
-                        ).alongWith(AutoAimCommands.autoIndex(robotContainer));
-                } else {
-                        //return AutoAimCommands.turretAutoAim(robotContainer, () -> RobotState.getInstance().getTargetPose(), null);
-                    return Commands.none();
-                }
-    }
-
-    private Command driveAutoAim() {
-        return AutoAimCommands.driveAutoAim(
+    private Command autoShoot() {
+        return AutoAimCommands.autoShoot(
                 robotContainer,
                 () -> RobotState.getInstance().getTargetPose(),
-                () -> new ChassisSpeeds(0,0,0)
-        ).alongWith(AutoAimCommands.autoIndex(robotContainer));
+                () -> new ChassisSpeeds(0, 0, 0)
+        );
     }
-
 
     private Pose2d mirrorPose(Pose2d pose) {
         Translation2d translation = pose.getTranslation();
@@ -114,26 +95,16 @@ public class Autos {
     }
 
     public Command buildAuto(List<String> paths, boolean climb) {
-        Command auto;
+        Command auto = robotContainer.getShooter().autoAim()
+                .alongWith(robotContainer.getHood().autoAim())
+                .alongWith(
+                        robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
+                        .until(() -> robotContainer.getIntake().getDeployReady())
+                        .andThen(robotContainer.getIntake().setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage)));
+
         if (SubsystemConstants.hasTurret) {
-                auto = robotContainer.getTurret().autoAim()
-                        .alongWith(robotContainer.getShooter().autoAim())
-                        .alongWith(robotContainer.getHood().autoAim())
-                        .alongWith(AutoAimCommands.autoIndex(robotContainer))
-                        .alongWith(
-                                robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
-                                        .until(() -> robotContainer.getIntake().getDeployReady())
-                                                .andThen(robotContainer.getIntake().setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage)));
-        } else {
-                auto = robotContainer.getShooter().autoAim()
-                        .alongWith(robotContainer.getHood().autoAim())
-//                        .alongWith(AutoAimCommands.autoIndex(robotContainer))
-                        .alongWith(
-                                robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
-                                        .until(() -> robotContainer.getIntake().getDeployReady())
-                                                .andThen(robotContainer.getIntake().setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage)));
+                auto = auto.alongWith(robotContainer.getTurret().autoAim());
         }
-        
 
         Command pathCommands = intakePathResetOdometry(paths.get(0));
 
@@ -143,20 +114,21 @@ public class Autos {
                     pathCommands = pathCommands.andThen(Commands.waitSeconds(2));
                 } else {
                     pathCommands = pathCommands.andThen(
-                            driveAutoAim()
+                            autoShoot()
                                     .withTimeout(2.5)
                     );
                 }
-            } else {
+            }
+            else if (paths.get(i).contains("Dump") && SubsystemConstants.hasTurret) {
+                pathCommands = pathCommands.andThen(intakePath(paths.get(i)).alongWith(AutoAimCommands.autoIndex(robotContainer)));
+            }
+
+            else {
                 pathCommands = pathCommands.andThen(intakePath(paths.get(i)));
             }
         }
 
-        if(!SubsystemConstants.hasTurret) {
-            return auto.alongWith(pathCommands.andThen(finalAutoAim()));
-        } else {
-            return auto.alongWith(pathCommands);
-        }
+        return auto.alongWith(pathCommands.andThen(AutoAimCommands.autoIndex(robotContainer)));
     }
 
 
@@ -175,5 +147,5 @@ public class Autos {
 
     public Command HighNeutralHighNeutralMid() {return buildAuto(List.of("High-Neutral", "Neutral-High", "wait 2s", "High-NeutralMid", "NeutralMid-High"), false);}
     public Command HighStealHighNeutralClimb() { return buildAuto(List.of("High-Steal", "Steal-HighBack", "wait 2s", "HighBack-Neutral", "Neutral-Climb (Trench High)"), true); }
-
+    public Command HighNeutralDepot() {return buildAuto(List.of("High-Neutral", "Neutral-Depot", "Depot-Dump"), false);}
 }

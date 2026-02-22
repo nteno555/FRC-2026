@@ -42,15 +42,15 @@ public class RobotState {
     private boolean wantAutoShoot;
 
     private double turretAngle;
-//    private double prevTurretAngle;
-//    private double prevTurretTimestamp;
+    private double prevTurretAngle;
+    private double prevTurretTimestamp;
     private double turretVelocity;
 
 
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
         shuttling = false;
-//        prevTurretTimestamp = -1;
+        prevTurretTimestamp = -1;
     }
 
     public static RobotState getInstance() {
@@ -194,20 +194,20 @@ public class RobotState {
     public void setWantAutoShoot(boolean want) {wantAutoShoot = want;}
     public boolean getWantAutoShoot() {return wantAutoShoot;}
 
-//    public void setTurretAngle(double angleRadians) {
-//        prevTurretAngle = turretAngle;
-//        prevTurretTimestamp = Utils.getCurrentTimeSeconds();
-//        turretAngle = angleRadians;
-//    }
+    public void setTurretAngle(double angleRadians) {
+        prevTurretAngle = turretAngle;
+        prevTurretTimestamp = Utils.getCurrentTimeSeconds();
+        turretAngle = angleRadians;
+    }
 
     public void setTurretVelocity(double vel) {
         turretVelocity = vel;
     }
 
     public double getTurretVelocity() {
-//       if (prevTurretTimestamp == -1) return 0.0;
-//       return (turretAngle - prevTurretAngle)/(Utils.getCurrentTimeSeconds() - prevTurretTimestamp);
-        return turretVelocity;
+       if (prevTurretTimestamp == -1) return 0.0;
+       return (turretAngle - prevTurretAngle)/(Utils.getCurrentTimeSeconds() - prevTurretTimestamp);
+//        return turretVelocity;
     }
 
     public double getTurretAngle() { return turretAngle; }

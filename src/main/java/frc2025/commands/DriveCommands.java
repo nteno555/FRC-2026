@@ -3,6 +3,7 @@ package frc2025.commands;
 import com.pathplanner.lib.path.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc2025.RobotContainer;
 import frc2025.RobotState;
 import frc2025.config.FieldConstants;
@@ -16,6 +17,13 @@ import java.util.function.Supplier;
 public class DriveCommands {
     public static Command autoTrench(RobotContainer robotContainer) {
         Pose2d startPose = RobotState.getInstance().getVisionPose();
+
+        boolean nearBlueTrench = Math.abs(startPose.getX() - FieldConstants.blueTrenchX) < 1;
+        boolean nearRedTrench = Math.abs(startPose.getX() - FieldConstants.redTrenchX) < 1;
+        boolean nearTrenchY = startPose.getY() < 1.982 || startPose.getY() > 6.170;
+
+        if (!((nearBlueTrench || nearRedTrench) && nearTrenchY)) return new InstantCommand();
+
         Pose2d closestStartTrench = FieldConstants.trenchPoses[0];
         Pose2d endTrench;
         int trenchID = 0;
