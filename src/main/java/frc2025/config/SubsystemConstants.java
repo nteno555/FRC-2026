@@ -49,7 +49,7 @@ public class SubsystemConstants {
     public static double hoodRotationsPerRadian = 31.7131757633;
     public static double hoodZeroOffsetRadians = 1.22; // 70 degrees
     public static double hoodForwardSoftLimit = 2.84;
-    public static double hoodReverseSoftLimit = 0.0;
+    public static double hoodReverseSoftLimit = -0.1;
     public static double hoodRezeroVoltage = -3.5;
     public static double hoodMinAngleRotations = 0;
     public static double hoodMaxAngleRotations = 2.90;
@@ -98,14 +98,11 @@ public class SubsystemConstants {
     public static double turretRotationsPerRadian = 1.6578639911;
     public static double turretMinAngleRadians = -Math.PI / 2;
     public static double turretMaxAngleRadians = 3*Math.PI / 2;
-    public static double throughBoreZero2 = 0.717;
-    public static double throughBoreZero1 = 0.206;
-    // to be updated
-//    public static double throughBoreRatio1 = 3.6667;
-//    public static double throughBoreRatio2 = 4.5;
+    public static double throughBoreZero2 = 0.621;
+    public static double throughBoreZero1 = 0.070;
     public static double throughBoreRatio1 = 2.5;
     public static double throughBoreRatio2 = 3.06818181818;
-    public static double turretHomeAngleRotations = 0.0; // hard stop position in motor rotations
+    public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
     public static boolean hasTurret = true;
     public static boolean useTurretThroughBores = true;
 
