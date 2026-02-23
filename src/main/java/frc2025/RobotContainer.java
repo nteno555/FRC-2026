@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc2025.commands.AutoAimCommands;
 import frc2025.commands.DriveCommands;
+import frc2025.commands.DriveToClusterCommand;
 import frc2025.commands.SuperstructureCommands;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.climber.ClimberIOReal;
@@ -61,6 +63,7 @@ public class RobotContainer {
     private final CommandXboxController tuningController = new CommandXboxController(3);
     private final CommandXboxController driveTuningController = new CommandXboxController(4);
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+    private final Field2d field = new Field2d();
 
     DriveSubsystem driveSubsystem;
     VisionSubsystem visionSubsystem;
@@ -74,14 +77,14 @@ public class RobotContainer {
     Autos autos;
     Command autoCommand;
 
-    private double driveSpeed = 0.5;
+    private double driveSpeed = 0.2;
     private double rotationSpeed = 0.7;
 
     public RobotContainer() {
         createSubsystems();
         configureBindings();
         configureAutoCommands();
-        initLogger();
+        loggerInit();
 //        autoCommand = autos.MidStationDepotShootWhileMoving();
         //autoCommand = autos.MidDepotNeutralClimbShootWhileMoving();
 //        autoCommand = autos.MidDepotShootWhileMoving();
@@ -91,7 +94,7 @@ public class RobotContainer {
     }
 
     public void periodic() {
-        loggingPeriodic();
+        loggerPeriodic();
     }
 
     private void createSubsystems() {
@@ -164,8 +167,8 @@ public class RobotContainer {
     private void configureBindings() {
         driveSubsystem.setDefaultCommand(
                 driveSubsystem.driveTeleop(
-                        () -> (-driveSpeed) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                        () -> (-driveSpeed) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (driveSpeed) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (driveSpeed) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
                         () -> (rotationSpeed) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
                 )
         );
@@ -193,47 +196,53 @@ public class RobotContainer {
                 )
         );
 
-        driverXboxController.b().onTrue(
-                DriveCommands.autoTrench(this)
+        driverXboxController.rightTrigger().whileTrue(
+                new DriveToClusterCommand(driveSubsystem)
+        ).whileFalse(
+                driveSubsystem.applyChassisSpeedsCommand(() -> new ChassisSpeeds())
         );
 
-        driverXboxController
-                .x()
-                .and(driverXboxController.back().negate())
-                .onTrue(
-                hoodSubsystem.autoAimFlush()
-                        .alongWith(shooterSubsystem.autoAimFlush())
-                        .alongWith(turretSubsystem.setPosition(() -> 0.0)));
+//         driverXboxController.b().onTrue(
+//                 DriveCommands.autoTrench(this)
+//         );
 
-        driverXboxController
-                .b()
-                .and(driverXboxController.back())
-                .whileTrue(hoodSubsystem.homeThenRezero());
-        driverXboxController
-                .x()
-                .and(driverXboxController.back())
-                .whileTrue(intakeSubsystem.homeThenRezero());
-         driverXboxController
-                .y()
-                .and(driverXboxController.back())
-                .whileTrue(turretSubsystem.rezeroCRT());
+//         driverXboxController
+//                 .x()
+//                 .and(driverXboxController.back().negate())
+//                 .onTrue(
+//                 hoodSubsystem.autoAimFlush()
+//                         .alongWith(shooterSubsystem.autoAimFlush())
+//                         .alongWith(turretSubsystem.setPosition(() -> 0.0)));
 
-        driverXboxController.povLeft() // left bottom paddle
-                .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));
-        driverXboxController.povDown() // right bottom paddle
-                .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
+//         driverXboxController
+//                 .b()
+//                 .and(driverXboxController.back())
+//                 .whileTrue(hoodSubsystem.homeThenRezero());
+//         driverXboxController
+//                 .x()
+//                 .and(driverXboxController.back())
+//                 .whileTrue(intakeSubsystem.homeThenRezero());
+//          driverXboxController
+//                 .y()
+//                 .and(driverXboxController.back())
+//                 .whileTrue(turretSubsystem.rezeroCRT());
 
-        driverXboxController.leftTrigger()
-                .whileTrue(AutoAimCommands.autoAim(
-                                this,
-                                () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
-                                () -> driveSubsystem.getTeleopSpeeds(
-                                        (-0.5) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                                        (-0.5) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                                        (0.7) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
-                                )
-                        ))
-                .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
+//         driverXboxController.povLeft() // left bottom paddle
+//                 .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));
+//         driverXboxController.povDown() // right bottom paddle
+//                 .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
+
+//         driverXboxController.leftTrigger()
+//                 .whileTrue(AutoAimCommands.autoAim(
+//                                 this,
+//                                 () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
+//                                 () -> driveSubsystem.getTeleopSpeeds(
+//                                         (-0.5) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+//                                         (-0.5) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+//                                         (0.7) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
+//                                 )
+//                         ))
+//                 .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
         driverXboxController.povUp() // left middle paddle
                 .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
@@ -244,23 +253,23 @@ public class RobotContainer {
                         .andThen(Commands.runOnce(()-> Logger.recordOutput("DriverStation/Intake Deployed?",false)))
                 );
 
-//        driverXboxController.rightTrigger()
-//                .whileTrue(indexerSubsystem.setVoltage(() -> SubsystemConstants.spindexerShootVoltage,
-//                        () -> SubsystemConstants.towerShootVoltage))
-//                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
+// //        driverXboxController.rightTrigger()
+// //                .whileTrue(indexerSubsystem.setVoltage(() -> SubsystemConstants.spindexerShootVoltage,
+// //                        () -> SubsystemConstants.towerShootVoltage))
+// //                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
 
-        driverXboxController.leftBumper()
-            .onTrue(Commands.runOnce(() -> {
-                driveSpeed = 0.5;
-                rotationSpeed = 0.7;
-            }));
+//         driverXboxController.leftBumper()
+//             .onTrue(Commands.runOnce(() -> {
+//                 driveSpeed = 0.5;
+//                 rotationSpeed = 0.7;
+//             }));
 
-        driverXboxController.rightBumper()
-                .onTrue(Commands.runOnce(
-                        () -> {
-                            driveSpeed = 0.3;
-                            rotationSpeed = 0.5;
-                        }));
+//         driverXboxController.rightBumper()
+//                 .onTrue(Commands.runOnce(
+//                         () -> {
+//                             driveSpeed = 0.3;
+//                             rotationSpeed = 0.5;
+//                         }));
 
         operatorXboxController.leftBumper()
                 .onTrue(hoodSubsystem.autoAimFlush()
@@ -390,19 +399,21 @@ public class RobotContainer {
         return driverXboxController.getLeftX();
     }
 
-    public void initLogger(){
+    public void loggerInit(){
         Logger.recordOutput("DriverStation/Intake Deployed?",false);
+        SmartDashboard.putData("Field", field);
+
     }
 
-    public void loggingPeriodic(){
+    public void loggerPeriodic(){
         RobotState.getInstance().updateStates();
-        RobotState.getInstance().updateMatchState();
         ArrayList<String> array = RobotState.getInstance().getStates();
         SmartDashboard.putStringArray("DriverStation/STATES", array.toArray(new String[array.size()]));
         
-        Logger.recordOutput("DriverStation/MatchState", RobotState.getInstance().getMatchState());        
         Logger.recordOutput("DriverStation/TurretAngle", Math.round(RobotState.getInstance().getTurretAngle() * 180 / Math.PI));
-        Logger.recordOutput("DriverStation/BatteryVoltage", RobotController.getBatteryVoltage());
+
+        field.setRobotPose(RobotState.getInstance().getVisionPose());
+        field.getObject("Fuel").setPoses(RobotState.getInstance().getBallFieldPoses());
     }
 
     public void autoInit() {

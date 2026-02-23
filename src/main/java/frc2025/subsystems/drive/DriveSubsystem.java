@@ -46,11 +46,9 @@ public class DriveSubsystem extends SubsystemBase {
             .withSteerRequestType(SwerveModule.SteerRequestType.Position);
     private double prevTimestamp = 0;
     private boolean sysidActive = false;
-    private final Field2d field = new Field2d();
 
     public DriveSubsystem(DriveIO io) {
         this.io = io;
-        SmartDashboard.putData("Field", field);
     }
 
     @Override
@@ -68,8 +66,6 @@ public class DriveSubsystem extends SubsystemBase {
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);
         Logger.processInputs("RealOutputs/Drive", inputs);
         Logger.recordOutput("Shooter/shuttling", RobotState.getInstance().getShuttling());
-
-        field.setRobotPose(RobotState.getInstance().getVisionPose());
     }
 
     public void applyChassisSpeeds(ChassisSpeeds speeds) {

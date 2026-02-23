@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
@@ -18,6 +19,9 @@ import frc2025.subsystems.vision.LimelightHelpers;
 import frc2025.subsystems.vision.VisionPoseEstimator;
 import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.PhotonUtils;
+import org.photonvision.proto.Photon;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.lang.StackWalker.Option;
 import java.util.ArrayList;
@@ -45,6 +49,8 @@ public class RobotState {
     private double turretAngle;
     private double prevTurretAngle;
     private double prevTurretTimestamp;
+
+    private List<PhotonTrackedTarget> ballTargets;
 
     private ArrayList<String> states;
     private String matchState;
@@ -243,6 +249,33 @@ public class RobotState {
 
     }
 
+    public List<PhotonTrackedTarget> getBallTargets() {
+        return this.ballTargets;
+    }
+
+    public void setBallTargets(List<PhotonTrackedTarget> targets) {
+        this.ballTargets = targets;
+    }
+
+    public ArrayList<Pose2d> getBallFieldPoses(){
+        ArrayList<Pose2d> ballPoses = new ArrayList<Pose2d>();
+        Pose2d robotPose = getInstance().getVisionPose();
+
+        for (PhotonTrackedTarget t : ballTargets) {
+            double distanceToTarget = PhotonUtils.calculateDistanceToTargetMeters(
+                SubsystemConstants.photonCameraHeight, 
+                0.75, 
+                SubsystemConstants.robotToPhotonCameraPitch,
+                Math.toRadians(t.getPitch())
+            );
+
+            Translation2d cameraToBall = new Translation2d(distanceToTarget, Rotation2d.fromDegrees(t.getYaw()));
+
+            ballPoses.add(robotPose.transformBy(new Transform2d(cameraToBall,Rotation2d.kZero)));
+        }
+        return ballPoses;
+    }
+
     public boolean isHubActive() {
         Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
         // If we have no alliance, we cannot be enabled, therefore no hub.
@@ -330,16 +363,5 @@ public class RobotState {
 
     public ArrayList<String> getStates() {
         return states;
-    }
-
-    public void updateMatchState(){
-        double matchTime = DriverStation.getMatchTime();
-        if(DriverStation.isAutonomous()) matchState = "AUTONOMOUS";
-        if(DriverStation.isTeleop() && matchTime < 130) matchState = "TELEOP";
-        if(matchTime > 130) matchState = "ENDGAME";
-    }
-
-    public String getMatchState(){
-        return matchState;
     }
 }

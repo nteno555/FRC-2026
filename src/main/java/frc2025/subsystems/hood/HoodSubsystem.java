@@ -26,7 +26,6 @@ public class HoodSubsystem extends SubsystemBase {
     double voltageRamp = 0;
 
     public HoodSubsystem(HoodIO io) {
-        io.rezero(0);
         this.io = io;
     }
 

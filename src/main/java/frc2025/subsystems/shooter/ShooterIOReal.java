@@ -3,6 +3,10 @@ package frc2025.subsystems.shooter;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
+import java.util.List;
+
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -63,4 +67,5 @@ public class ShooterIOReal implements ShooterIO {
                 .withEnableFOC(true);
         flywheelMaster.setControl(controlRequest);
     }
+
 }
