@@ -12,7 +12,7 @@ public class ShooterTreeMap {
     public InterpolatingTreeMap tofTreeMap = new InterpolatingTreeMap();
     public InterpolatingTreeMap radialVelocityTreeMap = new InterpolatingTreeMap();
     public InterpolatingTreeMap shuttlingRPSTreeMap = new InterpolatingTreeMap();
-    public InterpolatingTreeMap shuttlingHoodTreeMap = new InterpolatingTreeMap();
+//    public InterpolatingTreeMap shuttlingHoodTreeMap = new InterpolatingTreeMap();
     
     public ShooterTreeMap() {
         hoodTreeMap.put(5.20, 2.7);
@@ -49,17 +49,17 @@ public class ShooterTreeMap {
         radialVelocityTreeMap.put(0.10, -0.50);
         radialVelocityTreeMap.put(0.5, -1.5);
 
-        shuttlingRPSTreeMap.put(3.0, 47.0);
-        shuttlingRPSTreeMap.put(4.999, 52.0);
+        shuttlingRPSTreeMap.put(3.0, 45.0);
+        shuttlingRPSTreeMap.put(4.999, 50.0);
         shuttlingRPSTreeMap.put(5.0, 55.0);
         shuttlingRPSTreeMap.put(7.0, 60.0);
         shuttlingRPSTreeMap.put(9.0, 75.0);
         shuttlingRPSTreeMap.put(16.0, 80.0);
 
-        shuttlingHoodTreeMap.put(3.0, 2.0);
-        shuttlingHoodTreeMap.put(4.999, 2.0);
-        shuttlingHoodTreeMap.put(5.0, 2.8);
-        shuttlingHoodTreeMap.put(16.0, 2.8);
+//        shuttlingHoodTreeMap.put(3.0, 2.0);
+//        shuttlingHoodTreeMap.put(4.999, 2.0);
+//        shuttlingHoodTreeMap.put(5.0, 2.8);
+//        shuttlingHoodTreeMap.put(16.0, 2.8);
 
         updateDashboardMap();
         SmartDashboard.putString("Tuning/lowerWheelTree Map", lowerWheelTreeMap.toString());

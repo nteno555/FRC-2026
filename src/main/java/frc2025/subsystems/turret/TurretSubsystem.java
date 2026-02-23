@@ -66,8 +66,8 @@ public class TurretSubsystem extends SubsystemBase {
 
     public Command setPositionFieldRelative(Supplier<Double> positionRadians) {
         return setPositionSafe(() -> -(positionRadians.get() - RobotState.getInstance().getVisionPose().getRotation().getRadians()),
-                () -> 0.0);
-//                () -> -RobotState.getInstance().getRobotRelativeSpeeds().omegaRadiansPerSecond);
+//                () -> 0.0);
+                () -> -RobotState.getInstance().getRobotRelativeSpeeds().omegaRadiansPerSecond);
     }
 
 //    public Command setPositionSafe(Supplier<Double> positionRadians) {
@@ -106,6 +106,7 @@ public class TurretSubsystem extends SubsystemBase {
             if(Math.abs(bestAngle - inputs.positionRadians) > Math.toRadians(180.0)){
                 velocityFF = 0;
             }
+
 
             setpoint = io.toRotations(bestAngle);
 

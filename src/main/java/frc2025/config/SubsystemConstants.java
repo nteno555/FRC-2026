@@ -65,9 +65,9 @@ public class SubsystemConstants {
     public static double intakekD = 0.0;
     public static double intakeSupplyCurrentLimit = 100;
     public static double intakeStatorCurrentLimit = 200;
-    public static double intakeMotionMagicCruiseVelocity = 60;
-    public static double intakeMotionMagicAcceleration = 150;
-    public static double intakeMotionMagicJerk = 700;
+    public static double intakeMotionMagicCruiseVelocity = 120;
+    public static double intakeMotionMagicAcceleration = 300;
+    public static double intakeMotionMagicJerk = 1400;
     public static double intakePeakForwardTorqueCurrent = 800;
     public static double intakePeakReverseTorqueCurrent = -800;
     public static double intakeTorqueNeutralDeadband = 1;

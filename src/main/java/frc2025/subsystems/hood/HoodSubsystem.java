@@ -102,7 +102,8 @@ public class HoodSubsystem extends SubsystemBase {
             double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
 
             if (RobotState.getInstance().getShuttling()) {
-                return ShooterTreeMap.getInstance().shuttlingHoodTreeMap.getInterpolated(dist);
+                return SubsystemConstants.hoodMaxAngleRotations;
+//                return ShooterTreeMap.getInstance().shuttlingHoodTreeMap.getInterpolated(dist);
             }
 
             return ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist);
