@@ -150,10 +150,10 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     public Command homeThenRezero() {
-        return this.run(() -> {
+        return this.runEnd(() -> {
             io.setVoltage(-2.0);
             io.rezero(SubsystemConstants.turretHomeAngleRotations);
-        });
+        }, () -> io.setVoltage(0.0));
     }
 
     public Command setFixed() {

@@ -35,8 +35,8 @@ public class HoodIOReal implements HoodIO {
         var softLimitConfig = talonFXConfigs.SoftwareLimitSwitch;
         softLimitConfig.ForwardSoftLimitThreshold = SubsystemConstants.hoodForwardSoftLimit;
         softLimitConfig.ReverseSoftLimitThreshold = SubsystemConstants.hoodReverseSoftLimit;
-        softLimitConfig.ForwardSoftLimitEnable = true;
-        softLimitConfig.ReverseSoftLimitEnable = true;
+        softLimitConfig.ForwardSoftLimitEnable = false;
+        softLimitConfig.ReverseSoftLimitEnable = false;
 
         TorqueCurrentConfigs configTorque =  new TorqueCurrentConfigs();
         configTorque.PeakForwardTorqueCurrent = SubsystemConstants.hoodPeakForwardTorqueCurrent;
@@ -70,6 +70,7 @@ public class HoodIOReal implements HoodIO {
     @Override
     public void setPosition(double position) {
         Logger.recordOutput("Hood/wantedPosition", position);
+        Logger.recordOutput("Hood/setPositionHeartbeat", Math.random());
 
         if (Math.abs(position - hood.getPosition().getValueAsDouble()) < 0.02) return;
 
@@ -80,7 +81,9 @@ public class HoodIOReal implements HoodIO {
 
     @Override
     public void setVoltage(double voltage) {
-        hood.setControl(new VoltageOut(voltage).withEnableFOC(true));
+        Logger.recordOutput("Hood/setVoltageHeartbeat", Math.random());
+        Logger.recordOutput("Hood/wantedVoltage", voltage);
+        hood.setControl(new VoltageOut(voltage));
     }
 
     @Override

@@ -222,6 +222,7 @@ public class LimelightFiducialCamera {
         Pose2d pose = poseEstimate.pose;
 
         if(turretMounted && SubsystemConstants.hasTurret) {
+            Logger.recordOutput(prefix + "untransformedPose", pose);
             pose = transformTurretPose(pose);
         }
 
