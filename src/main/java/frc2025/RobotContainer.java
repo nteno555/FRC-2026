@@ -162,7 +162,7 @@ public class RobotContainer {
         hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
         shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
         indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
-//        turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());
+        turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());
 
 
         driverXboxController.a().onTrue(

@@ -112,8 +112,8 @@ public class Autos {
             if(paths.get(i).equals("wait 2s")) {
                 if(SubsystemConstants.hasTurret) {
                     pathCommands = pathCommands.andThen(
-                            Commands.waitSeconds(2.5)
-                                    .alongWith(AutoAimCommands.autoIndex(robotContainer))
+                            AutoAimCommands.autoIndex(robotContainer)
+                                            .withTimeout(2.5)
                     );
                 } else {
                     pathCommands = pathCommands.andThen(

@@ -20,7 +20,7 @@ public class SubsystemConstants {
     public static double climberMotionMagicJerk = 700;
 
     public static double flywheelkS = 0.2;
-    public static double flywheelkV = 0.122;
+    public static double flywheelkV = 0.118;
     public static double flywheelkA = 0.00;
     public static double flywheelkP = 0.127;
     public static double flywheelkI = 0.0;
@@ -35,10 +35,10 @@ public class SubsystemConstants {
 
     // Hood: 50 to 85 degrees
 //    public static double hoodFF = 0.29;
-    public static double hoodkS = 0.0;
+    public static double hoodkS = 0.29;
     public static double hoodkV = 0.12;
     public static double hoodkA = 0.00;
-    public static double hoodkP = 5.0;
+    public static double hoodkP = 2.5;
     public static double hoodkI = 0.0;
     public static double hoodkD = 0.00;
     public static double hoodSupplyCurrentLimit = 40;
@@ -80,10 +80,10 @@ public class SubsystemConstants {
     public static double towerShootVoltage = 12.0;
 
     // Turret Gear Ratio: 12:24 & 44:54 & 36:125
-    public static double turretkS = 0.29;
+    public static double turretkS = 0.45;
     public static double turretkV = 0.128;
     public static double turretkG = 0.0;
-    public static double turretkP = 4.0;
+    public static double turretkP = 6.0;
     public static double turretkI = 0.0;
     public static double turretkD = 0.0;
     public static double turretCruiseVelocity = 60;
