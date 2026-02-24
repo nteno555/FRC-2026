@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc2025.commands.AutoAimCommands;
+import frc2025.commands.DriveToPoseCommand;
 import frc2025.commands.FollowPathCommand;
 import frc2025.commands.SuperstructureCommands;
 import frc2025.config.SubsystemConstants;
@@ -166,7 +167,16 @@ public class Autos {
                 .andThen(drive.driveRobotRelative(() -> new ChassisSpeeds(0, 0, 0)));
         return auto;
     }
-
+    /* 
+    public Command HighNeutralAutoIntake() { 
+        Command auto = new DriveToPoseCommand(drive, () -> RobotState.getInstance().bestClusterPose(), true).alongWith();
+    }
+        /*
+        buildAuto(List.of("High-Neutral", "Neutral-High", "wait 2s", "High-OuterTrench"), false)
+        .andThen(new DriveToPoseCommand(drive, () -> RobotState.getInstance().bestClusterPose(), true))
+        .alongWith(robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition))
+        .alongWith(robotContainer.getIntake().setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));}
+        */
     public Command LowStationNeutralClimb() { return buildAuto(List.of("Low-Station", "Station-Neutral", "Neutral-Climb (Low)"), true); }
     public Command LowNeutralStationNeutralClimb() { return buildAuto(List.of("Low-Neutral", "Neutral-Station", "Station-Neutral", "Neutral-Climb (Low)"), true); }
     public Command LowNeutralStationClimb() {return buildAuto(List.of("Low-Neutral", "Neutral-Station", "Station-Climb"), true); }

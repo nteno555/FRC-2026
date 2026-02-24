@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc2025.commands.AutoAimCommands;
 import frc2025.commands.DriveCommands;
 import frc2025.commands.DriveToClusterCommand;
+import frc2025.commands.DriveToPoseCommand;
 import frc2025.commands.SuperstructureCommands;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.climber.ClimberIOReal;
@@ -63,7 +64,6 @@ public class RobotContainer {
     private final CommandXboxController tuningController = new CommandXboxController(3);
     private final CommandXboxController driveTuningController = new CommandXboxController(4);
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-    private final Field2d field = new Field2d();
 
     DriveSubsystem driveSubsystem;
     VisionSubsystem visionSubsystem;
@@ -197,10 +197,17 @@ public class RobotContainer {
         );
 
         driverXboxController.rightTrigger().whileTrue(
-                new DriveToClusterCommand(driveSubsystem)
+                new DriveToPoseCommand(driveSubsystem, () -> RobotState.getInstance().bestClusterPose(), true)
         ).whileFalse(
                 driveSubsystem.applyChassisSpeedsCommand(() -> new ChassisSpeeds())
         );
+
+        driverXboxController.leftTrigger().whileTrue(
+                new DriveToPoseCommand(driveSubsystem, () -> RobotState.getInstance().bestClusterPose(), false)
+        ).whileFalse(
+                driveSubsystem.applyChassisSpeedsCommand(() -> new ChassisSpeeds())
+        );
+
 
 //         driverXboxController.b().onTrue(
 //                 DriveCommands.autoTrench(this)
@@ -401,7 +408,8 @@ public class RobotContainer {
 
     public void loggerInit(){
         Logger.recordOutput("DriverStation/Intake Deployed?",false);
-        SmartDashboard.putData("Field", field);
+        SmartDashboard.putData("Field", RobotState.getInstance().getField());
+        RobotState.getInstance().getField().setRobotPose(RobotState.getInstance().getVisionPose());
 
     }
 
@@ -412,8 +420,10 @@ public class RobotContainer {
         
         Logger.recordOutput("DriverStation/TurretAngle", Math.round(RobotState.getInstance().getTurretAngle() * 180 / Math.PI));
 
-        field.setRobotPose(RobotState.getInstance().getVisionPose());
-        field.getObject("Fuel").setPoses(RobotState.getInstance().getBallFieldPoses());
+        RobotState.getInstance().getField().setRobotPose(RobotState.getInstance().getVisionPose());
+        RobotState.getInstance().setFieldPose();
+
+        Logger.recordOutput("Tuning/closestBallClusterPose",RobotState.getInstance().bestClusterPose());
     }
 
     public void autoInit() {

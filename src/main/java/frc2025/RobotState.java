@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
@@ -51,7 +52,7 @@ public class RobotState {
     private double prevTurretTimestamp;
 
     private List<PhotonTrackedTarget> ballTargets;
-
+    private final Field2d field = new Field2d();
     private ArrayList<String> states;
     private String matchState;
 
@@ -260,7 +261,7 @@ public class RobotState {
     public ArrayList<Pose2d> getBallFieldPoses(){
         ArrayList<Pose2d> ballPoses = new ArrayList<Pose2d>();
         Pose2d robotPose = getInstance().getVisionPose();
-
+        if (ballTargets == null) return null;
         for (PhotonTrackedTarget t : ballTargets) {
             double distanceToTarget = PhotonUtils.calculateDistanceToTargetMeters(
                 SubsystemConstants.photonCameraHeight, 
@@ -274,6 +275,52 @@ public class RobotState {
             ballPoses.add(robotPose.transformBy(new Transform2d(cameraToBall,Rotation2d.kZero)));
         }
         return ballPoses;
+    }
+
+    public Pose2d bestClusterPose(){
+        ArrayList<Pose2d> ballPoses = getBallFieldPoses();
+        int bestIndex = -1;
+        int bestNumNeighbors = -1;
+        double epsilon = 0.5;
+
+        for (int i=0; i < ballPoses.size(); i++){
+            int ballsInRange=0;
+            for (int j = 0; j < ballPoses.size(); j++){
+                if(j==i) continue;
+                if (ballPoses.get(i).getTranslation().getDistance(ballPoses.get(j).getTranslation()) <= epsilon) {
+                    ballsInRange++;
+                }
+            }
+            if(ballsInRange > bestNumNeighbors) {
+                bestIndex = i;
+                bestNumNeighbors = ballsInRange;
+            }
+        }
+        if (bestIndex == -1) {
+            Pose2d robotPose = RobotState.getInstance().getVisionPose();
+            Pose2d closestBall = ballPoses.get(0);
+            double closestDistance = robotPose.getTranslation().getDistance(closestBall.getTranslation());
+            for (int i = 1; i < ballPoses.size(); i++) {
+                double distance = robotPose.getTranslation().getDistance(ballPoses.get(i).getTranslation());
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestBall = ballPoses.get(i);
+                }
+            }
+            
+            return closestBall;
+        }
+        return ballPoses.get(bestIndex);
+    }
+
+    public void setFieldPose(){
+        if(getBallFieldPoses() != null) {
+            field.getObject("Fuel").setPoses(getBallFieldPoses());
+        }
+    }
+
+    public Field2d getField(){
+        return field; 
     }
 
     public boolean isHubActive() {
