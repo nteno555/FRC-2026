@@ -105,6 +105,7 @@ public class SubsystemConstants {
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
     public static boolean hasTurret = true;
     public static boolean useTurretThroughBores = true;
+    public static double turretShotReadyThreshold = 0.1; // 5.73 degrees
 
     public static Transform2d robotToShooter = new Transform2d(0.09087, -0.0838, Rotation2d.kZero); // should be x = forward, y = side
     public static Transform2d shooterToCamera = new Transform2d(0.1671, 0.0, Rotation2d.kZero);
@@ -139,7 +140,7 @@ public class SubsystemConstants {
     public static double robotToRightCameraPitch = 28.0; // to be updated
     public static double robotToRightCameraRoll = 180.0;
 
-    public static double autoAimMaxSpeed = 2.0;
+    public static double autoAimMaxSpeed = 1.0;
     public static double autoAimMaxAccel = 10.0;
 
     public static int climberID = 22;

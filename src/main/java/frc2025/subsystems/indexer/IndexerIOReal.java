@@ -49,12 +49,12 @@ public class IndexerIOReal implements IndexerIO {
     }
 
     @Override
-    public void setSpeed(double indexerSpeed, double towerSpeed) {
+    public void setSpeed(double indexerSpeed) {
         indexer.setControl(new DutyCycleOut(indexerSpeed));
     }
 
     @Override
-    public void setVoltage(double indexerVoltage, double towerVoltage) {
+    public void setVoltage(double indexerVoltage) {
         indexer.setControl(new VoltageOut(indexerVoltage));
     }
 

@@ -161,7 +161,7 @@ public class RobotContainer {
         intakeSubsystem.setDefaultCommand(intakeSubsystem.setDeployVoltage(() -> 0.0));
         hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
         shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
-        indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
+        indexerSubsystem.setDefaultCommand(AutoAimCommands.autoIndex(this));
         turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());
 
 
@@ -348,9 +348,8 @@ public class RobotContainer {
 //                .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
         tuningController.rightTrigger().whileTrue(
-            indexerSubsystem.setVoltage(() -> SubsystemConstants.spindexerShootVoltage, () -> SubsystemConstants.towerShootVoltage))
-            .whileFalse(indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0));
-
+            indexerSubsystem.setVoltage(() -> SubsystemConstants.spindexerShootVoltage))
+            .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
     }
 
 
@@ -394,7 +393,7 @@ public class RobotContainer {
         CommandScheduler.getInstance().cancelAll();
         RobotState.getInstance().setShuttling(false);
         shooterSubsystem.setSpeed(() -> 0.0);
-        indexerSubsystem.setVoltage(() -> 0.0, () -> 0.0);
+        indexerSubsystem.setVoltage(() -> 0.0);
         intakeSubsystem.setDeployVoltage(() -> 0.0);
         intakeSubsystem.setRollerVoltage(() -> 0.0);
     }
