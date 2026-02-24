@@ -135,6 +135,7 @@ public class HoodSubsystem extends SubsystemBase {
             io.rezero(0.0);
         }).andThen(() -> {
             usingVoltage = false;
+            io.rezero(0.0);
         });
     }
 

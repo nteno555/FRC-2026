@@ -35,10 +35,10 @@ public class SubsystemConstants {
 
     // Hood: 50 to 85 degrees
 //    public static double hoodFF = 0.29;
-    public static double hoodkS = 0.29;
+    public static double hoodkS = 0.0;
     public static double hoodkV = 0.12;
     public static double hoodkA = 0.00;
-    public static double hoodkP = 2.5;
+    public static double hoodkP = 5.0;
     public static double hoodkI = 0.0;
     public static double hoodkD = 0.00;
     public static double hoodSupplyCurrentLimit = 40;
@@ -73,11 +73,11 @@ public class SubsystemConstants {
     public static double intakeTorqueNeutralDeadband = 1;
     public static double intakeRetractPosition = 0.3;
     public static double intakeDeployPosition = 4.0;
-    public static double intakeRollerVoltage = 8.0;
+    public static double intakeRollerVoltage = 10.0;
     public static double intakeHalfPosition = 2.5;
 
     public static double spindexerShootVoltage = -8.0;
-    public static double towerShootVoltage = 8.0;
+    public static double towerShootVoltage = 12.0;
 
     // Turret Gear Ratio: 12:24 & 44:54 & 36:125
     public static double turretkS = 0.29;
@@ -98,8 +98,8 @@ public class SubsystemConstants {
     public static double turretRotationsPerRadian = 1.6578639911;
     public static double turretMinAngleRadians = -Math.PI / 2;
     public static double turretMaxAngleRadians = 3*Math.PI / 2;
-    public static double throughBoreZero2 = 0.621;
-    public static double throughBoreZero1 = 0.070;
+    public static double throughBoreZero2 = 0.590;
+    public static double throughBoreZero1 = 0.035;
     public static double throughBoreRatio1 = 2.5;
     public static double throughBoreRatio2 = 3.06818181818;
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations

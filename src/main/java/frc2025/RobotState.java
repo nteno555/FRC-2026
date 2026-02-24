@@ -155,19 +155,20 @@ public class RobotState {
                 new Twist2d(vx * phaseDelay, vy * phaseDelay, vOmega * phaseDelay)
         );
 
-        if (!SubsystemConstants.hasTurret) {
+//        if (SubsystemConstants.hasTurret) {
             Translation2d shooterFieldRelative = SubsystemConstants.robotToShooter.getTranslation().rotateBy(delayedPose.getRotation());
 
             vx += -vOmega * shooterFieldRelative.getY();
             vy += vOmega * shooterFieldRelative.getX();
-        }
+//        }
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 5; i++) {
             double dx = virtualPose.getX() - delayedPose.getX();
             double dy = virtualPose.getY() - delayedPose.getY();
             double distance = Math.hypot(dx, dy);
 
-            double flightTime = ShooterTreeMap.getInstance().tofTreeMap.getInterpolated(distance);
+//            double flightTime = ShooterTreeMap.getInstance().tofTreeMap.getInterpolated(distance);
+            double flightTime = ShooterTreeMap.getInstance().getRealTof(distance);
 
             virtualPose = new Pose2d(
                     realTargetPose.getX() - vx * flightTime,

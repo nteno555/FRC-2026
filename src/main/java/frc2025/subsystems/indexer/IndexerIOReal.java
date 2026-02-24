@@ -9,11 +9,9 @@ import frc2025.config.SubsystemConstants;
 
 public class IndexerIOReal implements IndexerIO {
     private final TalonFX indexer = new TalonFX(SubsystemConstants.indexerID, "rio");
-    private final TalonFX tower = new TalonFX(SubsystemConstants.towerID, "rio");
 
     public IndexerIOReal() {
         indexer.getConfigurator().apply(new TalonFXConfiguration());
-        tower.getConfigurator().apply(new TalonFXConfiguration());
 
         var indexerConfigs = new TalonFXConfiguration();
         
@@ -42,28 +40,22 @@ public class IndexerIOReal implements IndexerIO {
 
         indexer.getConfigurator().apply(indexerConfigs, 0.050);
         indexer.getConfigurator().apply(configTorque, 0.05);
-        tower.getConfigurator().apply(towerConfigs, 0.050);
-        tower.getConfigurator().apply(towerConfigTorque, 0.05);
     }
 
     @Override
     public void updateInputs(IndexerIOInputs inputs) {
         inputs.indexerVoltage = indexer.getMotorVoltage().getValueAsDouble();
         inputs.indexerCurrent = indexer.getTorqueCurrent().getValueAsDouble();
-        inputs.towerVoltage = tower.getMotorVoltage().getValueAsDouble();
-        inputs.towerCurrent = tower.getTorqueCurrent().getValueAsDouble();
     }
 
     @Override
     public void setSpeed(double indexerSpeed, double towerSpeed) {
         indexer.setControl(new DutyCycleOut(indexerSpeed));
-        tower.setControl(new DutyCycleOut(towerSpeed));
     }
 
     @Override
     public void setVoltage(double indexerVoltage, double towerVoltage) {
         indexer.setControl(new VoltageOut(indexerVoltage));
-        tower.setControl(new VoltageOut(towerVoltage));
     }
 
 
