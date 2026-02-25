@@ -21,7 +21,7 @@ public class SuperstructureCommands {
     }
 
     public static Command shootCommand(RobotContainer robotContainer) {
-        return robotContainer.getIndexer().setVoltage(() -> -3.0, () -> -3.0);
+        return robotContainer.getIndexer().setVoltage(() -> -3.0);
     }
 
     public static Command resetOdometry(RobotContainer robotContainer, Supplier<Pose2d> pose) {

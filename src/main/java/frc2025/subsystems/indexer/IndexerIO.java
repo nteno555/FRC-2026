@@ -11,7 +11,7 @@ public interface IndexerIO {
         double towerCurrent;
     }
 
-    public void updateInputs(IndexerIOInputs inputs); // is this needed?
-    public void setSpeed(double indexerSpeed, double towerSpeed);
-    public void setVoltage(double indexerVoltage, double towerVoltage);
+    public void updateInputs(IndexerIOInputs inputs);
+    public void setSpeed(double indexerSpeed);
+    public void setVoltage(double indexerVoltage);
 }

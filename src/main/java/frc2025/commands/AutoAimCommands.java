@@ -109,13 +109,6 @@ public class AutoAimCommands {
             } else {
                 return 0.0;
             }
-        }, () -> {
-            if (readySupplier.getAsBoolean()) {
-                return SubsystemConstants.towerShootVoltage;
-            }
-            else {
-                return 0.0;
-            }
         });
    }
 
