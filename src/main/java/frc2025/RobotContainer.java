@@ -220,7 +220,7 @@ public class RobotContainer {
         driverXboxController.leftTrigger()
                         .and(() -> wantManualAim)
                                 .whileTrue(shooterSubsystem.setSpeed(() -> ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(1.5))
-                                        .alongWith(indexerSubsystem.setVoltage(() -> SubsystemConstants.spindexerShootVoltage, () -> SubsystemConstants.towerShootVoltage))
+                                        .alongWith(indexerSubsystem.setVoltage(() -> SubsystemConstants.spindexerShootVoltage))
                                 );
 
         driverXboxController.rightBumper()
@@ -232,8 +232,7 @@ public class RobotContainer {
                 .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeRetractPosition));
 
         driverXboxController.rightTrigger()
-                .whileTrue(indexerSubsystem.setVoltage(() -> SubsystemConstants.spindexerShootVoltage,
-                        () -> SubsystemConstants.towerShootVoltage));
+                .whileTrue(indexerSubsystem.setVoltage(() -> SubsystemConstants.spindexerShootVoltage));
 
         operatorXboxController.leftBumper()
                 .onTrue(Commands.runOnce(() -> wantManualAim = true));

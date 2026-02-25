@@ -41,27 +41,29 @@ public class AutoAimCommands {
 
     public static Command driveAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {
         return robotContainer.getDrive().driveFieldRelative(
-                () -> {
-                    PIDController angleController = new PIDController(3, 0.0, 0.0);
-                    angleController.enableContinuousInput(-Math.PI, Math.PI);
+                        () -> {
+                            PIDController angleController = new PIDController(3, 0.0, 0.0);
+                            angleController.enableContinuousInput(-Math.PI, Math.PI);
 
-                    Pose2d shooterPose = RobotState.getInstance().getVisionShooterPose();
-                    Pose2d targetPose = targetPoseSupplier.get();
+                            Pose2d shooterPose = RobotState.getInstance().getVisionShooterPose();
+                            Pose2d targetPose = targetPoseSupplier.get();
 
-                    double angleToTarget = RobotState.getInstance().getAngleToVirtualTarget();
-                    double angularVelocity = angleController.calculate(modAngle(shooterPose.getRotation().getRadians()), modAngle(angleToTarget));
+                            double angleToTarget = RobotState.getInstance().getAngleToVirtualTarget();
+                            double angularVelocity = angleController.calculate(modAngle(shooterPose.getRotation().getRadians()), modAngle(angleToTarget));
 
-                    Logger.recordOutput("Drive/hubTargetPose", targetPose);
-                    Logger.recordOutput("Drive/robotRotation", modAngle(shooterPose.getRotation().getRadians()));
-                    Logger.recordOutput("Drive/robotRotationUnmodded", shooterPose.getRotation().getRadians());
+                            Logger.recordOutput("Drive/hubTargetPose", targetPose);
+                            Logger.recordOutput("Drive/robotRotation", modAngle(shooterPose.getRotation().getRadians()));
+                            Logger.recordOutput("Drive/robotRotationUnmodded", shooterPose.getRotation().getRadians());
 
-                    return new ChassisSpeeds(
-                            unlockedSpeeds.get().vxMetersPerSecond,
-                            unlockedSpeeds.get().vyMetersPerSecond,
-                            -angularVelocity
-                    );
-                }
-        );
+                            return new ChassisSpeeds(
+                                    unlockedSpeeds.get().vxMetersPerSecond,
+                                    unlockedSpeeds.get().vyMetersPerSecond,
+                                    -angularVelocity
+                            );
+                        }
+                ).alongWith(robotContainer.getHood().autoAim())
+                .alongWith(robotContainer.getShooter().autoAim())
+                .alongWith(autoIndex(robotContainer));
     }
 
    public static Command autoIndex(RobotContainer robotContainer) {
