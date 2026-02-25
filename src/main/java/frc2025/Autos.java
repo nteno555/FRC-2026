@@ -3,12 +3,9 @@ package frc2025;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc2025.commands.AutoAimCommands;
 import frc2025.commands.FollowPathCommand;
 import frc2025.commands.SuperstructureCommands;
@@ -143,13 +140,14 @@ public class Autos {
     }
 
     public Command LowStealLowNeutralLow() {return buildAuto(List.of("Low-Steal", "Steal-Low", "wait 2s", "Low-Neutral", "Neutral-Low"), false);}
-    public Command LowNeutralLowNeutralMidLow() {return buildAuto(List.of("Low-Neutral", "Neutral-Low", "wait 2s", "Low-NeutralMid", "NeutralMid-Low"),false);}
+    public Command LowNeutralLowNeutralLow() {return buildAuto(List.of("Low-Neutral", "Neutral-Low", "wait 2s", "Low-NeutralMid", "NeutralMid-Low"),false);}
     public Command LowStealLowNeutralStation() { return buildAuto(List.of("Low-Steal", "Steal-Low", "wait 2s", "Low-Neutral", "Neutral-Station"), false); }
     public Command LowStationDepot() {return buildAuto(List.of("Low-Station", "Station-Depot", "Depot-Dump"), false);}
 
     public Command MidStationDepotClimb() { return buildAuto(List.of("Mid-Station", "Station-Depot", "Depot-Climb"), true); }
 
-    public Command HighNeutralHighNeutralMid() {return buildAuto(List.of("High-Neutral", "Neutral-High", "wait 2s", "High-NeutralMid", "NeutralMid-High"), false);}
+    public Command HighNeutralHighNeutralHigh() {return buildAuto(List.of("High-Neutral", "Neutral-High", "wait 2s", "High-NeutralMid", "NeutralMid-High"), false);}
+    public Command HighStealHighNeutralHigh() { return buildAuto(List.of("High-Steal", "Steal-High", "wait 2s", "High-Neutral", "Neutral-High"), false); }
     public Command HighStealHighNeutralClimb() { return buildAuto(List.of("High-Steal", "Steal-HighBack", "wait 2s", "HighBack-Neutral", "Neutral-Climb (Trench High)"), true); }
     public Command HighNeutralDepot() {return buildAuto(List.of("High-Neutral", "Neutral-Depot", "Depot-Dump"), false);}
 }
