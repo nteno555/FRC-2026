@@ -307,7 +307,6 @@ public class RobotState {
                     closestBall = ballPoses.get(i);
                 }
             }
-            
             return closestBall;
         }
         return ballPoses.get(bestIndex);

@@ -167,16 +167,19 @@ public class Autos {
                 .andThen(drive.driveRobotRelative(() -> new ChassisSpeeds(0, 0, 0)));
         return auto;
     }
-    /* 
+    
     public Command HighNeutralAutoIntake() { 
-        Command auto = new DriveToPoseCommand(drive, () -> RobotState.getInstance().bestClusterPose(), true).alongWith();
+        Command auto =
+            buildAuto(List.of("High-Neutral", "Neutral-High", "wait 2s", "High-OuterTrench"), false)
+            .andThen(new DriveToPoseCommand(drive, () -> RobotState.getInstance().bestClusterPose(), true)
+                .alongWith(
+                    robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
+                        .until(() -> robotContainer.getIntake().getDeployReady())
+                        .andThen(robotContainer.getIntake().setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage)))
+                );
+        return auto;
     }
-        /*
-        buildAuto(List.of("High-Neutral", "Neutral-High", "wait 2s", "High-OuterTrench"), false)
-        .andThen(new DriveToPoseCommand(drive, () -> RobotState.getInstance().bestClusterPose(), true))
-        .alongWith(robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition))
-        .alongWith(robotContainer.getIntake().setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));}
-        */
+
     public Command LowStationNeutralClimb() { return buildAuto(List.of("Low-Station", "Station-Neutral", "Neutral-Climb (Low)"), true); }
     public Command LowNeutralStationNeutralClimb() { return buildAuto(List.of("Low-Neutral", "Neutral-Station", "Station-Neutral", "Neutral-Climb (Low)"), true); }
     public Command LowNeutralStationClimb() {return buildAuto(List.of("Low-Neutral", "Neutral-Station", "Station-Climb"), true); }
