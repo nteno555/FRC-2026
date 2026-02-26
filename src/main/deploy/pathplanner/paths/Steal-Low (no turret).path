@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.288781014901621,
-        "y": 2.8343272569444444
+        "x": 8.761669044222538,
+        "y": 2.838174037089873
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.311045539008248,
-        "y": 1.071435811360677
+        "x": 8.783933568329164,
+        "y": 1.0752825915061055
       },
       "isLocked": false,
       "linkedName": "steal (low)"
@@ -60,7 +60,7 @@
   "folder": "low start (no turret)",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 21.951905571288787
   },
   "useDefaultConstraints": true
 }
