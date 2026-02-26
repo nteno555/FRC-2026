@@ -258,22 +258,60 @@ public class RobotState {
         this.ballTargets = targets;
     }
 
-    public ArrayList<Pose2d> getBallFieldPoses(){
-        ArrayList<Pose2d> ballPoses = new ArrayList<Pose2d>();
+    // public ArrayList<Pose2d> getBallFieldPoses(){
+    //     ArrayList<Pose2d> ballPoses = new ArrayList<Pose2d>();
+    //     Pose2d robotPose = getInstance().getVisionPose();
+    //     if (ballTargets == null) return null;
+    //     for (PhotonTrackedTarget t : ballTargets) {
+    //         double distanceToTarget = PhotonUtils.calculateDistanceToTargetMeters(
+    //             SubsystemConstants.photonCameraHeight, 
+    //             0.75, 
+    //             SubsystemConstants.robotToPhotonCameraPitch,
+    //             Math.toRadians(t.getPitch())
+    //         );
+
+    //         Translation2d cameraToBall = new Translation2d(distanceToTarget, Rotation2d.fromDegrees(t.getYaw()));
+
+    //         ballPoses.add(robotPose.transformBy(new Transform2d(cameraToBall,Rotation2d.kZero)));
+    //     }
+    //     return ballPoses;
+    // }
+
+    public ArrayList<Pose2d> getBallFieldPoses() {
+        ArrayList<Pose2d> ballPoses = new ArrayList<>();
         Pose2d robotPose = getInstance().getVisionPose();
-        if (ballTargets == null) return null;
+
+        if (ballTargets == null) return ballPoses;
+
+        Translation3d camTranslation = SubsystemConstants.robotToPhotonCamera.getTranslation();
+        Rotation3d camRotation = SubsystemConstants.robotToPhotonCamera.getRotation();
+
+        double camX = camTranslation.getX();
+        double camY = camTranslation.getY();
+        double camZ = camTranslation.getZ();
+
         for (PhotonTrackedTarget t : ballTargets) {
-            double distanceToTarget = PhotonUtils.calculateDistanceToTargetMeters(
-                SubsystemConstants.photonCameraHeight, 
-                0.75, 
-                SubsystemConstants.robotToPhotonCameraPitch,
-                Math.toRadians(t.getPitch())
-            );
+            double yaw = Math.toRadians(t.getYaw());
+            double pitch = Math.toRadians(t.getPitch());
 
-            Translation2d cameraToBall = new Translation2d(distanceToTarget, Rotation2d.fromDegrees(t.getYaw()));
+            double xCam = Math.cos(pitch) * Math.cos(yaw);
+            double yCam = Math.cos(pitch) * Math.sin(yaw);
+            double zCam = Math.sin(pitch);
 
-            ballPoses.add(robotPose.transformBy(new Transform2d(cameraToBall,Rotation2d.kZero)));
+            Translation3d dCam = new Translation3d(xCam, yCam, zCam);
+            Translation3d dRobot = dCam.rotateBy(camRotation);
+            if (dRobot.getZ() >= 0) continue;
+            double tHit = (-camZ / dRobot.getZ());
+            double xHit = camX + (tHit * dRobot.getX());
+            double yHit = camY + (tHit * dRobot.getY());
+
+            Translation2d robotToBall = new Translation2d(xHit, yHit);
+
+            Pose2d ballPose = robotPose.transformBy(new Transform2d(robotToBall, Rotation2d.kZero));
+
+            ballPoses.add(ballPose);
         }
+
         return ballPoses;
     }
 
@@ -282,6 +320,7 @@ public class RobotState {
         int bestIndex = -1;
         int bestNumNeighbors = -1;
         double epsilon = 0.5;
+        if (ballPoses == null) {return new Pose2d(0, 0, Rotation2d.kZero);}
 
         for (int i=0; i < ballPoses.size(); i++){
             int ballsInRange=0;

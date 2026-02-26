@@ -67,18 +67,6 @@ public class VisionIOReal implements VisionIO {
                 )
         );
 
-        photonCamera = 
-            new PhotonVisionFiducialCamera(
-                "backLeft", 
-                true, 
-                SubsystemConstants.robotToPhotonCameraForward, 
-                SubsystemConstants.robotToPhotonCameraSide, 
-                SubsystemConstants.robotToPhotonCameraUp, 
-                SubsystemConstants.robotToPhotonCameraYaw, 
-                SubsystemConstants.robotToPhotonCameraPitch, 
-                SubsystemConstants.robotToPhotonCameraRoll
-            );
-
         colorCamera = new PhotonCamera("colorCamera");
         
     }

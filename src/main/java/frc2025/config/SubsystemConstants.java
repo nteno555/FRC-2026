@@ -1,7 +1,13 @@
 package frc2025.config;
 
+import org.photonvision.PhotonCamera;
+
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 
 
 public class SubsystemConstants {
@@ -138,14 +144,9 @@ public class SubsystemConstants {
     public static double robotToBackCameraPitch = 18.0; // to be updated
     public static double robotToBackCameraRoll = 0.0;
 
-    public static Transform2d robotToPhotonCamera = new Transform2d(0.0, 0.0, Rotation2d.kZero);
-    public static double robotToPhotonCameraForward = robotToPhotonCamera.getX();
-    public static double robotToPhotonCameraSide = robotToPhotonCamera.getY();
     public static double photonCameraHeight = 0.5;
-    public static double robotToPhotonCameraUp = 0.0;
-    public static double robotToPhotonCameraYaw = 0.0;
-    public static double robotToPhotonCameraPitch = 0.0;
-    public static double robotToPhotonCameraRoll = 0.0;
+    public static Transform3d robotToPhotonCamera = new Transform3d(new Translation3d(0, 0, photonCameraHeight), new Rotation3d(0, 0, 0)); //placeholder
+
 
     public static double autoAimMaxSpeed = 2.0;
     public static double autoAimMaxAccel = 10.0;
