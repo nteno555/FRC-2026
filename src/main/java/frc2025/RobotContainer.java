@@ -169,8 +169,9 @@ public class RobotContainer {
         intakeSubsystem.setDefaultCommand(intakeSubsystem.setDeployVoltage(() -> 0.0));
         hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
         shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
-        indexerSubsystem.setDefaultCommand(AutoAimCommands.autoIndex(this));
-        turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());
+        indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0));
+//        indexerSubsystem.setDefaultCommand(AutoAimCommands.autoIndex(this));
+//        turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());
 
 
         driverXboxController.a().onTrue(
@@ -319,8 +320,7 @@ public class RobotContainer {
                 .whileTrue(
                         shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/RPM", 0.0))
                                 .alongWith(hoodSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/hoodPosition", 0.0)))
-                                .alongWith()
-                                .alongWith(turretSubsystem.autoAim())
+//                                .alongWith(turretSubsystem.autoAim())
                 )
                 .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 

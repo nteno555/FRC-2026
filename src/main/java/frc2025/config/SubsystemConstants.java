@@ -19,10 +19,10 @@ public class SubsystemConstants {
     public static double climberMotionMagicAcceleration = 150;
     public static double climberMotionMagicJerk = 700;
 
-    public static double flywheelkS = 0.2;
-    public static double flywheelkV = 0.118;
+    public static double flywheelkS = 0.27;
+    public static double flywheelkV = 0.127;
     public static double flywheelkA = 0.00;
-    public static double flywheelkP = 0.127;
+    public static double flywheelkP = 0.5;
     public static double flywheelkI = 0.0;
     public static double flywheelkD = 0.0;
     public static double topFlywheelGearRatio = 1.0;
@@ -80,32 +80,38 @@ public class SubsystemConstants {
     public static double towerShootVoltage = 12.0;
 
     // Turret Gear Ratio: 12:24 & 44:54 & 36:125
-    public static double turretkS = 0.45;
+    public static double turretkS = 0.2;
     public static double turretkV = 0.128;
     public static double turretkG = 0.0;
-    public static double turretkP = 6.0;
+    public static double turretkP = 3.0;
     public static double turretkI = 0.0;
     public static double turretkD = 0.0;
     public static double turretCruiseVelocity = 60;
     public static double turretAcceleration = 150;
     public static double turretJerk = 700;
+    public static double turretVoltageLimit = 8;
     public static double turretSupplyCurrentLimit = 120;
     public static double turretStatorCurrentLimit = 120;
     public static double turretPeakForwardTorqueCurrent = 800;
     public static double turretPeakReverseTorqueCurrent = -800;
     public static double turretTorqueNeutralDeadband = 0;
     public static double turretZeroOffsetRadians = 0.0;
-    public static double turretRotationsPerRadian = 1.6578639911;
+    public static double turretRotationsPerRadian = 42.0/10.0 * 48.0/26.0 * 125.0/30.0 / (2*Math.PI);
     public static double turretMinAngleRadians = -Math.PI / 2;
     public static double turretMaxAngleRadians = 3*Math.PI / 2;
-    public static double throughBoreZero2 = 0.590;
-    public static double throughBoreZero1 = 0.035;
-    public static double throughBoreRatio1 = 2.5;
-    public static double throughBoreRatio2 = 3.06818181818;
+    public static double throughBoreZero1 = 0.991;
+    public static double throughBoreZero2 = 0.815;
+    public static double throughBoreRatio1 = 42.0 / 10.0 * 48.0 / 26.0;
+    public static double throughBoreRatio2 = 42.0 / 10.0;
+//    public static double throughBoreRatio2 = 4.201172;
+//    public static double throughBoreRatio1 = 12.8667;
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
     public static boolean hasTurret = true;
     public static boolean useTurretThroughBores = true;
     public static double turretShotReadyThreshold = 0.1; // 5.73 degrees
+
+    // 2.195068 15.061768
+    // 17.197021  21.398193
 
     public static Transform2d robotToShooter = new Transform2d(0.09087, -0.0838, Rotation2d.kZero); // should be x = forward, y = side
     public static Transform2d shooterToCamera = new Transform2d(0.1671, 0.0, Rotation2d.kZero);
@@ -136,7 +142,7 @@ public class SubsystemConstants {
     public static double robotToRightCameraForward = robotToRightCamera.getX();
     public static double robotToRightCameraRight = robotToRightCamera.getY();
     public static double robotToRightCameraUp = 0.1273;
-    public static double robotToRightCameraYaw = 90.0;
+    public static double robotToRightCameraYaw = -90.0;
     public static double robotToRightCameraPitch = 28.0; // to be updated
     public static double robotToRightCameraRoll = 180.0;
 
