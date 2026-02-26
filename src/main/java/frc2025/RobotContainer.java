@@ -409,7 +409,6 @@ public class RobotContainer {
     public void loggerInit(){
         Logger.recordOutput("DriverStation/Intake Deployed?",false);
         SmartDashboard.putData("Field", RobotState.getInstance().getField());
-        RobotState.getInstance().getField().setRobotPose(RobotState.getInstance().getVisionPose());
 
     }
 
@@ -420,8 +419,7 @@ public class RobotContainer {
         
         Logger.recordOutput("DriverStation/TurretAngle", Math.round(RobotState.getInstance().getTurretAngle() * 180 / Math.PI));
 
-        RobotState.getInstance().getField().setRobotPose(RobotState.getInstance().getVisionPose());
-        RobotState.getInstance().setFieldPose();
+        RobotState.getInstance().setFieldPoses();
 
         Logger.recordOutput("Tuning/closestBallClusterPose",RobotState.getInstance().bestClusterPose());
     }

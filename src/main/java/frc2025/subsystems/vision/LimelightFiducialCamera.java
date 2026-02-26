@@ -145,9 +145,12 @@ public class LimelightFiducialCamera {
 
         if(meanAmbiguity > maxMeanAmbiguity || meanDistance > maxMeanDistance || meanArea < minMeanArea) {
             reject = true;
+            Logger.recordOutput(prefix + "ambiguityreject", true);
+
         }
         if (Math.abs(pose.getRotation().minus(RobotState.getInstance().getVisionPose().getRotation()).getRadians()) > 0.5) {
             reject = true;
+            Logger.recordOutput(prefix + "gyroreject", true);
         }
 
         double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
@@ -170,7 +173,6 @@ public class LimelightFiducialCamera {
             VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
                     poseEstimate.timestampSeconds, pose, distStdDevs
             );
-
             RobotState.getInstance().addVisionData(List.of(update));
         }
     }
@@ -237,6 +239,8 @@ public class LimelightFiducialCamera {
 
         LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
         LimelightHelpers.PoseEstimate poseEstimateMt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
+        
+
 
         addVisionUpdateMt1(poseEstimate);
         addVisionUpdateMt2(poseEstimateMt2);

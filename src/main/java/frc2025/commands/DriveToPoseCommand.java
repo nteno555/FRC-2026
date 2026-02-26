@@ -48,6 +48,8 @@ public class DriveToPoseCommand extends Command {
         var currentPose = RobotState.getInstance().getVisionPose();
         var desiredPose = poseSupplier.get();
 
+        if (desiredPose == null) return;
+
         if (ballChasing) {
             double dx = desiredPose.getX() - currentPose.getX(); 
             double dy = desiredPose.getY() - currentPose.getY(); 

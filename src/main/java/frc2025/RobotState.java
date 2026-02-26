@@ -57,7 +57,7 @@ public class RobotState {
     private String matchState;
 
     public RobotState() {
-        visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
+        visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 99999, 99999, 0.00001 }));
         shuttling = false;
         prevTurretTimestamp = -1;
         states = new ArrayList<String>();
@@ -317,10 +317,12 @@ public class RobotState {
 
     public Pose2d bestClusterPose(){
         ArrayList<Pose2d> ballPoses = getBallFieldPoses();
+        Pose2d robotPose = RobotState.getInstance().getVisionPose();   
         int bestIndex = -1;
-        int bestNumNeighbors = -1;
-        double epsilon = 0.5;
-        if (ballPoses == null) {return new Pose2d(0, 0, Rotation2d.kZero);}
+        int bestNumNeighbors = 0;
+        double epsilon = 0.5;        
+        
+        if (ballPoses.size()<1) {return new Pose2d(0, 0, Rotation2d.kZero);}
 
         for (int i=0; i < ballPoses.size(); i++){
             int ballsInRange=0;
@@ -330,13 +332,15 @@ public class RobotState {
                     ballsInRange++;
                 }
             }
+            double distance = robotPose.getTranslation().getDistance(ballPoses.get(i).getTranslation());
+            ballsInRange += 1/distance;
+
             if(ballsInRange > bestNumNeighbors) {
                 bestIndex = i;
                 bestNumNeighbors = ballsInRange;
             }
         }
-        if (bestIndex == -1) {
-            Pose2d robotPose = RobotState.getInstance().getVisionPose();
+        if (bestIndex == -1) { 
             Pose2d closestBall = ballPoses.get(0);
             double closestDistance = robotPose.getTranslation().getDistance(closestBall.getTranslation());
             for (int i = 1; i < ballPoses.size(); i++) {
@@ -346,15 +350,18 @@ public class RobotState {
                     closestBall = ballPoses.get(i);
                 }
             }
+            Logger.recordOutput("DriverStation/clusterPose", closestBall);
             return closestBall;
         }
+        Logger.recordOutput("DriverStation/clusterPose", ballPoses.get(bestIndex));
         return ballPoses.get(bestIndex);
     }
 
-    public void setFieldPose(){
+    public void setFieldPoses(){
         if(getBallFieldPoses() != null) {
-            field.getObject("Fuel").setPoses(getBallFieldPoses());
+            field.getObject("Fuel").setPoses(getBallFieldPoses());   
         }
+        field.setRobotPose(getVisionPose());
     }
 
     public Field2d getField(){

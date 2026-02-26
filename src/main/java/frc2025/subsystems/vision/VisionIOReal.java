@@ -19,12 +19,20 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 
 public class VisionIOReal implements VisionIO {
-    List<LimelightFiducialCamera> cameras;
+    LimelightFiducialCamera cameras;
     PhotonCamera colorCamera;
     PhotonVisionFiducialCamera photonCamera;
 
     public VisionIOReal() {
-        this.cameras = List.of(
+        this.cameras = new LimelightFiducialCamera("limelight", 
+                false, 
+                0.1, 
+                -0.1, 
+                0, 
+                0, 
+                49, 
+                0);
+            /* 
                 new LimelightFiducialCamera(
                         "limelight-turret",
                         true,
@@ -65,7 +73,10 @@ public class VisionIOReal implements VisionIO {
                         SubsystemConstants.robotToLeftCameraPitch,
                         SubsystemConstants.robotToLeftCameraRoll
                 )
-        );
+                        
+        );*/
+                
+        
 
         colorCamera = new PhotonCamera("colorCamera");
         
@@ -73,18 +84,21 @@ public class VisionIOReal implements VisionIO {
 
     @Override
     public void updateInputs(VisionIOInputs inputs) {
-        for(var cam: cameras) {
-            cam.writeGyro();
-            cam.updatePose();
-        }
+        // for(var cam: cameras) {
+        //     cam.writeGyro();
+        //     cam.updatePose();
+        // }
+        cameras.writeGyro();
+        cameras.updatePose();
         photonCamera.updatePose();
         RobotState.getInstance().setBallTargets(colorCamera.getLatestResult().getTargets());
     }
 
     @Override
     public void resetOdometry() {
-        for (var cam: cameras) {
-            cam.resetOdometry();
-        }
+        // for (var cam: cameras) {
+        //     cam.resetOdometry();
+        // }
+        cameras.resetOdometry();
     }
 }

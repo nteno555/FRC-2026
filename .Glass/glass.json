@@ -28,12 +28,18 @@
         }
       },
       "/SmartDashboard/Field": {
-        "bottom": 1638,
-        "height": 8.051901817321777,
-        "left": 534,
-        "right": 3466,
-        "top": 291,
-        "width": 17.54825210571289,
+        "Robot": {
+          "width": 0.8199999928474426
+        },
+        "bottom": 1914,
+        "builtin": "",
+        "height": 8.0,
+        "image": "c:\\Users\\conra\\Downloads\\2026-field-no-fuel (1).png",
+        "left": 245,
+        "right": 3942,
+        "top": 118,
+        "units": "meters",
+        "width": 20.0,
         "window": {
           "visible": true
         }
@@ -49,11 +55,13 @@
     },
     "Server": {
       "open": true
-    },
-    "visible": true
+    }
   },
   "NetworkTables Settings": {
     "mode": "Client (NT4)",
     "serverTeam": "localhost"
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }

@@ -2,6 +2,8 @@ package frc2025.subsystems.vision;
 
 import java.util.*;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
@@ -108,6 +110,7 @@ public class VisionPoseEstimator {
         for (var updateEntry : updates.entrySet()) {
             latestPose = updateEntry.getValue().apply(latestPose, q);
         }
+        Logger.recordOutput("Vision/updating", true);
     }
 
     /**
