@@ -156,10 +156,9 @@ public class RobotState {
         );
 
 //        if (SubsystemConstants.hasTurret) {
-            Translation2d shooterFieldRelative = SubsystemConstants.robotToShooter.getTranslation().rotateBy(delayedPose.getRotation());
-
-            vx += -vOmega * shooterFieldRelative.getY();
-            vy += vOmega * shooterFieldRelative.getX();
+        Translation2d shooterFieldRelative = SubsystemConstants.robotToShooter.getTranslation().rotateBy(delayedPose.getRotation());
+        vx += -vOmega * shooterFieldRelative.getY();
+        vy += vOmega * shooterFieldRelative.getX();
 //        }
 
         for (int i = 0; i < 5; i++) {

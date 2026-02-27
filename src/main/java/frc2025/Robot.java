@@ -43,6 +43,7 @@ public class Robot extends LoggedRobot {
 		RobotController.setBrownoutVoltage(5.5);
         System.out.println("Yay you deployed");
 		FollowPathCommand.warmupCommand().schedule();
+
         SignalLogger.setPath("/home/lvuser/logs/");
         SignalLogger.start();
 	}

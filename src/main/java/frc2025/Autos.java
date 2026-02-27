@@ -60,6 +60,7 @@ public class Autos {
         }
 
         PathPlannerPath finalPath = path;
+
         Pose2d startPose = new Pose2d(
                 finalPath.getStartingDifferentialPose().getTranslation(),
                 finalPath.getIdealStartingState().rotation()
@@ -92,12 +93,14 @@ public class Autos {
     }
 
     public Command buildAuto(List<String> paths, boolean climb) {
-        Command auto = robotContainer.getShooter().autoAim()
-                .alongWith(robotContainer.getHood().autoAim())
-                .alongWith(
-                        robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
+        Command auto =
+                robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
                         .until(() -> robotContainer.getIntake().getDeployReady())
-                        .andThen(robotContainer.getIntake().setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage)));
+                        .andThen(
+                                robotContainer.getIntake().setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage)
+                                        .alongWith(robotContainer.getShooter().autoAim())
+                                        .alongWith(robotContainer.getHood().autoAim())
+                        );
 
         if (SubsystemConstants.hasTurret) {
                 auto = auto.alongWith(robotContainer.getTurret().autoAim());
@@ -114,7 +117,8 @@ public class Autos {
                     );
                 } else {
                     pathCommands = pathCommands.andThen(
-                            autoShoot()
+                            AutoAimCommands.driveAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> new ChassisSpeeds(0, 0, 0))
+                                    .alongWith(AutoAimCommands.autoIndex(robotContainer))
                                     .withTimeout(2.5)
                     );
                 }
@@ -128,7 +132,13 @@ public class Autos {
             }
         }
 
-        return auto.alongWith(pathCommands.andThen(AutoAimCommands.autoIndex(robotContainer)));
+        if(SubsystemConstants.hasTurret) {
+            return auto.alongWith(pathCommands.andThen(AutoAimCommands.autoIndex(robotContainer)));
+        } else {
+            return auto.alongWith(pathCommands.andThen(
+            AutoAimCommands.driveAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> new ChassisSpeeds(0, 0, 0))
+                                    .alongWith(AutoAimCommands.autoIndex(robotContainer))));
+        }
     }
 
 
@@ -139,12 +149,13 @@ public class Autos {
         return auto;
     }
 
-    public Command LowStealLowNeutralLow() {return buildAuto(List.of("Low-Steal", "Steal-Low", "wait 2s", "Low-Neutral", "Neutral-Low"), false);}
+    public Command LowStealLowNeutralLow() {return buildAuto(List.of("Low-Steal (no turret)", "Steal-Low (no turret)", "wait 2s", "Low-Neutral (no turret)", "Neutral-Low (no turret)"), false);}
     public Command LowNeutralLowNeutralLow() {return buildAuto(List.of("Low-Neutral", "Neutral-Low", "wait 2s", "Low-NeutralMid", "NeutralMid-Low"),false);}
     public Command LowStealLowNeutralStation() { return buildAuto(List.of("Low-Steal", "Steal-Low", "wait 2s", "Low-Neutral", "Neutral-Station"), false); }
+    public Command LowNeutralStation() { return buildAuto(List.of("Low-Neutral", "Neutral-Station"), false); }
     public Command LowStationDepot() {return buildAuto(List.of("Low-Station", "Station-Depot", "Depot-Dump"), false);}
 
-    public Command MidStationDepotClimb() { return buildAuto(List.of("Mid-Station", "Station-Depot", "Depot-Climb"), true); }
+    public Command MidStationDepotClimb() { return buildAuto(List.of("Mid-Station", "wait 2s", "Station-Depot", "Depot-Climb"), true); }
 
     public Command HighNeutralHighNeutralHigh() {return buildAuto(List.of("High-Neutral", "Neutral-High", "wait 2s", "High-NeutralMid", "NeutralMid-High"), false);}
     public Command HighStealHighNeutralHigh() { return buildAuto(List.of("High-Steal", "Steal-High", "wait 2s", "High-Neutral", "Neutral-High"), false); }

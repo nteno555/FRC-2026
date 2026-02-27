@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.5607270739520043,
-        "y": 0.7610139295789928
+        "x": 0.4740617116292323,
+        "y": 0.6521024961118349
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4066452060275614,
-        "y": 0.7696529913955747
+        "x": 1.3199798437047894,
+        "y": 0.6607415579284168
       },
       "isLocked": false,
       "linkedName": "station"
@@ -20,24 +20,15 @@
         "y": 5.979450141059028
       },
       "prevControl": {
-        "x": 3.607448511759441,
-        "y": 4.538344013915288
+        "x": 3.9937828047010644,
+        "y": 6.225336888066044
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "depot"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.46992348118832256,
-      "rotationDegrees": 29.999999999999996
-    },
-    {
-      "waypointRelativePos": 0.7588057668585528,
-      "rotationDegrees": -29.999999999999996
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
@@ -49,10 +40,10 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 720.0,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 480.0,
+    "maxAngularAcceleration": 480.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },

@@ -20,12 +20,12 @@
         "y": 0.6249838177716287
       },
       "prevControl": {
-        "x": 7.434625685515228,
-        "y": 0.5337431459780089
+        "x": 8.422023704246238,
+        "y": 0.6872748673050488
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "low"
+      "linkedName": "low (no turret)"
     }
   ],
   "rotationTargets": [
@@ -45,16 +45,16 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 720.0,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 480.0,
+    "maxAngularAcceleration": 480.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": "low start (no turret)",

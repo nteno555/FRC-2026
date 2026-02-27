@@ -29,7 +29,12 @@ public class AutoAimCommands {
     }
 
     public static Command autoShoot(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {
-        return (SubsystemConstants.hasTurret) ? turretAutoAim(robotContainer) : driveAutoAim(robotContainer, targetPoseSupplier, unlockedSpeeds);
+        return (SubsystemConstants.hasTurret) ?
+                turretAutoAim(robotContainer) :
+                driveAutoAim(robotContainer, targetPoseSupplier, unlockedSpeeds)
+                        .alongWith(robotContainer.getHood().autoAim())
+                        .alongWith(robotContainer.getShooter().autoAim())
+                        .alongWith(autoIndex(robotContainer));
     }
 
     public static Command turretAutoAim(RobotContainer robotContainer) {
@@ -42,7 +47,7 @@ public class AutoAimCommands {
     public static Command driveAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {
         return robotContainer.getDrive().driveFieldRelative(
                         () -> {
-                            PIDController angleController = new PIDController(3, 0.0, 0.0);
+                            PIDController angleController = new PIDController(5, 0.0, 0.0);
                             angleController.enableContinuousInput(-Math.PI, Math.PI);
 
                             Pose2d shooterPose = RobotState.getInstance().getVisionShooterPose();
@@ -61,9 +66,7 @@ public class AutoAimCommands {
                                     angularVelocity
                             );
                         }
-                ).alongWith(robotContainer.getHood().autoAim())
-                .alongWith(robotContainer.getShooter().autoAim())
-                .alongWith(autoIndex(robotContainer));
+                );
     }
 
    public static Command autoIndex(RobotContainer robotContainer) {

@@ -111,12 +111,14 @@ public class RobotContainer {
         autos = new Autos(this);
         autoChooser.setDefaultOption("MidStationDepotClimb", autos.MidStationDepotClimb());
 
-        autoChooser.addOption("Low Neutral (no steal)", autos.LowNeutralLowNeutralLow());
-        autoChooser.addOption("Low Neutral (steal)", autos.LowStealLowNeutralLow());
-        autoChooser.addOption("Low Neutral Station (steal)", autos.LowStealLowNeutralStation());
+        autoChooser.addOption("Low Neutral x2 (no steal)", autos.LowNeutralLowNeutralLow());
+        autoChooser.addOption("Low Neutral x2 (steal)", autos.LowStealLowNeutralLow());
+        autoChooser.addOption("Low Neutral x2 Station (steal)", autos.LowStealLowNeutralStation());
+        autoChooser.addOption("Low Neutral Station (no steal)", autos.LowNeutralStation());
+
         autoChooser.addOption("Mid Station Depot", autos.MidStationDepotClimb());
-        autoChooser.addOption("High Neutral (no steal)", autos.HighNeutralHighNeutralHigh());
-        autoChooser.addOption("High Neutral (steal)", autos.HighStealHighNeutralHigh());
+        autoChooser.addOption("High Neutral x2 (no steal)", autos.HighNeutralHighNeutralHigh());
+        autoChooser.addOption("High Neutral x2 (steal)", autos.HighStealHighNeutralHigh());
         autoChooser.addOption("High Neutral Depot Dump", autos.HighNeutralDepot());
 //        autoChooser.addOption("HighShootIntakeClimb", autos.HighShootIntakeClimb());
 //        autoChooser.addOption("LowShuttleAuto", autos.LowShuttleAuto());
@@ -170,6 +172,7 @@ public class RobotContainer {
         hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
         shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
         indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0));
+        turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
 //        indexerSubsystem.setDefaultCommand(AutoAimCommands.autoIndex(this));
 //        turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());
 
@@ -272,27 +275,46 @@ public class RobotContainer {
             turretSubsystem.rezeroCRT()
     );
 
-    tuningController.povLeft().whileTrue(
-            turretSubsystem.setVoltage(() -> 2.0)
-    ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
-
-    tuningController.povRight().whileTrue(
-            turretSubsystem.setVoltage(() -> -2.0)
-    ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
-
-    tuningController.povUp().whileTrue(
-            intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeRetractPosition)
-    )
-            .whileFalse(
-                    intakeSubsystem.setDeployVoltage(() -> 0.0)
-            );
-
     tuningController.povDown().whileTrue(
-            intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
-    ).whileFalse(
-            intakeSubsystem.setDeployVoltage(() -> 0.0)
+//            turretSubsystem.setVoltage(() -> -1.0);
+            turretSubsystem.setPositionSafe(() -> 0.0, () -> 0.0)
     );
 
+    tuningController.povRight().whileTrue(
+            turretSubsystem.setVoltage(() -> 2.0)
+//            turretSubsystem.setPositionSafe(() -> -Math.PI * 0.5, () -> 0.0)
+    );
+
+    tuningController.povUp().whileTrue(
+            turretSubsystem.setPositionSafe(() -> Math.PI * 0.5, () -> 0.0)
+    );
+
+    tuningController.povLeft().whileTrue(
+            turretSubsystem.setVoltage(() -> -2.0)
+//            turretSubsystem.setPositionSafe(() -> Math.PI, () -> 0.0)
+    );
+
+//    tuningController.povLeft().whileTrue(
+//            turretSubsystem.setVoltage(() -> 2.0)
+//    ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
+//
+//    tuningController.povRight().whileTrue(
+//            turretSubsystem.setVoltage(() -> -2.0)
+//    ).whileFalse(turretSubsystem.setVoltage(() -> 0.0));
+//
+//    tuningController.povUp().whileTrue(
+//            intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeRetractPosition)
+//    )
+//            .whileFalse(
+//                    intakeSubsystem.setDeployVoltage(() -> 0.0)
+//            );
+//
+//    tuningController.povDown().whileTrue(
+//            intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
+//    ).whileFalse(
+//            intakeSubsystem.setDeployVoltage(() -> 0.0)
+//    );
+//
 //    tuningController.leftBumper().whileTrue(
 //            turretSubsystem.autoAim()
 //    );

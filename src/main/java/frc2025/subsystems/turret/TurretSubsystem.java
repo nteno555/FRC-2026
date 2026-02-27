@@ -111,7 +111,8 @@ public class TurretSubsystem extends SubsystemBase {
             setpoint = io.toRotations(bestAngle);
 
             usingVoltage = false;
-            io.setPosition(setpoint, velocityFF);
+            //io.setPosition(setpoint, velocityFF);
+            io.setPosition(setpoint);
             Logger.recordOutput("Turret/turretWantedPositionRadians", positionRadians.get());
             Logger.recordOutput("Turret/turretClampedPositionRadians", bestAngle);
             Logger.recordOutput("Turret/turretClampedPositionRotations", setpoint);

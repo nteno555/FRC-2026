@@ -48,6 +48,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public Command setDeployPosition(Supplier<Double> position) {
         return this.run(() -> {
+            if (position.get() == SubsystemConstants.intakeRetractPosition) io.setVoltage(0.0);
             io.setDeployPosition(position.get());
         });
     }
@@ -70,6 +71,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public Command homeThenRezero() {
         return this.run(() -> {
+            io.setVoltage(0.0);
             io.setDeployVoltage(-2.0);
             io.rezero(0.0);
         });
