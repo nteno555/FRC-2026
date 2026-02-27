@@ -21,7 +21,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 public class VisionIOReal implements VisionIO {
     LimelightFiducialCamera cameras;
     PhotonCamera colorCamera;
-    PhotonVisionFiducialCamera photonCamera;
+    //PhotonVisionFiducialCamera photonCamera;
 
     public VisionIOReal() {
         this.cameras = new LimelightFiducialCamera("limelight", 
@@ -29,9 +29,9 @@ public class VisionIOReal implements VisionIO {
                 0.1, 
                 -0.1, 
                 0, 
-                0, 
+                180, 
                 49, 
-                0);
+                180);
             /* 
                 new LimelightFiducialCamera(
                         "limelight-turret",
@@ -90,7 +90,7 @@ public class VisionIOReal implements VisionIO {
         // }
         cameras.writeGyro();
         cameras.updatePose();
-        photonCamera.updatePose();
+        //photonCamera.updatePose();
         RobotState.getInstance().setBallTargets(colorCamera.getLatestResult().getTargets());
     }
 

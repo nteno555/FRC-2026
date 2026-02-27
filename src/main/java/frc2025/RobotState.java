@@ -57,10 +57,9 @@ public class RobotState {
     private String matchState;
 
     public RobotState() {
-        visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 99999, 99999, 0.00001 }));
+        visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
         shuttling = false;
         prevTurretTimestamp = -1;
-        states = new ArrayList<String>();
     }
 
     public static RobotState getInstance() {
@@ -119,33 +118,15 @@ public class RobotState {
     }
 
     public Pose2d getTargetPose() {
-        alliance = DriverStation.Alliance.Red;
-        if(DriverStation.getAlliance().isPresent()) {
-            alliance = DriverStation.getAlliance().get();
+        if (!shuttling) {
+            return (Alliance.get()) ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
         }
 
-        if(alliance == DriverStation.Alliance.Red) {
-            if(!shuttling) {
-                return FieldConstants.redNetPos;
-            } else {
-                if(visionPoseEstimator.getLatestPose().getY() > FieldConstants.yHalfLine) {
-                    return FieldConstants.redShuttlePosUpper;
-                } else {
-                    return FieldConstants.redShuttlePosLower;
-                }
-            }
-        } else {
-            if(!shuttling) {
-                return FieldConstants.blueNetPos;
-            } else {
-                if(visionPoseEstimator.getLatestPose().getY() > FieldConstants.yHalfLine) {
-                    return FieldConstants.blueShuttlePosUpper;
-                }
-                else {
-                    return FieldConstants.blueShuttlePosLower;
-                }
-            }
+        if (visionPoseEstimator.getLatestPose().getY() > FieldConstants.yHalfLine) {
+            return (Alliance.get()) ? FieldConstants.redShuttlePosUpper : FieldConstants.blueShuttlePosUpper;
         }
+
+        return (Alliance.get()) ? FieldConstants.redShuttlePosLower : FieldConstants.blueShuttlePosLower;
     }
 
     public void updateShuttling() {
@@ -183,21 +164,25 @@ public class RobotState {
                 new Twist2d(vx * phaseDelay, vy * phaseDelay, vOmega * phaseDelay)
         );
 
-        Translation2d shooterFieldRelative = SubsystemConstants.robotToShooter.getTranslation().rotateBy(delayedPose.getRotation());
+//        if (SubsystemConstants.hasTurret) {
+            Translation2d shooterFieldRelative = SubsystemConstants.robotToShooter.getTranslation().rotateBy(delayedPose.getRotation());
 
-        vx += -vOmega * shooterFieldRelative.getY();
-        vy += vOmega * shooterFieldRelative.getX();
+            vx += -vOmega * shooterFieldRelative.getY();
+            vy += vOmega * shooterFieldRelative.getX();
+//        }
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 5; i++) {
             double dx = virtualPose.getX() - delayedPose.getX();
             double dy = virtualPose.getY() - delayedPose.getY();
             double distance = Math.hypot(dx, dy);
 
-            double flightTime = ShooterTreeMap.getInstance().tofTreeMap.getInterpolated(distance);
+//            double flightTime = ShooterTreeMap.getInstance().tofTreeMap.getInterpolated(distance);
+            double flightTime = 0.75;
+            //ShooterTreeMap.getInstance().getRealTof(distance);
 
             virtualPose = new Pose2d(
-                    realTargetPose.getX() + vx * flightTime,
-                    realTargetPose.getY() + vy * flightTime,
+                    realTargetPose.getX() - vx * flightTime,
+                    realTargetPose.getY() - vy * flightTime,
                     realTargetPose.getRotation()
             );
         }
@@ -226,9 +211,14 @@ public class RobotState {
         turretAngle = angleRadians;
     }
 
+    public void setTurretVelocity(double vel) {
+        //turretVelocity = vel;
+    }
+
     public double getTurretVelocity() {
        if (prevTurretTimestamp == -1) return 0.0;
        return (turretAngle - prevTurretAngle)/(Utils.getCurrentTimeSeconds() - prevTurretTimestamp);
+//        return turretVelocity;
     }
 
     public double getTurretAngle() { return turretAngle; }
@@ -279,7 +269,7 @@ public class RobotState {
 
     public ArrayList<Pose2d> getBallFieldPoses() {
         ArrayList<Pose2d> ballPoses = new ArrayList<>();
-        Pose2d robotPose = getInstance().getVisionPose();
+        Pose2d robotPose = getVisionPose();
 
         if (ballTargets == null) return ballPoses;
 
@@ -317,12 +307,12 @@ public class RobotState {
 
     public Pose2d bestClusterPose(){
         ArrayList<Pose2d> ballPoses = getBallFieldPoses();
-        Pose2d robotPose = RobotState.getInstance().getVisionPose();   
+        Pose2d robotPose = getVisionPose();   
         int bestIndex = -1;
         int bestNumNeighbors = 0;
         double epsilon = 0.5;        
         
-        if (ballPoses.size()<1) {return new Pose2d(0, 0, Rotation2d.kZero);}
+        if (ballPoses.size()<1) return null;
 
         for (int i=0; i < ballPoses.size(); i++){
             int ballsInRange=0;

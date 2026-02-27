@@ -57,7 +57,7 @@ public class VisionPoseEstimator {
         for (var timestampedVisionUpdate : visionData) {
             var timestamp = timestampedVisionUpdate.timestamp();
             var visionUpdate = new VisionUpdate(timestampedVisionUpdate.pose(), timestampedVisionUpdate.stdDevs());
-
+            Logger.recordOutput("Vision/visionPoseEstimatorUpdate", visionUpdate);
             if (updates.containsKey(timestamp)) {
                 // There was already an update at this timestamp, add to it
                 var oldVisionUpdates = updates.get(timestamp).visionUpdates();
@@ -91,6 +91,7 @@ public class VisionPoseEstimator {
                 updates.put(
                         nextUpdate.getKey(), new PoseUpdate(twist1, nextUpdate.getValue().visionUpdates()));
             }
+            Logger.recordOutput("Vision/updateslist", timestampedVisionUpdate);
         }
 
         // Recalculate latest pose once
@@ -110,7 +111,6 @@ public class VisionPoseEstimator {
         for (var updateEntry : updates.entrySet()) {
             latestPose = updateEntry.getValue().apply(latestPose, q);
         }
-        Logger.recordOutput("Vision/updating", true);
     }
 
     /**

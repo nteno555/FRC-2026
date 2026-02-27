@@ -16,10 +16,12 @@
     },
     "types": {
       "/AdvantageKit/RealOutputs/PathPlanner": "Alerts",
+      "/AdvantageKit/RealOutputs/PhotonAlerts": "Alerts",
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
-      "/SmartDashboard/PathPlanner": "Alerts"
+      "/SmartDashboard/PathPlanner": "Alerts",
+      "/SmartDashboard/PhotonAlerts": "Alerts"
     },
     "windows": {
       "/SmartDashboard/Auto Chooser": {
@@ -28,18 +30,21 @@
         }
       },
       "/SmartDashboard/Field": {
+        "Fuel": {
+          "image": "C:\\Users\\conra\\Downloads\\—Pngtree—round yellow ball decoration_4647154.png"
+        },
         "Robot": {
           "width": 0.8199999928474426
         },
-        "bottom": 1914,
+        "bottom": 1490,
         "builtin": "",
-        "height": 8.0,
+        "height": 8.069000244140625,
         "image": "c:\\Users\\conra\\Downloads\\2026-field-no-fuel (1).png",
-        "left": 245,
-        "right": 3942,
-        "top": 118,
+        "left": 524,
+        "right": 3378,
+        "top": 94,
         "units": "meters",
-        "width": 20.0,
+        "width": 16.53499984741211,
         "window": {
           "visible": true
         }
