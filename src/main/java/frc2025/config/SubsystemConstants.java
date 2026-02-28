@@ -21,6 +21,7 @@ public class SubsystemConstants {
     public static double climberMotionMagicCruiseVelocity = 60;
     public static double climberMotionMagicAcceleration = 150;
     public static double climberMotionMagicJerk = 700;
+    
 
     public static double flywheelkS = 0.0;
     public static double flywheelkV = 0.123;
