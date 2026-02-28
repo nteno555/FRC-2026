@@ -9,7 +9,7 @@
     "low start (no turret)"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 2.5,
+  "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 480.0,
   "defaultMaxAngAccel": 480.0,

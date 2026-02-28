@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.801688422309027,
-        "y": 4.8330865162037036
+        "x": 7.868883859139903,
+        "y": 5.429965007640698
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.906487041332103,
-        "y": 7.155414880258066
+        "x": 7.775950640643087,
+        "y": 8.366101687113442
       },
       "isLocked": false,
       "linkedName": "high neutral"
@@ -20,33 +20,41 @@
         "y": 7.425910702740705
       },
       "prevControl": {
-        "x": 6.986680546621822,
-        "y": 7.422180670955244
+        "x": 7.066477752872875,
+        "y": 7.437337391152839
       },
       "nextControl": {
-        "x": 2.6548548301414208,
-        "y": 7.428948265358254
+        "x": 0.5170381481029374,
+        "y": 7.407005642926251
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.2422441773591222,
-        "y": 5.979450141059028
+        "x": 0.42547865012840036,
+        "y": 5.326078930890119
       },
       "prevControl": {
-        "x": 2.4746047572383176,
-        "y": 5.936939641881874
+        "x": 0.26526798163519993,
+        "y": 7.876292920995642
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "depot"
+      "linkedName": "depot sweep"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.2624948601973685,
+      "waypointRelativePos": 0.7179420872738483,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 1.0929629677220392,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 1.345247609991776,
       "rotationDegrees": 180.0
     }
   ],
@@ -75,7 +83,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.5,
+    "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 480.0,
     "maxAngularAcceleration": 480.0,
@@ -83,8 +91,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 90.0
+    "velocity": 0.0,
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "high start",

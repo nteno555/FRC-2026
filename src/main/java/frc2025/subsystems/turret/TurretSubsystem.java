@@ -67,7 +67,7 @@ public class TurretSubsystem extends SubsystemBase {
     public Command setPositionFieldRelative(Supplier<Double> positionRadians) {
         return setPositionSafe(() -> -(positionRadians.get() - RobotState.getInstance().getVisionPose().getRotation().getRadians()),
 //                () -> 0.0);
-                () -> -RobotState.getInstance().getRobotRelativeSpeeds().omegaRadiansPerSecond);
+                () -> RobotState.getInstance().getRobotRelativeSpeeds().omegaRadiansPerSecond);
     }
 
 //    public Command setPositionSafe(Supplier<Double> positionRadians) {
@@ -112,7 +112,7 @@ public class TurretSubsystem extends SubsystemBase {
 
             usingVoltage = false;
             //io.setPosition(setpoint, velocityFF);
-            io.setPosition(setpoint);
+            io.setPosition(setpoint, velocityFF);
             Logger.recordOutput("Turret/turretWantedPositionRadians", positionRadians.get());
             Logger.recordOutput("Turret/turretClampedPositionRadians", bestAngle);
             Logger.recordOutput("Turret/turretClampedPositionRotations", setpoint);

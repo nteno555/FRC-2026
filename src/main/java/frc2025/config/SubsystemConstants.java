@@ -21,7 +21,7 @@ public class SubsystemConstants {
 
     public static double flywheelkS = 0.27;
 //    public static double flywheelkV = 0.127;
-    public static double flywheelkV = 0.15;
+    public static double flywheelkV = 0.123;
     public static double flywheelkA = 0.00;
 //    public static double flywheelkP = 0.3;
     public static double flywheelkP = 0.5;
@@ -79,7 +79,7 @@ public class SubsystemConstants {
     public static double intakeHalfPosition = 2.0;
 
     public static double spindexerShootVoltage = -12.0;
-    public static double towerShootVoltage = 9.0;
+    public static double towerShootVoltage = 8.0;
 
     // Turret Gear Ratio: 12:24 & 44:54 & 36:125
     public static double turretkS = 0.47;
@@ -151,7 +151,11 @@ public class SubsystemConstants {
 
     public static double autoAimMaxSpeed = 1.1;
     public static double shuttlingMaxSpeed = 3.5;
+    public static double autoAimMaxSpeedStrict = 0.2;
     public static double autoAimMaxAccel = 10.0;
+    public static double autoAimMaxAngularVelocity = Math.PI / 4;
+    public static double autoAimMaxAngularVelocityStrict = Math.PI / 16;
+    public static double shuttlingMaxAngularVelocity = Math.PI * 2;
 
     public static int climberID = 22;
     public static int flywheelMasterID = 13;

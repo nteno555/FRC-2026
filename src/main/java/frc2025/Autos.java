@@ -145,6 +145,7 @@ public class Autos {
                         robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
                                 .until(() -> robotContainer.getIntake().getDeployReady()).andThen(
                         intakePath(paths.get(i))
+                                .deadlineWith(robotContainer.indexerSubsystem.setVoltage(() -> 0.0))
                             .deadlineWith(robotContainer.intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage)))
                 );
             }
@@ -180,8 +181,8 @@ public class Autos {
     public Command LowNeutralLowNeutralLow() {return buildAuto(List.of("Low-Neutral", "Neutral-Low", "wait 2s", "Low-NeutralMid", "NeutralMid-Low"),false);}
     public Command LowStealLowNeutralStation() {return buildAuto(List.of("Low-Steal", "Steal-Low", "wait 2s", "Low-Neutral", "Neutral-Station"), false); }
     public Command LowNeutralLowNeutralStation() {return buildAuto(List.of("Low-Neutral", "Neutral-Low", "wait 2s", "Low-NeutralMid", "NeutralMid-Station"), false); }
-    public Command LowNeutralDeepStation() {return buildAuto(List.of("Low-NeutralMid", "NeutralMid-Station"), false);}
-    public Command LowNeutralStation() { return buildAuto(List.of("Low-Neutral", "Neutral-Station"), false); }
+    public Command LowNeutralDeepStation() {return buildAuto(List.of("Low-NeutralMid", "NeutralMid-Station", "Station-Score"), false);}
+    public Command LowNeutralStation() { return buildAuto(List.of("Low-Neutral", "Neutral-Station", "Station-Score"), false); }
     public Command LowStationDepot() {return buildAuto(List.of("Low-Station", "Station-Depot", "Depot-Dump"), false);}
 
     public Command MidStationDepotClimb() { return buildAuto(List.of("Mid-Station", "wait 2s", "Station-Depot", "Depot-Climb"), true); }

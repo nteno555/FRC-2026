@@ -96,13 +96,27 @@ public class AutoAimCommands {
 
             double a = RobotState.getInstance().getPigeonAcceleration();
 
-            if (RobotState.getInstance().getShuttling()) {
-                good = good && (a < SubsystemConstants.shuttlingMaxSpeed);
+//            if (RobotState.getInstance().getShuttling()) {
+//                good = good && (a < SubsystemConstants.shuttlingMaxSpeed);
+//            }
+//            else {
+//            good = good && (a < SubsystemConstants.autoAimMaxAccel);
+//            }
+
+            if(RobotState.getInstance().getShuttling()) {
+                good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.shuttlingMaxSpeed) && (RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond < SubsystemConstants.shuttlingMaxAngularVelocity);
+            } else {
+                double targetDist = RobotState.getInstance().getTargetPose().getTranslation().getDistance(RobotState.getInstance().getVisionPose().getTranslation());
+
+                if(targetDist < 2.7) {
+                    good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed)
+                            && (RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond < SubsystemConstants.autoAimMaxAngularVelocity);
+                } else {
+                    good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeedStrict)
+                            && (RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond < SubsystemConstants.autoAimMaxAngularVelocityStrict);
+
+                }
             }
-            else {
-                good = good && (a < SubsystemConstants.autoAimMaxAccel);
-            }
-            good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed);
 
             Logger.recordOutput("Indexer/autoIndex/accelReady", (a < SubsystemConstants.autoAimMaxAccel));
             Logger.recordOutput("Indexer/autoIndex/shooterReady", robotContainer.getShooter().getShotReady());

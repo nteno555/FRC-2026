@@ -172,11 +172,9 @@ public class RobotContainer {
 
         intakeSubsystem.setDefaultCommand(intakeSubsystem.setDeployVoltage(() -> 0.0));
         hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
-        shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
-        indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0));
-        turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
-//        indexerSubsystem.setDefaultCommand(AutoAimCommands.autoIndex(this));
-//        turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());
+        shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
+        indexerSubsystem.setDefaultCommand(AutoAimCommands.autoIndex(this));
+        turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());
 
 
         driverXboxController.a().onTrue(
@@ -187,6 +185,16 @@ public class RobotContainer {
                                 : new Pose2d()
                 )
         );
+
+        driverXboxController
+                .b()
+                        .and(driverXboxController.back().negate())
+                                .onTrue(shooterSubsystem.setVoltage(() -> 0.0));
+         driverXboxController
+                .x()
+                        .and(driverXboxController.back().negate())
+                                .onTrue(shooterSubsystem.autoAim());
+
 
         driverXboxController
                 .b()
@@ -218,7 +226,7 @@ public class RobotContainer {
                                 )
                         ))
                 .onFalse(
-                        shooterSubsystem.autoAim().withTimeout(0.3)
+                        shooterSubsystem.autoAim().withTimeout(1)
                 );
 
         driverXboxController.leftTrigger()

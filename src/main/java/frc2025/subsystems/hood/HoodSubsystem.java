@@ -81,14 +81,17 @@ public class HoodSubsystem extends SubsystemBase {
                     Rotation2d.kZero
             );
 
-            boolean nearBlueTrench = Math.abs(robotXpose - FieldConstants.blueTrenchX) < 1;
-            boolean nearRedTrench = Math.abs(robotXpose - FieldConstants.redTrenchX) < 1;
+            boolean nearBlueTrench = Math.abs(robotXpose - FieldConstants.blueTrenchX) < 0.75;
+            boolean nearRedTrench = Math.abs(robotXpose - FieldConstants.redTrenchX) < 0.75;
             boolean nearTrenchY = robotYpose < 1.982 || robotYpose > 6.170;
 
             boolean currentBlueTrench = (robotXpose - FieldConstants.blueTrenchX) < 0.0;
             boolean futureBlueTrench = (futureRobotPose.getX() - FieldConstants.blueTrenchX) < 0.0;
             boolean currentRedTrench = (robotXpose - FieldConstants.redTrenchX) < 0.0;
             boolean futureRedTrench = (futureRobotPose.getX() - FieldConstants.redTrenchX) < 0.0;
+
+            Logger.recordOutput("Hood/nearBlueTrench", nearBlueTrench);
+            Logger.recordOutput("Hood/nearRedTrench", nearRedTrench);
 
             if ((nearRedTrench || nearBlueTrench) && nearTrenchY) {
                 return 0.0;

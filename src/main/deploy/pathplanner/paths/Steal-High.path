@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.461628887035229,
-        "y": 7.669706882900662
+        "x": 9.532052421287254,
+        "y": 7.859718060246221
       },
       "isLocked": false,
       "linkedName": "steal (high)"
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.7427239668996708,
+      "waypointRelativePos": 0.6365523488898024,
       "rotationDegrees": -90.0
     }
   ],
@@ -38,7 +38,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.5,
+    "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 480.0,
     "maxAngularAcceleration": 480.0,
@@ -53,7 +53,7 @@
   "folder": "high start",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 160.0
   },
   "useDefaultConstraints": true
 }
