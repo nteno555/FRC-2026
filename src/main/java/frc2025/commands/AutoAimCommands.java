@@ -41,6 +41,7 @@ public class AutoAimCommands {
         return robotContainer.getTurret().autoAim()
                 .alongWith(robotContainer.getHood().autoAim())
                 .alongWith(robotContainer.getShooter().autoAim())
+//                .alongWith(robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeShotPosition))
                 .alongWith(autoIndex(robotContainer));
     }
 
@@ -94,7 +95,13 @@ public class AutoAimCommands {
             }
 
             double a = RobotState.getInstance().getPigeonAcceleration();
-            good = good && (a < SubsystemConstants.autoAimMaxAccel);
+
+            if (RobotState.getInstance().getShuttling()) {
+                good = good && (a < SubsystemConstants.shuttlingMaxSpeed);
+            }
+            else {
+                good = good && (a < SubsystemConstants.autoAimMaxAccel);
+            }
             good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed);
 
             Logger.recordOutput("Indexer/autoIndex/accelReady", (a < SubsystemConstants.autoAimMaxAccel));

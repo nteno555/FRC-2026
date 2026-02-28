@@ -20,8 +20,10 @@ public class SubsystemConstants {
     public static double climberMotionMagicJerk = 700;
 
     public static double flywheelkS = 0.27;
-    public static double flywheelkV = 0.127;
+//    public static double flywheelkV = 0.127;
+    public static double flywheelkV = 0.15;
     public static double flywheelkA = 0.00;
+//    public static double flywheelkP = 0.3;
     public static double flywheelkP = 0.5;
     public static double flywheelkI = 0.0;
     public static double flywheelkD = 0.0;
@@ -73,14 +75,14 @@ public class SubsystemConstants {
     public static double intakeTorqueNeutralDeadband = 1;
     public static double intakeRetractPosition = 0.3;
     public static double intakeDeployPosition = 4.0;
-    public static double intakeRollerVoltage = 10.0;
-    public static double intakeHalfPosition = 2.5;
+    public static double intakeRollerVoltage = 12.0;
+    public static double intakeHalfPosition = 2.0;
 
     public static double spindexerShootVoltage = -12.0;
-    public static double towerShootVoltage = 12.0;
+    public static double towerShootVoltage = 9.0;
 
     // Turret Gear Ratio: 12:24 & 44:54 & 36:125
-    public static double turretkS = 0.40;
+    public static double turretkS = 0.47;
     public static double turretkV = 0.153;
     public static double turretkG = 0.0;
     public static double turretkP = 4.0;
@@ -90,23 +92,23 @@ public class SubsystemConstants {
     public static double turretAcceleration = 150;
     public static double turretJerk = 700;
     public static double turretVoltageLimit = 6;
-    public static double turretSupplyCurrentLimit = 120;
-    public static double turretStatorCurrentLimit = 120;
+    public static double turretSupplyCurrentLimit = 60;
+    public static double turretStatorCurrentLimit = 60;
     public static double turretPeakForwardTorqueCurrent = 800;
     public static double turretPeakReverseTorqueCurrent = -800;
     public static double turretTorqueNeutralDeadband = 0;
     public static double turretZeroOffsetRadians = 0.0;
-    public static double turretRotationsPerRadian = 42.0/10.0 * 48.0/26.0 * 125.0/30.0 / (2*Math.PI);
-    public static double turretMinAngleRadians = -(Math.PI / 2 + 0.2);
-    public static double turretMaxAngleRadians = 3*Math.PI / 2 - 0.2;
-    public static double throughBoreZero1 = 0.553;
-    public static double throughBoreZero2 = 0.240;
+    public static double turretRotationsPerRadian = 42.0/10.0 * 48.0/26.0 * 125.0/32.0 / (2*Math.PI);
+    public static double turretMinAngleRadians = -(Math.PI / 2 + 0.3);
+    public static double turretMaxAngleRadians = 3*Math.PI / 2 - 0.3;
+    public static double throughBoreZero1 = 0.871;
+    public static double throughBoreZero2 = 0.823;
     public static double throughBoreRatio1 = 42.0 / 10.0 * 48.0 / 26.0;
     public static double throughBoreRatio2 = 42.0 / 10.0;
 //    public static double throughBoreRatio2 = 4.201172;
 //    public static double throughBoreRatio1 = 12.8667;
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
-    public static boolean hasTurret = false;
+    public static boolean hasTurret = true;
     public static boolean useTurretThroughBores = true;
     public static double turretShotReadyThreshold = 0.1; // 5.73 degrees
 
@@ -139,7 +141,7 @@ public class SubsystemConstants {
     public static double robotToBackCameraPitch = 28.0;
     public static double robotToBackCameraRoll = 180.0;
 
-    public static Transform2d robotToRightCamera = new Transform2d(0.1015, -0.3274, Rotation2d.kZero);
+    public static Transform2d robotToRightCamera = new Transform2d(0.1015, 0.3274, Rotation2d.kZero);
     public static double robotToRightCameraForward = robotToRightCamera.getX();
     public static double robotToRightCameraRight = robotToRightCamera.getY();
     public static double robotToRightCameraUp = 0.1273;
@@ -147,7 +149,8 @@ public class SubsystemConstants {
     public static double robotToRightCameraPitch = 28.0;
     public static double robotToRightCameraRoll = 180.0;
 
-    public static double autoAimMaxSpeed = 1.0;
+    public static double autoAimMaxSpeed = 1.1;
+    public static double shuttlingMaxSpeed = 3.5;
     public static double autoAimMaxAccel = 10.0;
 
     public static int climberID = 22;

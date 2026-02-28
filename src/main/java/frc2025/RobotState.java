@@ -121,12 +121,12 @@ public class RobotState {
     }
 
     public void updateShuttling() {
-        double xPos = RobotState.getInstance().getVisionPose().getX();
-
         if (DriverStation.isAutonomousEnabled()) {
             shuttling = false;
             return;
         }
+
+        double xPos = RobotState.getInstance().getVisionPose().getX();
 
         boolean inBlueZone = xPos < FieldConstants.inBlueZoneX && !Alliance.get();
         boolean inRedZone = xPos > FieldConstants.inRedZoneX && Alliance.get();

@@ -109,12 +109,14 @@ public class RobotContainer {
 
     public void configureAutoCommands(){
         autos = new Autos(this);
-        autoChooser.setDefaultOption("MidStationDepotClimb", autos.MidStationDepotClimb());
+        autoChooser.setDefaultOption("Low Neutral x2 Station (steal)", autos.LowStealLowNeutralStation());
+//        autoChooser.setDefaultOption("MidStationDepotClimb", autos.MidStationDepotClimb());
 
         autoChooser.addOption("Low Neutral x2 (no steal)", autos.LowNeutralLowNeutralLow());
         autoChooser.addOption("Low Neutral x2 (steal)", autos.LowStealLowNeutralLow());
         autoChooser.addOption("Low Neutral x2 Station (steal)", autos.LowStealLowNeutralStation());
         autoChooser.addOption("Low Neutral Station (no steal)", autos.LowNeutralStation());
+        autoChooser.addOption("Low Neutral Deep Station (no steal)", autos.LowNeutralDeepStation());
 
         autoChooser.addOption("Mid Station Depot", autos.MidStationDepotClimb());
         autoChooser.addOption("High Neutral x2 (no steal)", autos.HighNeutralHighNeutralHigh());
@@ -186,11 +188,6 @@ public class RobotContainer {
                 )
         );
 
-//        driverXboxController.b()
-//                .and(driverXboxController.back().negate())
-//                .onTrue(
-//                DriveCommands.autoTrench(this));
-
         driverXboxController
                 .b()
                 .and(driverXboxController.back())
@@ -219,12 +216,19 @@ public class RobotContainer {
                                         (driveSpeed) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
                                         (-rotationSpeed) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
                                 )
-                        ));
+                        ))
+                .onFalse(
+                        shooterSubsystem.autoAim().withTimeout(0.3)
+                );
 
         driverXboxController.leftTrigger()
                         .and(() -> wantManualAim)
                                 .whileTrue(shooterSubsystem.setSpeed(() -> ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(1.5))
                                         .alongWith(indexerSubsystem.setVoltage(() -> SubsystemConstants.spindexerShootVoltage))
+                                )
+                                .onFalse(
+                                        shooterSubsystem.setSpeed(() -> ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(1.5)
+                                        ).withTimeout(0.3)
                                 );
 
         driverXboxController.rightBumper()
@@ -235,40 +239,34 @@ public class RobotContainer {
         driverXboxController.povRight() // right middle paddle
                 .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeRetractPosition));
 
-        driverXboxController.rightTrigger()
-                .whileTrue(indexerSubsystem.setVoltage(() -> SubsystemConstants.spindexerShootVoltage));
-
         operatorXboxController.leftBumper()
                 .onTrue(Commands.runOnce(() -> wantManualAim = true));
         operatorXboxController.rightBumper()
                 .onTrue(Commands.runOnce(() -> wantManualAim = false));
 
         wantManualAimTrigger.whileTrue(
-                turretSubsystem.setVoltage(() -> operatorXboxController.getRightX())
+                turretSubsystem.setVoltage(() -> 2.0*operatorXboxController.getRightX())
                         .alongWith(hoodSubsystem.setPosition(() -> ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(1.5)))
 //                        .alongWith(hoodSubsystem.setVoltage(() -> operatorXboxController.getLeftY()))
         );
 
-//        operatorXboxController.rightTrigger()
-//                .whileTrue(indexerSubsystem.setVoltage(() -> -6.0, () -> -12.0));
 
-
-        driveTuningController.a()
-                .whileTrue(driveSubsystem.runDriveDynamicTest(SysIdRoutine.Direction.kForward));
-        driveTuningController.b()
-                .whileTrue(driveSubsystem.runDriveDynamicTest(SysIdRoutine.Direction.kReverse));
-        driveTuningController.x()
-                .whileTrue(driveSubsystem.runDriveQuasiTest(SysIdRoutine.Direction.kForward));
-        driveTuningController.y()
-                .whileTrue(driveSubsystem.runDriveQuasiTest(SysIdRoutine.Direction.kReverse));
-        driveTuningController.povLeft()
-                .whileTrue(driveSubsystem.runSteerDynamicTest(SysIdRoutine.Direction.kForward));
-        driveTuningController.povUp()
-                .whileTrue(driveSubsystem.runSteerDynamicTest(SysIdRoutine.Direction.kReverse));
-        driveTuningController.povDown()
-                .whileTrue(driveSubsystem.runSteerQuasiTest(SysIdRoutine.Direction.kForward));
-        driveTuningController.povRight()
-                .whileTrue(driveSubsystem.runSteerQuasiTest(SysIdRoutine.Direction.kReverse));
+//        driveTuningController.a()
+//                .whileTrue(driveSubsystem.runDriveDynamicTest(SysIdRoutine.Direction.kForward));
+//        driveTuningController.b()
+//                .whileTrue(driveSubsystem.runDriveDynamicTest(SysIdRoutine.Direction.kReverse));
+//        driveTuningController.x()
+//                .whileTrue(driveSubsystem.runDriveQuasiTest(SysIdRoutine.Direction.kForward));
+//        driveTuningController.y()
+//                .whileTrue(driveSubsystem.runDriveQuasiTest(SysIdRoutine.Direction.kReverse));
+//        driveTuningController.povLeft()
+//                .whileTrue(driveSubsystem.runSteerDynamicTest(SysIdRoutine.Direction.kForward));
+//        driveTuningController.povUp()
+//                .whileTrue(driveSubsystem.runSteerDynamicTest(SysIdRoutine.Direction.kReverse));
+//        driveTuningController.povDown()
+//                .whileTrue(driveSubsystem.runSteerQuasiTest(SysIdRoutine.Direction.kForward));
+//        driveTuningController.povRight()
+//                .whileTrue(driveSubsystem.runSteerQuasiTest(SysIdRoutine.Direction.kReverse));
 
 
     tuningController.leftBumper().whileTrue(
@@ -319,13 +317,6 @@ public class RobotContainer {
 //            turretSubsystem.autoAim()
 //    );
 
-//        tuningController.a().onTrue(new InstantCommand(() -> {
-//            if(!Alliance.get()){
-//                driveSubsystem.resetOdometry(new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
-//            } else {
-//                driveSubsystem.resetOdometry(new Pose2d());
-//            }
-//        }));
 
         tuningController.a().onTrue(
                 SuperstructureCommands.resetOdometry(

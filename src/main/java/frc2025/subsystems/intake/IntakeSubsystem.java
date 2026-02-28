@@ -55,13 +55,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public Command oscillateIntake() {
         return setDeployPosition(() -> {
-            int time = (int) Timer.getFPGATimestamp();
+            double time = (Timer.getFPGATimestamp());
 
-            if(time % 2 == 0) {
-                return SubsystemConstants.intakeDeployPosition;
-            } else {
-                return SubsystemConstants.intakeHalfPosition;
-            }
+            if (time % 1.0 < 0.5) return SubsystemConstants.intakeDeployPosition;
+            else return SubsystemConstants.intakeHalfPosition;
         });
     }
 
