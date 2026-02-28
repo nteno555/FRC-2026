@@ -197,6 +197,8 @@ public class LimelightFiducialCamera {
         Logger.recordOutput(prefix + "rejected", reject);
         Logger.recordOutput(prefix + "rawPose", pose);
 
+        // if(SubsystemConstants.ignoreTurretLimelight && turretMounted)
+        //     reject = true;
 
         if(!reject) {
             Vector<N3> distStdDevs;
@@ -262,9 +264,12 @@ public class LimelightFiducialCamera {
         Logger.recordOutput(prefix + "rejected", reject);
         Logger.recordOutput(prefix + "rawPose", pose);
 
+        // if(SubsystemConstants.ignoreTurretLimelight && turretMounted)
+        //     reject = true;
+
         if(!reject) {
             Vector<N3> distStdDevs;
-            distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 2.0, Math.pow(leastDistance, 2) / 2.0, 999999999);
+            distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 4.0, Math.pow(leastDistance, 2) / 4.0, 999999999);
             VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
                     poseEstimate.timestampSeconds, pose, distStdDevs
             );
