@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class VisionPoseEstimator {
 
-    private static final double historyLengthSecs = 0.1;
+    private static final double historyLengthSecs = 0.5;
 
     private Pose2d basePose = new Pose2d();
     private Pose2d latestPose = new Pose2d();
@@ -71,6 +71,7 @@ public class VisionPoseEstimator {
                 if (prevUpdate == null || nextUpdate == null) {
                     // Outside the range of existing data
                     return;
+                    //THIS LINE IS RUNNNING 
                 }
 
                 // Create partial twists (prev -> vision, vision -> next)
