@@ -153,6 +153,7 @@ public class Autos {
             return deploy.andThen(
                     aim.alongWith(pathCommands.andThen(
                             AutoAimCommands.driveAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> new ChassisSpeeds(0, 0, 0))
+                                    .alongWith(AutoAimCommands.autoIndex(robotContainer))
                     ))
             );
         }

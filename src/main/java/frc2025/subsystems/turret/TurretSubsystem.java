@@ -3,6 +3,8 @@ package frc2025.subsystems.turret;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -69,14 +71,38 @@ public class TurretSubsystem extends SubsystemBase {
                     double visionAngle = RobotState.getInstance().getVisionPose().getRotation().getRadians();
                     Logger.recordOutput("Turret/error", Math.abs(inputs.positionRadians + visionAngle - wantedAngle) % (2*Math.PI));
                     return wantedAngle;
+                },
+                () -> {
+                    ChassisSpeeds robotSpeeds = RobotState.getInstance().getFieldRelativeSpeeds();
+                    Translation2d targetPos = RobotState.getInstance().getShootingWhileMovingVirtualPose().getTranslation();
+                    var robotPose = RobotState.getInstance().getVisionPose();
+                    Translation2d robotPos = robotPose.getTranslation();
+
+                    var robotToTargetXY = targetPos.minus(robotPos);
+                    Translation2d shooterRobotRelative = SubsystemConstants.robotToShooter.getTranslation().rotateBy(robotPose.getRotation());
+
+                    robotSpeeds = new ChassisSpeeds(
+                        robotSpeeds.vxMetersPerSecond + robotSpeeds.omegaRadiansPerSecond * shooterRobotRelative.getY(),
+                        robotSpeeds.vyMetersPerSecond - robotSpeeds.omegaRadiansPerSecond * shooterRobotRelative.getX(),
+                            robotSpeeds.omegaRadiansPerSecond
+                    );
+
+                    var targetFrameToRobot = new Translation2d(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond)
+                            .rotateBy(
+                                    robotToTargetXY.getAngle());
+
+                    var tangent = targetFrameToRobot.getY();
+                    var angular = robotSpeeds.omegaRadiansPerSecond;
+                    var distanceToTarget = robotToTargetXY.getNorm();
+
+                    return (angular + tangent / distanceToTarget);
                 }
         );
     }
 
-    public Command setPositionFieldRelative(Supplier<Double> positionRadians) {
+    public Command setPositionFieldRelative(Supplier<Double> positionRadians, Supplier<Double> velocityRadiansPerSecond) {
         return setPositionSafe(() -> -(positionRadians.get() - RobotState.getInstance().getVisionPose().getRotation().getRadians()),
-//                () -> 0.0);
-                () -> -RobotState.getInstance().getRobotRelativeSpeeds().omegaRadiansPerSecond);
+                velocityRadiansPerSecond);
     }
 
 //    public Command setPositionSafe(Supplier<Double> positionRadians) {
