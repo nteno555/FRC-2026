@@ -416,20 +416,20 @@ public class RobotState {
         }
     }
 
-    public void updateStates(){
+    /*public void updateStates(){
         Logger.recordOutput("DriverStation/thehub", isHubActive());
         //hub
         if(isHubActive()) addState("HUB_ACTIVE"); 
-        else removeState("HUB_ACTIVE"); 
+        // else removeState("HUB_ACTIVE"); 
 
         //Shuttling
         Logger.recordOutput("DriverStation/shuttling", shuttling);
         if (shuttling) addState("SHUTTLING");
-        else if (!shuttling) removeState("SHUTTLING");
+        // else if (!shuttling) removeState("SHUTTLING");
         
         //Autoshooing
         if(wantAutoShoot) addState("AUTO_SHOOTING");
-        else removeState("AUTO_SHOOTING");
+        // else removeState("AUTO_SHOOTING");
 
     }
 
@@ -445,5 +445,5 @@ public class RobotState {
 
     public ArrayList<String> getStates() {
         return states;
-    }
+    }*/
 }

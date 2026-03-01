@@ -413,9 +413,9 @@ public class RobotContainer {
     }
 
     public void loggerPeriodic(){
-        RobotState.getInstance().updateStates();
-        ArrayList<String> array = RobotState.getInstance().getStates();
-        SmartDashboard.putStringArray("DriverStation/STATES", array.toArray(new String[array.size()]));
+        /*RobotState.getInstance().updateStates();
+        ArrayList<String> array = RobotState.getInstance().getStates();*/
+        /*SmartDashboard.putStringArray("DriverStation/STATES", array.toArray(new String[array.size()]));*/
         
         Logger.recordOutput("DriverStation/TurretAngle", Math.round(RobotState.getInstance().getTurretAngle() * 180 / Math.PI));
 

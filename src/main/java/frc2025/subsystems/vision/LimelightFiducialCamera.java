@@ -203,10 +203,10 @@ public class LimelightFiducialCamera {
         if(!reject) {
             Vector<N3> distStdDevs;
             if(!turretMounted) {
-                distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 0.0000001);
+                distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 4.0, Math.pow(meanDistance, 2) / 4.0, 0.0000001);
             }
             else {
-                distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 99999999999.0);
+                distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 4.0, Math.pow(meanDistance, 2) / 4.0, 99999999999.0);
             }
 
             VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(

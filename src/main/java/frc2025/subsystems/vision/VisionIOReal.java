@@ -26,10 +26,10 @@ public class VisionIOReal implements VisionIO {
     public VisionIOReal() {
         this.cameras = new LimelightFiducialCamera("limelight", 
                 false, 
-                0.1, 
-                -0.1, 
-                0, 
-                180, 
+                -0.3048, 
+                0.1524, 
+                0.0889, 
+                180,
                 49, 
                 180);
             /* 

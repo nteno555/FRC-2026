@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class VisionPoseEstimator {
 
-    private static final double historyLengthSecs = 0.1;
+    private static final double historyLengthSecs = 0.5;
 
     private Pose2d basePose = new Pose2d();
     private Pose2d latestPose = new Pose2d();
