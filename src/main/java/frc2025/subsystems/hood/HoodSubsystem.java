@@ -62,8 +62,6 @@ public class HoodSubsystem extends SubsystemBase {
     }
 
     public Command autoAim() {
-        if (usingVoltage) return new InstantCommand();
-
         return setPosition(() -> {
             if (usingVoltage) {
                 return inputs.positionRotations;
@@ -127,10 +125,6 @@ public class HoodSubsystem extends SubsystemBase {
                         }));
     }
 
-    public Command rezero() {
-        return this.runOnce(() -> io.rezero(0.0));
-    }
-
     public Command homeThenRezero() {
         return this.run(() -> {
             usingVoltage = true;
@@ -163,6 +157,4 @@ public class HoodSubsystem extends SubsystemBase {
         double m = (SubsystemConstants.hoodMaxAngleRotations - SubsystemConstants.hoodMinAngleRotations) / (SubsystemConstants.hoodMaxAngleRadians - SubsystemConstants.hoodMinAngleRadians);
         return (radians - SubsystemConstants.hoodMinAngleRadians) * m + SubsystemConstants.hoodMinAngleRotations;
     }
-//    public static double toRadians(double rotations) { return  -rotations / SubsystemConstants.hoodRotationsPerRadian + SubsystemConstants.hoodZeroOffsetRadians; }
-//    public static double toRotations(double radians) { return (SubsystemConstants.hoodZeroOffsetRadians - radians) * SubsystemConstants.hoodRotationsPerRadian; }
 }

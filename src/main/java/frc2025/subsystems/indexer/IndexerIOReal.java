@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc2025.config.SubsystemConstants;
 
 public class IndexerIOReal implements IndexerIO {
@@ -15,28 +16,15 @@ public class IndexerIOReal implements IndexerIO {
 
         var indexerConfigs = new TalonFXConfiguration();
         
-        indexerConfigs.CurrentLimits.SupplyCurrentLimit = 40;
+        indexerConfigs.CurrentLimits.SupplyCurrentLimit = SubsystemConstants.indexerSupplyCurrentLimit;
         indexerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
-        indexerConfigs.CurrentLimits.StatorCurrentLimit = 40;
+        indexerConfigs.CurrentLimits.StatorCurrentLimit = SubsystemConstants.indexerStatorCurrentLimit;
         indexerConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
 
         TorqueCurrentConfigs configTorque =  new TorqueCurrentConfigs();
-        configTorque.PeakForwardTorqueCurrent = 40;
-        configTorque.PeakReverseTorqueCurrent = 40;
-        configTorque.TorqueNeutralDeadband = 1;
-
-
-        var towerConfigs = new TalonFXConfiguration();
-
-        towerConfigs.CurrentLimits.SupplyCurrentLimit = 40;
-        towerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
-        towerConfigs.CurrentLimits.StatorCurrentLimit = 40;
-        towerConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
-
-        TorqueCurrentConfigs towerConfigTorque =  new TorqueCurrentConfigs();
-        towerConfigTorque.PeakForwardTorqueCurrent = 100;
-        towerConfigTorque.PeakReverseTorqueCurrent = 100;
-        towerConfigTorque.TorqueNeutralDeadband = 1;
+        configTorque.PeakForwardTorqueCurrent = SubsystemConstants.indexerPeakForwardTorqueCurrent;
+        configTorque.PeakReverseTorqueCurrent = SubsystemConstants.indexerPeakReverseTorqueCurrent;
+        configTorque.TorqueNeutralDeadband = SubsystemConstants.indexerTorqueNeutralDeadband;
 
         indexer.getConfigurator().apply(indexerConfigs, 0.050);
         indexer.getConfigurator().apply(configTorque, 0.05);
@@ -57,6 +45,4 @@ public class IndexerIOReal implements IndexerIO {
     public void setVoltage(double indexerVoltage) {
         indexer.setControl(new VoltageOut(indexerVoltage));
     }
-
-
 }

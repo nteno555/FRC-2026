@@ -20,10 +20,8 @@ public class SubsystemConstants {
     public static double climberMotionMagicJerk = 700;
 
     public static double flywheelkS = 0.27;
-//    public static double flywheelkV = 0.127;
     public static double flywheelkV = 0.123;
     public static double flywheelkA = 0.00;
-//    public static double flywheelkP = 0.3;
     public static double flywheelkP = 0.1;
     public static double flywheelkI = 0.0;
     public static double flywheelkD = 0.0;
@@ -34,6 +32,7 @@ public class SubsystemConstants {
     public static double flywheelEfficiency = 0.80;
     public static double flywheelSupplyCurrentLimit = 100;
     public static double flywheelStatorCurrentLimit = 200;
+    public static double towerShootVoltage = 8.0;
 
     // Hood: 50 to 85 degrees
 //    public static double hoodFF = 0.29;
@@ -70,20 +69,26 @@ public class SubsystemConstants {
     public static double intakeMotionMagicCruiseVelocity = 120;
     public static double intakeMotionMagicAcceleration = 300;
     public static double intakeMotionMagicJerk = 1400;
-    public static double intakePeakForwardTorqueCurrent = 800;
-    public static double intakePeakReverseTorqueCurrent = -800;
+    public static double intakePeakForwardTorqueCurrent = 100;
+    public static double intakePeakReverseTorqueCurrent = 100;
     public static double intakeTorqueNeutralDeadband = 1;
+    public static double intakePeakForwardVoltage = 4.0;
+    public static double intakePeakReverseVoltage = -4.0;
     public static double intakeRetractPosition = 0.3;
     public static double intakeDeployPosition = 4.0;
     public static double intakeRollerVoltage = 12.0;
-    public static double intakeHalfPosition = 2.0;
+    public static double intakeHalfPosition = 1.5;
 
+    public static double indexerSupplyCurrentLimit = 40;
+    public static double indexerStatorCurrentLimit = 40;
+    public static double indexerPeakForwardTorqueCurrent = 40;
+    public static double indexerPeakReverseTorqueCurrent = 40;
+    public static double indexerTorqueNeutralDeadband = 1;
     public static double spindexerShootVoltage = -12.0;
-    public static double towerShootVoltage = 8.0;
 
     // Turret Gear Ratio: 12:24 & 44:54 & 36:125
-    public static double turretkS = 0.40;
-    public static double turretkV = 0.127;
+    public static double turretkS = 0.47;
+    public static double turretkV = 0.133;
     public static double turretkG = 0.0;
     public static double turretkP = 4.5;
     public static double turretkI = 0.0;
@@ -91,24 +96,24 @@ public class SubsystemConstants {
     public static double turretCruiseVelocity = 60;
     public static double turretAcceleration = 150;
     public static double turretJerk = 700;
-    public static double turretVoltageLimit = 10;
+    public static double turretVoltageLimit = 8;
     public static double turretSupplyCurrentLimit = 60;
     public static double turretStatorCurrentLimit = 60;
-    public static double turretPeakForwardTorqueCurrent = 800;
-    public static double turretPeakReverseTorqueCurrent = -800;
+    public static double turretPeakForwardTorqueCurrent = 60;
+    public static double turretPeakReverseTorqueCurrent = -60;
     public static double turretTorqueNeutralDeadband = 0;
     public static double turretZeroOffsetRadians = 0.0;
     public static double turretRotationsPerRadian = 42.0/10.0 * 48.0/26.0 * 125.0/32.0 / (2*Math.PI);
     public static double turretMinAngleRadians = -(Math.PI / 2 + 0.3);
     public static double turretMaxAngleRadians = 3*Math.PI / 2 - 0.3;
-    public static double throughBoreZero1 = 0.896;
-    public static double throughBoreZero2 = 0.552;
+    public static double throughBoreZero1 = 0.955;
+    public static double throughBoreZero2 = 0.369;
     public static double throughBoreRatio1 = 42.0 / 10.0 * 48.0 / 26.0;
     public static double throughBoreRatio2 = 42.0 / 10.0;
 //    public static double throughBoreRatio2 = 4.201172;
 //    public static double throughBoreRatio1 = 12.8667;
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
-    public static boolean hasTurret = false;
+    public static boolean hasTurret = true;
     public static boolean useTurretThroughBores = true;
     public static double turretShotReadyThreshold = 0.052; // 5.73 degrees
     public static boolean useTurretVisionCorrection = false;
@@ -124,7 +129,7 @@ public class SubsystemConstants {
     public static double robotToTurretCameraYaw = 0.0;
     public static double robotToTurretCameraPitch = 30.0;
     public static double robotToTurretCameraRoll = 0.0;
-    public static boolean ignoreTurretLimelight = false;
+    public static boolean ignoreTurretLimelight = true;
 
     public static Transform2d robotToFrontCamera = new Transform2d(0.326, -0.0277, Rotation2d.kZero);
     public static double robotToFrontCameraForward = robotToFrontCamera.getX();

@@ -95,9 +95,8 @@ public class AutoAimCommands {
 
             boolean nearBlueTrench = Math.abs(pose.getX() - FieldConstants.blueTrenchX) < FieldConstants.trenchThreshold;
             boolean nearRedTrench = Math.abs(pose.getX() - FieldConstants.redTrenchX) < FieldConstants.trenchThreshold;
-            boolean nearTrenchY = pose.getY() < 1.982 || pose.getY() > 6.170;
 
-            if ((nearBlueTrench || nearRedTrench) && nearTrenchY) return false;
+            if ((nearBlueTrench || nearRedTrench)) return false;
 
             boolean inBlueZone = pose.getX() < FieldConstants.inBlueZoneX && !Alliance.get();
             boolean inRedZone = pose.getX() > FieldConstants.inRedZoneX && Alliance.get();
@@ -111,13 +110,6 @@ public class AutoAimCommands {
             }
 
             double a = RobotState.getInstance().getPigeonAcceleration();
-
-//            if (RobotState.getInstance().getShuttling()) {
-//                good = good && (a < SubsystemConstants.shuttlingMaxSpeed);
-//            }
-//            else {
-//            good = good && (a < SubsystemConstants.autoAimMaxAccel);
-//            }
 
             if(RobotState.getInstance().getShuttling()) {
                 good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.shuttlingMaxSpeed) && (RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond < SubsystemConstants.shuttlingMaxAngularVelocity);

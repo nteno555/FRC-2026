@@ -29,8 +29,8 @@ public class IntakeIOReal implements IntakeIO {
         var deployConfigs = new TalonFXConfiguration();
         deployConfigs.CurrentLimits = rollerConfigs.CurrentLimits;
         deployConfigs.TorqueCurrent = rollerConfigs.TorqueCurrent;
-        deployConfigs.Voltage.PeakReverseVoltage = -3.5;
-        deployConfigs.Voltage.PeakForwardVoltage = 3.5;
+        deployConfigs.Voltage.PeakReverseVoltage = SubsystemConstants.intakePeakReverseVoltage;
+        deployConfigs.Voltage.PeakForwardVoltage = SubsystemConstants.intakePeakForwardVoltage;
 
         deployConfigs.MotionMagic.MotionMagicCruiseVelocity =  SubsystemConstants.intakeMotionMagicCruiseVelocity;
         deployConfigs.MotionMagic.MotionMagicAcceleration = SubsystemConstants.intakeMotionMagicAcceleration;
@@ -68,7 +68,7 @@ public class IntakeIOReal implements IntakeIO {
         Logger.recordOutput("Intake/deployVoltage", intakeDeployMaster.getMotorVoltage().getValue().in(Units.Volts));
 
         Logger.recordOutput("Intake/masterPosition", intakeDeployMaster.getPosition().getValueAsDouble());
-        Logger.recordOutput("intake/slavePosition", intakeDeploySlave.getPosition().getValueAsDouble());
+        Logger.recordOutput("Intake/slavePosition", intakeDeploySlave.getPosition().getValueAsDouble());
     }
 
     @Override

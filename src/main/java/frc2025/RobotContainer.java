@@ -111,25 +111,20 @@ public class RobotContainer {
 
     public void configureAutoCommands(){
         autos = new Autos(this);
-        autoChooser.setDefaultOption("Low Neutral x2 Station (steal)", autos.LowStealLowNeutralStation());
-//        autoChooser.setDefaultOption("MidStationDepotClimb", autos.MidStationDepotClimb());
-//        autoChooser.setDefaultOption("High", autos.HighStealHighNeutralHigh());
-//        autoChooser.setDefaultOption("Low", autos.LowNeutralDeepStation());
+        autoChooser.setDefaultOption("Low Neutral Deep Station", autos.LowNeutralDeepStation());
 
+//        autoChooser.setDefaultOption("High Neutral Depot", autos.HighNeutralDeepDepot());
 
-        autoChooser.addOption("Low Neutral x2 (no steal)", autos.LowNeutralLowNeutralLow());
-        autoChooser.addOption("Low Neutral x2 (steal)", autos.LowStealLowNeutralLow());
-        autoChooser.addOption("Low Neutral x2 Station (steal)", autos.LowStealLowNeutralStation());
-//        autoChooser.addOption("Low Neutral Station (no steal)", autos.LowNeutralStation());
-        autoChooser.addOption("Low Neutral Deep Station (no steal)", autos.LowNeutralDeepStation());
+        autoChooser.addOption("Low Deep Neutral x2", autos.LowNeutralLowNeutralLow());
+        autoChooser.addOption("Low Steal Neutral x2", autos.LowStealLowNeutralLow());
+        autoChooser.addOption("Low Steal Neutral x2 Station", autos.LowStealLowNeutralStation());
+        autoChooser.addOption("Low Neutral Deep Station", autos.LowNeutralDeepStation());
 
         autoChooser.addOption("Mid Station Depot", autos.MidStationDepotClimb());
 
-        autoChooser.addOption("High Neutral x2 (no steal)", autos.HighNeutralHighNeutralHigh());
-        autoChooser.addOption("High Neutral x2 (steal)", autos.HighStealHighNeutralHigh());
-//        autoChooser.addOption("HighShootIntakeClimb", autos.HighShootIntakeClimb());
-//        autoChooser.addOption("LowShuttleAuto", autos.LowShuttleAuto());
-//        autoChooser.addOption("Taxi", autos.Taxi());
+        autoChooser.addOption("High Deep Neutral x2", autos.HighNeutralHighNeutralHigh());
+        autoChooser.addOption("High Steal Neutral x2", autos.HighStealHighNeutralHigh());
+//        autoChooser.addOption("Low Shuttle", autos.LowShuttleAuto());
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -180,12 +175,9 @@ public class RobotContainer {
 
         intakeSubsystem.setDefaultCommand(intakeSubsystem.setDeployVoltage(() -> 0.0));
         hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
-        shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
-//        shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
+        shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
         indexerSubsystem.setDefaultCommand(AutoAimCommands.autoIndex(this));
-//        turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());
-        turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
-
+        turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());
 
         driverXboxController.a().onTrue(
                 SuperstructureCommands.resetOdometry(
@@ -256,7 +248,8 @@ public class RobotContainer {
                         );
 
         driverXboxController.rightBumper()
-                        .whileTrue(intakeSubsystem.oscillateIntake());
+                .whileTrue(intakeSubsystem.oscillateIntake())
+                .onFalse(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
 
         driverXboxController.povUp() // left middle paddle
                 .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));

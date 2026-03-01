@@ -76,9 +76,11 @@ public class TurretSubsystem extends SubsystemBase {
                     ChassisSpeeds robotSpeeds = RobotState.getInstance().getFieldRelativeSpeeds();
                     Translation2d targetPos = RobotState.getInstance().getShootingWhileMovingVirtualPose().getTranslation();
                     var robotPose = RobotState.getInstance().getVisionPose();
-                    Translation2d robotPos = robotPose.getTranslation();
+//                    Translation2d robotPos = robotPose.getTranslation();
+                    Translation2d shooterPos = robotPose.transformBy(SubsystemConstants.robotToShooter).getTranslation();
 
-                    var robotToTargetXY = targetPos.minus(robotPos);
+                    var robotToTargetXY = targetPos.minus(shooterPos);
+//                    var robotToTargetXY = targetPos.minus(robotPos);
                     Translation2d shooterRobotRelative = SubsystemConstants.robotToShooter.getTranslation().rotateBy(robotPose.getRotation());
 
                     robotSpeeds = new ChassisSpeeds(
@@ -88,8 +90,7 @@ public class TurretSubsystem extends SubsystemBase {
                     );
 
                     var targetFrameToRobot = new Translation2d(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond)
-                            .rotateBy(
-                                    robotToTargetXY.getAngle());
+                            .rotateBy(robotToTargetXY.getAngle());
 
                     var tangent = targetFrameToRobot.getY();
                     var angular = robotSpeeds.omegaRadiansPerSecond;
