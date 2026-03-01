@@ -46,11 +46,18 @@ public class RobotState {
     private double prevTurretTimestamp;
     private double turretVelocity;
 
+    private double turretMt1AngleRadians;
+    private boolean turretMt1Valid;
+
+    private boolean hasTurret;
 
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
         shuttling = false;
         prevTurretTimestamp = -1;
+        turretMt1Valid = false;
+        turretMt1AngleRadians = 0;
+        hasTurret = false;
     }
 
     public static RobotState getInstance() {
@@ -157,8 +164,8 @@ public class RobotState {
 
 //        if (SubsystemConstants.hasTurret) {
         Translation2d shooterFieldRelative = SubsystemConstants.robotToShooter.getTranslation().rotateBy(delayedPose.getRotation());
-        vx += -vOmega * shooterFieldRelative.getY();
-        vy += vOmega * shooterFieldRelative.getX();
+        vx += vOmega * shooterFieldRelative.getY();
+        vy += -vOmega * shooterFieldRelative.getX();
 //        }
 
         for (int i = 0; i < 5; i++) {
@@ -229,4 +236,11 @@ public class RobotState {
 
     }
 
+    public void setTurretMt1AngleRadians(double angle) { turretMt1AngleRadians = angle; }
+    public double getTurretMt1AngleRadians() { return turretMt1AngleRadians; }
+    public void setTurretMt1Valid(boolean valid) { turretMt1Valid = valid; }
+    public boolean getTurretMt1Valid() { return turretMt1Valid; }
+
+    public void setHasTurret(boolean has) { hasTurret = has;}
+    public boolean getHasTurret() { return hasTurret; }
 }

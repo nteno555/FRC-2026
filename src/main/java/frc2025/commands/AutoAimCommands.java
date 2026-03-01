@@ -28,13 +28,23 @@ public class AutoAimCommands {
         return angle;
     }
 
+    public static Command autoShoot(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds, Supplier<Boolean> hasTurret) {
+        return (hasTurret.get()) ?
+                turretAutoAim(robotContainer) :
+                driveAutoAim(robotContainer, targetPoseSupplier, unlockedSpeeds)
+                        .alongWith(robotContainer.getHood().autoAim())
+                        .alongWith(robotContainer.getShooter().autoAim())
+                        .alongWith(autoIndex(robotContainer))
+    }
+
+
     public static Command autoShoot(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {
         return (SubsystemConstants.hasTurret) ?
                 turretAutoAim(robotContainer) :
                 driveAutoAim(robotContainer, targetPoseSupplier, unlockedSpeeds)
                         .alongWith(robotContainer.getHood().autoAim())
                         .alongWith(robotContainer.getShooter().autoAim())
-                        .alongWith(autoIndex(robotContainer));
+                        .alongWith(autoIndex(robotContainer))
     }
 
     public static Command turretAutoAim(RobotContainer robotContainer) {
@@ -82,6 +92,12 @@ public class AutoAimCommands {
             Pose2d pose = RobotState.getInstance().getVisionShooterPose();
             Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
             double dist = pose.getTranslation().getDistance(targetPose.getTranslation());
+
+            boolean nearBlueTrench = Math.abs(pose.getX() - FieldConstants.blueTrenchX) < FieldConstants.trenchThreshold;
+            boolean nearRedTrench = Math.abs(pose.getX() - FieldConstants.redTrenchX) < FieldConstants.trenchThreshold;
+            boolean nearTrenchY = pose.getY() < 1.982 || pose.getY() > 6.170;
+
+            if ((nearBlueTrench || nearRedTrench) && nearTrenchY) return false;
 
             boolean inBlueZone = pose.getX() < FieldConstants.inBlueZoneX && !Alliance.get();
             boolean inRedZone = pose.getX() > FieldConstants.inRedZoneX && Alliance.get();

@@ -47,7 +47,7 @@ public class FollowPathCommand extends Command {
         this.flip = flip;
 
         translationPID = new PIDController(2.5, 0, 0);
-        rotationPID = new PIDController(2.5, 0, 0);
+        rotationPID = new PIDController(3.0, 0, 0);
         rotationPID.enableContinuousInput(-Math.PI, Math.PI);
 
         addRequirements(this.driveSubsystem);

@@ -98,15 +98,6 @@ public class Autos {
     }
 
     public Command buildAuto(List<String> paths, boolean climb) {
-//        Command auto =
-//                robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
-//                        .until(() -> robotContainer.getIntake().getDeployReady())
-//                        .andThen(
-//                                robotContainer.getIntake().setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage)
-//                                        .alongWith(robotContainer.getShooter().autoAim())
-//                                        .alongWith(robotContainer.getHood().autoAim())
-//                        );
-
         Command deploy = robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
                 .until(() -> robotContainer.getIntake().getDeployReady());
 
@@ -123,22 +114,23 @@ public class Autos {
         for(int i = 1; i < paths.size(); i++) {
             if(paths.get(i).equals("wait 2s")) {
                 if(SubsystemConstants.hasTurret) {
-                    Command shoot = (AutoAimCommands.autoIndex(robotContainer)
-                            .alongWith(robotContainer.getIntake().oscillateIntake())).withTimeout(2.5);
-                    pathCommands = pathCommands.andThen(shoot);
+                    pathCommands = pathCommands.andThen((AutoAimCommands.autoIndex(robotContainer)
+                            .alongWith(robotContainer.getIntake().oscillateIntake())).withTimeout(2.5));
                 }
+
                 else {
                     pathCommands = pathCommands.andThen(
-                            AutoAimCommands.driveAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> new ChassisSpeeds(0, 0, 0))
-                                    .alongWith(AutoAimCommands.autoIndex(robotContainer))
-                                    .withTimeout(2.5)
+                            AutoAimCommands.driveAutoAim(
+                                    robotContainer,
+                                    () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
+                                    () -> new ChassisSpeeds(0, 0, 0)
+                            )
+                            .alongWith(AutoAimCommands.autoIndex(robotContainer)
+                            .alongWith(robotContainer.getIntake().oscillateIntake()))
+                            .withTimeout(2.5)
                     );
                 }
             }
-
-//            else if (paths.get(i).contains("Dump") && SubsystemConstants.hasTurret) {
-//                pathCommands = pathCommands.andThen(intakePath(paths.get(i)).alongWith(AutoAimCommands.autoIndex(robotContainer)));
-//            }
 
             else {
                 pathCommands = pathCommands.andThen(
@@ -163,9 +155,6 @@ public class Autos {
                             AutoAimCommands.driveAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> new ChassisSpeeds(0, 0, 0))
                     ))
             );
-//            return auto.alongWith(pathCommands.andThen(
-//            AutoAimCommands.driveAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> new ChassisSpeeds(0, 0, 0))
-//                                    .alongWith(AutoAimCommands.autoIndex(robotContainer))));
         }
     }
 
@@ -177,18 +166,49 @@ public class Autos {
         return auto;
     }
 
-    public Command LowStealLowNeutralLow() {return buildAuto(List.of("Low-Steal (no turret)", "Steal-Low (no turret)", "wait 2s", "Low-Neutral (no turret)", "Neutral-Low (no turret)"), false);}
-    public Command LowNeutralLowNeutralLow() {return buildAuto(List.of("Low-Neutral", "Neutral-Low", "wait 2s", "Low-NeutralMid", "NeutralMid-Low"),false);}
-    public Command LowStealLowNeutralStation() {return buildAuto(List.of("Low-Steal", "Steal-Low", "wait 2s", "Low-Neutral", "Neutral-Station"), false); }
+    public Command LowStealLowNeutralLow() {
+        if (SubsystemConstants.hasTurret) {
+            return buildAuto(List.of("Low-Steal", "Steal-Low", "wait 2s", "Low-Neutral", "Neutral-Low"), false);
+        }
+        return buildAuto(List.of("Low-Steal", "Steal-LowScore", "wait 2s", "LowScore-Neutral", "Neutral-LowScore"), false);
+    }
+    public Command LowNeutralLowNeutralLow() {
+        if (SubsystemConstants.hasTurret) {
+            return buildAuto(List.of("Low-Neutral", "Neutral-Low", "wait 2s", "Low-NeutralMid", "NeutralMid-Low"),false);
+        }
+        return buildAuto(List.of("Low-Neutral", "Neutral-LowScore", "wait 2s", "LowScore-NeutralMid", "NeutralMid-LowScore"),false);
+    }
+    public Command LowStealLowNeutralStation() {
+        if (SubsystemConstants.hasTurret) {
+            return buildAuto(List.of("Low-Steal", "Steal-Low", "wait 2s", "Low-Neutral", "Neutral-Station"), false);
+        }
+        return buildAuto(List.of("Low-Steal", "Steal-LowScore", "wait 2s", "LowScore-Neutral", "Neutral-Station"), false);
+    }
+    public Command LowNeutralDeepStation() {
+        return buildAuto(List.of("Low-NeutralMid", "NeutralMid-Station", "Station-Score"), false);
+    }
+
+    public Command MidStationDepotClimb() {
+        return buildAuto(List.of("Mid-Station", "wait 2s", "Station-Depot", "Depot-Climb"), true);
+    }
+
+    public Command HighNeutralHighNeutralHigh() {
+        if (SubsystemConstants.hasTurret) {
+            return buildAuto(List.of("High-Neutral", "Neutral-High", "wait 2s", "High-NeutralMid", "NeutralMid-High"), false);
+        }
+        return buildAuto(List.of("High-Neutral", "Neutral-HighScore", "wait 2s", "HighScore-NeutralMid", "NeutralMid-HighScore"), false);
+    }
+    public Command HighStealHighNeutralHigh() {
+        if (SubsystemConstants.hasTurret) {
+            return buildAuto(List.of("High-Steal", "Steal-High", "wait 2s", "High-Neutral", "Neutral-High"), false);
+        }
+        return buildAuto(List.of("High-Steal", "Steal-HighScore", "wait 2s", "HighScore-Neutral", "Neutral-HighScore"), false);
+    }
+
+    // High Cortisol Unused Autos
     public Command LowNeutralLowNeutralStation() {return buildAuto(List.of("Low-Neutral", "Neutral-Low", "wait 2s", "Low-NeutralMid", "NeutralMid-Station"), false); }
-    public Command LowNeutralDeepStation() {return buildAuto(List.of("Low-NeutralMid", "NeutralMid-Station", "Station-Score"), false);}
     public Command LowNeutralStation() { return buildAuto(List.of("Low-Neutral", "Neutral-Station", "Station-Score"), false); }
     public Command LowStationDepot() {return buildAuto(List.of("Low-Station", "Station-Depot", "Depot-Dump"), false);}
-
-    public Command MidStationDepotClimb() { return buildAuto(List.of("Mid-Station", "wait 2s", "Station-Depot", "Depot-Climb"), true); }
-
-    public Command HighNeutralHighNeutralHigh() {return buildAuto(List.of("High-Neutral", "Neutral-High", "wait 2s", "High-NeutralMid", "NeutralMid-High"), false);}
-    public Command HighStealHighNeutralHigh() { return buildAuto(List.of("High-Steal", "Steal-High", "wait 2s", "High-Neutral", "Neutral-High"), false); }
     public Command HighStealHighNeutralClimb() { return buildAuto(List.of("High-Steal", "Steal-HighBack", "wait 2s", "HighBack-Neutral", "Neutral-Climb (Trench High)"), true); }
     public Command HighNeutralDepot() {return buildAuto(List.of("High-Neutral", "Neutral-Depot", "Depot-Dump"), false);}
 }

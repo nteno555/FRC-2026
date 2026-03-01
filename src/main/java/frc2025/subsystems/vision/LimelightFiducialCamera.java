@@ -154,6 +154,7 @@ public class LimelightFiducialCamera {
             reject = true;
         }
 
+        Pose2d untransformedPose = poseEstimate.pose;
         Pose2d pose = poseEstimate.pose;
 
         if(turretMounted && SubsystemConstants.hasTurret) {
@@ -197,23 +198,25 @@ public class LimelightFiducialCamera {
         Logger.recordOutput(prefix + "rejected", reject);
         Logger.recordOutput(prefix + "rawPose", pose);
 
-        if(SubsystemConstants.ignoreTurretLimelight && turretMounted)
-            reject = true;
 
         if(!reject) {
-            Vector<N3> distStdDevs;
-            if(!turretMounted) {
-                distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 0.0000001);
-            }
-            else {
-                distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 99999999999.0);
-            }
+            if(SubsystemConstants.ignoreTurretLimelight && turretMounted && SubsystemConstants.useTurretVisionCorrection) {
+                RobotState.getInstance().setTurretMt1AngleRadians(untransformedPose.getRotation().getRadians());
+                RobotState.getInstance().setTurretMt1Valid(true);
+            } else {
+                Vector<N3> distStdDevs;
+                if (!turretMounted) {
+                    distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 0.0000001);
+                } else {
+                    distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 99999999999.0);
+                }
 
-            VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
-                    poseEstimate.timestampSeconds, pose, distStdDevs
-            );
+                VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
+                        poseEstimate.timestampSeconds, pose, distStdDevs
+                );
 
-            RobotState.getInstance().addVisionData(List.of(update));
+                RobotState.getInstance().addVisionData(List.of(update));
+            }
         }
     }
 

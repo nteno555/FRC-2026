@@ -17,6 +17,7 @@ public class FieldConstants {
 
     public static double blueTrenchX = 4.628;
     public static double redTrenchX = 11.916;
+    public static double trenchThreshold = 1.0;
 
     public static Pose2d blueTrenchHighZone = new Pose2d(3.422, 7.435, Rotation2d.kCW_90deg);
     public static Pose2d blueTrenchHighMid = new Pose2d(5.592, 7.435, Rotation2d.kCW_90deg);

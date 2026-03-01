@@ -21,6 +21,8 @@ public interface TurretIO {
     public void rezero();
     public void rezero(double position);
     public void rezeroCRT();
+    public void addVisionUpdate(double robotRelativeAngleRadians);
+
 
     public double toRadians(double position);
     public double toRotations(double radians);

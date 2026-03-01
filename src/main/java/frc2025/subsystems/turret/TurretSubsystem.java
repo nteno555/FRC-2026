@@ -51,6 +51,15 @@ public class TurretSubsystem extends SubsystemBase {
                 zeroed = true;
             }
         }
+
+        if(RobotState.getInstance().getTurretMt1Valid() && SubsystemConstants.useTurretVisionCorrection) {
+            double mt1FieldRelativeAngle = RobotState.getInstance().getTurretMt1AngleRadians();
+            if(Math.abs(mt1FieldRelativeAngle - fieldRelativeAngleRad) > 0.1) {
+                double mt1RobotRelativeAngle = -mt1FieldRelativeAngle + RobotState.getInstance().getVisionPose().getRotation().getRadians();
+                io.rezero(io.toRotations(mt1RobotRelativeAngle));
+            }
+            RobotState.getInstance().setTurretMt1Valid(false);
+        }
     }
 
     public Command autoAim() {
@@ -67,7 +76,7 @@ public class TurretSubsystem extends SubsystemBase {
     public Command setPositionFieldRelative(Supplier<Double> positionRadians) {
         return setPositionSafe(() -> -(positionRadians.get() - RobotState.getInstance().getVisionPose().getRotation().getRadians()),
 //                () -> 0.0);
-                () -> RobotState.getInstance().getRobotRelativeSpeeds().omegaRadiansPerSecond);
+                () -> -RobotState.getInstance().getRobotRelativeSpeeds().omegaRadiansPerSecond);
     }
 
 //    public Command setPositionSafe(Supplier<Double> positionRadians) {

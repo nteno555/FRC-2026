@@ -11,6 +11,8 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+import edu.wpi.first.math.estimator.KalmanFilter;
+import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
@@ -202,6 +204,11 @@ public class TurretIOReal implements TurretIO{
                 turretMotor.setPosition(-(pos2 - toRotations(SubsystemConstants.turretZeroOffsetRadians)));
             }
         }
+    }
+
+    @Override
+    public void addVisionUpdate(double robotRelativeAngleRadians) {
+
     }
 
 //    @Override

@@ -60,6 +60,11 @@ public class TurretIOSim implements TurretIO{
     }
 
     @Override
+    public void addVisionUpdate(double robotRelativeAngleRadians) {
+
+    }
+
+    @Override
     public double toRadians(double position) {
         return 0;
     }
