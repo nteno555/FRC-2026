@@ -36,10 +36,7 @@ public class RobotState {
     private double angleToVirtualTarget;
 
     private boolean shuttling;
-    private boolean climbing;
     private Pose2d shootingWhileMovingVirtualPose;
-
-    private boolean wantAutoShoot;
 
     private double turretAngle;
     private double prevTurretAngle;
@@ -149,7 +146,7 @@ public class RobotState {
         Pose2d currentPose = RobotState.getInstance().getVisionPose();
         Pose2d realTargetPose = getTargetPose();
         Pose2d virtualPose = getTargetPose();
-        double phaseDelay = 0.03;
+        double phaseDelay = 0.0;//0.03;
 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
                 robotRelativeSpeeds,
@@ -197,9 +194,6 @@ public class RobotState {
     public double getAngleToVirtualTarget() {
         return angleToVirtualTarget;
     }
-
-    public void setWantAutoShoot(boolean want) {wantAutoShoot = want;}
-    public boolean getWantAutoShoot() {return wantAutoShoot;}
 
     public void setTurretAngle(double angleRadians) {
         prevTurretAngle = turretAngle;

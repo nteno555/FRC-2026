@@ -57,7 +57,7 @@ public class IntakeSubsystem extends SubsystemBase {
         return setDeployPosition(() -> {
             double time = (Timer.getFPGATimestamp());
 
-            if (time % 0.6 < 0.3) return SubsystemConstants.intakeDeployPosition;
+            if (time % 0.67 < 0.335) return SubsystemConstants.intakeDeployPosition;
             else return SubsystemConstants.intakeHalfPosition;
         });
     }

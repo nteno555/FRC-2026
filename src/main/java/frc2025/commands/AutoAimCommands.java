@@ -32,7 +32,7 @@ public class AutoAimCommands {
         return (hasTurret.get()) ?
                 turretAutoAim(robotContainer) :
                 driveAutoAim(robotContainer, targetPoseSupplier, unlockedSpeeds)
-                        .alongWith(robotContainer.getHood().autoAim())
+//                        .alongWith(robotContainer.getHood().autoAim())
                         .alongWith(robotContainer.getShooter().autoAim())
                         .alongWith(autoIndex(robotContainer));
     }
@@ -95,8 +95,9 @@ public class AutoAimCommands {
 
             boolean nearBlueTrench = Math.abs(pose.getX() - FieldConstants.blueTrenchX) < FieldConstants.trenchThreshold;
             boolean nearRedTrench = Math.abs(pose.getX() - FieldConstants.redTrenchX) < FieldConstants.trenchThreshold;
+            boolean onBumpTrench = (pose.getY() > FieldConstants.highBumpY) || (pose.getY() < FieldConstants.lowBumpY);
 
-            if ((nearBlueTrench || nearRedTrench)) return false;
+            if ((nearBlueTrench || nearRedTrench) && onBumpTrench) return false;
 
             boolean inBlueZone = pose.getX() < FieldConstants.inBlueZoneX && !Alliance.get();
             boolean inRedZone = pose.getX() > FieldConstants.inRedZoneX && Alliance.get();
@@ -116,7 +117,7 @@ public class AutoAimCommands {
             } else {
                 double targetDist = RobotState.getInstance().getTargetPose().getTranslation().getDistance(RobotState.getInstance().getVisionPose().getTranslation());
 
-                if(targetDist < 2.7) {
+                if(targetDist < 3.2) {
                     good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed)
                             && (RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond < SubsystemConstants.autoAimMaxAngularVelocity);
                 } else {

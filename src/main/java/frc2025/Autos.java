@@ -134,7 +134,8 @@ public class Autos {
 
             else {
                 pathCommands = pathCommands.andThen(
-                        deploy.andThen(
+                        robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
+                                .until(() -> robotContainer.getIntake().getDeployReady()).andThen(
                         intakePath(paths.get(i))
                                 .deadlineWith(robotContainer.indexerSubsystem.setVoltage(() -> 0.0))
                             .deadlineWith(robotContainer.intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage)))
@@ -221,5 +222,4 @@ public class Autos {
     public Command LowNeutralLowNeutralStation() {return buildAuto(List.of("Low-Neutral", "Neutral-Low", "wait 2s", "Low-NeutralMid", "NeutralMid-Station"), false); }
     public Command LowNeutralStation() { return buildAuto(List.of("Low-Neutral", "Neutral-Station", "Station-Score"), false); }
     public Command LowStationDepot() {return buildAuto(List.of("Low-Station", "Station-Depot", "Depot-Dump"), false);}
-    public Command HighStealHighNeutralClimb() { return buildAuto(List.of("High-Steal", "Steal-HighBack", "wait 2s", "HighBack-Neutral", "Neutral-Climb (Trench High)"), true); }
 }

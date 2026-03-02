@@ -37,10 +37,11 @@ public class TurretIOReal implements TurretIO{
         var slot0Configs = talonFXConfigs.Slot0;
         slot0Configs.kS = SubsystemConstants.turretkS;
         slot0Configs.kV = SubsystemConstants.turretkV;
+        slot0Configs.kA = SubsystemConstants.turretkA;
         slot0Configs.kP = SubsystemConstants.turretkP;
         slot0Configs.kI = SubsystemConstants.turretkI;
         slot0Configs.kD = SubsystemConstants.turretkD;
-        slot0Configs.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
+        slot0Configs.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
         var motionMagicConfigs = talonFXConfigs.MotionMagic;
         motionMagicConfigs.MotionMagicCruiseVelocity = SubsystemConstants.turretCruiseVelocity;
@@ -55,13 +56,10 @@ public class TurretIOReal implements TurretIO{
         var voltageConfigs = talonFXConfigs.Voltage;
         voltageConfigs.PeakForwardVoltage = SubsystemConstants.turretVoltageLimit;
         voltageConfigs.PeakReverseVoltage = -SubsystemConstants.turretVoltageLimit;
-//        voltageConfigs.PeakForwardVoltage = 8.0;
-//        voltageConfigs.PeakReverseVoltage = -8.0;
 
         TorqueCurrentConfigs configTorque =  new TorqueCurrentConfigs();
         configTorque.PeakForwardTorqueCurrent = SubsystemConstants.turretPeakForwardTorqueCurrent;
         configTorque.PeakReverseTorqueCurrent = SubsystemConstants.turretPeakReverseTorqueCurrent;
-        configTorque.TorqueNeutralDeadband = SubsystemConstants.turretTorqueNeutralDeadband;
 
         var softLimits = talonFXConfigs.SoftwareLimitSwitch;
         softLimits.ForwardSoftLimitThreshold = SubsystemConstants.turretMaxAngleRadians * SubsystemConstants.turretRotationsPerRadian;
@@ -109,8 +107,8 @@ public class TurretIOReal implements TurretIO{
         Logger.recordOutput("Turret/current", turretMotor.getSupplyCurrent().getValue().in(Units.Amp));
         Logger.recordOutput("Turret/tb1AbsPosition", throughBore1.getAbsolutePosition().getValue().in(Units.Rotations) + 0.5);
         Logger.recordOutput("Turret/tb2AbsPosition", throughBore2.getAbsolutePosition().getValue().in(Units.Rotations) + 0.5);
-        Logger.recordOutput("Turret/tb1RelativePosition", throughBore1.getPosition().getValue().in(Units.Rotations));
-        Logger.recordOutput("Turret/tb2RelativePosition", throughBore2.getPosition().getValue().in(Units.Rotations));
+//        Logger.recordOutput("Turret/tb1RelativePosition", throughBore1.getPosition().getValue().in(Units.Rotations));
+//        Logger.recordOutput("Turret/tb2RelativePosition", throughBore2.getPosition().getValue().in(Units.Rotations));
         Logger.recordOutput("Turret/RPS", turretMotor.getVelocity().getValueAsDouble());
     }
 
@@ -128,7 +126,7 @@ public class TurretIOReal implements TurretIO{
                 new PositionVoltage(position)
                         .withVelocity(velocity)
                         .withSlot(0)
-                        .withEnableFOC(true)
+                        //.withEnableFOC(true)
         );
     }
 
@@ -159,10 +157,10 @@ public class TurretIOReal implements TurretIO{
 
                 double pos1 = ((tb1Pos - SubsystemConstants.throughBoreZero1 + 1) % 1) * SubsystemConstants.throughBoreRatio1;
                 double pos2 = ((tb2Pos - SubsystemConstants.throughBoreZero2 + 1) % 1) * SubsystemConstants.throughBoreRatio2;
-                Logger.recordOutput("Turret/tb1WithOffset", tb1Pos - SubsystemConstants.throughBoreZero1);
-                Logger.recordOutput("Turret/tb2WithOffset", tb2Pos - SubsystemConstants.throughBoreZero2);
-                Logger.recordOutput("Turret/initialPos1", pos1);
-                Logger.recordOutput("Turret/initialPos2", pos2);
+//                Logger.recordOutput("Turret/tb1WithOffset", tb1Pos - SubsystemConstants.throughBoreZero1);
+//                Logger.recordOutput("Turret/tb2WithOffset", tb2Pos - SubsystemConstants.throughBoreZero2);
+//                Logger.recordOutput("Turret/initialPos1", pos1);
+//                Logger.recordOutput("Turret/initialPos2", pos2);
                 double epsilon = 0.2;
 
                 int r1Multiplier = 0;
@@ -192,10 +190,10 @@ public class TurretIOReal implements TurretIO{
 
                 turretMotor.setPosition(-(pos1 - toRotations(SubsystemConstants.turretZeroOffsetRadians)));
 
-                Logger.recordOutput("Turret/finalPos1", pos1);
-                Logger.recordOutput("Turret/finalPos2", pos2);
-                Logger.recordOutput("Turret/r1Multiplier", r1Multiplier);
-                Logger.recordOutput("Turret/r2Multiplier", r2Multiplier);
+//                Logger.recordOutput("Turret/finalPos1", pos1);
+//                Logger.recordOutput("Turret/finalPos2", pos2);
+//                Logger.recordOutput("Turret/r1Multiplier", r1Multiplier);
+//                Logger.recordOutput("Turret/r2Multiplier", r2Multiplier);
             } else if (throughBore1.isConnected()) {
                 double pos1 = ((throughBore1.getAbsolutePosition().getValueAsDouble() - SubsystemConstants.throughBoreZero1 + 1) % 1) * SubsystemConstants.throughBoreRatio1;
                 turretMotor.setPosition(-(pos1 - toRotations(SubsystemConstants.turretZeroOffsetRadians)));

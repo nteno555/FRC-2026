@@ -34,11 +34,8 @@ public class SubsystemConstants {
     public static double flywheelStatorCurrentLimit = 200;
     public static double towerShootVoltage = 8.0;
 
-    // Hood: 50 to 85 degrees
-//    public static double hoodFF = 0.29;
     public static double hoodkS = 0.29;
     public static double hoodkV = 0.12;
-    public static double hoodkA = 0.00;
     public static double hoodkP = 4;
     public static double hoodkI = 0.0;
     public static double hoodkD = 0.00;
@@ -47,8 +44,6 @@ public class SubsystemConstants {
     public static double hoodPeakForwardTorqueCurrent = 40;
     public static double hoodPeakReverseTorqueCurrent = 40;
     public static double hoodTorqueNeutralDeadband = 1;
-    public static double hoodRotationsPerRadian = 31.7131757633;
-    public static double hoodZeroOffsetRadians = 1.22; // 70 degrees
     public static double hoodForwardSoftLimit = 2.84;
     public static double hoodReverseSoftLimit = -0.1;
     public static double hoodRezeroVoltage = -3.5;
@@ -87,31 +82,28 @@ public class SubsystemConstants {
     public static double spindexerShootVoltage = -12.0;
 
     // Turret Gear Ratio: 12:24 & 44:54 & 36:125
-    public static double turretkS = 0.47;
-    public static double turretkV = 0.133;
-    public static double turretkG = 0.0;
-    public static double turretkP = 4.5;
+    public static double turretkS = 0.6;
+    public static double turretkV = 0.129;
+    public static double turretkA = 0.001 * 12.0;
+    public static double turretkP = 3.5;
     public static double turretkI = 0.0;
-    public static double turretkD = 0.0;
+    public static double turretkD = 0.15;
     public static double turretCruiseVelocity = 60;
     public static double turretAcceleration = 150;
     public static double turretJerk = 700;
-    public static double turretVoltageLimit = 8;
-    public static double turretSupplyCurrentLimit = 60;
-    public static double turretStatorCurrentLimit = 60;
-    public static double turretPeakForwardTorqueCurrent = 60;
-    public static double turretPeakReverseTorqueCurrent = -60;
-    public static double turretTorqueNeutralDeadband = 0;
+    public static double turretVoltageLimit = 10;
+    public static double turretSupplyCurrentLimit = 120;
+    public static double turretStatorCurrentLimit = 120;
+    public static double turretPeakForwardTorqueCurrent = 120;
+    public static double turretPeakReverseTorqueCurrent = -120;
     public static double turretZeroOffsetRadians = 0.0;
-    public static double turretRotationsPerRadian = 42.0/10.0 * 48.0/26.0 * 125.0/32.0 / (2*Math.PI);
+    public static double turretRotationsPerRadian = 42.0/10.0 * 48.0/26.0 * 125.0/32.0 / (2*Math.PI); //
     public static double turretMinAngleRadians = -(Math.PI / 2 + 0.3);
     public static double turretMaxAngleRadians = 3*Math.PI / 2 - 0.3;
-    public static double throughBoreZero1 = 0.955;
-    public static double throughBoreZero2 = 0.369;
+    public static double throughBoreZero1 = 0.095;
+    public static double throughBoreZero2 = 0.456;
     public static double throughBoreRatio1 = 42.0 / 10.0 * 48.0 / 26.0;
     public static double throughBoreRatio2 = 42.0 / 10.0;
-//    public static double throughBoreRatio2 = 4.201172;
-//    public static double throughBoreRatio1 = 12.8667;
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
     public static boolean hasTurret = true;
     public static boolean useTurretThroughBores = true;
@@ -155,12 +147,12 @@ public class SubsystemConstants {
     public static double robotToRightCameraPitch = 28.0;
     public static double robotToRightCameraRoll = 180.0;
 
-    public static double autoAimMaxSpeed = 1.7;
+    public static double autoAimMaxSpeed = 2.5;
     public static double shuttlingMaxSpeed = 3.5;
-    public static double autoAimMaxSpeedStrict = 0.2;
+    public static double autoAimMaxSpeedStrict = 1.5;
     public static double autoAimMaxAccel = 10.0;
-    public static double autoAimMaxAngularVelocity = Math.PI / 4;
-    public static double autoAimMaxAngularVelocityStrict = Math.PI / 16;
+    public static double autoAimMaxAngularVelocity = Math.PI;
+    public static double autoAimMaxAngularVelocityStrict = Math.PI;
     public static double shuttlingMaxAngularVelocity = Math.PI * 2;
 
     public static int climberID = 22;

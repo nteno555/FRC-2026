@@ -72,11 +72,25 @@ public class RobotContainer {
     Command autoCommand;
 
     private double driveSpeed = 0.5;
+    private double slowmodeDriveSpeed = 0.3;
     private double rotationSpeed = 0.7;
+    private double slowmodeRotationSpeed = 0.5;
     private boolean wantManualAim;
     private Trigger wantManualAimTrigger;
     private boolean hasTurret;
     private Trigger hasTurretTrigger;
+    private boolean slowmode;
+    private Trigger toggleSlowmode;
+    private boolean wantIndex;
+    private Trigger wantIndexTrigger;
+
+    private AimMode aimMode;
+
+    private enum AimMode {
+        TURRET,
+        FIXED,
+        MANUAL
+    }
 
     public RobotContainer() {
         createSubsystems();
@@ -109,9 +123,9 @@ public class RobotContainer {
         }
     }
 
-    public void configureAutoCommands(){
+    public void configureAutoCommands() {
         autos = new Autos(this);
-        autoChooser.setDefaultOption("Low Neutral Deep Station", autos.LowNeutralDeepStation());
+        autoChooser.setDefaultOption("High Deep Neutral x2", autos.HighNeutralHighNeutralHigh());
 
 //        autoChooser.setDefaultOption("High Neutral Depot", autos.HighNeutralDeepDepot());
 
@@ -165,6 +179,12 @@ public class RobotContainer {
         hasTurret = SubsystemConstants.hasTurret;
         hasTurretTrigger = new Trigger(() -> hasTurret);
 
+        slowmode = false;
+        toggleSlowmode = new Trigger(() -> slowmode);
+
+        wantIndex = false;
+        wantIndexTrigger = new Trigger(() -> wantIndex);
+
         driveSubsystem.setDefaultCommand(
                 driveSubsystem.driveTeleop(
                         () -> (driveSpeed) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
@@ -175,9 +195,11 @@ public class RobotContainer {
 
         intakeSubsystem.setDefaultCommand(intakeSubsystem.setDeployVoltage(() -> 0.0));
         hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
-        shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
-        indexerSubsystem.setDefaultCommand(AutoAimCommands.autoIndex(this));
+        shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
+//        shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
+        indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 2.0));
         turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());
+//        turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
 
         driverXboxController.a().onTrue(
                 SuperstructureCommands.resetOdometry(
@@ -191,15 +213,19 @@ public class RobotContainer {
         driverXboxController
                 .b()
                         .and(driverXboxController.back().negate())
-                                .onTrue(shooterSubsystem.setVoltage(() -> 0.0));
+                        .onTrue(shooterSubsystem.setVoltage(() -> 0.0)
+                                .alongWith(turretSubsystem.setVoltage(() -> 0.0)));
+
          driverXboxController
                 .x()
-                        .and(driverXboxController.back().negate())
-                                .onTrue(shooterSubsystem.autoAim());
+                         .and(driverXboxController.back().negate())
+                         .onTrue(shooterSubsystem.autoAim());
+
         driverXboxController
                 .y()
                         .and(driverXboxController.back().negate())
-                                .whileTrue(indexerSubsystem.setVoltage(() -> 2.0));
+                        .whileTrue(Commands.runOnce(() -> wantIndex = false))
+                        .onFalse(Commands.runOnce(() -> wantIndex = true));
 
         driverXboxController
                 .b()
@@ -237,7 +263,7 @@ public class RobotContainer {
                 );
 
         driverXboxController.leftTrigger()
-                .and(() -> wantManualAim)
+                .and(() -> (wantManualAim))
                         .whileTrue(shooterSubsystem.setSpeed(() -> ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(1.12))
                                 .alongWith(indexerSubsystem.setVoltage(() -> SubsystemConstants.spindexerShootVoltage))
                                 .alongWith(intakeSubsystem.oscillateIntake())
@@ -250,6 +276,9 @@ public class RobotContainer {
         driverXboxController.rightBumper()
                 .whileTrue(intakeSubsystem.oscillateIntake())
                 .onFalse(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
+
+        driverXboxController.rightTrigger()
+                        .onTrue(Commands.runOnce(() -> slowmode = !slowmode));
 
         driverXboxController.povUp() // left middle paddle
                 .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
@@ -266,15 +295,25 @@ public class RobotContainer {
                 .onTrue(Commands.runOnce(() -> hasTurret = false));
 
         wantManualAimTrigger.whileTrue(
-                turretSubsystem.setVoltage(() -> 2.0*operatorXboxController.getRightX())
-                        .alongWith(hoodSubsystem.setPosition(() -> ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(1.5)))
+                turretSubsystem.setVoltage(() -> 3.0*operatorXboxController.getRightX())
+//                        .alongWith(hoodSubsystem.setPosition(() -> ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(1.5)))
 //                        .alongWith(hoodSubsystem.setVoltage(() -> operatorXboxController.getLeftY()))
         );
 
         hasTurretTrigger.whileFalse(
-                turretSubsystem.setVoltage(() -> 0.0)
+                turretSubsystem.setVoltage(() -> 3.0*operatorXboxController.getRightX())
         );
 
+        toggleSlowmode.whileTrue(
+                driveSubsystem.driveTeleop(
+                        () -> (slowmodeDriveSpeed) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (slowmodeDriveSpeed) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (-slowmodeDriveSpeed) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
+                )
+                        .alongWith(intakeSubsystem.oscillateIntake())
+        );
+
+        wantIndexTrigger.whileTrue(AutoAimCommands.autoIndex(this));
 
 //        driveTuningController.a()
 //                .whileTrue(driveSubsystem.runDriveDynamicTest(SysIdRoutine.Direction.kForward));

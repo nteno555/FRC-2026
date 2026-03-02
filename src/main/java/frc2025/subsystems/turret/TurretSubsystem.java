@@ -57,8 +57,13 @@ public class TurretSubsystem extends SubsystemBase {
         if(RobotState.getInstance().getTurretMt1Valid() && SubsystemConstants.useTurretVisionCorrection) {
             double mt1FieldRelativeAngle = RobotState.getInstance().getTurretMt1AngleRadians();
             if(Math.abs(mt1FieldRelativeAngle - fieldRelativeAngleRad) > 0.1) {
-                double mt1RobotRelativeAngle = -mt1FieldRelativeAngle + RobotState.getInstance().getVisionPose().getRotation().getRadians();
-                io.rezero(io.toRotations(mt1RobotRelativeAngle));
+                double mt1RobotRelativeAngle = (-mt1FieldRelativeAngle + RobotState.getInstance().getVisionPose().getRotation().getRadians());
+                Logger.recordOutput("Turret/mt1RobotRelativeAngle", mt1RobotRelativeAngle);
+                Logger.recordOutput("Turret/visionRezeroHeartbeat", Math.random());
+
+
+                io.rezero(io.toRotations(inputs.positionRadians + 0.01 * (mt1RobotRelativeAngle - inputs.positionRadians)));
+                //io.rezero(io.toRotations(mt1RobotRelativeAngle));
             }
             RobotState.getInstance().setTurretMt1Valid(false);
         }
@@ -69,7 +74,7 @@ public class TurretSubsystem extends SubsystemBase {
                 () -> {
                     double wantedAngle = RobotState.getInstance().getAngleToVirtualTarget();
                     double visionAngle = RobotState.getInstance().getVisionPose().getRotation().getRadians();
-                    Logger.recordOutput("Turret/error", Math.abs(inputs.positionRadians + visionAngle - wantedAngle) % (2*Math.PI));
+                    Logger.recordOutput("Turret/error", (Math.abs(inputs.positionRadians + visionAngle - wantedAngle) % (2*Math.PI)));
                     return wantedAngle;
                 },
                 () -> {
