@@ -323,8 +323,9 @@ public class RobotContainer {
         );
         testSystemsController.a().whileTrue(
                 shooterSubsystem.setSpeed(() -> 15.0)
-        ).onFalse(
-                shooterSubsystem.setVoltage(() -> 0.0)
+        );
+        testSystemsController.b().whileTrue(
+                indexerSubsystem.setVoltage(() -> -2.0)
         );
         testSystemsController.leftTrigger().whileTrue(
                 intakeSubsystem.homeThenRezero()
@@ -348,6 +349,8 @@ public class RobotContainer {
         new Trigger(() -> (testSystemsController.isConnected())).whileTrue(
                 turretSubsystem.setVoltage(() -> 0.0)
                         .alongWith(hoodSubsystem.setVoltage(() -> 0.0))
+                        .alongWith(shooterSubsystem.setVoltage(() -> 0.0))
+                        .alongWith(indexerSubsystem.setVoltage(() -> 0.0))
         );
 
 //        driveTuningController.a()
