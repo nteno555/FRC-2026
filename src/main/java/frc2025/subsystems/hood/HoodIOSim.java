@@ -11,7 +11,7 @@ public class HoodIOSim implements HoodIO {
 
     @Override
     public void updateInputs(HoodIOInputs inputs) {
-        if(!init) inputs.positionRotations = -36;
+        if(!init) inputs.positionRotations = -1;
         init = true;
 
         if(DriverStation.isEnabled()) {

@@ -57,7 +57,6 @@ public class DriveSubsystem extends SubsystemBase {
         RobotState.getInstance().addDriveData(inputs.odometryTimestamp, inputs.odometryTwist);
 
         RobotState.getInstance().setRobotRelativeSpeeds(inputs.currentChassisSpeeds);
-        RobotState.getInstance().updateShuttling();
         RobotState.getInstance().updateShootingWhileMovingVirtualPose();
         RobotState.getInstance().setPigeonAcceleration(inputs.pigeonAcceleration);
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);

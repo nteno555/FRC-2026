@@ -35,7 +35,8 @@ public class RobotState {
     private double pigeonAcceleration;
     private double angleToVirtualTarget;
 
-    private boolean shuttling;
+    private boolean manualShuttleOverride;
+    private boolean manualShuttle;
     private Pose2d shootingWhileMovingVirtualPose;
 
     private double turretAngle;
@@ -46,15 +47,13 @@ public class RobotState {
     private double turretMt1AngleRadians;
     private boolean turretMt1Valid;
 
-    private boolean hasTurret;
-
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
         shuttling = false;
         prevTurretTimestamp = -1;
         turretMt1Valid = false;
         turretMt1AngleRadians = 0;
-        hasTurret = false;
+        manualShuttleOverride = false;
     }
 
     public static RobotState getInstance() {
@@ -105,15 +104,39 @@ public class RobotState {
         visionUpdates.clear();
     }
 
-    public void setShuttling(boolean shuttling) {
-        this.shuttling = shuttling;
-    }
     public boolean getShuttling() {
-        return this.shuttling;
+        if (manualShuttleOverride) {
+            return manualShuttle;
+        }
+
+        if (DriverStation.isAutonomousEnabled()) {
+            return false;
+        }
+
+        double xPos = RobotState.getInstance().getVisionPose().getX();
+        boolean inBlueZone = xPos < FieldConstants.inBlueZoneX && !Alliance.get();
+        boolean inRedZone = xPos > FieldConstants.inRedZoneX && Alliance.get();
+
+        Logger.recordOutput("Drive/inBlueZone", inBlueZone);
+        Logger.recordOutput("Drive/inRedZone", inRedZone);
+
+        return !inBlueZone && !inRedZone;
     }
 
+    public void setManualShuttleOverride(boolean override) {
+        manualShuttleOverride = override;
+    }
+
+    public boolean getManualShuttleOverride() {return manualShuttleOverride;}
+
+    public void setManualShuttle(boolean manual) {
+        manualShuttle = manual;
+    }
+
+    public boolean getManualShuttle() {return manualShuttle;}
+
     public Pose2d getTargetPose() {
-        if (!shuttling) {
+        if (!getShuttling()) {
             return (Alliance.get()) ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
         }
 
@@ -122,24 +145,6 @@ public class RobotState {
         }
 
         return (Alliance.get()) ? FieldConstants.redShuttlePosLower : FieldConstants.blueShuttlePosLower;
-    }
-
-    public void updateShuttling() {
-        if (DriverStation.isAutonomousEnabled()) {
-            shuttling = false;
-            return;
-        }
-
-        double xPos = RobotState.getInstance().getVisionPose().getX();
-
-        boolean inBlueZone = xPos < FieldConstants.inBlueZoneX && !Alliance.get();
-        boolean inRedZone = xPos > FieldConstants.inRedZoneX && Alliance.get();
-
-        Logger.recordOutput("Shooter/inBlueZone", inBlueZone);
-        Logger.recordOutput("Shooter/inRedZone", inRedZone);
-
-        if (inBlueZone || inRedZone) shuttling = false;
-        else shuttling = true;
     }
 
     public void updateShootingWhileMovingVirtualPose() {
@@ -234,7 +239,4 @@ public class RobotState {
     public double getTurretMt1AngleRadians() { return turretMt1AngleRadians; }
     public void setTurretMt1Valid(boolean valid) { turretMt1Valid = valid; }
     public boolean getTurretMt1Valid() { return turretMt1Valid; }
-
-    public void setHasTurret(boolean has) { hasTurret = has;}
-    public boolean getHasTurret() { return hasTurret; }
 }

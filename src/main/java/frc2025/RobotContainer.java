@@ -287,13 +287,23 @@ public class RobotContainer {
         operatorXboxController.rightTrigger()
                 .onTrue(Commands.runOnce(() -> aimMode = AimMode.FIXED));
 
-        new Trigger(() -> (aimMode == AimMode.MANUAL)).whileTrue(
-                turretSubsystem.setVoltage(() -> 3.0 * operatorXboxController.getRightX())
-        );
+        operatorXboxController.x()
+                .and(() -> (aimMode == AimMode.MANUAL))
+                .onTrue(Commands.runOnce(() -> RobotState.getInstance().setManualShuttle(!RobotState.getInstance().getManualShuttle())));
 
-        new Trigger(() -> (aimMode == AimMode.FIXED)).whileTrue(
-                turretSubsystem.setVoltage(() -> 0.0)
-        );
+        operatorXboxController.a()
+                .whileTrue(intakeSubsystem.oscillateIntake())
+                .onFalse(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
+
+        new Trigger(() -> (aimMode == AimMode.MANUAL))
+                .onTrue(Commands.runOnce(() -> RobotState.getInstance().setManualShuttleOverride(true)))
+                .whileTrue(turretSubsystem.setVoltage(() -> 3.0 * operatorXboxController.getRightX()));
+
+        new Trigger(() -> (aimMode != AimMode.MANUAL))
+                .onTrue(Commands.runOnce(() -> RobotState.getInstance().setManualShuttleOverride(false)));
+
+        new Trigger(() -> (aimMode == AimMode.FIXED))
+                .whileTrue(turretSubsystem.setVoltage(() -> 0.0));
 
         new Trigger(() -> slowmode).whileTrue(
                 driveSubsystem.driveTeleop(
