@@ -184,7 +184,8 @@ public class Autos {
         return buildAuto(List.of("Low-Steal", "Steal-LowScore", "wait 2s", "LowScore-Neutral", "Neutral-Station"), false);
     }
     public Command LowNeutralDeepStation() {
-        return buildAuto(List.of("Low-NeutralMid", "NeutralMid-Low", "wait 2s", "Low-Station", "Station-Score"), false);
+        return buildAuto(List.of("Low-NeutralMid", "NeutralMid-Low", "wait 2s", "Low-Station", "wait 2s", "Station-Score"), false);
+//        return buildAuto(List.of("Low-NeutralMid", "NeutralMid-Low", "wait 2s", "Low-Station", "Station-Score"), false);
     }
     public Command LowStealStation() {
         return buildAuto(List.of("Low-Steal", "Steal-Station", "Station-Score"), false);
