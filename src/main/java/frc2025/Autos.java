@@ -35,9 +35,6 @@ public class Autos {
     /* Path Commands */
 
     private Command intakePath(String pathName) {
-        Command deploy = robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
-                .until(() -> robotContainer.getIntake().getDeployReady());
-
         PathPlannerPath path;
         try {
             path = PathPlannerPath.fromPathFile(pathName);
@@ -73,14 +70,6 @@ public class Autos {
 
         return SuperstructureCommands.resetOdometry(robotContainer, startPoseSupplier(startPose))
                 .andThen(new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true));
-    }
-
-    private Command autoShoot() {
-        return AutoAimCommands.autoShoot(
-                robotContainer,
-                () -> RobotState.getInstance().getTargetPose(),
-                () -> new ChassisSpeeds(0, 0, 0)
-        );
     }
 
     private Pose2d mirrorPose(Pose2d pose) {
@@ -135,10 +124,16 @@ public class Autos {
             else {
                 pathCommands = pathCommands.andThen(
                         robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
-                                .until(() -> robotContainer.getIntake().getDeployReady()).andThen(
-                        intakePath(paths.get(i))
-                                .deadlineWith(robotContainer.indexerSubsystem.setVoltage(() -> 0.0))
-                            .deadlineWith(robotContainer.intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage)))
+                                .until(() -> robotContainer.getIntake().getDeployReady())
+                                .andThen(
+                                        intakePath(paths.get(i))
+                                        .deadlineWith(
+                                                robotContainer.intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage)
+                                                .alongWith(
+                                                        robotContainer.indexerSubsystem.setVoltage(() -> 0.0)
+                                                )
+                                        )
+                                )
                 );
             }
         }

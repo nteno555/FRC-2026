@@ -2,8 +2,6 @@ package frc2025.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -12,8 +10,6 @@ import frc2025.RobotState;
 import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
-import frc2025.subsystems.hood.HoodSubsystem;
-import frc2025.subsystems.shooter.ShooterSubsystem;
 import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
 
@@ -28,56 +24,35 @@ public class AutoAimCommands {
         return angle;
     }
 
-    public static Command autoShoot(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds, Supplier<Boolean> hasTurret) {
-        return (hasTurret.get()) ?
-                turretAutoAim(robotContainer) :
-                driveAutoAim(robotContainer, targetPoseSupplier, unlockedSpeeds)
-//                        .alongWith(robotContainer.getHood().autoAim())
-                        .alongWith(robotContainer.getShooter().autoAim())
-                        .alongWith(autoIndex(robotContainer));
-    }
-
-
-    public static Command autoShoot(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {
-        return (SubsystemConstants.hasTurret) ?
-                turretAutoAim(robotContainer) :
-                driveAutoAim(robotContainer, targetPoseSupplier, unlockedSpeeds)
-                        .alongWith(robotContainer.getHood().autoAim())
-                        .alongWith(robotContainer.getShooter().autoAim())
-                        .alongWith(autoIndex(robotContainer));
-    }
-
     public static Command turretAutoAim(RobotContainer robotContainer) {
         return robotContainer.getTurret().autoAim()
                 .alongWith(robotContainer.getHood().autoAim())
-                .alongWith(robotContainer.getShooter().autoAim())
-//                .alongWith(robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeShotPosition))
-                .alongWith(autoIndex(robotContainer));
+                .alongWith(robotContainer.getShooter().autoAim());
     }
 
     public static Command driveAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {
         return robotContainer.getDrive().driveFieldRelative(
-                        () -> {
-                            PIDController angleController = new PIDController(5, 0.0, 0.0);
-                            angleController.enableContinuousInput(-Math.PI, Math.PI);
+                () -> {
+                    PIDController angleController = new PIDController(5, 0.0, 0.0);
+                    angleController.enableContinuousInput(-Math.PI, Math.PI);
 
-                            Pose2d shooterPose = RobotState.getInstance().getVisionShooterPose();
-                            Pose2d targetPose = targetPoseSupplier.get();
+                    Pose2d shooterPose = RobotState.getInstance().getVisionShooterPose();
+                    Pose2d targetPose = targetPoseSupplier.get();
 
-                            double angleToTarget = RobotState.getInstance().getAngleToVirtualTarget();
-                            double angularVelocity = angleController.calculate(modAngle(shooterPose.getRotation().getRadians()), modAngle(angleToTarget));
+                    double angleToTarget = RobotState.getInstance().getAngleToVirtualTarget();
+                    double angularVelocity = angleController.calculate(modAngle(shooterPose.getRotation().getRadians()), modAngle(angleToTarget));
 
-                            Logger.recordOutput("Drive/hubTargetPose", targetPose);
-                            Logger.recordOutput("Drive/robotRotation", modAngle(shooterPose.getRotation().getRadians()));
-                            Logger.recordOutput("Drive/robotRotationUnmodded", shooterPose.getRotation().getRadians());
+                    Logger.recordOutput("Drive/hubTargetPose", targetPose);
+                    Logger.recordOutput("Drive/robotRotation", modAngle(shooterPose.getRotation().getRadians()));
+                    Logger.recordOutput("Drive/robotRotationUnmodded", shooterPose.getRotation().getRadians());
 
-                            return new ChassisSpeeds(
-                                    unlockedSpeeds.get().vxMetersPerSecond,
-                                    unlockedSpeeds.get().vyMetersPerSecond,
-                                    angularVelocity
-                            );
-                        }
-                );
+                    return new ChassisSpeeds(
+                            unlockedSpeeds.get().vxMetersPerSecond,
+                            unlockedSpeeds.get().vyMetersPerSecond,
+                            angularVelocity
+                    );
+                }
+        );
     }
 
    public static Command autoIndex(RobotContainer robotContainer) {
@@ -97,7 +72,7 @@ public class AutoAimCommands {
             boolean nearRedTrench = Math.abs(pose.getX() - FieldConstants.redTrenchX) < FieldConstants.trenchThreshold;
             boolean onBumpTrench = (pose.getY() > FieldConstants.highBumpY) || (pose.getY() < FieldConstants.lowBumpY);
 
-            if ((nearBlueTrench || nearRedTrench) && onBumpTrench) return false;
+            good = good && !((nearBlueTrench || nearRedTrench) && onBumpTrench);
 
             boolean inBlueZone = pose.getX() < FieldConstants.inBlueZoneX && !Alliance.get();
             boolean inRedZone = pose.getX() > FieldConstants.inRedZoneX && Alliance.get();
@@ -106,7 +81,7 @@ public class AutoAimCommands {
                 good = good && (dist < ShooterTreeMap.getInstance().getMaxDistance());
             }
 
-            if(DriverStation.isAutonomous()) {
+            if(DriverStation.isAutonomousEnabled()) {
                 good = good && (inBlueZone || inRedZone);
             }
 
@@ -127,6 +102,8 @@ public class AutoAimCommands {
                 }
             }
 
+            Logger.recordOutput("Indexer/autoIndex/nearTrenchBump", ((nearBlueTrench || nearRedTrench) && onBumpTrench));
+            Logger.recordOutput("Indexer/autoIndex/autoInZone", (DriverStation.isAutonomousEnabled()) && (inBlueZone || inRedZone));
             Logger.recordOutput("Indexer/autoIndex/accelReady", (a < SubsystemConstants.autoAimMaxAccel));
             Logger.recordOutput("Indexer/autoIndex/shooterReady", robotContainer.getShooter().getShotReady());
             Logger.recordOutput("Indexer/autoIndex/turretReady", robotContainer.getTurret().getShotReady());
@@ -140,7 +117,7 @@ public class AutoAimCommands {
 
         return robotContainer.getIndexer().setVoltage(() -> {
             if(readySupplier.getAsBoolean()) {
-                return SubsystemConstants.spindexerShootVoltage;
+                return SubsystemConstants.indexerShootVoltage;
             } else {
                 return 0.0;
             }
