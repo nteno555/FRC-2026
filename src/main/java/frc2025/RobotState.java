@@ -205,10 +205,6 @@ public class RobotState {
         turretAngle = angleRadians;
     }
 
-    public void setTurretVelocity(double vel) {
-        turretVelocity = vel;
-    }
-
     public double getTurretVelocity() {
        if (prevTurretTimestamp == -1) return 0.0;
        return (turretAngle - prevTurretAngle)/(Utils.getCurrentTimeSeconds() - prevTurretTimestamp);

@@ -39,8 +39,6 @@ public class TurretSubsystem extends SubsystemBase {
         Logger.recordOutput("Vision/aimAngleDiff", RobotState.getInstance().getAngleToVirtualTarget() - fieldRelativeAngleRad);
 
         RobotState.getInstance().setTurretAngle(inputs.positionRadians);
-        RobotState.getInstance().setTurretVelocity(inputs.velocity);
-        Logger.recordOutput("Turret/velocity", inputs.velocity);
 
         if(SubsystemConstants.hasTurret) {
             if (!zeroed && inputs.throughboresConnected) {
