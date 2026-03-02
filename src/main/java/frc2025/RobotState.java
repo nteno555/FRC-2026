@@ -49,7 +49,6 @@ public class RobotState {
 
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
-        shuttling = false;
         prevTurretTimestamp = -1;
         turretMt1Valid = false;
         turretMt1AngleRadians = 0;

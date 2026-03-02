@@ -27,8 +27,7 @@ public class Autos {
     public Autos(RobotContainer robotContainer) {
         this.robotContainer = robotContainer;
         this.drive = robotContainer.getDrive();
-        RobotState.getInstance().setShuttling(false);
-
+        RobotState.getInstance().setManualShuttleOverride(false);
         System.out.println(this.robotContainer);
     }
 

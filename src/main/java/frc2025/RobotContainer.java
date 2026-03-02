@@ -74,6 +74,7 @@ public class RobotContainer {
     private double rotationSpeed = 0.7;
     private double slowmodeRotationSpeed = 0.5;
     private boolean slowmode;
+    private boolean sysCheck;
 
     private AimMode aimMode;
 
@@ -172,6 +173,7 @@ public class RobotContainer {
 
     private void configureBindings() {
         slowmode = false;
+        sysCheck = testSystemsController.isConnected();
 
         driveSubsystem.setDefaultCommand(
                 driveSubsystem.driveTeleop(
@@ -314,6 +316,40 @@ public class RobotContainer {
                         .alongWith(intakeSubsystem.oscillateIntake())
         );
 
+        testSystemsController.x().onTrue(
+                hoodSubsystem.setPosition(() -> 1.5)
+        );
+        testSystemsController.y().onTrue(
+                hoodSubsystem.homeThenRezero()
+        );
+        testSystemsController.a().whileTrue(
+                shooterSubsystem.setSpeed(() -> 15.0)
+        ).onFalse(
+                shooterSubsystem.setVoltage(() -> 0.0)
+        );
+        testSystemsController.leftTrigger().whileTrue(
+                intakeSubsystem.homeThenRezero()
+        );
+        testSystemsController.rightTrigger().onTrue(
+                intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
+        );
+        testSystemsController.rightBumper().onTrue(
+                intakeSubsystem.setRollerVoltage(() -> 4.0)
+        );
+        testSystemsController.leftBumper().onTrue(
+                intakeSubsystem.setRollerVoltage(() -> 0.0)
+        );
+        testSystemsController.povLeft().whileTrue(
+                turretSubsystem.setVoltage(() -> 1.5)
+        );
+        testSystemsController.povRight().whileTrue(
+                turretSubsystem.setVoltage(() -> -1.5)
+        );
+
+        new Trigger(() -> sysCheck).whileTrue(
+                turretSubsystem.setVoltage(() -> 0.0)
+                        .alongWith(hoodSubsystem.setVoltage(() -> 0.0))
+        );
 
 //        driveTuningController.a()
 //                .whileTrue(driveSubsystem.runDriveDynamicTest(SysIdRoutine.Direction.kForward));
@@ -451,14 +487,12 @@ public class RobotContainer {
 //        }
 //        autoCommand = autos.HighDepotNeutralClimb();
 //        autoCommand = autos.MidStationDepotForward();
-        RobotState.getInstance().setShuttling(false);
         CommandScheduler.getInstance().schedule(autoCommand);
     }
 
     public void teleopInit() {
         //autoCommand.cancel();
         CommandScheduler.getInstance().cancelAll();
-        RobotState.getInstance().setShuttling(false);
         shooterSubsystem.setSpeed(() -> 0.0);
         indexerSubsystem.setVoltage(() -> 0.0);
         intakeSubsystem.setDeployVoltage(() -> 0.0);
