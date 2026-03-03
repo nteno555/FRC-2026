@@ -35,8 +35,6 @@ public class RobotState {
     private double pigeonAcceleration;
     private double angleToVirtualTarget;
 
-    private boolean manualShuttleOverride;
-    private boolean manualShuttle;
     private Pose2d shootingWhileMovingVirtualPose;
 
     private double turretAngle;
@@ -52,7 +50,6 @@ public class RobotState {
         prevTurretTimestamp = -1;
         turretMt1Valid = false;
         turretMt1AngleRadians = 0;
-        manualShuttleOverride = false;
     }
 
     public static RobotState getInstance() {
@@ -104,10 +101,6 @@ public class RobotState {
     }
 
     public boolean getShuttling() {
-        if (manualShuttleOverride) {
-            return manualShuttle;
-        }
-
         if (DriverStation.isAutonomousEnabled()) {
             return false;
         }
@@ -121,18 +114,6 @@ public class RobotState {
 
         return !inBlueZone && !inRedZone;
     }
-
-    public void setManualShuttleOverride(boolean override) {
-        manualShuttleOverride = override;
-    }
-
-    public boolean getManualShuttleOverride() {return manualShuttleOverride;}
-
-    public void setManualShuttle(boolean manual) {
-        manualShuttle = manual;
-    }
-
-    public boolean getManualShuttle() {return manualShuttle;}
 
     public Pose2d getTargetPose() {
         if (!getShuttling()) {
