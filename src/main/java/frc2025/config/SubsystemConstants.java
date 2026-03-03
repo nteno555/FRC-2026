@@ -74,10 +74,10 @@ public class SubsystemConstants {
     public static double intakeRollerVoltage = 12.0;
     public static double intakeHalfPosition = 1.5;
 
-    public static double indexerSupplyCurrentLimit = 40;
-    public static double indexerStatorCurrentLimit = 40;
-    public static double indexerPeakForwardTorqueCurrent = 40;
-    public static double indexerPeakReverseTorqueCurrent = 40;
+    public static double indexerSupplyCurrentLimit = 120;
+    public static double indexerStatorCurrentLimit = 120;
+    public static double indexerPeakForwardTorqueCurrent = 120;
+    public static double indexerPeakReverseTorqueCurrent = 120;
     public static double indexerTorqueNeutralDeadband = 1;
     public static double indexerShootVoltage = -12.0;
     public static double indexerReverseVoltage = 2.0;

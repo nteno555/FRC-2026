@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc2025.commands.AutoAimCommands;
 import frc2025.commands.FollowPathCommand;
 import frc2025.commands.SuperstructureCommands;
@@ -191,6 +190,13 @@ public class Autos {
         return buildAuto(List.of("Low-Steal", "Steal-Station", "Station-Score"), false);
     }
 
+    public Command LowStealLowLoopLow() {
+        if (SubsystemConstants.hasTurret) {
+            return buildAuto(List.of("Low-Steal", "Steal-Low", "wait 2s", "Low-NeutralMidLoop-Low"), false);
+        }
+        return buildAuto(List.of("Low-Steal", "Steal-Low", "wait 2s", "Low-NeutralMidLoop-LowScore"), false);
+    }
+
     public Command MidStationDepotClimb() {
         return buildAuto(List.of("Mid-Station", "wait 2s", "Station-Depot", "Depot-Climb"), true);
     }
@@ -206,6 +212,13 @@ public class Autos {
             return buildAuto(List.of("High-Steal", "Steal-High", "wait 2s", "High-Neutral", "Neutral-High"), false);
         }
         return buildAuto(List.of("High-Steal", "Steal-HighScore", "wait 2s", "HighScore-Neutral", "Neutral-HighScore"), false);
+    }
+
+    public Command HighStealHighLoopHigh() {
+        if (SubsystemConstants.hasTurret) {
+            return buildAuto(List.of("High-Steal", "Steal-High", "wait 2s", "High-NeutralMidLoop-High"), false);
+        }
+        return buildAuto(List.of("High-Steal", "Steal-High", "wait 2s", "High-NeutralMidLoop-HighScore"), false);
     }
 
     public Command HighNeutralDeepDepot() {

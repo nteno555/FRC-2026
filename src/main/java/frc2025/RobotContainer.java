@@ -124,7 +124,7 @@ public class RobotContainer {
 
     public void configureAutoCommands() {
         autos = new Autos(this);
-        autoChooser.setDefaultOption("High Deep Neutral x2", autos.HighNeutralHighNeutralHigh());
+        autoChooser.setDefaultOption("Low Loop Neutral x2", autos.LowStealLowLoopLow());
 
 //        autoChooser.setDefaultOption("High Neutral Depot", autos.HighNeutralDeepDepot());
 
@@ -132,11 +132,13 @@ public class RobotContainer {
         autoChooser.addOption("Low Steal Neutral x2", autos.LowStealLowNeutralLow());
         autoChooser.addOption("Low Steal Neutral x2 Station", autos.LowStealLowNeutralStation());
         autoChooser.addOption("Low Neutral Deep Station", autos.LowNeutralDeepStation());
+        autoChooser.addOption("Low Loop Neutral x2", autos.LowStealLowLoopLow());
 
         autoChooser.addOption("Mid Station Depot", autos.MidStationDepotClimb());
 
         autoChooser.addOption("High Deep Neutral x2", autos.HighNeutralHighNeutralHigh());
         autoChooser.addOption("High Steal Neutral x2", autos.HighStealHighNeutralHigh());
+        autoChooser.addOption("High Loop Neutral x2", autos.HighStealHighLoopHigh());
 //        autoChooser.addOption("Low Shuttle", autos.LowShuttleAuto());
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
