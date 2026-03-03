@@ -108,7 +108,7 @@ public class SubsystemConstants {
     public static double throughBoreRatio1 = 42.0 / 10.0 * 48.0 / 26.0;
     public static double throughBoreRatio2 = 42.0 / 10.0;
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
-    public static boolean hasTurret = true;
+    public static boolean hasTurret = false;
     public static boolean useTurretThroughBores = true;
     public static double turretShotReadyThreshold = 0.052; // 5.73 degrees
     public static boolean useTurretVisionCorrection = false;

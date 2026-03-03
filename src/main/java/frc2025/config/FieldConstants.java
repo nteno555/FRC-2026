@@ -18,6 +18,7 @@ public class FieldConstants {
     public static double blueTrenchX = 4.628;
     public static double redTrenchX = 11.916;
     public static double trenchThreshold = 1.0;
+    public static double trenchThresholdAuto = 0.75;
     public static double highBumpY = 5.10;
     public static double lowBumpY = 3.0;
 

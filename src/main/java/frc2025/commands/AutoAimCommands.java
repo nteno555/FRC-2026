@@ -59,9 +59,9 @@ public class AutoAimCommands {
         BooleanSupplier readySupplier = () -> {
             boolean good;
             if(!SubsystemConstants.hasTurret) {
-                good = robotContainer.getShooter().getShotReady() && robotContainer.getDrive().getShotReady();
+                good = robotContainer.getShooter().getShotReady() && robotContainer.getDrive().getShotReady() && robotContainer.getHood().getShotReady();
             } else {
-                good = robotContainer.getShooter().getShotReady() && robotContainer.getTurret().getShotReady();
+                good = robotContainer.getShooter().getShotReady() && robotContainer.getTurret().getShotReady() && robotContainer.getHood().getShotReady();
             }
 
             Pose2d pose = RobotState.getInstance().getVisionShooterPose();

@@ -15,6 +15,7 @@ import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
 import java.lang.reflect.Field;
+import java.sql.Driver;
 import java.util.function.Supplier;
 
 public class HoodSubsystem extends SubsystemBase {
@@ -33,6 +34,7 @@ public class HoodSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         Logger.processInputs("RealOutputs/Hood", inputs);
+        Logger.recordOutput("Superstructure/HoodAngle", inputs.positionRotations);
         Logger.recordOutput("Hood/setpoint", setpoint);
         if(DriverStation.isDisabled()) {
             setpoint = inputs.positionRotations;
@@ -79,8 +81,11 @@ public class HoodSubsystem extends SubsystemBase {
                     Rotation2d.kZero
             );
 
-            boolean nearBlueTrench = Math.abs(robotXpose - FieldConstants.blueTrenchX) < FieldConstants.trenchThreshold;
-            boolean nearRedTrench = Math.abs(robotXpose - FieldConstants.redTrenchX) < FieldConstants.trenchThreshold;
+            double thresh = FieldConstants.trenchThreshold;
+            if(DriverStation.isAutonomous()) thresh = FieldConstants.trenchThresholdAuto;
+
+            boolean nearBlueTrench = Math.abs(robotXpose - FieldConstants.blueTrenchX) < thresh;
+            boolean nearRedTrench = Math.abs(robotXpose - FieldConstants.redTrenchX) < thresh;
             boolean nearTrenchY = robotYpose < 1.982 || robotYpose > 6.170;
 
             boolean currentBlueTrench = (robotXpose - FieldConstants.blueTrenchX) < 0.0;
@@ -105,6 +110,19 @@ public class HoodSubsystem extends SubsystemBase {
             if (RobotState.getInstance().getShuttling()) {
                 return SubsystemConstants.hoodMaxAngleRotations;
 //                return ShooterTreeMap.getInstance().shuttlingHoodTreeMap.getInterpolated(dist);
+            }
+
+            return ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist);
+        });
+    }
+
+    public Command autoAimUnsafe() {
+        return setPosition(() -> {
+            Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
+            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
+            double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
+            if (RobotState.getInstance().getShuttling()) {
+                return SubsystemConstants.hoodMaxAngleRotations;
             }
 
             return ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist);
@@ -148,6 +166,7 @@ public class HoodSubsystem extends SubsystemBase {
     }
     public double getPosition() { return inputs.positionRotations; }
     public double getPositionRadians() { return inputs.positionRadians; }
+    public boolean getShotReady() { return setpoint > 0.1; }
 
     public static double toRadians(double rotations) {
         double m = (SubsystemConstants.hoodMaxAngleRadians - SubsystemConstants.hoodMinAngleRadians) / (SubsystemConstants.hoodMaxAngleRotations - SubsystemConstants.hoodMinAngleRotations);

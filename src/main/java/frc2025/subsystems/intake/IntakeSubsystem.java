@@ -26,18 +26,15 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic(){
         Logger.processInputs("RealOutputs/Intake", inputs);
+        Logger.recordOutput("Superstructure/IntakeDeployPosition", inputs.position);
+        Logger.recordOutput("Superstructure/IntakeRollerVoltage", inputs.voltage);
         io.updateInputs(inputs);
-
-//        if (DriverStation.isAutonomousEnabled() && RobotState.getInstance().getWantAutoIntaking()) {
-//            io.setVoltage(0.0);
-//        }
     }
 
     public Command setRollerVoltage(Supplier<Double> voltage) {
         return this.run(() -> {
             usingVoltage = true;
             io.setVoltage(voltage.get());
-//            io.setDeployVoltage(SubsystemConstants.intakekS);
         });
     }
 

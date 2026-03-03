@@ -4,37 +4,21 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 public class HoodIOSim implements HoodIO {
     private double targetPosition = 0;
-    private double velocity = 0;
-    private boolean useVoltage = false;
-    private boolean init = false;
 
 
     @Override
     public void updateInputs(HoodIOInputs inputs) {
-        if(!init) inputs.positionRotations = -1;
-        init = true;
-
-        if(DriverStation.isEnabled()) {
-            if (!useVoltage) velocity = 0.1 * (targetPosition - inputs.positionRotations);
-        } else {
-            velocity = 0;
-        }
-
-        inputs.positionRotations = inputs.positionRotations + velocity;
-        inputs.positionRadians = Math.toDegrees(inputs.positionRotations);
-        inputs.positionDegreesReal = inputs.positionRadians + 15;
+        inputs.positionRotations = targetPosition;
     }
 
     @Override
     public void setPosition(double position) {
-        useVoltage = false;
         targetPosition = position;
     }
 
     @Override
     public void setVoltage(double voltage) {
-        useVoltage = true;
-        velocity = voltage;
+        targetPosition += voltage * 0.1;
     }
 
     @Override

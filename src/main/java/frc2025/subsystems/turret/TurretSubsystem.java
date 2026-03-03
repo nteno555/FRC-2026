@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc2025.Robot;
 import frc2025.RobotState;
 import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
@@ -65,6 +66,12 @@ public class TurretSubsystem extends SubsystemBase {
             }
             RobotState.getInstance().setTurretMt1Valid(false);
         }
+
+        Logger.recordOutput("Superstructure/TurretAngleRadians", inputs.positionRadians);
+        Logger.recordOutput("Turret/turretPose",
+                new Pose2d(
+                        RobotState.getInstance().getVisionShooterPose().getTranslation(),
+                        Rotation2d.fromRadians(fieldRelativeAngleRad)));
     }
 
     public Command autoAim() {
