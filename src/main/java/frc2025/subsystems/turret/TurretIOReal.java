@@ -43,6 +43,14 @@ public class TurretIOReal implements TurretIO{
         slot0Configs.kD = SubsystemConstants.turretkD;
         slot0Configs.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
+        var slot1Configs = talonFXConfigs.Slot1; // for wraparound
+        slot1Configs.kS = 0;
+        slot1Configs.kV = 0;
+        slot1Configs.kA = 0;
+        slot1Configs.kP = 6.0;
+        slot1Configs.kI = 0;
+        slot1Configs.kD = 0.1;
+
         var motionMagicConfigs = talonFXConfigs.MotionMagic;
         motionMagicConfigs.MotionMagicCruiseVelocity = SubsystemConstants.turretCruiseVelocity;
         motionMagicConfigs.MotionMagicAcceleration = SubsystemConstants.turretAcceleration;
@@ -131,6 +139,14 @@ public class TurretIOReal implements TurretIO{
     }
 
     @Override
+    public void setPositionFast(double position) {
+        turretMotor.setControl(
+                new PositionVoltage(position)
+                        .withSlot(1)
+        );
+    }
+
+    @Override
     public void setVoltage(double voltage){
         Logger.recordOutput("Turret/softwareVoltage", voltage);
         turretMotor.setControl(new VoltageOut(voltage));
@@ -147,7 +163,7 @@ public class TurretIOReal implements TurretIO{
         turretMotor.setPosition(position);
     }
 
-    public void rezeroCRT() {
+    public void rezeroCRT() { // todo move to turretsubsystem
         if (!SubsystemConstants.useTurretThroughBores) {
             turretMotor.setPosition(SubsystemConstants.turretHomeAngleRotations);
         } else {

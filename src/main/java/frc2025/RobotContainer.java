@@ -242,7 +242,6 @@ public class RobotContainer {
                .whileTrue(
                        shooterSubsystem.setSpeed(() -> ShooterTreeMap.getInstance().shuttlingRPSTreeMap.getInterpolated(3))
                                .alongWith(hoodSubsystem.setPosition(() -> SubsystemConstants.hoodMaxAngleRotations))
-                               .alongWith(indexerSubsystem.setVoltage(() -> SubsystemConstants.indexerShootVoltage))
                                .alongWith(intakeSubsystem.oscillateIntake())
                );
 
@@ -258,7 +257,6 @@ public class RobotContainer {
                                                 (-rotationSpeed) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
                                         ))
                                 .alongWith(shooterSubsystem.autoAim())
-                                .alongWith(AutoAimCommands.autoIndex(this))
                                 .alongWith(hoodSubsystem.autoAim())
                                 .alongWith(intakeSubsystem.oscillateIntake())
                 );
@@ -269,20 +267,22 @@ public class RobotContainer {
                         shooterSubsystem.autoAim()
                                 .alongWith(turretSubsystem.autoAim())
                                 .alongWith(hoodSubsystem.autoAim())
-                                .alongWith(AutoAimCommands.autoIndex(this))
                 );
+
+        new Trigger(() -> aiming)
+                .and(() -> (aimMode == AimMode.TURRET || aimMode == AimMode.FIXED))
+                .and(driverXboxController.y().negate())
+                .whileTrue(AutoAimCommands.autoIndex(this));
+
+        new Trigger(() -> aiming)
+                .and(() -> (aimMode == AimMode.MANUAL))
+                .and(driverXboxController.y().negate())
+                .whileTrue(indexerSubsystem.setVoltage(() -> SubsystemConstants.indexerShootVoltage));
 
         driverXboxController
                 .y()
                 .and(driverXboxController.back().negate())
-                .whileTrue(indexerSubsystem.setVoltage(() -> SubsystemConstants.indexerReverseVoltage))
-                .whileFalse(
-                    Commands.either(
-                            AutoAimCommands.autoIndex(this),
-                            indexerSubsystem.setVoltage(() -> 0.0),
-                            () -> aiming
-                    )
-                );
+                .whileTrue(indexerSubsystem.setVoltage(() -> SubsystemConstants.indexerReverseVoltage));
 
         driverXboxController
                 .b()
@@ -322,7 +322,7 @@ public class RobotContainer {
         operatorXboxController.rightTrigger()
                 .onTrue(Commands.runOnce(() -> aimMode = AimMode.FIXED));
 
-        operatorXboxController.x()
+        operatorXboxController.y()
                 .and(() -> (aimMode == AimMode.MANUAL))
                 .onTrue(Commands.runOnce(() -> manualAimState = ManualAimState.FLUSH));
         operatorXboxController.x()
