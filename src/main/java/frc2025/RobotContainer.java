@@ -137,12 +137,13 @@ public class RobotContainer {
             autoChooser.addOption("Mid Station Depot", autos.MidStationDepotClimb());
 
             autoChooser.addOption("High Deep Neutral x2", autos.HighNeutralHighNeutralHigh());
-            //        autoChooser.addOption("High Steal Neutral x2", autos.HighStealHighNeutralHigh());
+            autoChooser.addOption("High Steal Neutral x2", autos.HighStealHighNeutralHigh());
             autoChooser.addOption("High Loop Neutral x2", autos.HighStealHighLoopHigh());
             autoChooser.addOption("High Steal Neutral x2 (start under trench)", autos.HighStealHighLoopHigh_StartUnderTrench());
         } else {
             autoChooser.addOption("Low Neutral Station", autos.LowNeutralDeepStation());
             autoChooser.addOption("Mid Station Depot", autos.MidStationDepotClimb());
+            autoChooser.addOption("High Steal Neutral x2", autos.HighStealHighNeutralHigh());
             autoChooser.addOption("High Deep Neutral x2", autos.HighNeutralHighNeutralHigh());
             autoChooser.addOption("High Loop Neutral x2", autos.HighStealHighLoopHigh());
             autoChooser.addOption("High Steal Neutral x2 (start under trench)", autos.HighStealHighLoopHigh_StartUnderTrench());
@@ -200,7 +201,8 @@ public class RobotContainer {
         );
 
         intakeSubsystem.setDefaultCommand(intakeSubsystem.setDeployVoltage(() -> 0.0));
-        hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
+//        hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
+        hoodSubsystem.setDefaultCommand(hoodSubsystem.setPosition(() -> 0.0));
         shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
         indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0));
         turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
