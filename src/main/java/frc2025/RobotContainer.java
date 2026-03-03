@@ -99,7 +99,8 @@ public class RobotContainer {
 
     public void periodic() {
     }
-
+//shooterSubststem.setDefaultCommand( just shoot me);
+    // - Yuna 2026
     private void createSubsystems() {
         if(RobotBase.isReal()) {
             driveSubsystem = new DriveSubsystem(new DriveIOReal(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
@@ -139,6 +140,9 @@ public class RobotContainer {
         autoChooser.addOption("High Deep Neutral x2", autos.HighNeutralHighNeutralHigh());
         autoChooser.addOption("High Steal Neutral x2", autos.HighStealHighNeutralHigh());
         autoChooser.addOption("High Loop Neutral x2", autos.HighStealHighLoopHigh());
+        autoChooser.addOption("High Steal Neutral x2 (start under trench)", autos.HighStealHighLoopHigh_StartUnderTrench());
+
+        autoChooser.addOption("Olivia Auto", autos.OliviasSuperAwesomeAuto());
 //        autoChooser.addOption("Low Shuttle", autos.LowShuttleAuto());
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -188,7 +192,8 @@ public class RobotContainer {
         hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
         shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
         indexerSubsystem.setDefaultCommand(AutoAimCommands.autoIndex(this));
-        turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());
+        turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
+//        turretSubsystem.setDefaultCommand(turretSubsystem.autoAim());
 
         driverXboxController.a().onTrue(
                 SuperstructureCommands.resetOdometry(
@@ -253,7 +258,8 @@ public class RobotContainer {
                 .x()
                         .and(driverXboxController.back().negate())
                         .and(() -> (aimMode == AimMode.TURRET))
-                                .onTrue(shooterSubsystem.autoAim());
+                                .onTrue(shooterSubsystem.autoAim()
+                                        .alongWith(turretSubsystem.autoAim()));
 
         driverXboxController
                 .x()

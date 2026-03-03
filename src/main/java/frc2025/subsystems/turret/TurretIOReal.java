@@ -63,9 +63,9 @@ public class TurretIOReal implements TurretIO{
 
         var softLimits = talonFXConfigs.SoftwareLimitSwitch;
         softLimits.ForwardSoftLimitThreshold = SubsystemConstants.turretMaxAngleRadians * SubsystemConstants.turretRotationsPerRadian;
-        softLimits.ForwardSoftLimitEnable = false;
+        softLimits.ForwardSoftLimitEnable = true;
         softLimits.ReverseSoftLimitThreshold = SubsystemConstants.turretMinAngleRadians * SubsystemConstants.turretRotationsPerRadian;
-        softLimits.ReverseSoftLimitEnable = false;
+        softLimits.ReverseSoftLimitEnable = true;
 
         turretMotor.getConfigurator().apply(motorOutputConfigs, 0.05);
         turretMotor.getConfigurator().apply(talonFXConfigs, 0.05);

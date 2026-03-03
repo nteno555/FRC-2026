@@ -221,8 +221,26 @@ public class Autos {
         return buildAuto(List.of("High-Steal", "Steal-High", "wait 2s", "High-NeutralMidLoop-HighScore"), false);
     }
 
+    public Command HighStealHighLoopHigh_StartUnderTrench() {
+         if (SubsystemConstants.hasTurret) {
+            return buildAuto(List.of("High-Steal (under trench)", "Steal-High", "wait 2s", "High-NeutralMidLoop-High"), false);
+        }
+        return buildAuto(List.of("High-Steal (under trench)", "Steal-High", "wait 2s", "High-NeutralMidLoop-HighScore"), false);
+    }
+
+    public Command LowStealLowNeutralStation_StartUnderTrench() {
+        if (SubsystemConstants.hasTurret) {
+            return buildAuto(List.of("Low-Steal (under trench)", "Steal-Low", "wait 2s", "Low-Neutral", "Neutral-Station"), false);
+        }
+        return buildAuto(List.of("Low-Steal (under trench)", "Steal-LowScore", "wait 2s", "LowScore-Neutral", "Neutral-Station"), false);
+    }
+
     public Command HighNeutralDeepDepot() {
         return buildAuto(List.of("High-NeutralMid", "NeutralMid-Depot", "Depot-Score"), false);
+    }
+
+    public Command OliviasSuperAwesomeAuto() {
+        return buildAuto(List.of("New Path", "New New Path"), false);
     }
 
 
