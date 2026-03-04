@@ -23,12 +23,12 @@ public class ShooterTreeMap {
         hoodTreeMap.put(1.52, 1.7);
         hoodTreeMap.put(1.12, 0.9);
 
-        lowerWheelTreeMap.put(5.0, 58.0);
-        lowerWheelTreeMap.put(4.02, 53.0);
-        lowerWheelTreeMap.put(3.36, 46.0);
-        lowerWheelTreeMap.put(2.15, 40.0);
-        lowerWheelTreeMap.put(1.52, 38.0);
-        lowerWheelTreeMap.put(1.12, 37.0);
+        lowerWheelTreeMap.put(5.0, 58.5);
+        lowerWheelTreeMap.put(4.02, 53.5);
+        lowerWheelTreeMap.put(3.36, 46.5);
+        lowerWheelTreeMap.put(2.15, 40.5);
+        lowerWheelTreeMap.put(1.52, 38.5);
+        lowerWheelTreeMap.put(1.12, 37.5);
 //        hoodTreeMap.put(4.91, 2.7);
 ////        hoodTreeMap.put(4.65, 2.25);
 //        hoodTreeMap.put(4.14, 2.2);

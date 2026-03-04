@@ -161,8 +161,10 @@ public class TurretSubsystem extends SubsystemBase {
 
 
             if(io.toRadians(Math.abs(setpoint - inputs.positionTicks)) < 0.5) {
+                Logger.recordOutput("Turret/slot0heartbeat", Math.random());
                 io.setPosition(setpoint, velocityFF);
             } else {
+                Logger.recordOutput("Turret/slot1heartbeat", Math.random());
                 io.setPositionFast(setpoint);
             }
             Logger.recordOutput("Turret/turretWantedPositionRadians", positionRadians.get());

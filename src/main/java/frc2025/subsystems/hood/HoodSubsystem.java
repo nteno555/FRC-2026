@@ -166,7 +166,7 @@ public class HoodSubsystem extends SubsystemBase {
     }
     public double getPosition() { return inputs.positionRotations; }
     public double getPositionRadians() { return inputs.positionRadians; }
-    public boolean getShotReady() { return setpoint > 0.1; }
+    public boolean getShotReady() { return (inputs.positionRotations > 0.1) && (Math.abs(inputs.positionRotations - setpoint) < 0.1); }
 
     public static double toRadians(double rotations) {
         double m = (SubsystemConstants.hoodMaxAngleRadians - SubsystemConstants.hoodMinAngleRadians) / (SubsystemConstants.hoodMaxAngleRotations - SubsystemConstants.hoodMinAngleRotations);

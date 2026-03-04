@@ -46,6 +46,7 @@ import frc2025.subsystems.vision.VisionIOReal;
 import frc2025.subsystems.vision.VisionIOSim;
 import frc2025.subsystems.vision.VisionSubsystem;
 import frc2025.util.Alliance;
+import org.littletonrobotics.junction.Logger;
 
 public class RobotContainer {
     public static final double DEAD_BAND_DRIVER = 0.1;
@@ -74,6 +75,7 @@ public class RobotContainer {
     private double rotationSpeed = 0.7;
     private double slowmodeRotationSpeed = 0.5;
     private boolean slowmode;
+    private double manualTurretSpeed = 2.0;
     private boolean sysCheck;
 
     private AimMode aimMode;
@@ -99,6 +101,8 @@ public class RobotContainer {
     }
 
     public void periodic() {
+        Logger.recordOutput("Superstructure/aimMode", aimMode);
+        Logger.recordOutput("Superstructure/manualAimState", manualAimState);
     }
 //shooterSubststem.setDefaultCommand( just shoot me);
     // - Yuna 2026
@@ -129,24 +133,25 @@ public class RobotContainer {
         autoChooser.setDefaultOption("Low Neutral Station", autos.LowStealLowLoopLow());
 
         if(SubsystemConstants.hasTurret) {
-            autoChooser.addOption("Low Steal Neutral x2 Station", autos.LowStealLowNeutralStation());
+//            autoChooser.addOption("Low Steal Neutral x2 Station", autos.LowStealLowNeutralStation());
             autoChooser.addOption("Low Neutral Station", autos.LowNeutralDeepStation());
-            //        autoChooser.addOption("Low Loop Neutral x2", autos.LowStealLowLoopLow());
-            autoChooser.addOption("Low Steal Neutral x2 Station (start under trench)", autos.LowStealLowNeutralStation_StartUnderTrench());
+//            autoChooser.addOption("Low Steal Loop x2", autos.LowStealLowLoopLow());
+            autoChooser.addOption("Low Steal Deep x2", autos.LowStealLowNeutralDeep());
 
             autoChooser.addOption("Mid Station Depot", autos.MidStationDepotClimb());
 
-            autoChooser.addOption("High Deep Neutral x2", autos.HighNeutralHighNeutralHigh());
-            autoChooser.addOption("High Steal Neutral x2", autos.HighStealHighNeutralHigh());
+//            autoChooser.addOption("High Deep Neutral x2", autos.HighNeutralHighNeutralHigh());
+//            autoChooser.addOption("High Steal Neutral x2", autos.HighStealHighNeutralHigh());
             autoChooser.addOption("High Loop Neutral x2", autos.HighStealHighLoopHigh());
-            autoChooser.addOption("High Steal Neutral x2 (start under trench)", autos.HighStealHighLoopHigh_StartUnderTrench());
+            autoChooser.addOption("High Steal Deep x2", autos.HighStealHighNeutralDeep());
+//            autoChooser.addOption("High Neutral x3", autos.HighTripleMid());
         } else {
             autoChooser.addOption("Low Neutral Station", autos.LowNeutralDeepStation());
             autoChooser.addOption("Mid Station Depot", autos.MidStationDepotClimb());
             autoChooser.addOption("High Steal Neutral x2", autos.HighStealHighNeutralHigh());
             autoChooser.addOption("High Deep Neutral x2", autos.HighNeutralHighNeutralHigh());
             autoChooser.addOption("High Loop Neutral x2", autos.HighStealHighLoopHigh());
-            autoChooser.addOption("High Steal Neutral x2 (start under trench)", autos.HighStealHighLoopHigh_StartUnderTrench());
+//            autoChooser.addOption("High Steal Neutral x2 (start under trench)", autos.HighStealHighLoopHigh_StartUnderTrench());
         }
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -192,6 +197,8 @@ public class RobotContainer {
             aimMode = AimMode.FIXED;
         }
 
+        manualAimState = ManualAimState.FLUSH;
+
         driveSubsystem.setDefaultCommand(
                 driveSubsystem.driveTeleop(
                         () -> (driveSpeed) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY() + testSystemsController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
@@ -231,9 +238,8 @@ public class RobotContainer {
                .and(() -> aimMode == AimMode.MANUAL)
                .and(() -> manualAimState == ManualAimState.FLUSH)
                .whileTrue(
-                       shooterSubsystem.setSpeed(() -> ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(1.12))
-                               .alongWith(hoodSubsystem.setPosition(() -> ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(1.12)))
-                               .alongWith(indexerSubsystem.setVoltage(() -> SubsystemConstants.indexerShootVoltage))
+                       shooterSubsystem.setSpeed(() -> 37.0)
+                               .alongWith(hoodSubsystem.setPosition(() -> 0.9))
                                .alongWith(intakeSubsystem.oscillateIntake())
                );
        new Trigger(() -> aiming)
@@ -242,7 +248,7 @@ public class RobotContainer {
                .whileTrue(
                        shooterSubsystem.setSpeed(() -> ShooterTreeMap.getInstance().shuttlingRPSTreeMap.getInterpolated(3))
                                .alongWith(hoodSubsystem.setPosition(() -> SubsystemConstants.hoodMaxAngleRotations))
-                               .alongWith(intakeSubsystem.oscillateIntake())
+//                               .alongWith(intakeSubsystem.oscillateIntake())
                );
 
         new Trigger(() -> aiming)
@@ -258,7 +264,7 @@ public class RobotContainer {
                                         ))
                                 .alongWith(shooterSubsystem.autoAim())
                                 .alongWith(hoodSubsystem.autoAim())
-                                .alongWith(intakeSubsystem.oscillateIntake())
+//                                .alongWith(intakeSubsystem.oscillateIntake())
                 );
 
         new Trigger(() -> aiming)
@@ -272,7 +278,7 @@ public class RobotContainer {
         new Trigger(() -> aiming)
                 .and(() -> (aimMode == AimMode.TURRET || aimMode == AimMode.FIXED))
                 .and(driverXboxController.y().negate())
-                .whileTrue(AutoAimCommands.autoIndex(this));
+                .whileTrue(AutoAimCommands.autoIndex(this, () -> aimMode == AimMode.TURRET));
 
         new Trigger(() -> aiming)
                 .and(() -> (aimMode == AimMode.MANUAL))
@@ -330,7 +336,7 @@ public class RobotContainer {
                 .onTrue(Commands.runOnce(() -> manualAimState = ManualAimState.SHUTTLE));
 
         new Trigger(() -> aimMode == AimMode.MANUAL || aimMode == AimMode.FIXED)
-                .whileTrue(turretSubsystem.setVoltage(() -> 3.0 * operatorXboxController.getRightX()));
+                .whileTrue(turretSubsystem.setVoltage(() -> manualTurretSpeed * operatorXboxController.getRightX()));
 
 //        new Trigger(() -> slowmode).whileTrue(
 //                driveSubsystem.driveTeleop(
