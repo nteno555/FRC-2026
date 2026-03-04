@@ -80,7 +80,7 @@ public class SubsystemConstants {
     public static double indexerPeakReverseTorqueCurrent = 120;
     public static double indexerTorqueNeutralDeadband = 1;
     public static double indexerShootVoltage = -12.0;
-    public static double indexerReverseVoltage = 1.0;
+    public static double indexerReverseVoltage = 2.0;
 
     // Turret Gear Ratio: 12:24 & 44:54 & 36:125
     public static double turretkS = 0.6;

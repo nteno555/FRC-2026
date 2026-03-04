@@ -81,7 +81,7 @@ public class ShooterTreeMap {
     }
 
     public double getMinDistance() {
-        return 1.12;
+        return 1.7;
     }
 
     public double getMaxDistance() {

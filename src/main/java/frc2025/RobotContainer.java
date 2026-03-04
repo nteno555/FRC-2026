@@ -8,10 +8,13 @@ import static frc2025.subsystems.drive.DriveConstants.FrontLeft;
 import static frc2025.subsystems.drive.DriveConstants.FrontRight;
 import static frc2025.subsystems.drive.DriveConstants.kSpeedAt12Volts;
 
+import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -57,6 +60,7 @@ public class RobotContainer {
     private final CommandXboxController tuningController = new CommandXboxController(3);
     private final CommandXboxController driveTuningController = new CommandXboxController(4);
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+    private final Timer matchTime = new Timer();
 
     DriveSubsystem driveSubsystem;
     VisionSubsystem visionSubsystem;
@@ -103,6 +107,7 @@ public class RobotContainer {
     public void periodic() {
         Logger.recordOutput("Superstructure/aimMode", aimMode);
         Logger.recordOutput("Superstructure/manualAimState", manualAimState);
+        updateMatchTime();
     }
 //shooterSubststem.setDefaultCommand( just shoot me);
     // - Yuna 2026
@@ -498,17 +503,48 @@ public class RobotContainer {
 		}
 	}
 
-    public double getDriverLeftY() {
-        return driverXboxController.getLeftY();
-    }
-
-    public double getDriverLeftX() {
-        return driverXboxController.getLeftX();
+    public void updateMatchTime() {
+        /* 0:00 - 0:20 Auto
+        0:20 - 0:30 Transition
+        0:30 - 0:55 Shift 1
+        0:55 - 1:20 Shift 2
+        1:20 - 1:45 Shift 3
+        1:45 - 2:10 Shift 4
+        2:10 - 2:40 Endgame */
+        double now = matchTime.get();
+        SmartDashboard.putNumber("MatchState/Elapsed", (int) now);
+        if (DriverStation.isAutonomousEnabled()) {
+            SmartDashboard.putBoolean("MatchState/Countdown", (true));
+            SmartDashboard.putString("MatchState/State", "Auto");
+            SmartDashboard.putNumber("MatchState/Remaining Time", Math.round(20.0 - now));
+        }
+        else if (DriverStation.isTeleopEnabled()) {
+            if (now < 10.0) {
+                SmartDashboard.putNumber("MatchState/Remaining Time", Math.round(10 - now));
+                SmartDashboard.putBoolean("MatchState/Countdown", (now % 1.0 < 0.5));
+                SmartDashboard.putString("MatchState/State", "Transition");
+            } else if (now > 110.0) {
+                SmartDashboard.putString("MatchState/State", "Endgame");
+                SmartDashboard.putBoolean("MatchState/Countdown", (true));
+                SmartDashboard.putNumber("MatchState/Remaining Time", Math.round(140 - now));
+            } else {
+                SmartDashboard.putString("MatchState/State", "Shift");
+                now = (now - 10) % 25;
+                SmartDashboard.putNumber("MatchState/Remaining Time", Math.round(25 - now));
+                if (25 - now < 10) {
+                    SmartDashboard.putBoolean("MatchState/Countdown", (now % 1.0 < 0.5));
+                } else {
+                    SmartDashboard.putBoolean("MatchState/Countdown", (true));
+                }
+            }
+        }
     }
 
     public void autoInit() {
         autoCommand = autoChooser.getSelected();
         CommandScheduler.getInstance().schedule(autoCommand);
+        matchTime.reset();
+        matchTime.start();
     }
 
     public void teleopInit() {
@@ -518,5 +554,7 @@ public class RobotContainer {
         indexerSubsystem.setVoltage(() -> 0.0);
         intakeSubsystem.setDeployVoltage(() -> 0.0);
         intakeSubsystem.setRollerVoltage(() -> 0.0);
+        matchTime.reset();
+        matchTime.start();
     }
 }
