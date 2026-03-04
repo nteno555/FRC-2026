@@ -130,13 +130,14 @@ public class RobotContainer {
 
     public void configureAutoCommands() {
         autos = new Autos(this);
-        autoChooser.setDefaultOption("Low Neutral Station", autos.LowStealLowLoopLow());
+        autoChooser.setDefaultOption("Low Neutral Station", autos.LowNeutralDeepStation());
 
         if(SubsystemConstants.hasTurret) {
 //            autoChooser.addOption("Low Steal Neutral x2 Station", autos.LowStealLowNeutralStation());
             autoChooser.addOption("Low Neutral Station", autos.LowNeutralDeepStation());
 //            autoChooser.addOption("Low Steal Loop x2", autos.LowStealLowLoopLow());
             autoChooser.addOption("Low Steal Deep x2", autos.LowStealLowNeutralDeep());
+            autoChooser.addOption("Low Steal Loop x2", autos.LowStealLowLoopLow());
 
             autoChooser.addOption("Mid Station Depot", autos.MidStationDepotClimb());
 
@@ -403,9 +404,9 @@ public class RobotContainer {
 //                .whileTrue(driveSubsystem.runSteerQuasiTest(SysIdRoutine.Direction.kReverse));
 
 
-    tuningController.leftBumper().whileTrue(
-            turretSubsystem.rezeroCRT()
-    );
+//    tuningController.leftBumper().whileTrue(
+//            turretSubsystem.rezeroCRT()
+//    );
 
     tuningController.povDown().whileTrue(
 //            turretSubsystem.setVoltage(() -> -1.0);
@@ -447,9 +448,9 @@ public class RobotContainer {
 //            intakeSubsystem.setDeployVoltage(() -> 0.0)
 //    );
 //
-//    tuningController.leftBumper().whileTrue(
-//            turretSubsystem.autoAim()
-//    );
+    tuningController.leftBumper().whileTrue(
+            turretSubsystem.autoAim()
+    );
 
 
         tuningController.a().onTrue(

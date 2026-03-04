@@ -84,11 +84,11 @@ public class SubsystemConstants {
 
     // Turret Gear Ratio: 12:24 & 44:54 & 36:125
     public static double turretkS = 0.6;
-    public static double turretkV = 0.129;
+    public static double turretkV = 0.135;
     public static double turretkA = 0.001 * 12.0;
-    public static double turretkP = 4.0;
+    public static double turretkP = 2.5;
     public static double turretkI = 0.0;
-    public static double turretkD = 0.15;
+    public static double turretkD = 0.1;
     public static double turretCruiseVelocity = 60;
     public static double turretAcceleration = 150;
     public static double turretJerk = 700;
@@ -103,8 +103,8 @@ public class SubsystemConstants {
 //    public static double turretMaxAngleRadians = 3*Math.PI / 2;
     public static double turretMinAngleRadians = -1.0;
     public static double turretMaxAngleRadians = 4.30;
-    public static double throughBoreZero1 = 0.560;
-    public static double throughBoreZero2 = 0.487;
+    public static double throughBoreZero1 = 0.572;
+    public static double throughBoreZero2 = 0.509;
     public static double throughBoreRatio1 = 42.0 / 10.0 * 48.0 / 26.0;
     public static double throughBoreRatio2 = 42.0 / 10.0;
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
