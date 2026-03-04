@@ -28,7 +28,6 @@ public class RobotState {
     private DriverStation.Alliance alliance;
 
     private VisionPoseEstimator visionPoseEstimator;
-    private double speed;
     private List<VisionPoseEstimator.TimestampedVisionUpdate> visionUpdates = new ArrayList<>();
     private ChassisSpeeds robotRelativeSpeeds;
     private ChassisSpeeds fieldRelativeSpeeds;
@@ -40,7 +39,6 @@ public class RobotState {
     private double turretAngle;
     private double prevTurretAngle;
     private double prevTurretTimestamp;
-    private double turretVelocity;
 
     private double turretMt1AngleRadians;
     private boolean turretMt1Valid;
@@ -144,11 +142,9 @@ public class RobotState {
                 new Twist2d(vx * phaseDelay, vy * phaseDelay, vOmega * phaseDelay)
         );
 
-//        if (SubsystemConstants.hasTurret) {
         Translation2d shooterFieldRelative = SubsystemConstants.robotToShooter.getTranslation().rotateBy(delayedPose.getRotation());
         vx += vOmega * shooterFieldRelative.getY();
         vy += -vOmega * shooterFieldRelative.getX();
-//        }
 
         for (int i = 0; i < 5; i++) {
             double dx = virtualPose.getX() - delayedPose.getX();

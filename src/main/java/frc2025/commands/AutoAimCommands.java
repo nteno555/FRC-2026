@@ -133,26 +133,27 @@ public class AutoAimCommands {
                 good = robotContainer.getShooter().getShotReady() && robotContainer.getTurret().getShotReady() && robotContainer.getHood().getShotReady();
             }
 
-//            Pose2d pose = RobotState.getInstance().getVisionShooterPose();
-//            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
-//            double dist = pose.getTranslation().getDistance(targetPose.getTranslation());
-//
-//            boolean nearBlueTrench = Math.abs(pose.getX() - FieldConstants.blueTrenchX) < FieldConstants.trenchThreshold;
-//            boolean nearRedTrench = Math.abs(pose.getX() - FieldConstants.redTrenchX) < FieldConstants.trenchThreshold;
-//            boolean onBumpTrench = (pose.getY() > FieldConstants.highBumpY) || (pose.getY() < FieldConstants.lowBumpY);
-//
-//            good = good && !((nearBlueTrench || nearRedTrench) && onBumpTrench);
-//
-//            boolean inBlueZone = pose.getX() < FieldConstants.inBlueZoneX && !Alliance.get();
-//            boolean inRedZone = pose.getX() > FieldConstants.inRedZoneX && Alliance.get();
-//
-//            if (inBlueZone || inRedZone) {
-//                good = good && (dist < ShooterTreeMap.getInstance().getMaxDistance());
-//            }
-//
-//            if(DriverStation.isAutonomousEnabled()) {
-//                good = good && (inBlueZone || inRedZone);
-//            }
+            Pose2d pose = RobotState.getInstance().getVisionShooterPose();
+            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
+            double dist = pose.getTranslation().getDistance(targetPose.getTranslation());
+
+            boolean nearBlueTrench = Math.abs(pose.getX() - FieldConstants.blueTrenchX) < FieldConstants.trenchThreshold;
+            boolean nearRedTrench = Math.abs(pose.getX() - FieldConstants.redTrenchX) < FieldConstants.trenchThreshold;
+            boolean onBumpTrench = (pose.getY() > FieldConstants.highBumpY) || (pose.getY() < FieldConstants.lowBumpY);
+
+            good = good && !((nearBlueTrench || nearRedTrench) && onBumpTrench);
+
+            boolean inBlueZone = pose.getX() < FieldConstants.inBlueZoneX && !Alliance.get();
+            boolean inRedZone = pose.getX() > FieldConstants.inRedZoneX && Alliance.get();
+
+            if (inBlueZone || inRedZone) {
+                good = good && (dist < ShooterTreeMap.getInstance().getMaxDistance());
+                good = good && (dist > ShooterTreeMap.getInstance().getMinDistance());
+            }
+
+            if(DriverStation.isAutonomousEnabled()) {
+                good = good && (inBlueZone || inRedZone);
+            }
 
             double a = RobotState.getInstance().getPigeonAcceleration();
 

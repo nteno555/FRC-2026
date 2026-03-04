@@ -133,26 +133,20 @@ public class RobotContainer {
         autoChooser.setDefaultOption("Low Neutral Station", autos.LowNeutralDeepStation());
 
         if(SubsystemConstants.hasTurret) {
-//            autoChooser.addOption("Low Steal Neutral x2 Station", autos.LowStealLowNeutralStation());
             autoChooser.addOption("Low Neutral Station", autos.LowNeutralDeepStation());
-//            autoChooser.addOption("Low Steal Loop x2", autos.LowStealLowLoopLow());
             autoChooser.addOption("Low Steal Deep x2", autos.LowStealLowNeutralDeep());
             autoChooser.addOption("Low Steal Loop x2", autos.LowStealLowLoopLow());
 
             autoChooser.addOption("Mid Station Depot", autos.MidStationDepotClimb());
 
-//            autoChooser.addOption("High Deep Neutral x2", autos.HighNeutralHighNeutralHigh());
-//            autoChooser.addOption("High Steal Neutral x2", autos.HighStealHighNeutralHigh());
             autoChooser.addOption("High Loop Neutral x2", autos.HighStealHighLoopHigh());
             autoChooser.addOption("High Steal Deep x2", autos.HighStealHighNeutralDeep());
-//            autoChooser.addOption("High Neutral x3", autos.HighTripleMid());
         } else {
             autoChooser.addOption("Low Neutral Station", autos.LowNeutralDeepStation());
             autoChooser.addOption("Mid Station Depot", autos.MidStationDepotClimb());
             autoChooser.addOption("High Steal Neutral x2", autos.HighStealHighNeutralHigh());
             autoChooser.addOption("High Deep Neutral x2", autos.HighNeutralHighNeutralHigh());
             autoChooser.addOption("High Loop Neutral x2", autos.HighStealHighLoopHigh());
-//            autoChooser.addOption("High Steal Neutral x2 (start under trench)", autos.HighStealHighLoopHigh_StartUnderTrench());
         }
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -209,8 +203,7 @@ public class RobotContainer {
         );
 
         intakeSubsystem.setDefaultCommand(intakeSubsystem.setDeployVoltage(() -> 0.0));
-//        hoodSubsystem.setDefaultCommand(hoodSubsystem.autoAim());
-        hoodSubsystem.setDefaultCommand(hoodSubsystem.setPosition(() -> 0.0));
+        hoodSubsystem.setDefaultCommand(hoodSubsystem.setPosition(() -> 0.1));
         shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
         indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0));
         turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
@@ -515,13 +508,6 @@ public class RobotContainer {
 
     public void autoInit() {
         autoCommand = autoChooser.getSelected();
-//        if(!Utils.isSimulation()) {
-//        } else {
-////            autoCommand = autos.LowStealLowNeutralStation();
-//            autoCommand = autos.HighStealHighNeutralClimb();
-//        }
-//        autoCommand = autos.HighDepotNeutralClimb();
-//        autoCommand = autos.MidStationDepotForward();
         CommandScheduler.getInstance().schedule(autoCommand);
     }
 

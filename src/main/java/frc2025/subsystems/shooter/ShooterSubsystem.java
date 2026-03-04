@@ -31,7 +31,6 @@ public class ShooterSubsystem extends SubsystemBase {
         Logger.processInputs("RealOutputs/Shooter", inputs);
         Logger.recordOutput("Superstructure/ShooterSpeed", inputs.masterVelocityRPM);
         io.updateInputs(this.inputs);
-//        RobotState.getInstance().setShooterExitVelocity(getBallExitVelocity());
     }
 
     public Command setVoltage(Supplier<Double> voltage) {
@@ -65,54 +64,11 @@ public class ShooterSubsystem extends SubsystemBase {
                 return ShooterTreeMap.getInstance().shuttlingRPSTreeMap.getInterpolated(dist);
             }
 
-            double wantedRPS = ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist);
-
-            double radialVelocity = RobotState.getInstance().getRadialVelocity();
-            double rpsCorrection = 0.0;
-            if (Math.abs(radialVelocity) > 0.1) {
-                rpsCorrection = ShooterTreeMap.getInstance().radialVelocityTreeMap.getInterpolated(radialVelocity);
-            }
-
-            Logger.recordOutput("Shooter/radialVelocity", radialVelocity);
-            Logger.recordOutput("Shooter/radialVelocityRPSCorrection", rpsCorrection);
-            return wantedRPS + rpsCorrection;
+            return ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist);
         });
     }
 
-    public Command autoAimFlush() {
-        return setSpeed(() -> ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(1.0));
-    }
-
-    public Command setTargetExitVelocity(Supplier<Double> exitVelocity) {
-        return setSpeed(() -> solveExitVelocity(exitVelocity.get()));
-    }
-
-    public double getUpperVelocity() {
-        return inputs.masterVelocityRPM;
-    }
-    public double getUpperWantedVelocity() {
-        return wantedVelocity;
-    }
     public boolean getShotReady() {
         return Math.abs(wantedVelocity - inputs.masterVelocityRPM) < 2.0 && wantedVelocity != 0.0;
-    }
-
-    public double getBallExitVelocity() {
-        return toBallExitVelocity(inputs.masterVelocityRPM);
-    }
-
-    public double solveExitVelocity(double wantedExitVelocity) {
-        Logger.recordOutput("Shooter/wantedExitVelocity", wantedExitVelocity);
-        double res = wantedExitVelocity*2.0 / (SubsystemConstants.flywheelEfficiency) /
-               (SubsystemConstants.topFlywheelGearRatio * SubsystemConstants.topFlywheelDiameter * Math.PI +
-                SubsystemConstants.bottomFlywheelGearRatio * SubsystemConstants.bottomFlywheelDiameter * Math.PI);
-        Logger.recordOutput("Shooter/solvedRps", res);
-        return res;
-    }
-
-    public static double toBallExitVelocity(double wheelRPM) {
-        double topVelocity = SubsystemConstants.topFlywheelGearRatio * wheelRPM * SubsystemConstants.topFlywheelDiameter * Math.PI;
-        double bottomVelocity = SubsystemConstants.bottomFlywheelGearRatio * wheelRPM * SubsystemConstants.bottomFlywheelDiameter * Math.PI;
-        return (topVelocity + bottomVelocity) / 2.0 * SubsystemConstants.flywheelEfficiency;
     }
 }

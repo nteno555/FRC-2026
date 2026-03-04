@@ -10,11 +10,9 @@ public class ShooterTreeMap {
     public InterpolatingTreeMap hoodTreeMap = new InterpolatingTreeMap();
     public InterpolatingTreeMap lowerWheelTreeMap = new InterpolatingTreeMap();
     public InterpolatingTreeMap tofTreeMap = new InterpolatingTreeMap();
-    public InterpolatingTreeMap radialVelocityTreeMap = new InterpolatingTreeMap();
     public InterpolatingTreeMap shuttlingRPSTreeMap = new InterpolatingTreeMap();
     public double kDrag = 0.001;
-//    public InterpolatingTreeMap shuttlingHoodTreeMap = new InterpolatingTreeMap();
-    
+
     public ShooterTreeMap() {
         hoodTreeMap.put(5.07, 2.7);
         hoodTreeMap.put(4.38, 2.6);
@@ -24,7 +22,6 @@ public class ShooterTreeMap {
         hoodTreeMap.put(2.53, 2.2);
         hoodTreeMap.put(2.10, 2.0);
         hoodTreeMap.put(1.79, 1.95);
-        hoodTreeMap.put(1.789, 1.65);
         hoodTreeMap.put(1.52, 1.7);
         hoodTreeMap.put(1.12, 0.9);
 
@@ -36,7 +33,6 @@ public class ShooterTreeMap {
         lowerWheelTreeMap.put(2.53, 43.5);
         lowerWheelTreeMap.put(2.10, 40.0);
         lowerWheelTreeMap.put(1.79, 39.0);
-        lowerWheelTreeMap.put(1.789, 38.5);
         lowerWheelTreeMap.put(1.52, 38.5);
         lowerWheelTreeMap.put(1.12, 37.5);
 
@@ -47,18 +43,13 @@ public class ShooterTreeMap {
         tofTreeMap.put(2.44, 1.10);
         tofTreeMap.put(1.12, 1.02);
 
-        radialVelocityTreeMap.put(-0.10, 0.00);
-        radialVelocityTreeMap.put(-0.5, 0.00);
-        radialVelocityTreeMap.put(0.10, 0.00);
-        radialVelocityTreeMap.put(0.5, 0.00);
-
         shuttlingRPSTreeMap.put(1.0, 20.0);
         shuttlingRPSTreeMap.put(3.0, 40.0);
         shuttlingRPSTreeMap.put(4.999, 45.0);
         shuttlingRPSTreeMap.put(5.0, 50.0);
-        shuttlingRPSTreeMap.put(7.0, 55.0);
-        shuttlingRPSTreeMap.put(9.0, 75.0);
-        shuttlingRPSTreeMap.put(16.0, 70.0);
+        shuttlingRPSTreeMap.put(7.0, 65.0);
+        shuttlingRPSTreeMap.put(9.0, 70.0);
+        shuttlingRPSTreeMap.put(16.0, 75.0);
 
         updateDashboardMap();
         SmartDashboard.putString("Tuning/lowerWheelTree Map", lowerWheelTreeMap.toString());
@@ -89,8 +80,12 @@ public class ShooterTreeMap {
         }
     }
 
+    public double getMinDistance() {
+        return 1.12;
+    }
+
     public double getMaxDistance() {
-        return 5.0;
+        return 5.07;
     }
 
     private void updateDashboardMap() {
