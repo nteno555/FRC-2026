@@ -75,6 +75,7 @@ public class DriveIOReal extends SwerveDrivetrain implements DriveIO{
         double yAccel = getPigeon2().getAccelerationY().getValue().in(Units.MetersPerSecondPerSecond);
         inputs.pigeonAcceleration = Math.hypot(xAccel, yAccel);
 
+        Logger.recordOutput("Drive/pigeonRotation", getPigeon2().getRotation2d());
         Logger.recordOutput("Drive/pigeonConnected", getPigeon2().isConnected());
         Logger.recordOutput("Drive/SwerveModuleStates", getState().ModuleStates);
         Logger.recordOutput("Drive/SwerveModuleStatesWanted", getState().ModuleTargets);

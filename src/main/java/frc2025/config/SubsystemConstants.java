@@ -32,7 +32,7 @@ public class SubsystemConstants {
     public static double flywheelEfficiency = 0.80;
     public static double flywheelSupplyCurrentLimit = 200;
     public static double flywheelStatorCurrentLimit = 200;
-    public static double towerShootVoltage = 8.0;
+    public static double towerShootVoltage = 10.0;
 
     public static double hoodkS = 0.29;
     public static double hoodkV = 0.12;
@@ -86,7 +86,7 @@ public class SubsystemConstants {
     public static double turretkS = 0.6;
     public static double turretkV = 0.135;
     public static double turretkA = 0.001 * 12.0;
-    public static double turretkP = 2.5;
+    public static double turretkP = 4.0;
     public static double turretkI = 0.0;
     public static double turretkD = 0.1;
     public static double turretCruiseVelocity = 60;
@@ -103,8 +103,8 @@ public class SubsystemConstants {
 //    public static double turretMaxAngleRadians = 3*Math.PI / 2;
     public static double turretMinAngleRadians = -1.0;
     public static double turretMaxAngleRadians = 4.30;
-    public static double throughBoreZero1 = 0.572;
-    public static double throughBoreZero2 = 0.509;
+    public static double throughBoreZero1 = 0.588;
+    public static double throughBoreZero2 = 0.532;
     public static double throughBoreRatio1 = 42.0 / 10.0 * 48.0 / 26.0;
     public static double throughBoreRatio2 = 42.0 / 10.0;
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
@@ -152,7 +152,7 @@ public class SubsystemConstants {
 
     public static double autoAimMaxSpeed = 2.5;
     public static double shuttlingMaxSpeed = 3.5;
-    public static double autoAimMaxSpeedStrict = 0.5;
+    public static double autoAimMaxSpeedStrict = 1.0;
     public static double autoAimMaxAccel = 10.0;
     public static double autoAimMaxAngularVelocity = Math.PI;
     public static double autoAimMaxAngularVelocityStrict = Math.PI;
