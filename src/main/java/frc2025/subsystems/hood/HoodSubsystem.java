@@ -43,10 +43,6 @@ public class HoodSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
     }
 
-    public Command setPositionRadians(Supplier<Double> positionRadians){
-        return setPosition(() -> toRotations(positionRadians.get()));
-    }
-
     public Command setPosition(Supplier<Double> position) {
         return this.run(() -> {
             setpoint = position.get();
@@ -109,7 +105,6 @@ public class HoodSubsystem extends SubsystemBase {
 
             if (RobotState.getInstance().getShuttling()) {
                 return SubsystemConstants.hoodMaxAngleRotations;
-//                return ShooterTreeMap.getInstance().shuttlingHoodTreeMap.getInterpolated(dist);
             }
 
             return ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist);
@@ -154,19 +149,11 @@ public class HoodSubsystem extends SubsystemBase {
         });
     }
 
-    public Command setFixed() {
-        return setPosition(() -> {
-            if(usingVoltage) setpoint = inputs.positionRotations;
-            return setpoint;
-        });
-    }
-
-    public boolean isNear(double position) {
-        return Math.abs(inputs.positionRotations - position) < 2.5;
-    }
     public double getPosition() { return inputs.positionRotations; }
     public double getPositionRadians() { return inputs.positionRadians; }
-    public boolean getShotReady() { return (inputs.positionRotations > 0.1) && (Math.abs(inputs.positionRotations - setpoint) < 0.1); }
+    public boolean getShotReady() {
+        return (inputs.positionRotations > 0.15) && (Math.abs(inputs.positionRotations - setpoint) < 0.1);
+    }
 
     public static double toRadians(double rotations) {
         double m = (SubsystemConstants.hoodMaxAngleRadians - SubsystemConstants.hoodMinAngleRadians) / (SubsystemConstants.hoodMaxAngleRotations - SubsystemConstants.hoodMinAngleRotations);

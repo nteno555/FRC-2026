@@ -37,11 +37,11 @@ public class ShooterTreeMap {
         lowerWheelTreeMap.put(1.12, 37.5);
 
         // redo these
-        tofTreeMap.put(5.07, 1.35);
-        tofTreeMap.put(3.70, 1.19);
-        tofTreeMap.put(3.50, 1.13);
-        tofTreeMap.put(2.44, 1.10);
-        tofTreeMap.put(1.12, 1.02);
+        tofTreeMap.put(5.12, 1.13);
+        tofTreeMap.put(4.25, 1.16);
+        tofTreeMap.put(3.52, 1.19);
+        tofTreeMap.put(2.64, 1.12);
+        tofTreeMap.put(1.58, 0.98);
 
         shuttlingRPSTreeMap.put(1.0, 20.0);
         shuttlingRPSTreeMap.put(3.0, 40.0);
@@ -81,7 +81,7 @@ public class ShooterTreeMap {
     }
 
     public double getMinDistance() {
-        return 1.12;
+        return 1.7;
     }
 
     public double getMaxDistance() {

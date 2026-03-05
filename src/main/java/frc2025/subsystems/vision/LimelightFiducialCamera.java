@@ -92,7 +92,7 @@ public class LimelightFiducialCamera {
         if(Alliance.get()) {
             LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{2, 3, 4, 5, 8, 9, 10, 11, 25, 26});
         } else {
-            LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{8, 9, 10, 18, 19, 20, 21, 24, 25, 26, 27});
+            LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{9, 10, 18, 19, 20, 21, 24, 25, 26, 27});
         }
     }
 
@@ -109,7 +109,7 @@ public class LimelightFiducialCamera {
             if(Alliance.get()) {
                 LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{2, 3, 4, 5, 8, 9, 10, 11, 25, 26});
             } else {
-                LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{8, 9, 10, 18, 19, 20, 21, 24, 25, 26, 27});
+                LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{9, 10, 18, 19, 20, 21, 24, 25, 26, 27});
             }
         }
     }

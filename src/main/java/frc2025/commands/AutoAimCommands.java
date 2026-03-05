@@ -148,7 +148,6 @@ public class AutoAimCommands {
 
             if (inBlueZone || inRedZone) {
                 good = good && (dist < ShooterTreeMap.getInstance().getMaxDistance());
-                good = good && (dist > ShooterTreeMap.getInstance().getMinDistance());
             }
 
             if(DriverStation.isAutonomousEnabled()) {
@@ -161,8 +160,11 @@ public class AutoAimCommands {
                 good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.shuttlingMaxSpeed) && (RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond < SubsystemConstants.shuttlingMaxAngularVelocity);
             } else {
                 double targetDist = RobotState.getInstance().getTargetPose().getTranslation().getDistance(RobotState.getInstance().getVisionPose().getTranslation());
-
-                if(targetDist < 3.2) {
+                if (targetDist < ShooterTreeMap.getInstance().getMinDistance()) {
+                    good = good && (RobotState.getInstance().getSpeed() < 0.1)
+                            && (RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond < Math.PI/6.0);
+                }
+                else if (targetDist < 3.2) {
                     good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed)
                             && (RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond < SubsystemConstants.autoAimMaxAngularVelocity);
                 } else {
@@ -172,8 +174,8 @@ public class AutoAimCommands {
                 }
             }
 
-//            Logger.recordOutput("Indexer/autoIndex/nearTrenchBump", ((nearBlueTrench || nearRedTrench) && onBumpTrench));
-//            Logger.recordOutput("Indexer/autoIndex/autoInZone", (DriverStation.isAutonomousEnabled()) && (inBlueZone || inRedZone));
+            Logger.recordOutput("Indexer/autoIndex/nearTrenchBump", ((nearBlueTrench || nearRedTrench) && onBumpTrench));
+            Logger.recordOutput("Indexer/autoIndex/autoInZone", (DriverStation.isAutonomousEnabled()) && (inBlueZone || inRedZone));
             Logger.recordOutput("Indexer/autoIndex/accelReady", (a < SubsystemConstants.autoAimMaxAccel));
             Logger.recordOutput("Indexer/autoIndex/shooterReady", robotContainer.getShooter().getShotReady());
             Logger.recordOutput("Indexer/autoIndex/turretReady", robotContainer.getTurret().getShotReady());
