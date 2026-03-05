@@ -49,12 +49,13 @@ public class Autos {
         var followPath = new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true);
 
         return robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
-                .alongWith(robotContainer.getHood().setPosition(() -> 0.0))
-                                .until(() -> robotContainer.getIntake().getDeployReady() && robotContainer.getHood().getPosition() < 0.3)
+                                .alongWith(robotContainer.getHood().setPosition(() -> 0.0))
+                                                .until(() -> robotContainer.getIntake().getDeployReady() && robotContainer.getHood().getPosition() < 0.3)
+                                .withTimeout(1.0)
                                 .andThen(
                                         followPath
                                         .deadlineFor(
-                                                robotContainer.intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage)
+                                                robotContainer.getIntake().setIntakingAuto()
                                                 .alongWith(robotContainer.indexerSubsystem.setVoltage(() -> SubsystemConstants.indexerReverseVoltage))
                                         )
                                 );
@@ -108,7 +109,7 @@ public class Autos {
                                     .alongWith(robotContainer.getTurret().autoAim())
                                     .alongWith(robotContainer.getHood().autoAimUnsafe())
                                     .alongWith(robotContainer.getIntake().oscillateIntake()))
-                                    .withTimeout(waitTime)
+                            .withTimeout(waitTime)
                     );
                 } else {
                     pathCommands = pathCommands.andThen(

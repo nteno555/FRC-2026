@@ -65,6 +65,8 @@ public class HoodIOReal implements HoodIO {
         inputs.positionRotations = hood.getPosition().getValue().in(Units.Rotation);
         inputs.positionRadians = toRadians(inputs.positionRotations);
         inputs.positionDegreesReal = Math.toDegrees(inputs.positionRadians);
+
+        Logger.recordOutput("Hood/connected", hood.isConnected());
     }
 
     @Override

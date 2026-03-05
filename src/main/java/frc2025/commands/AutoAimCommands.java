@@ -64,35 +64,39 @@ public class AutoAimCommands {
                 good = robotContainer.getShooter().getShotReady() && robotContainer.getTurret().getShotReady() && robotContainer.getHood().getShotReady();
             }
 
-//            Pose2d pose = RobotState.getInstance().getVisionShooterPose();
-//            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
-//            double dist = pose.getTranslation().getDistance(targetPose.getTranslation());
-//
-//            boolean nearBlueTrench = Math.abs(pose.getX() - FieldConstants.blueTrenchX) < FieldConstants.trenchThreshold;
-//            boolean nearRedTrench = Math.abs(pose.getX() - FieldConstants.redTrenchX) < FieldConstants.trenchThreshold;
-//            boolean onBumpTrench = (pose.getY() > FieldConstants.highBumpY) || (pose.getY() < FieldConstants.lowBumpY);
-//
-//            good = good && !((nearBlueTrench || nearRedTrench) && onBumpTrench);
-//
-//            boolean inBlueZone = pose.getX() < FieldConstants.inBlueZoneX && !Alliance.get();
-//            boolean inRedZone = pose.getX() > FieldConstants.inRedZoneX && Alliance.get();
-//
-//            if (inBlueZone || inRedZone) {
-//                good = good && (dist < ShooterTreeMap.getInstance().getMaxDistance());
-//            }
-//
-//            if(DriverStation.isAutonomousEnabled()) {
-//                good = good && (inBlueZone || inRedZone);
-//            }
+            Pose2d pose = RobotState.getInstance().getVisionShooterPose();
+            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
+            double dist = pose.getTranslation().getDistance(targetPose.getTranslation());
+
+            boolean nearBlueTrench = Math.abs(pose.getX() - FieldConstants.blueTrenchX) < FieldConstants.trenchThreshold;
+            boolean nearRedTrench = Math.abs(pose.getX() - FieldConstants.redTrenchX) < FieldConstants.trenchThreshold;
+            boolean onBumpTrench = (pose.getY() > FieldConstants.highBumpY) || (pose.getY() < FieldConstants.lowBumpY);
+
+            good = good && !((nearBlueTrench || nearRedTrench) && onBumpTrench);
+
+            boolean inBlueZone = pose.getX() < FieldConstants.inBlueZoneX && !Alliance.get();
+            boolean inRedZone = pose.getX() > FieldConstants.inRedZoneX && Alliance.get();
+
+            if (inBlueZone || inRedZone) {
+                good = good && (dist < ShooterTreeMap.getInstance().getMaxDistance());
+            }
+
+            if(DriverStation.isAutonomousEnabled()) {
+                good = good && (inBlueZone || inRedZone);
+            }
 
             double a = RobotState.getInstance().getPigeonAcceleration();
 
             if(RobotState.getInstance().getShuttling()) {
                 good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.shuttlingMaxSpeed) && (RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond < SubsystemConstants.shuttlingMaxAngularVelocity);
-            } else {
+            }
+            else {
                 double targetDist = RobotState.getInstance().getTargetPose().getTranslation().getDistance(RobotState.getInstance().getVisionPose().getTranslation());
 
-                if(targetDist < 3.0) {
+                if (targetDist < ShooterTreeMap.getInstance().getMinDistance()) {
+                    good = good && (RobotState.getInstance().getSpeed() < 0.5);
+                }
+                else if(targetDist < 3.0) {
                     good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed)
                             && (RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond < SubsystemConstants.autoAimMaxAngularVelocity);
                 }
@@ -164,7 +168,7 @@ public class AutoAimCommands {
                     good = good && (RobotState.getInstance().getSpeed() < 0.1)
                             && (RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond < Math.PI/6.0);
                 }
-                else if (targetDist < 3.2) {
+                else if (targetDist < 3.0) {
                     good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed)
                             && (RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond < SubsystemConstants.autoAimMaxAngularVelocity);
                 } else {

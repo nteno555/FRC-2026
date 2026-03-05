@@ -32,7 +32,7 @@ public class SubsystemConstants {
     public static double flywheelEfficiency = 0.80;
     public static double flywheelSupplyCurrentLimit = 200;
     public static double flywheelStatorCurrentLimit = 200;
-    public static double towerShootVoltage = 10.0;
+    public static double towerShootVoltage = 8.0;
 
     public static double hoodkS = 0.29;
     public static double hoodkV = 0.12;
@@ -150,12 +150,12 @@ public class SubsystemConstants {
     public static double robotToRightCameraPitch = 28.0;
     public static double robotToRightCameraRoll = 180.0;
 
-    public static double autoAimMaxSpeed = 2.5;
+    public static double autoAimMaxSpeed = 1.5;
     public static double shuttlingMaxSpeed = 3.5;
-    public static double autoAimMaxSpeedStrict = 1.0;
+    public static double autoAimMaxSpeedStrict = 0.7;
     public static double autoAimMaxAccel = 10.0;
-    public static double autoAimMaxAngularVelocity = Math.PI;
-    public static double autoAimMaxAngularVelocityStrict = Math.PI;
+    public static double autoAimMaxAngularVelocity = Math.PI/2;
+    public static double autoAimMaxAngularVelocityStrict = Math.PI/2;
     public static double shuttlingMaxAngularVelocity = Math.PI * 2;
 
     public static int climberID = 22;

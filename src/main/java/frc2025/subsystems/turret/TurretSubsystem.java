@@ -219,7 +219,10 @@ public class TurretSubsystem extends SubsystemBase {
     public double getPositionRadians() { return inputs.positionRadians; }
 
     public boolean getShotReady() {
-        return Math.abs(inputs.positionRadians - io.toRadians(setpoint)) < SubsystemConstants.turretShotReadyThreshold;
+        Logger.recordOutput("Turret/errorRots", Math.abs(inputs.positionTicks - setpoint));
+        Logger.recordOutput("Turret/errorRads", Math.abs(inputs.positionRadians - io.toRadians(setpoint)));
+        return Math.abs(inputs.positionTicks - setpoint) < io.toRotations(0.052);
+//        return Math.abs(inputs.positionRadians - io.toRadians(setpoint)) < SubsystemConstants.turretShotReadyThreshold;
     }
 
 }

@@ -74,7 +74,14 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public boolean getDeployReady() {
-        return inputs.position >= (SubsystemConstants.intakeDeployPosition-0.4) || !inputs.deployConnected;
+        return inputs.position >= (SubsystemConstants.intakeDeployPosition-0.35) || !inputs.deployConnected;
+    }
+
+    public Command setIntakingAuto() {
+        return this.run(() -> {
+            io.setDeployPosition(SubsystemConstants.intakeDeployPosition);
+            io.setVoltage(SubsystemConstants.intakeRollerVoltage);
+        });
     }
 
     public boolean getHasPiece(){

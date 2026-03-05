@@ -76,7 +76,7 @@ public class RobotContainer {
     Autos autos;
     Command autoCommand;
 
-    private double driveSpeed = 0.7;
+    private double driveSpeed = 0.8;
     private double slowmodeDriveSpeed = 0.3;
     private double rotationSpeed = 0.7;
     private double slowmodeRotationSpeed = 0.5;
@@ -211,6 +211,11 @@ public class RobotContainer {
         manualAimState = ManualAimState.FLUSH;
 
         driveSubsystem.setDefaultCommand(
+//                driveSubsystem.driveTeleop(
+//                        () -> (driveSpeed) * handleDeadBand(getDriverLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+//                        () -> (driveSpeed) * handleDeadBand(getDriverLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+//                        () -> (-rotationSpeed) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
+//                )
                 driveSubsystem.driveTeleop(
                         () -> (driveSpeed) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY() + testSystemsController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
                         () -> (driveSpeed) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX() + testSystemsController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
@@ -574,6 +579,19 @@ public class RobotContainer {
         
     }
 
+    public double getDriverLeftX() {
+        if (driverXboxController.getLeftX() < 0) {
+            return -Math.pow(Math.abs(driverXboxController.getLeftX()), 1.5);
+        }
+        return Math.pow(driverXboxController.getLeftX(), 1.5);
+    }
+
+    public double getDriverLeftY() {
+        if (driverXboxController.getLeftY() < 0) {
+            return -Math.pow(Math.abs(driverXboxController.getLeftY()), 1.5);
+        }
+        return Math.pow(driverXboxController.getLeftY(), 1.5);
+    }
 
     public void teleopInit() {
         //autoCommand.cancel();
