@@ -253,8 +253,8 @@ public class RobotContainer {
                .and(() -> aimMode == AimMode.MANUAL)
                .and(() -> manualAimState == ManualAimState.FLUSH)
                .whileTrue(
-                       shooterSubsystem.setSpeed(() -> 37.0)
-                               .alongWith(hoodSubsystem.setPosition(() -> 0.9))
+                       shooterSubsystem.setSpeed(() -> SubsystemConstants.flushFlywheelRps)
+                               .alongWith(hoodSubsystem.setPosition(() -> SubsystemConstants.flushHoodAngle))
                                .alongWith(intakeSubsystem.oscillateIntake())
                );
        new Trigger(() -> aiming)

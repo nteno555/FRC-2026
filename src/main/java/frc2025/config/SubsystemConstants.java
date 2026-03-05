@@ -103,8 +103,8 @@ public class SubsystemConstants {
 //    public static double turretMaxAngleRadians = 3*Math.PI / 2;
     public static double turretMinAngleRadians = -1.0;
     public static double turretMaxAngleRadians = 4.30;
-    public static double throughBoreZero1 = 0.588;
-    public static double throughBoreZero2 = 0.532;
+    public static double throughBoreZero1 = 0.802;
+    public static double throughBoreZero2 = 0.638;
     public static double throughBoreRatio1 = 42.0 / 10.0 * 48.0 / 26.0;
     public static double throughBoreRatio2 = 42.0 / 10.0;
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
@@ -150,13 +150,16 @@ public class SubsystemConstants {
     public static double robotToRightCameraPitch = 28.0;
     public static double robotToRightCameraRoll = 180.0;
 
-    public static double autoAimMaxSpeed = 1.5;
+    public static double autoAimMaxSpeed = 2.0;
     public static double shuttlingMaxSpeed = 3.5;
-    public static double autoAimMaxSpeedStrict = 0.7;
+    public static double autoAimMaxSpeedStrict = 1.0;
     public static double autoAimMaxAccel = 10.0;
-    public static double autoAimMaxAngularVelocity = Math.PI/2;
+    public static double autoAimMaxAngularVelocity = Math.PI;
     public static double autoAimMaxAngularVelocityStrict = Math.PI/2;
     public static double shuttlingMaxAngularVelocity = Math.PI * 2;
+
+    public static double flushFlywheelRps = 42.0;
+    public static double flushHoodAngle = 0.9;
 
     public static int climberID = 22;
     public static int flywheelMasterID = 13;

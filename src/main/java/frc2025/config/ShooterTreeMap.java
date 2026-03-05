@@ -17,10 +17,28 @@ public class ShooterTreeMap {
         hoodTreeMap.put(5.04, 2.55);
         hoodTreeMap.put(4.47, 2.4);
         hoodTreeMap.put(3.93, 2.2);
+        hoodTreeMap.put(3.354, 1.9);
+        hoodTreeMap.put(2.584, 1.5);
+        hoodTreeMap.put(2.09, 1.1);
+        hoodTreeMap.put(1.55, 1.0);
+        hoodTreeMap.put(1.11, 1.0);
 
         lowerWheelTreeMap.put(5.04, 57.0);
         lowerWheelTreeMap.put(4.47, 53.0);
         lowerWheelTreeMap.put(3.93, 53.0);
+        lowerWheelTreeMap.put(3.354, 51.0);
+        lowerWheelTreeMap.put(2.584, 48.0);
+        lowerWheelTreeMap.put(2.09, 48.0);
+        lowerWheelTreeMap.put(1.559, 45.0);
+        lowerWheelTreeMap.put(1.11, 41.0);
+
+        tofTreeMap.put(1.559, 1.22);
+        tofTreeMap.put(2.09, 1.21);
+        tofTreeMap.put(2.584, 1.27);
+        tofTreeMap.put(3.20, 1.26);
+//        tofTreeMap.put(3.96, 1.24);
+        tofTreeMap.put(4.38, 1.33);
+
 
 //        tofTreeMap.put();
 
@@ -116,7 +134,7 @@ public class ShooterTreeMap {
     }
 
     public double getMaxDistance() {
-        return 5.07;
+        return 4.5;
     }
 
     private void updateDashboardMap() {
