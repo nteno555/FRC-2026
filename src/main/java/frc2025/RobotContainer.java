@@ -12,6 +12,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -82,6 +84,8 @@ public class RobotContainer {
     private ManualAimState manualAimState;
     private boolean aiming;
 
+    private final Field2d field = new Field2d();
+
     private enum AimMode {
         TURRET,
         FIXED,
@@ -97,12 +101,13 @@ public class RobotContainer {
         createSubsystems();
         configureBindings();
         configureAutoCommands();
+        loggerInit();
+        
 
     }
 
     public void periodic() {
-        Logger.recordOutput("Superstructure/aimMode", aimMode);
-        Logger.recordOutput("Superstructure/manualAimState", manualAimState);
+        loggerPeriodic();
     }
 //shooterSubststem.setDefaultCommand( just shoot me);
     // - Yuna 2026
@@ -510,6 +515,23 @@ public class RobotContainer {
         autoCommand = autoChooser.getSelected();
         CommandScheduler.getInstance().schedule(autoCommand);
     }
+
+    public void loggerInit() {
+        SmartDashboard.putData("Field", field);
+    }
+
+    public void loggerPeriodic() {
+        field.setRobotPose(RobotState.getInstance().getVisionPose());
+        
+        boolean activeNow = RobotState.getInstance().isHubActive(false);
+        boolean isNearActive = RobotState.getInstance().isHubActive(true);
+        SmartDashboard.putBoolean("DriverStation/hubActive", activeNow || isNearActive);
+
+        Logger.recordOutput("Superstructure/aimMode", aimMode);
+        Logger.recordOutput("Superstructure/manualAimState", manualAimState);
+        
+    }
+
 
     public void teleopInit() {
         //autoCommand.cancel();

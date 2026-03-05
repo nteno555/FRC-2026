@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
@@ -21,6 +22,9 @@ import org.littletonrobotics.junction.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import java.util.Optional;
+
 
 public class RobotState {
     private static RobotState instance;
@@ -205,6 +209,60 @@ public class RobotState {
 
         return velocity.getX()*target.getX() + velocity.getY()*target.getY();
 
+    }
+
+    public boolean isHubActive(boolean checkingNear) {
+        Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
+        boolean near;
+
+        if (alliance.isEmpty()) return false;
+        if (DriverStation.isAutonomousEnabled()) return true;
+        if (!DriverStation.isTeleopEnabled()) return false;
+        
+        double matchTime = DriverStation.getMatchTime();
+        String gameData = DriverStation.getGameSpecificMessage();
+
+        matchTime = 133;
+
+        if (gameData.isEmpty()) return true;
+        
+        boolean redInactiveFirst = false;
+        switch (gameData.charAt(0)) {
+            case 'R' -> redInactiveFirst = true;
+            case 'B' -> redInactiveFirst = false;
+            default -> {return true;}
+        }
+
+        boolean shift1Active = switch (alliance.get()) {
+            case Red -> !redInactiveFirst;
+            case Blue -> redInactiveFirst;
+        };
+
+        shift1Active = true;
+        
+        if(!checkingNear){
+            if (matchTime > 130) return true;
+            else if (matchTime > 105) return shift1Active;
+            else if (matchTime > 80) return !shift1Active;
+            else if (matchTime > 55) return shift1Active;
+            else if (matchTime > 30) return !shift1Active;
+            else return true;
+        }
+        else {
+            if (matchTime <= 135 && matchTime > 130) near = shift1Active;
+            else if (matchTime <= 110 && matchTime > 105) near = !shift1Active;
+            else if (matchTime <= 85 && matchTime > 80) near = shift1Active;
+            else if (matchTime <= 60 && matchTime > 55) near = !shift1Active;
+            else if (matchTime <= 35 && matchTime > 30) near = true;            
+            else near = false; 
+
+            if (near){
+                double time = (Timer.getFPGATimestamp());
+                if (time % 0.5 < 0.25) return true;
+                else return false;
+            }
+            return false;
+        }
     }
 
     public void setTurretMt1AngleRadians(double angle) { turretMt1AngleRadians = angle; }
