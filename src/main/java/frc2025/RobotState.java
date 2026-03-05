@@ -181,35 +181,22 @@ public class RobotState {
     }
 
     public void setTurretAngle(double angleRadians) {
+        double now = Utils.getCurrentTimeSeconds();
+        if (prevTurretTimestamp != -1 && (now - prevTurretTimestamp) > 0.01) {
+            return;
+        }
         prevTurretAngle = turretAngle;
-        prevTurretTimestamp = Utils.getCurrentTimeSeconds();
+        prevTurretTimestamp = now;
         turretAngle = angleRadians;
     }
 
     public double getTurretVelocity() {
-       if (prevTurretTimestamp == -1) return 0.0;
+       if (prevTurretTimestamp == -1 || (Utils.getCurrentTimeSeconds() - prevTurretTimestamp)==0) return 0.0;
        return (turretAngle - prevTurretAngle)/(Utils.getCurrentTimeSeconds() - prevTurretTimestamp);
 //        return turretVelocity;
     }
 
     public double getTurretAngle() { return turretAngle; }
-
-    public double getRadialVelocity() {
-        ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(
-                robotRelativeSpeeds,
-                getVisionPose().getRotation()
-        );
-
-        Translation2d velocity = new Translation2d(
-                speeds.vxMetersPerSecond,
-                speeds.vyMetersPerSecond
-        );
-        Translation2d target = getTargetPose().getTranslation().minus(getVisionShooterPose().getTranslation())
-                .div(getTargetPose().getTranslation().minus(getVisionShooterPose().getTranslation()).getNorm());
-
-        return velocity.getX()*target.getX() + velocity.getY()*target.getY();
-
-    }
 
     public boolean isHubActive(boolean checkingNear) {
         Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
