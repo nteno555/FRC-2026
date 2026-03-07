@@ -99,8 +99,6 @@ public class SubsystemConstants {
     public static double turretPeakReverseTorqueCurrent = -120;
     public static double turretZeroOffsetRadians = 0.0;
     public static double turretRotationsPerRadian = 42.0/10.0 * 48.0/26.0 * 125.0/30.0 / (2*Math.PI); //
-//    public static double turretMinAngleRadians = -Math.PI / 2;
-//    public static double turretMaxAngleRadians = 3*Math.PI / 2;
     public static double turretMinAngleRadians = -1.0;
     public static double turretMaxAngleRadians = 4.30;
     public static double throughBoreZero1 = 0.802;
@@ -112,9 +110,6 @@ public class SubsystemConstants {
     public static boolean useTurretThroughBores = true;
     public static double turretShotReadyThreshold = 0.052; // 5.73 degrees
     public static boolean useTurretVisionCorrection = false;
-
-    // 2.195068 15.061768
-    // 17.197021  21.398193
 
     public static Transform2d robotToShooter = new Transform2d(0.09087, -0.0838, Rotation2d.kZero); // should be x = forward, y = side
     public static Transform2d shooterToCamera = new Transform2d(0.1671, 0.0, Rotation2d.kZero);
