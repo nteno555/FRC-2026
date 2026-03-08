@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
@@ -209,8 +210,6 @@ public class RobotState {
         double matchTime = DriverStation.getMatchTime();
         String gameData = DriverStation.getGameSpecificMessage();
 
-        matchTime = 133;
-
         if (gameData.isEmpty()) return true;
         
         boolean redInactiveFirst = false;
@@ -224,8 +223,6 @@ public class RobotState {
             case Red -> !redInactiveFirst;
             case Blue -> redInactiveFirst;
         };
-
-        shift1Active = true;
         
         if(!checkingNear){
             if (matchTime > 130) return true;

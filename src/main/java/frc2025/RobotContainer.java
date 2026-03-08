@@ -8,6 +8,8 @@ import static frc2025.subsystems.drive.DriveConstants.FrontLeft;
 import static frc2025.subsystems.drive.DriveConstants.FrontRight;
 import static frc2025.subsystems.drive.DriveConstants.kSpeedAt12Volts;
 
+import java.util.Optional;
+
 import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -557,6 +559,56 @@ public class RobotContainer {
         }
     }
 
+    public void updateHubMessage(){
+        Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
+
+        if (alliance.isEmpty()) return;
+        
+        double matchTime = DriverStation.getMatchTime();
+        String gameData = DriverStation.getGameSpecificMessage();
+
+        if (gameData.isEmpty()) {
+                SmartDashboard.putString("DriverStation/TimeToSwitch", "WAITING FOR FMS");
+                return;
+        }
+        
+        boolean redInactiveFirst = false;
+        switch (gameData.charAt(0)) {
+            case 'R' -> redInactiveFirst = true;
+            case 'B' -> redInactiveFirst = false;
+            default -> {return;}
+        }
+
+        boolean shift1Active = switch (alliance.get()) {
+            case Red -> !redInactiveFirst;
+            case Blue -> redInactiveFirst;
+        };
+
+        int matchTimeInt = (int)(Math.round(matchTime));
+
+            if (matchTime > 130) {
+                if(shift1Active) SmartDashboard.putString("DriverStation/TimeToSwitch", "ACTIVE");
+                else SmartDashboard.putString("DriverStation/TimeToSwitch", "OFF IN " + (matchTimeInt - 130) + "s");
+            }
+            else if (matchTime > 105) {
+                if(shift1Active) SmartDashboard.putString("DriverStation/TimeToSwitch", "OFF IN " + (matchTimeInt - 105) + "s");
+                else SmartDashboard.putString("DriverStation/TimeToSwitch", "ACTIVE IN " + (matchTimeInt - 105) + "s");
+            }
+            else if (matchTime > 80) {
+                if(!shift1Active) SmartDashboard.putString("DriverStation/TimeToSwitch", "OFF IN " + (matchTimeInt - 80) + "s");
+                else SmartDashboard.putString("DriverStation/TimeToSwitch", "ACTIVE IN " + (matchTimeInt - 80) + "s");
+            }
+            else if (matchTime > 55){ 
+                if(shift1Active) SmartDashboard.putString("DriverStation/TimeToSwitch", "OFF IN " + (matchTimeInt - 55) + "s");
+                else SmartDashboard.putString("DriverStation/TimeToSwitch", "ACTIVE IN " + (matchTimeInt - 55) + "s");
+        }
+            else if (matchTime > 30) {
+                if(!shift1Active) SmartDashboard.putString("DriverStation/TimeToSwitch", "HUB ACTIVE");
+                else SmartDashboard.putString("DriverStation/TimeToSwitch", "ACTIVE IN " + (matchTimeInt - 30) + "s");
+            }
+            else SmartDashboard.putString("DriverStation/TimeToSwitch", "HUB ACTIVE");
+    }
+
     public void autoInit() {
         autoCommand = autoChooser.getSelected();
         CommandScheduler.getInstance().schedule(autoCommand);
@@ -571,6 +623,8 @@ public class RobotContainer {
     public void loggerPeriodic() {
         field.setRobotPose(RobotState.getInstance().getVisionPose());
         
+        updateHubMessage();
+
         boolean activeNow = RobotState.getInstance().isHubActive(false);
         boolean isNearActive = RobotState.getInstance().isHubActive(true);
         SmartDashboard.putBoolean("DriverStation/hubActive", activeNow || isNearActive);
