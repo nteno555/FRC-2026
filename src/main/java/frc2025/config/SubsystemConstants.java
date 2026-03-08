@@ -145,7 +145,7 @@ public class SubsystemConstants {
     public static double robotToRightCameraPitch = 28.0;
     public static double robotToRightCameraRoll = 180.0;
 
-    public static double autoAimMaxSpeed = 2.0;
+    public static double autoAimMaxSpeed = 2.3;
     public static double shuttlingMaxSpeed = 3.5;
     public static double autoAimMaxSpeedStrict = 1.0;
     public static double autoAimMaxAccel = 10.0;

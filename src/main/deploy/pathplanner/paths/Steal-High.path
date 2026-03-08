@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.317535855893734,
-        "y": 7.16381815422906
+        "x": 8.336976051613137,
+        "y": 7.473146185415763
       },
       "isLocked": false,
       "linkedName": "steal (high)"
@@ -20,8 +20,8 @@
         "y": 7.442
       },
       "prevControl": {
-        "x": 8.174962118643302,
-        "y": 7.51505440040871
+        "x": 8.289059859664352,
+        "y": 7.486295971340603
       },
       "nextControl": null,
       "isLocked": false,
