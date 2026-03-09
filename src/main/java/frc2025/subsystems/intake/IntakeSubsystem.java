@@ -74,7 +74,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public boolean getDeployReady() {
-        return inputs.position >= (SubsystemConstants.intakeDeployPosition-1.0) || !inputs.deployConnected;
+        return inputs.position >= (SubsystemConstants.intakeDeployPosition-2.0) || !inputs.deployConnected;
     }
 
     public Command setIntakingAuto() {

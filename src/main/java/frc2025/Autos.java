@@ -176,6 +176,13 @@ public class Autos {
         return buildAuto(List.of("Low-Steal (under trench)", "Steal-Low", WAIT_SHOOT, "LowScore-NeutralMidLoop-LowScore"), false);
     }
 
+//    public Command LowNeutralLowNeutral() {
+//        if (SubsystemConstants.hasTurret) {
+//            return buildAuto(List.of("Low-Neutral (under trench)", "Neutral-Low", WAIT_SHOOT, "Low-NeutralMid", "NeutralMid-Low"), false);
+//        }
+//        return buildAuto(List.of("Low-Neutral (under trench)", "Neutral-LowScore", WAIT_SHOOT, "LowScore-NeutralMid", "NeutralMid-LowScore"), false);
+//    }
+
     public Command MidStationDepotClimb() {
         return buildAuto(List.of("Mid-Station", WAIT_SHOOT, "Station-Depot", "Depot-Climb"), true);
     }
