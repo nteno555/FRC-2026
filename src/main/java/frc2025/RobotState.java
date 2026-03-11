@@ -134,7 +134,7 @@ public class RobotState {
         Pose2d currentPose = RobotState.getInstance().getVisionPose();
         Pose2d realTargetPose = getTargetPose();
         Pose2d virtualPose = getTargetPose();
-        double phaseDelay = 0.03;
+        double phaseDelay = 0.01;
 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
                 robotRelativeSpeeds,

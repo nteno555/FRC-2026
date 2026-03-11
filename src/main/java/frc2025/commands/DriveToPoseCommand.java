@@ -51,8 +51,8 @@ public class DriveToPoseCommand extends Command {
         double omegaFeedback = rotationPID.calculate(
                 currentPose.getRotation().getRadians(), desiredPose.getRotation().getRadians());
 
-        xFeedback = MathUtil.clamp(Math.pow(Math.abs(xFeedback), 1), 0, 2.5) * Math.signum(xFeedback);
-        yFeedback = MathUtil.clamp(Math.pow(Math.abs(yFeedback), 1), 0, 2.5) * Math.signum(yFeedback);
+        xFeedback = MathUtil.clamp(Math.pow(Math.abs(xFeedback), 1), 0, 3) * Math.signum(xFeedback);
+        yFeedback = MathUtil.clamp(Math.pow(Math.abs(yFeedback), 1), 0, 3) * Math.signum(yFeedback);
 
         double dist = Math.sqrt(Math.pow(currentPose.getX() - desiredPose.getX(), 2) + Math.pow(currentPose.getY() - desiredPose.getY(), 2));
         Logger.recordOutput("Drive/PathFollowingError", dist);

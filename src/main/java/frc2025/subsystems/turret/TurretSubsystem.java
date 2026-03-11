@@ -80,16 +80,13 @@ public class TurretSubsystem extends SubsystemBase {
                     return wantedAngle;
                 },
                 () -> {
-                    double phaseDelay = 0.03;
                     ChassisSpeeds robotSpeeds = RobotState.getInstance().getFieldRelativeSpeeds();
                     double vx = robotSpeeds.vxMetersPerSecond;
                     double vy = robotSpeeds.vyMetersPerSecond;
                     double vOmega = robotSpeeds.omegaRadiansPerSecond;
 
                     Translation2d targetPos = RobotState.getInstance().getShootingWhileMovingVirtualPose().getTranslation();
-                    var robotPose = RobotState.getInstance().getVisionPose().exp(
-                            new Twist2d(vx * phaseDelay, vy * phaseDelay, vOmega * phaseDelay)
-                    );
+                    var robotPose = RobotState.getInstance().getVisionPose();
                     Translation2d shooterPos = robotPose.transformBy(SubsystemConstants.robotToShooter).getTranslation();
 
                     var robotToTargetXY = targetPos.minus(shooterPos);
