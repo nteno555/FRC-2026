@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc2025.Robot;
 import frc2025.RobotState;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveSubsystem;
@@ -39,7 +40,6 @@ public class FollowPathCommand extends Command {
     private PIDController translationPID;
     private Supplier<Boolean> flip;
     private boolean useTimeout = false;
-    private double distanceThresh = 0.15;
 
     public FollowPathCommand(DriveSubsystem drive, Supplier<PathPlannerPath> pathSupplier, Supplier<Boolean> flip, boolean useTimeout) {
         this.pathSupplier = pathSupplier;
@@ -165,9 +165,7 @@ public class FollowPathCommand extends Command {
             Logger.recordOutput("Vision/alignDistance", translation.getNorm());
             Logger.recordOutput("Drive/targetPose", endPose);
 
-            //return (translation.getNorm() < 0.05 && strafe.getNorm() < 0.02 && rotationDistance < 2);
-            double velocity = Math.pow(driveSubsystem.getRobotRelativeSpeeds().vxMetersPerSecond, 2) + Math.pow(driveSubsystem.getRobotRelativeSpeeds().vyMetersPerSecond, 2);
-            return (translation.getNorm() < distanceThresh && rotationDistance < 3) && this.timer.hasElapsed(trajectory.getTotalTimeSeconds());// && velocity < 0.02 && angularVelocity < 0.1;
+            return (translation.getNorm() < 0.5 && rotationDistance < 10) && RobotState.getInstance().getSpeed() < 0.5;// && velocity < 0.02 && angularVelocity < 0.1;
         }
         return this.timer.hasElapsed(trajectory.getTotalTimeSeconds());
     }
