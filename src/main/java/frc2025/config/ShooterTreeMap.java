@@ -23,14 +23,23 @@ public class ShooterTreeMap {
         hoodTreeMap.put(1.55, 1.0);
         hoodTreeMap.put(1.11, 1.0);
 
-        lowerWheelTreeMap.put(5.04, 55.0);
-        lowerWheelTreeMap.put(4.47, 51.0);
-        lowerWheelTreeMap.put(3.93, 51.0);
-        lowerWheelTreeMap.put(3.354, 49.0);
-        lowerWheelTreeMap.put(2.584, 46.0);
-        lowerWheelTreeMap.put(2.09, 46.0);
-        lowerWheelTreeMap.put(1.559, 43.0);
-        lowerWheelTreeMap.put(1.11, 39.0);
+        lowerWheelTreeMap.put(5.04, 57.0);
+        lowerWheelTreeMap.put(4.47, 53.0);
+        lowerWheelTreeMap.put(3.93, 53.0);
+        lowerWheelTreeMap.put(3.354, 51.0);
+        lowerWheelTreeMap.put(2.584, 49.0);
+        lowerWheelTreeMap.put(2.09, 49.0);
+        lowerWheelTreeMap.put(1.559, 46.0);
+        lowerWheelTreeMap.put(1.11, 42.0);
+
+//        lowerWheelTreeMap.put(5.04, 55.0);
+//        lowerWheelTreeMap.put(4.47, 51.0);
+//        lowerWheelTreeMap.put(3.93, 51.0);
+//        lowerWheelTreeMap.put(3.354, 49.0);
+//        lowerWheelTreeMap.put(2.584, 46.0);
+//        lowerWheelTreeMap.put(2.09, 46.0);
+//        lowerWheelTreeMap.put(1.559, 43.0);
+//        lowerWheelTreeMap.put(1.11, 39.0);
 
         tofTreeMap.put(1.559, 1.22);
         tofTreeMap.put(2.09, 1.21);
@@ -114,6 +123,7 @@ public class ShooterTreeMap {
     public double getRealTof(double dist) {
 //        double tof = tofTreeMap.getInterpolated(dist);
 //        return (1 - Math.exp(-kDrag * tof)) / kDrag;
+        // return 1.15 + (0.04 * dist)
         return tofTreeMap.getInterpolated(dist);
     }
 

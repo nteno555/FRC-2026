@@ -40,6 +40,13 @@ public class ShooterIOReal implements ShooterIO {
 
         var towerConfigs = new TalonFXConfiguration();
 
+        towerConfigs.Slot0.kS = SubsystemConstants.towerkS;
+        towerConfigs.Slot0.kV = SubsystemConstants.towerkV;
+        towerConfigs.Slot0.kA = SubsystemConstants.towerkA;
+        towerConfigs.Slot0.kP = SubsystemConstants.towerkP;
+        towerConfigs.Slot0.kI = SubsystemConstants.towerkI;
+        towerConfigs.Slot0.kD = SubsystemConstants.towerkD;
+
         towerConfigs.CurrentLimits.SupplyCurrentLimit = 80;
         towerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
         towerConfigs.CurrentLimits.StatorCurrentLimit = 80;
@@ -69,6 +76,7 @@ public class ShooterIOReal implements ShooterIO {
         inputs.slaveVelocityRPM = flywheelSlave.getVelocity().getValueAsDouble();
 
         inputs.towerVoltage = tower.getMotorVoltage().getValueAsDouble();
+        inputs.towerRPS = tower.getVelocity().getValueAsDouble();
     }
 
     @Override
@@ -86,6 +94,7 @@ public class ShooterIOReal implements ShooterIO {
     public void setSpeed(double speed) {
         flywheelMaster.setControl(new VelocityVoltage(speed)
                 .withEnableFOC(true));
-        tower.setControl(new VoltageOut(SubsystemConstants.towerShootVoltage));
+        tower.setControl(new VelocityVoltage(speed * SubsystemConstants.towerFlywheelRatio)
+                .withEnableFOC(true));
     }
 }

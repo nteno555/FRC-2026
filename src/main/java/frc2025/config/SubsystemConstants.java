@@ -32,7 +32,14 @@ public class SubsystemConstants {
     public static double flywheelEfficiency = 0.80;
     public static double flywheelSupplyCurrentLimit = 200;
     public static double flywheelStatorCurrentLimit = 200;
-    public static double towerShootVoltage = 8.0;
+    // to do check
+    public static double towerkS = 0.45;
+    public static double towerkV = 0.095;
+    public static double towerkA = 0.00;
+    public static double towerkP = 0.2;
+    public static double towerkI = 0.0;
+    public static double towerkD = 0.0;
+    public static double towerFlywheelRatio = 0.5;
 
     public static double hoodkS = 0.29;
     public static double hoodkV = 0.12;
@@ -101,8 +108,8 @@ public class SubsystemConstants {
     public static double turretRotationsPerRadian = 42.0/10.0 * 48.0/26.0 * 125.0/30.0 / (2*Math.PI); //
     public static double turretMinAngleRadians = -1.0;
     public static double turretMaxAngleRadians = 4.30;
-    public static double throughBoreZero1 = 0.512; // 0.802
-    public static double throughBoreZero2 = 0.615; // 0.638
+    public static double throughBoreZero1 = 0.722; // 0.802
+    public static double throughBoreZero2 = 0.020; // 0.638
     public static double throughBoreRatio1 = 42.0 / 10.0 * 48.0 / 26.0;
     public static double throughBoreRatio2 = 42.0 / 10.0;
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
@@ -145,9 +152,9 @@ public class SubsystemConstants {
     public static double robotToRightCameraPitch = 28.0;
     public static double robotToRightCameraRoll = 180.0;
 
-    public static double autoAimMaxSpeed = 2.3;
+    public static double autoAimMaxSpeed = 10.0;//2.3;
     public static double shuttlingMaxSpeed = 3.5;
-    public static double autoAimMaxSpeedStrict = 1.0;
+    public static double autoAimMaxSpeedStrict = 10.0;//1.0;
     public static double autoAimMaxAccel = 10.0;
     public static double autoAimMaxAngularVelocity = Math.PI;
     public static double autoAimMaxAngularVelocityStrict = Math.PI/2;
