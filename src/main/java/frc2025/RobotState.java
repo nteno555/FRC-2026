@@ -151,18 +151,27 @@ public class RobotState {
         Pose2d realTargetPose = getTargetPose();
         Pose2d virtualPose = getTargetPose();
         double phaseDelay = 0.02;
+        Pose2d delayedPose = getDelayedPose();
 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
                 robotRelativeSpeeds,
                 currentPose.getRotation()
         );
-        double vx = chassisSpeeds.vxMetersPerSecond;
-        double vy = chassisSpeeds.vyMetersPerSecond;
+
+        Translation2d v = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+        Translation2d robotToShooter = SubsystemConstants.robotToShooter.getTranslation();
+        v = v.plus(
+               new Translation2d(
+                       robotToShooter.getNorm() * chassisSpeeds.omegaRadiansPerSecond,
+                       currentPose.getRotation().rotateBy(robotToShooter.getAngle()).rotateBy(Rotation2d.kCCW_90deg))
+        );
+
+        double vx = v.getX();
+        double vy = v.getY();
         double vOmega = chassisSpeeds.omegaRadiansPerSecond;
-        Pose2d delayedPose = getDelayedPose();
-        Translation2d shooterFieldRelative = SubsystemConstants.robotToShooter.getTranslation().rotateBy(delayedPose.getRotation());
-        vx += vOmega * shooterFieldRelative.getY();
-        vy += -vOmega * shooterFieldRelative.getX();
+//        Translation2d shooterFieldRelative = SubsystemConstants.robotToShooter.getTranslation().rotateBy(delayedPose.getRotation());
+//        vx += vOmega * shooterFieldRelative.getY();
+//        vy += -vOmega * shooterFieldRelative.getX();
 
         for (int i = 0; i < 5; i++) {
             double dx = virtualPose.getX() - delayedPose.getX();
