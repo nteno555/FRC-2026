@@ -77,7 +77,7 @@ public class RobotContainer {
     Autos autos;
     Command autoCommand;
 
-    private double driveSpeed = 0.2;
+    private double driveSpeed = 1;
     private double rotationSpeed = 0.7;
 
     public RobotContainer() {
@@ -196,14 +196,20 @@ public class RobotContainer {
                 )
         );
 
-        driverXboxController.rightTrigger().whileTrue(
-                new DriveToPoseCommand(driveSubsystem, () -> RobotState.getInstance().bestClusterPose(), true)
-        ).whileFalse(
-                driveSubsystem.applyChassisSpeedsCommand(() -> new ChassisSpeeds())
-        );
+        // driverXboxController.rightTrigger().whileTrue(
+        //         new DriveToPoseCommand(driveSubsystem, () -> RobotState.getInstance().bestClusterPose(), true)
+        // ).whileFalse(
+        //         driveSubsystem.applyChassisSpeedsCommand(() -> new ChassisSpeeds())
+        // );
 
-        driverXboxController.leftTrigger().whileTrue(
-                new DriveToPoseCommand(driveSubsystem, () -> RobotState.getInstance().bestClusterPose(), false)
+        // driverXboxController.leftTrigger().whileTrue(
+        //         new DriveToPoseCommand(driveSubsystem, () -> RobotState.getInstance().bestClusterPose(), false)
+        // ).whileFalse(
+        //         driveSubsystem.applyChassisSpeedsCommand(() -> new ChassisSpeeds())
+        // );
+
+        driverXboxController.rightTrigger().whileTrue(
+                new DriveToClusterCommand(driveSubsystem)
         ).whileFalse(
                 driveSubsystem.applyChassisSpeedsCommand(() -> new ChassisSpeeds())
         );

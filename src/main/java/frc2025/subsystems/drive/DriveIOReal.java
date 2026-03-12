@@ -83,7 +83,7 @@ public class DriveIOReal extends SwerveDrivetrain implements DriveIO{
         SwerveModulePosition[] wheelDeltas = new SwerveModulePosition[4];
         for (int i = 0; i < 4; i++) {
             wheelDeltas[i] = new SwerveModulePosition(
-                    (state.ModulePositions[i].distanceMeters - lastModulePositionsMeters[i]),
+                    (-(state.ModulePositions[i].distanceMeters - lastModulePositionsMeters[i])),
                     state.ModulePositions[i].angle);
             lastModulePositionsMeters[i] = state.ModulePositions[i].distanceMeters;
         }

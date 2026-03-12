@@ -16,10 +16,12 @@ import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.hood.HoodSubsystem;
 import frc2025.subsystems.shooter.ShooterSubsystem;
+import frc2025.subsystems.vision.BallPoseEstimator;
 import frc2025.subsystems.vision.LimelightHelpers;
 import frc2025.subsystems.vision.VisionPoseEstimator;
 import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonUtils;
 import org.photonvision.proto.Photon;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -55,6 +57,7 @@ public class RobotState {
     private final Field2d field = new Field2d();
     private ArrayList<String> states;
     private String matchState;
+    BallPoseEstimator ballPoseEstimator = new BallPoseEstimator(SubsystemConstants.robotToPhotonCamera);
 
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
@@ -266,47 +269,205 @@ public class RobotState {
     //     }
     //     return ballPoses;
     // }
+    // public ArrayList<Pose2d> getBallFieldPoses() {
+    //     ArrayList<Pose2d> ballFieldPoses = new ArrayList<>();
+    //     if (ballTargets == null) {return ballFieldPoses;}
 
-    public ArrayList<Pose2d> getBallFieldPoses() {
-        ArrayList<Pose2d> ballPoses = new ArrayList<>();
-        Pose2d robotPose = getVisionPose();
+    //     Pose2d robotPose = visionPoseEstimator.getLatestPose();
 
-        if (ballTargets == null) return ballPoses;
+    //     for (PhotonTrackedTarget target : ballTargets) {
+    //         Transform3d cameraToTarget = target.getBestCameraToTarget();
+    //         Transform3d robotToCamera = SubsystemConstants.robotToPhotonCamera;
+    //         if (cameraToTarget != null) {
+    //             Logger.recordOutput("Heatmap/cameraToTarget", cameraToTarget);
+    //         }
+    //         double fieldX = robotPose.getX() + robotToCamera.getX() + cameraToTarget.getX();
+    //         double fieldY = robotPose.getY() + robotToCamera.getY() + cameraToTarget.getY();
+    //         double fieldRotation = robotPose.getRotation().getRadians()
+    //                             + robotToCamera.getRotation().getZ()
+    //                             + cameraToTarget.getRotation().getZ();
 
-        Translation3d camTranslation = SubsystemConstants.robotToPhotonCamera.getTranslation();
-        Rotation3d camRotation = SubsystemConstants.robotToPhotonCamera.getRotation();
+    //         Pose2d targetFieldPose2d = new Pose2d(fieldX, fieldY, new Rotation2d(fieldRotation));
+    //         ballFieldPoses.add(targetFieldPose2d);
+    //     }
+    //     if (ballFieldPoses != null || !ballFieldPoses.isEmpty()) {
+    //         Logger.recordOutput("Heatmap/ballFieldPoses", ballFieldPoses.get(0));
+    //     }
+    //     return ballFieldPoses;
+    // }
 
-        double camX = camTranslation.getX();
-        double camY = camTranslation.getY();
-        double camZ = camTranslation.getZ();
+    // public ArrayList<Pose2d> getBallFieldPoses() {
 
-        for (PhotonTrackedTarget t : ballTargets) {
-            double yaw = Math.toRadians(t.getYaw());
-            double pitch = Math.toRadians(t.getPitch());
+    //     ArrayList<Pose2d> ballPoses = new ArrayList<>();
+    //     if (ballTargets == null) return ballPoses;
 
-            double xCam = Math.cos(pitch) * Math.cos(yaw);
-            double yCam = Math.cos(pitch) * Math.sin(yaw);
-            double zCam = Math.sin(pitch);
+    //     Pose2d robotPose = getVisionPose();
 
-            Translation3d dCam = new Translation3d(xCam, yCam, zCam);
-            Translation3d dRobot = dCam.rotateBy(camRotation);
-            if (dRobot.getZ() >= 0) continue;
-            double tHit = (-camZ / dRobot.getZ());
-            double xHit = camX + (tHit * dRobot.getX());
-            double yHit = camY + (tHit * dRobot.getY());
+    //     Translation3d camTranslation = SubsystemConstants.robotToPhotonCamera.getTranslation();
+    //     Rotation3d camRotation = SubsystemConstants.robotToPhotonCamera.getRotation();
 
-            Translation2d robotToBall = new Translation2d(xHit, yHit);
+    //     double camX = camTranslation.getX();
+    //     double camY = camTranslation.getY();
+    //     double camZ = camTranslation.getZ();
 
-            Pose2d ballPose = robotPose.transformBy(new Transform2d(robotToBall, Rotation2d.kZero));
+    //     for (PhotonTrackedTarget target : ballTargets) {
 
-            ballPoses.add(ballPose);
-        }
+    //         double yaw = Math.toRadians(target.getYaw());
+    //         double pitch = Math.toRadians(target.getPitch());
 
-        return ballPoses;
-    }
+    //         double x = Math.cos(pitch) * Math.cos(yaw);
+    //         double y = Math.cos(pitch) * Math.sin(yaw);
+    //         double z = Math.sin(pitch);
+
+    //         Translation3d rayCam = new Translation3d(x, y, z);
+
+    //         Translation3d rayRobot = rayCam.rotateBy(camRotation);
+
+    //         if (Math.abs(rayRobot.getZ()) < 1e-6) continue;
+
+    //         double t = -camZ / rayRobot.getZ();
+
+    //         if (t < 0) continue;
+
+    //         double hitX = camX + t * rayRobot.getX();
+    //         double hitY = camY + t * rayRobot.getY();
+
+    //         Translation2d robotToBall = new Translation2d(hitX, hitY);
+
+    //         Pose2d ballPose =
+    //             robotPose.transformBy(new Transform2d(robotToBall, Rotation2d.kZero));
+            
+    //         ballPoses.add(ballPose);
+    //     }
+
+
+    //     return ballPoses;
+    // }
+    // public ArrayList<Pose2d> getBallFieldPoses() {
+    //     ArrayList<Pose2d> ballFieldPoses = new ArrayList<>();
+
+    //     Pose2d robotPose = visionPoseEstimator.getLatestPose();
+    //     if (robotPose == null) return ballFieldPoses; 
+
+    //     List<PhotonTrackedTarget> targets = RobotState.getInstance().getBallTargets();
+    //     if (targets == null || targets.isEmpty()) return ballFieldPoses;
+
+    //     if (SubsystemConstants.robotToPhotonCamera == null) return ballFieldPoses;
+
+    //     if (ShooterTreeMap.getInstance() == null ||
+    //         ShooterTreeMap.getInstance().areaToDistanceTreeMap == null) return ballFieldPoses; 
+
+    //     for (PhotonTrackedTarget target : targets) {
+    //         if (target == null) continue;
+
+    //         double yawRad = -Math.toRadians(target.getYaw());
+
+    //         double distance = ShooterTreeMap.getInstance().areaToDistanceTreeMap.getInterpolated(target.getArea());
+    //         if (Double.isNaN(distance) || Double.isInfinite(distance)) continue;
+
+    //         double xCamera = distance * Math.cos(yawRad);
+    //         double yCamera = -distance * Math.sin(yawRad);
+    //         Logger.recordOutput("Heatmap/distance", distance);
+    //         Pose2d cameraRelative = new Pose2d(xCamera, yCamera, new Rotation2d());
+
+    //         Transform2d cameraToRobot = new Transform2d(
+    //             new Translation2d(SubsystemConstants.robotToPhotonCamera.getX(),
+    //                             SubsystemConstants.robotToPhotonCamera.getY()),
+    //             new Rotation2d(SubsystemConstants.robotToPhotonCamera.getRotation().getZ())
+    //         );
+
+    //         Pose2d robotRelative = cameraRelative.plus(cameraToRobot);
+
+    //         Pose2d fieldPose = robotPose.plus(new Transform2d(
+    //             robotRelative.getTranslation(),
+    //             robotRelative.getRotation()
+    //         ));
+
+    //         ballFieldPoses.add(fieldPose);
+    //     }
+    //     if (ballFieldPoses != null || !ballFieldPoses.isEmpty()) {
+    //         Logger.recordOutput("Heatmap/ballFieldPose", ballFieldPoses.get(0));
+    //     }
+    //     return ballFieldPoses;
+    // }
+    // public ArrayList<Pose2d> getBallFieldPoses() {
+    //     ArrayList<Pose2d> fieldPoses = new ArrayList<>();
+    //     double objectHeightMeters = 0.150114; // ball height
+    //     int count = 0;
+
+
+    //     if (visionPoseEstimator == null || visionPoseEstimator.getLatestPose() == null) {
+    //         return fieldPoses;
+    //     }
+    //     Pose2d visionPose = visionPoseEstimator.getLatestPose();
+
+    //     Transform3d robotToPhotonCamera = SubsystemConstants.robotToPhotonCamera;
+    //     if (robotToPhotonCamera == null) return fieldPoses;
+
+    //     if (ballTargets == null || ballTargets.isEmpty()) return fieldPoses;
+
+
+    //     double fx = 366.21;
+    //     double fy = 366.11;
+    //     double cx = 319.02;
+    //     double cy = 232.73;
+
+    //     for (PhotonTrackedTarget target : ballTargets) {
+    //         if (target == null) continue;
+
+    //         var corners = target.getMinAreaRectCorners();
+    //         if (corners == null || corners.size() < 4) continue;
+
+    //         double sumX = 0, sumY = 0;
+    //         for (var c : corners) {
+    //             if (c == null) continue;
+    //             sumX += c.x;
+    //             sumY += c.y;
+    //         }
+    //         double u = sumX / corners.size();
+    //         double v = sumY / corners.size();
+
+
+    //         double xNorm = (u - cx) / fx;
+    //         double yNorm = (cy - v) / fy;
+
+    //         double cameraHeight = robotToPhotonCamera.getTranslation().getZ();
+    //         double deltaH = objectHeightMeters - cameraHeight;
+
+    //         double rayPitch = Math.atan2(yNorm, 1.0);
+    //         if (Math.abs(Math.tan(rayPitch)) < 1e-6) continue;
+
+    //         double zCam = deltaH / Math.tan(rayPitch);
+    //         double xCam = xNorm * zCam; 
+
+    //         double camYaw = robotToPhotonCamera.getRotation().getZ();
+    //         double cosYaw = Math.cos(camYaw);
+    //         double sinYaw = Math.sin(camYaw);
+
+    //         double xRobot = zCam * cosYaw - xCam * sinYaw + robotToPhotonCamera.getTranslation().getX();
+    //         double yRobot = zCam * sinYaw + xCam * cosYaw + robotToPhotonCamera.getTranslation().getY();
+
+    //         double robotCos = Math.cos(visionPose.getRotation().getRadians());
+    //         double robotSin = Math.sin(visionPose.getRotation().getRadians());
+    //         double xField = visionPose.getX() + (xRobot * robotCos - yRobot * robotSin);
+    //         double yField = visionPose.getY() + (xRobot * robotSin + yRobot * robotCos);
+
+    //         Pose2d ballFieldPose = new Pose2d(xField, yField, new Rotation2d());
+
+    //         fieldPoses.add(ballFieldPose);
+    //         Logger.recordOutput("Heatmap/ballFieldPose" + count, ballFieldPose);
+    //         count++;
+    //     }
+
+    //     if (!fieldPoses.isEmpty()) {
+    //         Logger.recordOutput("Heatmap/ballFieldPoses", fieldPoses.get(0));
+    //     }
+
+    //     return fieldPoses;
+    // }
 
     public Pose2d bestClusterPose(){
-        ArrayList<Pose2d> ballPoses = getBallFieldPoses();
+        ArrayList<Pose2d> ballPoses = ballPoseEstimator.getBallFieldPoses(visionPoseEstimator.getLatestPose());
         Pose2d robotPose = getVisionPose();   
         int bestIndex = -1;
         int bestNumNeighbors = 0;
@@ -348,8 +509,8 @@ public class RobotState {
     }
 
     public void setFieldPoses(){
-        if(getBallFieldPoses() != null) {
-            field.getObject("Fuel").setPoses(getBallFieldPoses());   
+        if(ballPoseEstimator.getBallFieldPoses(visionPoseEstimator.getLatestPose()) != null) {
+            field.getObject("Fuel").setPoses(ballPoseEstimator.getBallFieldPoses(visionPoseEstimator.getLatestPose()));   
         }
         field.setRobotPose(getVisionPose());
     }

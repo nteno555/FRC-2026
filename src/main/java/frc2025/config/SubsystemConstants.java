@@ -143,7 +143,7 @@ public class SubsystemConstants {
     public static double robotToBackCameraRoll = 0.0;
 
     public static double photonCameraHeight = 0.381;
-    public static Transform3d robotToPhotonCamera = new Transform3d(new Translation3d(-0.2921, 0, photonCameraHeight), new Rotation3d(0, 0, 0)); //placeholder
+    public static Transform3d robotToPhotonCamera = new Transform3d(new Translation3d(0.34163, -0.127, photonCameraHeight), new Rotation3d(0, 0, 0)); //placeholder
 
 
     public static double autoAimMaxSpeed = 2.0;

@@ -1,4 +1,3 @@
-
 package frc2025.commands;
 
 import java.util.List;
@@ -18,17 +17,16 @@ public class DriveToClusterCommand extends Command {
 
     private final DriveSubsystem drive;
 
-    // tune
     private final PIDController yawPID; 
-    private static final double maxForward = 2.0;
+    private static final double maxForward = 1.5;
     private static final double maxOmega = 3.0;
 
     private static final double speedScaleFactor = 10.0;
 
     private static final double alignTolerance = 4.0;
-    private static final double areaThreshold = 13.0;
+    private static final double areaThreshold = 3.23; 
 
-    private static final double searchOmega = 0.8;
+    private static final double searchOmega = -1.3;
 
     public DriveToClusterCommand(DriveSubsystem drive) {
         this.drive = drive;
@@ -67,6 +65,18 @@ public class DriveToClusterCommand extends Command {
         return new Pair<>(clusterYawDeg, totalArea);
     }
 
+    public double getLargestArea(List<PhotonTrackedTarget> targets) {
+        double maxArea = 0.0;
+
+        for (PhotonTrackedTarget t : targets) {
+            if (t.getArea() > maxArea) {
+                maxArea = t.getArea();
+            }
+        }
+
+        return maxArea;
+    }
+
     @Override
     public void execute() {
 
@@ -76,29 +86,28 @@ public class DriveToClusterCommand extends Command {
             drive.applyChassisSpeeds(new ChassisSpeeds(0, 0, searchOmega));
             return;
         }
-        
+
         Pair<Double, Double> stats = calculateClusterYawAndTotalArea(targets);
         double yaw = stats.getFirst();
-        double area = stats.getSecond();
+        double totalArea = stats.getSecond();
 
-        if (area == 0) {
+        if (totalArea == 0) {
             drive.applyChassisSpeeds(new ChassisSpeeds());
             return;
         }
 
+
         double omega = yawPID.calculate(yaw, 0);
         omega = MathUtil.clamp(omega, -maxOmega, maxOmega);
 
-        Logger.recordOutput("Cluster/clusterYaw", yaw);
-        Logger.recordOutput("Cluster/clusterYaw", area);
-        Logger.recordOutput("Cluster/omega", omega);
+        double largestArea = getLargestArea(targets);
 
         double speed = 0.0;
         double vx = 0.0;
         double vy = 0.0;
 
         if (Math.abs(yaw) < alignTolerance) {
-            speed = speedScaleFactor / (area + 1.0);
+            speed = speedScaleFactor / (largestArea + 1.0);
             speed = MathUtil.clamp(speed, 0.2, maxForward);
         }
 
@@ -106,10 +115,14 @@ public class DriveToClusterCommand extends Command {
         vx = speed * Math.cos(yawRad);
         vy = speed * Math.sin(yawRad);
 
-        Logger.recordOutput("Cluster/forward", vx);
-        Logger.recordOutput("Cluster/side", vy);
+        Logger.recordOutput("Cluster/clusterYaw", yaw);
+        Logger.recordOutput("Cluster/totalArea", totalArea);
+        Logger.recordOutput("Cluster/largestArea", largestArea);
+        Logger.recordOutput("Cluster/omega", omega);
+        Logger.recordOutput("Cluster/vx", vx);
+        Logger.recordOutput("Cluster/vy", vy);
 
-        ChassisSpeeds speeds = new ChassisSpeeds(-vx ,-vy, omega);
+        ChassisSpeeds speeds = new ChassisSpeeds(vx, vy, -omega);
 
         drive.applyChassisSpeeds(speeds);
     }
@@ -123,9 +136,9 @@ public class DriveToClusterCommand extends Command {
             return false;
         }
 
-        double area = calculateClusterYawAndTotalArea(targets).getSecond();
+        double largestArea = getLargestArea(targets);
 
-        return (area > areaThreshold);
+        return (largestArea > areaThreshold);
     }
 
     @Override
@@ -133,4 +146,3 @@ public class DriveToClusterCommand extends Command {
         drive.applyChassisSpeeds(new ChassisSpeeds());
     }
 }
-
