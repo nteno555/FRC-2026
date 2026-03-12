@@ -14,7 +14,8 @@ public class ShooterTreeMap {
     public double kDrag = 0.001;
 
     public ShooterTreeMap() {
-        hoodTreeMap.put(5.04, 2.55);
+        hoodTreeMap.put(5.14, 2.5);
+//        hoodTreeMap.put(5.04, 2.55);
         hoodTreeMap.put(4.47, 2.4);
         hoodTreeMap.put(3.93, 2.2);
         hoodTreeMap.put(3.354, 1.9);
@@ -23,14 +24,24 @@ public class ShooterTreeMap {
         hoodTreeMap.put(1.55, 1.0);
         hoodTreeMap.put(1.11, 1.0);
 
-        lowerWheelTreeMap.put(5.04, 55.0);
-        lowerWheelTreeMap.put(4.47, 51.0);
-        lowerWheelTreeMap.put(3.93, 51.0);
-        lowerWheelTreeMap.put(3.354, 49.0);
-        lowerWheelTreeMap.put(2.584, 46.0);
-        lowerWheelTreeMap.put(2.09, 46.0);
-        lowerWheelTreeMap.put(1.559, 43.0);
-        lowerWheelTreeMap.put(1.11, 39.0);
+        lowerWheelTreeMap.put(5.13, 59.0);
+//        lowerWheelTreeMap.put(5.04, 57.0);
+        lowerWheelTreeMap.put(4.47, 54.0);
+        lowerWheelTreeMap.put(3.93, 53.0);
+        lowerWheelTreeMap.put(3.354, 51.0);
+        lowerWheelTreeMap.put(2.584, 49.0);
+        lowerWheelTreeMap.put(2.09, 49.0);
+        lowerWheelTreeMap.put(1.559, 46.0);
+        lowerWheelTreeMap.put(1.11, 42.0);
+
+//        lowerWheelTreeMap.put(5.04, 55.0);
+//        lowerWheelTreeMap.put(4.47, 51.0);
+//        lowerWheelTreeMap.put(3.93, 51.0);
+//        lowerWheelTreeMap.put(3.354, 49.0);
+//        lowerWheelTreeMap.put(2.584, 46.0);
+//        lowerWheelTreeMap.put(2.09, 46.0);
+//        lowerWheelTreeMap.put(1.559, 43.0);
+//        lowerWheelTreeMap.put(1.11, 39.0);
 
         tofTreeMap.put(1.559, 1.22);
         tofTreeMap.put(2.09, 1.21);
@@ -38,6 +49,7 @@ public class ShooterTreeMap {
         tofTreeMap.put(3.20, 1.26);
 //        tofTreeMap.put(3.96, 1.24);
         tofTreeMap.put(4.38, 1.33);
+        tofTreeMap.put(5.08, 1.35);
 
 
 //        tofTreeMap.put();
@@ -114,6 +126,7 @@ public class ShooterTreeMap {
     public double getRealTof(double dist) {
 //        double tof = tofTreeMap.getInterpolated(dist);
 //        return (1 - Math.exp(-kDrag * tof)) / kDrag;
+        // return 1.15 + (0.04 * dist)
         return tofTreeMap.getInterpolated(dist);
     }
 
@@ -134,7 +147,7 @@ public class ShooterTreeMap {
     }
 
     public double getMaxDistance() {
-        return 4.5;
+        return 5.13;
     }
 
     private void updateDashboardMap() {

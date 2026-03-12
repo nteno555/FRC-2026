@@ -1,12 +1,15 @@
 package frc2025.commands;
 
 import com.pathplanner.lib.path.*;
+import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc2025.RobotContainer;
 import frc2025.RobotState;
 import frc2025.config.FieldConstants;
+import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
 
 import java.nio.file.Path;
@@ -44,14 +47,10 @@ public class DriveCommands {
             endTrench = FieldConstants.trenchPoses[trenchID - 1];
         }
 
-//        Pose2d finalClosestStartTrench = closestStartTrench;
-//        Command driveTrench = new DriveToPoseCommand(robotContainer.getDrive(), () -> finalClosestStartTrench);
-
         Logger.recordOutput("Drive/autoTrenchStart", closestStartTrench);
         Logger.recordOutput("Drive/autoTrenchEnd", endTrench);
 
         List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPose, closestStartTrench, endTrench);
-//        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(finalClosestStartTrench, endTrench);
         PathConstraints constraints = new PathConstraints(2.0, 2.0, 2*Math.PI, 2*Math.PI);
         IdealStartingState idealStartingState = new IdealStartingState(0, closestStartTrench.getRotation());
         GoalEndState goalEndState = new GoalEndState(0, endTrench.getRotation());
@@ -66,8 +65,49 @@ public class DriveCommands {
 
         return new FollowPathCommand(robotContainer.getDrive(), () -> p, () -> false, false);
 
-//        return driveTrench.andThen(
-//                new FollowPathCommand(robotContainer.getDrive(), () -> p, () -> false, false)
-//        );
+    }
+
+    public static Command autoTrenchReturn(RobotContainer robotContainer, boolean isHigh) {
+        Pose2d preTrenchPose = (isHigh) ? FieldConstants.redTrenchHighMid : FieldConstants.redTrenchLowMid;
+        Pose2d endTrench = (isHigh) ? FieldConstants.redTrenchHighZone : FieldConstants.redTrenchLowZone;
+        preTrenchPose = new Pose2d(preTrenchPose.getX() - 0.5, preTrenchPose.getY(), preTrenchPose.getRotation());
+
+        if (!Alliance.get()) {
+            preTrenchPose = FlippingUtil.flipFieldPose(preTrenchPose);
+            endTrench = FlippingUtil.flipFieldPose(endTrench);
+        }
+
+        Waypoint preTrench = new Waypoint(preTrenchPose.getTranslation(), preTrenchPose.getTranslation(), preTrenchPose.getTranslation());
+        Waypoint end = new Waypoint(endTrench.getTranslation(), endTrench.getTranslation(), endTrench.getTranslation());
+
+        List<Waypoint> waypoints = List.of(preTrench, end);
+        PathConstraints constraints = new PathConstraints(3.0, 3.0, 2*Math.PI, 2*Math.PI);
+        IdealStartingState idealStartingState = new IdealStartingState(0, preTrenchPose.getRotation());
+        GoalEndState goalEndState = new GoalEndState(0, endTrench.getRotation());
+
+        PathPlannerPath p = new PathPlannerPath(
+                waypoints,
+                constraints,
+                idealStartingState,
+                goalEndState,
+                false
+        );
+
+        if (!Alliance.get()) {
+            p = p.flipPath();
+        }
+
+
+        Logger.recordOutput("Drive/isHigh", isHigh);
+        Logger.recordOutput("Drive/autoTrenchPre", preTrenchPose);
+
+        Pose2d finalPreTrenchPose = preTrenchPose;
+        PathPlannerPath finalP = p;
+        return new DriveToPoseCommand(robotContainer.getDrive(), () ->
+                new Pose2d(RobotState.getInstance().getVisionPose().getX(),
+                    finalPreTrenchPose.getY(),
+                    finalPreTrenchPose.getRotation()))
+                .andThen(new DriveToPoseCommand(robotContainer.getDrive(), () -> finalPreTrenchPose))
+                .andThen(new FollowPathCommand(robotContainer.getDrive(), () -> finalP, () -> false, false));
     }
 }

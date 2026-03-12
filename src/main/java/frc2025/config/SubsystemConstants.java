@@ -25,6 +25,14 @@ public class SubsystemConstants {
     public static double flywheelkP = 0.2;
     public static double flywheelkI = 0.0;
     public static double flywheelkD = 0.0;
+
+    public static double flywheelkSAmps = 4.57;
+    public static double flywheelkVAmps = 0.0;
+    public static double flywheelkAAmps = 0.0;
+    public static double flywheelkPAmps = 10;
+    public static double flywheelkIAmps = 0.0;
+    public static double flywheelkDAmps = 0.0;
+
     public static double topFlywheelGearRatio = 1.0;
     public static double bottomFlywheelGearRatio = 2.0;
     public static double topFlywheelDiameter = 0.05; // 2 inches in meters
@@ -32,11 +40,25 @@ public class SubsystemConstants {
     public static double flywheelEfficiency = 0.80;
     public static double flywheelSupplyCurrentLimit = 200;
     public static double flywheelStatorCurrentLimit = 200;
-    public static double towerShootVoltage = 8.0;
+    // to do check
+    public static double towerkS = 0.45;
+    public static double towerkV = 0.095;
+    public static double towerkA = 0.00;
+    public static double towerkP = 0.2;
+    public static double towerkI = 0.0;
+    public static double towerkD = 0.0;
+
+    public static double towerkSAmps = 0.0;
+    public static double towerkVAmps = 0.0;
+    public static double towerkAAmps = 0.00;
+    public static double towerkPAmps = 5.0;
+    public static double towerkIAmps = 0.0;
+    public static double towerkDAmps = 0.0;
+    public static double towerFlywheelRatio = 1.0;
 
     public static double hoodkS = 0.29;
     public static double hoodkV = 0.12;
-    public static double hoodkP = 4;
+    public static double hoodkP = 6.0;
     public static double hoodkI = 0.0;
     public static double hoodkD = 0.00;
     public static double hoodSupplyCurrentLimit = 40;
@@ -71,7 +93,7 @@ public class SubsystemConstants {
     public static double intakePeakReverseVoltage = -4.0;
     public static double intakeRetractPosition = 0.3;
     public static double intakeDeployPosition = 4.0;
-    public static double intakeRollerVoltage = 12.0;
+    public static double intakeRollerVoltage = 8.0;
     public static double intakeHalfPosition = 1.5;
 
     public static double indexerSupplyCurrentLimit = 120;
@@ -86,7 +108,7 @@ public class SubsystemConstants {
     public static double turretkS = 0.6;
     public static double turretkV = 0.135;
     public static double turretkA = 0.001 * 12.0;
-    public static double turretkP = 4.0;
+    public static double turretkP = 3.0;
     public static double turretkI = 0.0;
     public static double turretkD = 0.1;
     public static double turretCruiseVelocity = 60;
@@ -101,8 +123,8 @@ public class SubsystemConstants {
     public static double turretRotationsPerRadian = 42.0/10.0 * 48.0/26.0 * 125.0/30.0 / (2*Math.PI); //
     public static double turretMinAngleRadians = -1.0;
     public static double turretMaxAngleRadians = 4.30;
-    public static double throughBoreZero1 = 0.512; // 0.802
-    public static double throughBoreZero2 = 0.615; // 0.638
+    public static double throughBoreZero1 = 0.929; // 0.802
+    public static double throughBoreZero2 = 0.396; // 0.638
     public static double throughBoreRatio1 = 42.0 / 10.0 * 48.0 / 26.0;
     public static double throughBoreRatio2 = 42.0 / 10.0;
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
@@ -145,9 +167,9 @@ public class SubsystemConstants {
     public static double robotToRightCameraPitch = 28.0;
     public static double robotToRightCameraRoll = 180.0;
 
-    public static double autoAimMaxSpeed = 2.3;
+    public static double autoAimMaxSpeed = 10.0;//2.3;
     public static double shuttlingMaxSpeed = 3.5;
-    public static double autoAimMaxSpeedStrict = 1.0;
+    public static double autoAimMaxSpeedStrict = 10.0;//1.0;
     public static double autoAimMaxAccel = 10.0;
     public static double autoAimMaxAngularVelocity = Math.PI;
     public static double autoAimMaxAngularVelocityStrict = Math.PI/2;

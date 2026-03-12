@@ -68,7 +68,6 @@ public class RobotContainer {
 
     DriveSubsystem driveSubsystem;
     VisionSubsystem visionSubsystem;
-    ClimberSubsystem climberSubsystem;
     IndexerSubsystem indexerSubsystem;
     IntakeSubsystem intakeSubsystem;
     HoodSubsystem hoodSubsystem;
@@ -124,7 +123,6 @@ public class RobotContainer {
         if(RobotBase.isReal()) {
             driveSubsystem = new DriveSubsystem(new DriveIOReal(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOReal());
-            climberSubsystem = new ClimberSubsystem(new ClimberIOReal());
             indexerSubsystem = new IndexerSubsystem(new IndexerIOReal());
             intakeSubsystem = new IntakeSubsystem(new IntakeIOReal());
             hoodSubsystem = new HoodSubsystem(new HoodIOReal());
@@ -133,7 +131,6 @@ public class RobotContainer {
         } else {
             driveSubsystem = new DriveSubsystem(new DriveIOSim(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOSim());
-            climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
             indexerSubsystem = new IndexerSubsystem(new IndexerIOSim());
             intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
             hoodSubsystem = new HoodSubsystem(new HoodIOSim());
@@ -148,25 +145,14 @@ public class RobotContainer {
 
         if(SubsystemConstants.hasTurret) {
             autoChooser.addOption("Low Neutral Station", autos.LowNeutralDeepStation());
-            autoChooser.addOption("Low Steal Deep x2", autos.LowStealLowNeutralDeep());
-            autoChooser.addOption("Low Steal Loop x2", autos.LowStealLowLoopLow());
-//            autoChooser.addOption("Low Deep Neutral x2", autos.LowNeutralLowNeutral());
 
             autoChooser.addOption("Mid Station Depot", autos.MidStationDepotClimb());
 
-            autoChooser.addOption("High Loop Neutral x2", autos.HighStealHighLoopHigh());
-            autoChooser.addOption("High Deep Neutral x2", autos.HighNeutralHighNeutralHigh());
-            autoChooser.addOption("High Steal Deep x2", autos.HighStealHighNeutralDeep());
         } else {
             autoChooser.addOption("Low Neutral Station", autos.LowNeutralDeepStation());
-            autoChooser.addOption("Low Steal Deep x2", autos.LowStealLowNeutralDeep());
-            autoChooser.addOption("Low Steal Loop x2", autos.LowStealLowLoopLow());
 
             autoChooser.addOption("Mid Station Depot", autos.MidStationDepotClimb());
 
-            autoChooser.addOption("High Steal Neutral x2", autos.HighStealHighNeutralHigh());
-            autoChooser.addOption("High Deep Neutral x2", autos.HighNeutralHighNeutralHigh());
-            autoChooser.addOption("High Loop Neutral x2", autos.HighStealHighLoopHigh());
         }
 
         SmartDashboard.putData("Auto Chooser", autoChooser);

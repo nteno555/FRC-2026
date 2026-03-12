@@ -1,9 +1,6 @@
 package frc2025.subsystems.turret;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -83,20 +80,23 @@ public class TurretSubsystem extends SubsystemBase {
                     return wantedAngle;
                 },
                 () -> {
+                    double phaseDelay = 0.02;
                     ChassisSpeeds robotSpeeds = RobotState.getInstance().getFieldRelativeSpeeds();
+                    double vx = robotSpeeds.vxMetersPerSecond;
+                    double vy = robotSpeeds.vyMetersPerSecond;
+                    double vOmega = robotSpeeds.omegaRadiansPerSecond;
+
                     Translation2d targetPos = RobotState.getInstance().getShootingWhileMovingVirtualPose().getTranslation();
-                    var robotPose = RobotState.getInstance().getVisionPose();
-//                    Translation2d robotPos = robotPose.getTranslation();
+                    var robotPose = RobotState.getInstance().getDelayedPose();
                     Translation2d shooterPos = robotPose.transformBy(SubsystemConstants.robotToShooter).getTranslation();
 
                     var robotToTargetXY = targetPos.minus(shooterPos);
-//                    var robotToTargetXY = targetPos.minus(robotPos);
                     Translation2d shooterRobotRelative = SubsystemConstants.robotToShooter.getTranslation().rotateBy(robotPose.getRotation());
 
                     robotSpeeds = new ChassisSpeeds(
-                        robotSpeeds.vxMetersPerSecond + robotSpeeds.omegaRadiansPerSecond * shooterRobotRelative.getY(),
-                        robotSpeeds.vyMetersPerSecond - robotSpeeds.omegaRadiansPerSecond * shooterRobotRelative.getX(),
-                            robotSpeeds.omegaRadiansPerSecond
+                        vx + vOmega * shooterRobotRelative.getY(),
+                        vy - vOmega * shooterRobotRelative.getX(),
+                            vOmega
                     );
 
                     var targetFrameToRobot = new Translation2d(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond)

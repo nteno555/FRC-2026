@@ -118,6 +118,22 @@ public class RobotState {
         return !inBlueZone && !inRedZone;
     }
 
+    public Pose2d getDelayedPose() {
+        double phaseDelay = 0.03;
+        Pose2d currentPose = getVisionPose();
+        ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(
+                robotRelativeSpeeds,
+                currentPose.getRotation()
+        );
+        return currentPose.exp(
+                new Twist2d(
+                        speeds.vxMetersPerSecond * phaseDelay,
+                        speeds.vyMetersPerSecond * phaseDelay,
+                        speeds.omegaRadiansPerSecond * phaseDelay
+                )
+        );
+    }
+
     public Pose2d getTargetPose() {
         if (!getShuttling()) {
             return (Alliance.get()) ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
@@ -134,7 +150,7 @@ public class RobotState {
         Pose2d currentPose = RobotState.getInstance().getVisionPose();
         Pose2d realTargetPose = getTargetPose();
         Pose2d virtualPose = getTargetPose();
-        double phaseDelay = 0.0;//0.03;
+        double phaseDelay = 0.02;
 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
                 robotRelativeSpeeds,
@@ -143,10 +159,7 @@ public class RobotState {
         double vx = chassisSpeeds.vxMetersPerSecond;
         double vy = chassisSpeeds.vyMetersPerSecond;
         double vOmega = chassisSpeeds.omegaRadiansPerSecond;
-        Pose2d delayedPose = currentPose.exp(
-                new Twist2d(vx * phaseDelay, vy * phaseDelay, vOmega * phaseDelay)
-        );
-
+        Pose2d delayedPose = getDelayedPose();
         Translation2d shooterFieldRelative = SubsystemConstants.robotToShooter.getTranslation().rotateBy(delayedPose.getRotation());
         vx += vOmega * shooterFieldRelative.getY();
         vy += -vOmega * shooterFieldRelative.getX();

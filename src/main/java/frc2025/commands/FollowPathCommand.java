@@ -165,7 +165,7 @@ public class FollowPathCommand extends Command {
             Logger.recordOutput("Vision/alignDistance", translation.getNorm());
             Logger.recordOutput("Drive/targetPose", endPose);
 
-            return (translation.getNorm() < 0.5 && rotationDistance < 10) && RobotState.getInstance().getSpeed() < 0.5;// && velocity < 0.02 && angularVelocity < 0.1;
+            return (translation.getNorm() < 0.2 && rotationDistance < 10) && RobotState.getInstance().getSpeed() < 0.5;// && velocity < 0.02 && angularVelocity < 0.1;
         }
         return this.timer.hasElapsed(trajectory.getTotalTimeSeconds());
     }

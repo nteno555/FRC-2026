@@ -31,6 +31,13 @@ public class ShooterIOReal implements ShooterIO {
         flywheelConfig.Slot0.kI = SubsystemConstants.flywheelkI;
         flywheelConfig.Slot0.kD = SubsystemConstants.flywheelkD;
 
+        flywheelConfig.Slot1.kS = SubsystemConstants.flywheelkSAmps;
+        flywheelConfig.Slot1.kV = SubsystemConstants.flywheelkVAmps;
+        flywheelConfig.Slot1.kA = SubsystemConstants.flywheelkAAmps;
+        flywheelConfig.Slot1.kP = SubsystemConstants.flywheelkPAmps;
+        flywheelConfig.Slot1.kI = SubsystemConstants.flywheelkIAmps;
+        flywheelConfig.Slot1.kD = SubsystemConstants.flywheelkDAmps;
+
 		flywheelConfig.CurrentLimits.SupplyCurrentLimit = SubsystemConstants.flywheelSupplyCurrentLimit;
 		flywheelConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 		flywheelConfig.CurrentLimits.StatorCurrentLimit = SubsystemConstants.flywheelStatorCurrentLimit;
@@ -40,9 +47,24 @@ public class ShooterIOReal implements ShooterIO {
 
         var towerConfigs = new TalonFXConfiguration();
 
-        towerConfigs.CurrentLimits.SupplyCurrentLimit = 80;
+        towerConfigs.Slot0.kS = SubsystemConstants.towerkS;
+        towerConfigs.Slot0.kV = SubsystemConstants.towerkV;
+        towerConfigs.Slot0.kA = SubsystemConstants.towerkA;
+        towerConfigs.Slot0.kP = SubsystemConstants.towerkP;
+        towerConfigs.Slot0.kI = SubsystemConstants.towerkI;
+        towerConfigs.Slot0.kD = SubsystemConstants.towerkD;
+
+        towerConfigs.Slot1.kS = SubsystemConstants.towerkSAmps;
+        towerConfigs.Slot1.kV = SubsystemConstants.towerkVAmps;
+        towerConfigs.Slot1.kA = SubsystemConstants.towerkAAmps;
+        towerConfigs.Slot1.kP = SubsystemConstants.towerkPAmps;
+        towerConfigs.Slot1.kI = SubsystemConstants.towerkIAmps;
+        towerConfigs.Slot1.kD = SubsystemConstants.towerkDAmps;
+
+
+        towerConfigs.CurrentLimits.SupplyCurrentLimit = 200;
         towerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
-        towerConfigs.CurrentLimits.StatorCurrentLimit = 80;
+        towerConfigs.CurrentLimits.StatorCurrentLimit = 200;
         towerConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
 
         TorqueCurrentConfigs towerConfigTorque =  new TorqueCurrentConfigs();
@@ -69,6 +91,7 @@ public class ShooterIOReal implements ShooterIO {
         inputs.slaveVelocityRPM = flywheelSlave.getVelocity().getValueAsDouble();
 
         inputs.towerVoltage = tower.getMotorVoltage().getValueAsDouble();
+        inputs.towerRPS = tower.getVelocity().getValueAsDouble();
     }
 
     @Override
@@ -84,8 +107,19 @@ public class ShooterIOReal implements ShooterIO {
 
     @Override
     public void setSpeed(double speed) {
-        flywheelMaster.setControl(new VelocityVoltage(speed)
+//        flywheelMaster.setControl(new VelocityVoltage(speed)
+//                .withEnableFOC(true));
+
+        flywheelMaster.setControl(
+                new VelocityTorqueCurrentFOC(speed)
+                        .withSlot(1)
+        );
+        tower.setControl(new VelocityVoltage(speed * SubsystemConstants.towerFlywheelRatio)
                 .withEnableFOC(true));
-        tower.setControl(new VoltageOut(SubsystemConstants.towerShootVoltage));
+
+//        tower.setControl(
+//                new VelocityTorqueCurrentFOC(speed * SubsystemConstants.towerFlywheelRatio)
+//                        .withSlot(1)
+//        );
     }
 }

@@ -192,19 +192,25 @@ public class Autos {
         return buildAuto(List.of("Low-NeutralMid (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "LowScore-Station", WAIT_NO_SHOOT, "Station-Score"), false);
     }
 
-    public Command LowStealLowNeutralDeep() {
-        if (SubsystemConstants.hasTurret) {
-            return buildAuto(List.of("Low-Steal (under trench)", "Steal-Low", WAIT_SHOOT, "Low-NeutralMid", "NeutralMid-Low"), false);
-        }
-        return buildAuto(List.of("Low-Steal (under trench)", "Steal-LowScore", WAIT_SHOOT, "LowScore-NeutralMid", "NeutralMid-LowScore"), false);
-    }
+//    public Command LowDoubleNeutral() {
+//        if (SubsystemConstants.hasTurret) {
+//            return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid", RETURN_UNDER_TRENCH_LOW), false);
+//        }
+//    }
 
-    public Command LowStealLowLoopLow() {
-        if (SubsystemConstants.hasTurret) {
-            return buildAuto(List.of("Low-Steal (under trench)", "Steal-Low", WAIT_SHOOT, "Low-NeutralMidLoop-Low"), false);
-        }
-        return buildAuto(List.of("Low-Steal (under trench)", "Steal-Low", WAIT_SHOOT, "LowScore-NeutralMidLoop-LowScore"), false);
-    }
+//    public Command LowStealLowNeutralDeep() {
+//        if (SubsystemConstants.hasTurret) {
+//            return buildAuto(List.of("Low-Steal (under trench)", "Steal-Low", WAIT_SHOOT, "Low-NeutralMid", "NeutralMid-Low"), false);
+//        }
+//        return buildAuto(List.of("Low-Steal (under trench)", "Steal-LowScore", WAIT_SHOOT, "LowScore-NeutralMid", "NeutralMid-LowScore"), false);
+//    }
+//
+//    public Command LowStealLowLoopLow() {
+//        if (SubsystemConstants.hasTurret) {
+//            return buildAuto(List.of("Low-Steal (under trench)", "Steal-Low", WAIT_SHOOT, "Low-NeutralMidLoop-Low"), false);
+//        }
+//        return buildAuto(List.of("Low-Steal (under trench)", "Steal-Low", WAIT_SHOOT, "LowScore-NeutralMidLoop-LowScore"), false);
+//    }
 
 //    public Command LowNeutralLowNeutral() {
 //        if (SubsystemConstants.hasTurret) {
