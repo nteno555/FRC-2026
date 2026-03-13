@@ -25,7 +25,7 @@
       },
       "nextControl": {
         "x": 4.690274045553234,
-        "y": 0.44961956162083155
+        "y": 0.4496195616208316
       },
       "isLocked": false,
       "linkedName": "trench low"
@@ -65,10 +65,10 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 720.0,
+    "maxVelocity": 4.5,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 1080.0,
+    "maxAngularAcceleration": 1080.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },

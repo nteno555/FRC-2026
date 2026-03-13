@@ -10,13 +10,11 @@ import static frc2025.subsystems.drive.DriveConstants.kSpeedAt12Volts;
 
 import java.util.Optional;
 
-import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -28,9 +26,6 @@ import frc2025.commands.AutoAimCommands;
 import frc2025.commands.SuperstructureCommands;
 import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
-import frc2025.subsystems.climber.ClimberIOReal;
-import frc2025.subsystems.climber.ClimberIOSim;
-import frc2025.subsystems.climber.ClimberSubsystem;
 import frc2025.subsystems.drive.DriveIOReal;
 import frc2025.subsystems.drive.DriveIOSim;
 import frc2025.subsystems.drive.DriveSubsystem;
@@ -141,15 +136,20 @@ public class RobotContainer {
 
     public void configureAutoCommands() {
         autos = new Autos(this);
-        autoChooser.setDefaultOption("Low Neutral Station", autos.LowNeutralDeepStation());
+        autoChooser.setDefaultOption("Low Neutral Station", autos.LowNeutralStation());
 
         if(SubsystemConstants.hasTurret) {
-            autoChooser.addOption("Low Neutral Station", autos.LowNeutralDeepStation());
+            autoChooser.addOption("Low Neutral Station", autos.LowNeutralStation());
+            autoChooser.addOption("Low x2 Neutral Station", autos.LowDoubleNeutralStation());
+            autoChooser.addOption("Low x2 Neutral", autos.LowDoubleNeutral());
+            autoChooser.addOption("Low Neutral Close", autos.LowNeutralClose());
+            autoChooser.addOption("Low x3 Neutral", autos.LowTripleNeutral());
+            autoChooser.addOption("Low x2 Loop", autos.LowDoubleLoop());
 
             autoChooser.addOption("Mid Station Depot", autos.MidStationDepotClimb());
 
         } else {
-            autoChooser.addOption("Low Neutral Station", autos.LowNeutralDeepStation());
+            autoChooser.addOption("Low Neutral Station", autos.LowNeutralStation());
 
             autoChooser.addOption("Mid Station Depot", autos.MidStationDepotClimb());
 

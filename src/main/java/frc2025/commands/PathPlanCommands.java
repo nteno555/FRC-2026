@@ -28,7 +28,7 @@ public class PathPlanCommands {
         return new Pose2d(pose.getX(), pose.getY(), new Rotation2d(0));
     }
 
-    private static PathPlannerPath straightPathFromPoses(Pose2d start, Pose2d end) {
+    private static PathPlannerPath straightPathFromPoses(Pose2d start, Pose2d end, double endVelocity) {
         Pose2d startWaypoint = new Pose2d(
                 start.getTranslation(),
                 Rotation2d.fromRadians(Math.atan2(end.getY() - start.getY(), end.getX() - start.getX())) // direction of velocity
@@ -43,28 +43,28 @@ public class PathPlanCommands {
                 endWaypoint
         );
 
-        PathConstraints constraints = new PathConstraints(3.0, 3.0, 4*Math.PI, 4*Math.PI);
+        PathConstraints constraints = new PathConstraints(4.0, 4.0, 4*Math.PI, 4*Math.PI);
         PathPlannerPath path = new PathPlannerPath(
                 waypoints,
                 constraints,
                 null,
-                new GoalEndState(0.0, end.getRotation())
+                new GoalEndState(endVelocity, end.getRotation())
         );
 
         return path;
     }
 
-    public static Command returnUnderTrenchAuto(RobotContainer robotContainer, Supplier<Pose2d> endPose) {
+    public static Command returnUnderTrenchAuto(RobotContainer robotContainer, Supplier<Pose2d> endPose, Supplier<Double> endVelocity) {
         Supplier<PathPlannerPath> preTrenchPathSupplier = () -> {
             var robotPose = RobotState.getInstance().getVisionPose();
             var preTrenchEndPose = new Pose2d(robotPose.getX(), endPose.get().getY(), endPose.get().getRotation());
-            return straightPathFromPoses(robotPose, preTrenchEndPose);
+            return straightPathFromPoses(robotPose, preTrenchEndPose, 0.0);
         };
 
         Supplier<PathPlannerPath> trenchPathSupplier = () -> {
             var robotPose = RobotState.getInstance().getVisionPose();
             var preTrenchEndPose = endPose.get();
-            return straightPathFromPoses(robotPose, preTrenchEndPose);
+            return straightPathFromPoses(robotPose, preTrenchEndPose, endVelocity.get());
         };
 
         return new FollowPathCommand(robotContainer.getDrive(), preTrenchPathSupplier, () -> false, false)

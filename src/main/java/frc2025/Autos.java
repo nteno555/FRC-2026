@@ -3,7 +3,6 @@ package frc2025;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,6 +30,7 @@ public class Autos {
     private final String WAIT_NO_SHOOT = "wait_no_shoot";
     private final String RETURN_UNDER_TRENCH_HIGH = "return_under_trench_high";
     private final String RETURN_UNDER_TRENCH_LOW = "return_under_trench_low";
+    private final String RETURN_UNDER_TRENCH_STATION = "return_under_trench_station";
 
     public Autos(RobotContainer robotContainer) {
         this.robotContainer = robotContainer;
@@ -110,7 +110,7 @@ public class Autos {
 
         for(int i = 1; i < paths.size(); i++) {
             if(paths.get(i).equals(WAIT_SHOOT) || paths.get(i).equals(WAIT_SHOOT_EXTENDED)) {
-                double waitTime = (paths.get(i).equals(WAIT_SHOOT)) ? 3.0 : 4.0;
+                double waitTime = (paths.get(i).equals(WAIT_SHOOT)) ? 2.0 : 3.0;
                 if(SubsystemConstants.hasTurret) {
                     pathCommands = pathCommands.andThen(
                             (AutoAimCommands.autoIndex(robotContainer)
@@ -147,8 +147,8 @@ public class Autos {
                     }
                     return pose;
                 };
-                pathCommands = pathCommands.andThen(intakeDrive(PathPlanCommands.returnUnderTrenchAuto(robotContainer, endPoseSupplier)));
-            } else if(paths.get(i).equals(RETURN_UNDER_TRENCH_LOW)) {
+                pathCommands = pathCommands.andThen(intakeDrive(PathPlanCommands.returnUnderTrenchAuto(robotContainer, endPoseSupplier, () -> 0.0)));
+            } else if(paths.get(i).equals(RETURN_UNDER_TRENCH_LOW) || paths.get(i).equals(RETURN_UNDER_TRENCH_STATION)) {
                 Supplier<Pose2d> endPoseSupplier = () -> {
                     Pose2d pose = FieldConstants.blueTrenchLowReturn;
                     var alliance = DriverStation.Alliance.Red;
@@ -158,7 +158,13 @@ public class Autos {
                     }
                     return pose;
                 };
-                pathCommands = pathCommands.andThen(intakeDrive(PathPlanCommands.returnUnderTrenchAuto(robotContainer, endPoseSupplier)));
+
+                boolean station = paths.get(i).equals(RETURN_UNDER_TRENCH_STATION);
+                Supplier<Double> endVelocity = () -> {
+                    if (station) return 2.5;
+                    return 0.0;
+                };
+                pathCommands = pathCommands.andThen(intakeDrive(PathPlanCommands.returnUnderTrenchAuto(robotContainer, endPoseSupplier, endVelocity)));
             } else {
                 pathCommands = pathCommands.andThen(intakePath(paths.get(i)));
             }
@@ -185,70 +191,37 @@ public class Autos {
 
 
 
-    public Command LowNeutralDeepStation() {
+    public Command LowNeutralStation() {
         if (SubsystemConstants.hasTurret) {
-            return buildAuto(List.of("Low-NeutralMid (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-Station", WAIT_NO_SHOOT, "Station-Score"), false);
+            return buildAuto(List.of("Low-NeutralMid (under trench)", RETURN_UNDER_TRENCH_STATION, "Low-Station"), false);
         }
         return buildAuto(List.of("Low-NeutralMid (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "LowScore-Station", WAIT_NO_SHOOT, "Station-Score"), false);
     }
 
-//    public Command LowDoubleNeutral() {
-//        if (SubsystemConstants.hasTurret) {
-//            return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid", RETURN_UNDER_TRENCH_LOW), false);
-//        }
-//    }
+    public Command LowDoubleNeutralStation() {
+        return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid", RETURN_UNDER_TRENCH_STATION, "Low-Station"), false);
+    }
 
-//    public Command LowStealLowNeutralDeep() {
-//        if (SubsystemConstants.hasTurret) {
-//            return buildAuto(List.of("Low-Steal (under trench)", "Steal-Low", WAIT_SHOOT, "Low-NeutralMid", "NeutralMid-Low"), false);
-//        }
-//        return buildAuto(List.of("Low-Steal (under trench)", "Steal-LowScore", WAIT_SHOOT, "LowScore-NeutralMid", "NeutralMid-LowScore"), false);
-//    }
-//
-//    public Command LowStealLowLoopLow() {
-//        if (SubsystemConstants.hasTurret) {
-//            return buildAuto(List.of("Low-Steal (under trench)", "Steal-Low", WAIT_SHOOT, "Low-NeutralMidLoop-Low"), false);
-//        }
-//        return buildAuto(List.of("Low-Steal (under trench)", "Steal-Low", WAIT_SHOOT, "LowScore-NeutralMidLoop-LowScore"), false);
-//    }
+    public Command LowDoubleNeutral() {
+        return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid", RETURN_UNDER_TRENCH_LOW), false);
+    }
 
-//    public Command LowNeutralLowNeutral() {
-//        if (SubsystemConstants.hasTurret) {
-//            return buildAuto(List.of("Low-Neutral (under trench)", "Neutral-Low", WAIT_SHOOT, "Low-NeutralMid", "NeutralMid-Low"), false);
-//        }
-//        return buildAuto(List.of("Low-Neutral (under trench)", "Neutral-LowScore", WAIT_SHOOT, "LowScore-NeutralMid", "NeutralMid-LowScore"), false);
-//    }
+    public Command LowNeutralClose() {
+        return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-Close", RETURN_UNDER_TRENCH_LOW), false);
+    }
+
+    public Command LowTripleNeutral() {
+        return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid", RETURN_UNDER_TRENCH_LOW), false);
+    }
+
+    public Command LowDoubleLoop() {
+        return buildAuto(List.of("Low-Loop (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-Loop", RETURN_UNDER_TRENCH_LOW), false);
+    }
 
     public Command MidStationDepotClimb() {
         return buildAuto(List.of("Mid-Station", WAIT_SHOOT, "Station-Depot", "Depot-Climb"), true);
     }
 
-    public Command HighNeutralHighNeutralHigh() {
-        if (SubsystemConstants.hasTurret) {
-            return buildAuto(List.of("High-Neutral (under trench)", "Neutral-High", WAIT_SHOOT, "High-NeutralMid", "NeutralMid-High"), false);
-        }
-        return buildAuto(List.of("High-Neutral (under trench)", "Neutral-HighScore", WAIT_SHOOT, "HighScore-NeutralMid", "NeutralMid-HighScore"), false);
-    }
-    public Command HighStealHighNeutralHigh() {
-        if (SubsystemConstants.hasTurret) {
-            return buildAuto(List.of("High-Steal (under trench)", "Steal-High", WAIT_SHOOT, "High-Neutral", "Neutral-High"), false);
-        }
-        return buildAuto(List.of("High-Steal (under trench)", "Steal-HighScore", WAIT_SHOOT, "HighScore-Neutral", "Neutral-HighScore"), false);
-    }
-
-    public Command HighStealHighNeutralDeep() {
-        if (SubsystemConstants.hasTurret) {
-            return buildAuto(List.of("High-Steal (under trench)", "Steal-High", WAIT_SHOOT, "High-NeutralMid", "NeutralMid-High"), false);
-        }
-        return buildAuto(List.of("High-Steal (under trench)", "Steal-HighScore", WAIT_SHOOT, "HighScore-NeutralMid", "NeutralMid-HighScore"), false);
-    }
-
-    public Command HighStealHighLoopHigh() {
-        if (SubsystemConstants.hasTurret) {
-            return buildAuto(List.of("High-Steal (under trench)", "Steal-High", WAIT_SHOOT, "High-NeutralMidLoop-High"), false);
-        }
-        return buildAuto(List.of("High-Steal (under trench)", "Steal-High", WAIT_SHOOT, "HighScore-NeutralMidLoop-HighScore"), false);
-    }
 
 
 }
