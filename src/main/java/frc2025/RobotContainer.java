@@ -143,10 +143,13 @@ public class RobotContainer {
             autoChooser.addOption("Low x2 Neutral Station", autos.LowDoubleNeutralStation());
             autoChooser.addOption("Low x2 Neutral", autos.LowDoubleNeutral());
             autoChooser.addOption("Low Neutral Close", autos.LowNeutralClose());
-            autoChooser.addOption("Low x3 Neutral", autos.LowTripleNeutral());
             autoChooser.addOption("Low x2 Loop", autos.LowDoubleLoop());
 
             autoChooser.addOption("Mid Station Depot", autos.MidStationDepotClimb());
+
+            autoChooser.addOption("High x2 Neutral", autos.HighDoubleNeutral());
+            autoChooser.addOption("High x2 Loop", autos.HighDoubleLoop());
+            autoChooser.addOption("High Neutral Close", autos.HighNeutralClose());
 
         } else {
             autoChooser.addOption("Low Neutral Station", autos.LowNeutralStation());

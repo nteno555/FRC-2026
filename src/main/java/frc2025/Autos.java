@@ -222,6 +222,15 @@ public class Autos {
         return buildAuto(List.of("Mid-Station", WAIT_SHOOT, "Station-Depot", "Depot-Climb"), true);
     }
 
+    public Command HighDoubleNeutral() {
+        return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "High-NeutralMid", RETURN_UNDER_TRENCH_HIGH), false);
+    }
 
+    public Command HighNeutralClose() {
+        return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "High-Close", RETURN_UNDER_TRENCH_HIGH), false);
+    }
 
+    public Command HighDoubleLoop() {
+        return buildAuto(List.of("High-Loop (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "High-Loop", RETURN_UNDER_TRENCH_HIGH), false);
+    }
 }
