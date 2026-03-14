@@ -57,13 +57,8 @@ public class PathPlanCommands {
     public static Command returnUnderTrenchAuto(RobotContainer robotContainer, Supplier<Pose2d> endPose, Supplier<Double> endVelocity) {
         Supplier<PathPlannerPath> preTrenchPathSupplier = () -> {
             var robotPose = RobotState.getInstance().getVisionPose();
-            var xPos = robotPose.getX();
-            if (xPos < FieldConstants.blueTrenchHighMid.getX() + 0.2) {
-                xPos = FieldConstants.blueTrenchHighMid.getX() + 0.2;
-            }
-            if (xPos > FieldConstants.redTrenchHighMid.getX() - 0.2) {
-                xPos = FieldConstants.redTrenchHighMid.getX() - 0.2;
-            }
+            var xPos = Math.max(robotPose.getX(), FieldConstants.blueTrenchHighMid.getX() + 0.2);
+            xPos = Math.min(xPos, FieldConstants.redTrenchHighMid.getX() - 0.2);
             var preTrenchEndPose = new Pose2d(xPos, endPose.get().getY(), endPose.get().getRotation());
             return straightPathFromPoses(robotPose, preTrenchEndPose, 0.0);
         };

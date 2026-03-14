@@ -141,7 +141,7 @@ public class SubsystemConstants {
     public static double robotToTurretCameraYaw = 0.0;
     public static double robotToTurretCameraPitch = 30.0;
     public static double robotToTurretCameraRoll = 0.0;
-    public static boolean ignoreTurretLimelight = true;
+    public static boolean ignoreTurretLimelight = false;
 
     public static Transform2d robotToFrontCamera = new Transform2d(0.326, -0.0277, Rotation2d.kZero);
     public static double robotToFrontCameraForward = robotToFrontCamera.getX();

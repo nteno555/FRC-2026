@@ -29,6 +29,9 @@ public class LimelightFiducialCamera {
     private final double robotToCameraPitch;
     private final double robotToCameraRoll;
 
+    private boolean isRed;
+    private int imuMode;
+
     public LimelightFiducialCamera(String name, boolean turretMounted, double robotToCameraForward, double robotToCameraRight, double robotToCameraUp,
                                   double robotToCameraYaw, double robotToCameraPitch, double robotToCameraRoll) {
         this.name = name;
@@ -40,20 +43,32 @@ public class LimelightFiducialCamera {
         this.robotToCameraYaw = robotToCameraYaw;
         this.robotToCameraPitch = robotToCameraPitch;
         this.robotToCameraRoll = robotToCameraRoll;
+
+        configureLimelight();
     }
 
     public void resetOdometry() {
-        LimelightHelpers.SetIMUMode(name, 1);
+        imuMode = 0;
+        LimelightHelpers.SetIMUMode(name, 0);
     }
 
-    public void updateReefAlign() {}
+    public void configureLimelight() {
+        updateSide();
+        this.isRed = Alliance.get();
+
+        LimelightHelpers.setCameraPose_RobotSpace(name, this.robotToCameraForward, this.robotToCameraRight, this.robotToCameraUp,
+                this.robotToCameraRoll, this.robotToCameraPitch, this.robotToCameraYaw);
+    }
 
     public void writeGyro() {
         String prefix = "Vision/" + name + "_mt2/";
 
-        LimelightHelpers.SetIMUMode(name, 1);
-//        LimelightHelpers.SetIMUAssistAlpha(name, 0.1);
-//        LimelightHelpers.SetIMUMode(name, 0);
+//        LimelightHelpers.SetIMUMode(name, 1);
+        if (imuMode != 4) {
+            imuMode = 4;
+            LimelightHelpers.SetIMUAssistAlpha(name, 0.1); // maybe try 0.05?
+            LimelightHelpers.SetIMUMode(name, 4);
+        }
 
         if(turretMounted){// && robotToCameraPose != null) {
 //            Transform2d robotToShooterReal = new Transform2d(
@@ -64,8 +79,8 @@ public class LimelightFiducialCamera {
 //            Transform2d cameraToRobotTransform = SubsystemConstants.shooterToCamera.inverse().plus(robotToShooterReal.inverse());
 //            Transform2d robotToCameraTransform = cameraToRobotTransform.inverse();
 
-            LimelightHelpers.setCameraPose_RobotSpace(name, 0.0, 0.0, this.robotToCameraUp,
-                    this.robotToCameraRoll, this.robotToCameraPitch, 0.0);
+//            LimelightHelpers.setCameraPose_RobotSpace(name, 0.0, 0.0, this.robotToCameraUp,
+//                    this.robotToCameraRoll, this.robotToCameraPitch, 0.0);
 
             double orientation =  RobotState.getInstance().getVisionPose().getRotation().getDegrees() - Units.radiansToDegrees(RobotState.getInstance().getTurretAngle());
 
@@ -77,8 +92,8 @@ public class LimelightFiducialCamera {
             Logger.recordOutput(prefix + "mt2RobotOrientation", orientation);
             Logger.recordOutput(prefix + "mt2UpdateGyroHeartbeat", Math.random());
         } else {
-            LimelightHelpers.setCameraPose_RobotSpace(name, this.robotToCameraForward, this.robotToCameraRight, this.robotToCameraUp,
-                    this.robotToCameraRoll, this.robotToCameraPitch, this.robotToCameraYaw);
+//            LimelightHelpers.setCameraPose_RobotSpace(name, this.robotToCameraForward, this.robotToCameraRight, this.robotToCameraUp,
+//                    this.robotToCameraRoll, this.robotToCameraPitch, this.robotToCameraYaw);
 
             double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
             omega = Units.radiansToDegrees(omega);
@@ -282,12 +297,15 @@ public class LimelightFiducialCamera {
     }
 
     public void updatePose() {
-        updateSide();
-
+        if (isRed != Alliance.get()) {
+            updateSide();
+            isRed = Alliance.get();
+        }
         LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
         LimelightHelpers.PoseEstimate poseEstimateMt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
 
         addVisionUpdateMt1(poseEstimate);
         addVisionUpdateMt2(poseEstimateMt2);
     }
+
 }
