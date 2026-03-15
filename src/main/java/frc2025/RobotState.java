@@ -42,7 +42,7 @@ public class RobotState {
     private Pose2d shootingWhileMovingVirtualPose;
 
     private double turretAngle;
-    private double prevTurretAngle;
+    private double turretVelocity;
     private double prevTurretTimestamp;
 
     private double turretMt1AngleRadians;
@@ -50,7 +50,6 @@ public class RobotState {
 
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
-        prevTurretTimestamp = -1;
         turretMt1Valid = false;
         turretMt1AngleRadians = 0;
     }
@@ -150,7 +149,6 @@ public class RobotState {
         Pose2d currentPose = RobotState.getInstance().getVisionPose();
         Pose2d realTargetPose = getTargetPose();
         Pose2d virtualPose = getTargetPose();
-        double phaseDelay = 0.02;
         Pose2d delayedPose = getDelayedPose();
 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
@@ -204,20 +202,26 @@ public class RobotState {
     }
 
     public void setTurretAngle(double angleRadians) {
-        double now = Utils.getCurrentTimeSeconds();
-        if (prevTurretTimestamp != -1 && (now - prevTurretTimestamp) > 0.01) {
-            return;
-        }
-        prevTurretAngle = turretAngle;
-        prevTurretTimestamp = now;
+//        double now = Utils.getCurrentTimeSeconds();
+//        if (prevTurretTimestamp != -1 && (now - prevTurretTimestamp) > 0.01) {
+//            return;
+//        }
+//        prevTurretAngle = turretAngle;
+//        prevTurretTimestamp = now;
         turretAngle = angleRadians;
     }
 
-    public double getTurretVelocity() {
-       if (prevTurretTimestamp == -1 || (Utils.getCurrentTimeSeconds() - prevTurretTimestamp)==0) return 0.0;
-       return (turretAngle - prevTurretAngle)/(Utils.getCurrentTimeSeconds() - prevTurretTimestamp);
-//        return turretVelocity;
+    public void setTurretVelocity(double velocityRadians) {
+        this.turretVelocity = velocityRadians;
     }
+
+    public double getTurretVelocity() {
+//       if (prevTurretTimestamp == -1 || (Utils.getCurrentTimeSeconds() - prevTurretTimestamp)==0) return 0.0;
+//       return (turretAngle - prevTurretAngle)/(Utils.getCurrentTimeSeconds() - prevTurretTimestamp);
+//        return turretVelocity;
+        return turretVelocity;
+    }
+
 
     public double getTurretAngle() { return turretAngle; }
 

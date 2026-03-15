@@ -210,8 +210,8 @@ public class Autos {
         return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-Close", RETURN_UNDER_TRENCH_LOW), false);
     }
 
-    public Command LowTripleNeutral() {
-        return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid", RETURN_UNDER_TRENCH_LOW), false);
+    public Command LowNeutralLoop() {
+        return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-Loop", RETURN_UNDER_TRENCH_LOW), false);
     }
 
     public Command LowDoubleLoop() {

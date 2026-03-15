@@ -136,13 +136,12 @@ public class RobotContainer {
 
     public void configureAutoCommands() {
         autos = new Autos(this);
-        autoChooser.setDefaultOption("Low Neutral Station", autos.LowNeutralStation());
+        autoChooser.setDefaultOption("No Auto", new InstantCommand());
 
         if(SubsystemConstants.hasTurret) {
-            autoChooser.addOption("Low Neutral Station", autos.LowNeutralStation());
             autoChooser.addOption("Low x2 Neutral Station", autos.LowDoubleNeutralStation());
             autoChooser.addOption("Low x2 Neutral", autos.LowDoubleNeutral());
-            autoChooser.addOption("Low Neutral Close", autos.LowNeutralClose());
+            autoChooser.addOption("Low Neutral Loop", autos.LowNeutralLoop());
             autoChooser.addOption("Low x2 Loop", autos.LowDoubleLoop());
 
             autoChooser.addOption("Mid Station Depot", autos.MidStationDepotClimb());

@@ -29,6 +29,8 @@ public class LimelightFiducialCamera {
     private final double robotToCameraPitch;
     private final double robotToCameraRoll;
 
+    private int imuMode;
+
     public LimelightFiducialCamera(String name, boolean turretMounted, double robotToCameraForward, double robotToCameraRight, double robotToCameraUp,
                                   double robotToCameraYaw, double robotToCameraPitch, double robotToCameraRoll) {
         this.name = name;
@@ -43,7 +45,8 @@ public class LimelightFiducialCamera {
     }
 
     public void resetOdometry() {
-        LimelightHelpers.SetIMUMode(name, 1);
+        imuMode = 0;
+        LimelightHelpers.SetIMUMode(name, 0);
     }
 
     public void updateReefAlign() {}
@@ -51,9 +54,12 @@ public class LimelightFiducialCamera {
     public void writeGyro() {
         String prefix = "Vision/" + name + "_mt2/";
 
-        LimelightHelpers.SetIMUMode(name, 1);
-//        LimelightHelpers.SetIMUAssistAlpha(name, 0.1);
-//        LimelightHelpers.SetIMUMode(name, 0);
+//        LimelightHelpers.SetIMUMode(name, 1);
+        if (imuMode != 4) {
+            imuMode = 4;
+            LimelightHelpers.SetIMUAssistAlpha(name, 0.08);
+            LimelightHelpers.SetIMUMode(name, 0);
+        }
 
         if(turretMounted){// && robotToCameraPose != null) {
 //            Transform2d robotToShooterReal = new Transform2d(
@@ -116,6 +122,7 @@ public class LimelightFiducialCamera {
 
     private Pose2d transformTurretPose(Pose2d pose) {
         if(SubsystemConstants.hasTurret) {
+
             Transform2d robotToShooterReal = new Transform2d(
                     SubsystemConstants.robotToShooter.getTranslation(),
                     SubsystemConstants.robotToShooter.getRotation().plus(Rotation2d.fromRadians(-RobotState.getInstance().getTurretAngle()))
@@ -124,7 +131,8 @@ public class LimelightFiducialCamera {
             //        Transform2d cameraToRobotTransform = SubsystemConstants.shooterToCamera.inverse().plus(robotToShooterReal.inverse());
             Transform2d cameraToRobotTransform = robotToShooterReal.plus(SubsystemConstants.shooterToCamera).inverse();
 
-            Logger.recordOutput("Vision/" + name + "_mt2/cameraPose", RobotState.getInstance().getVisionPose().transformBy(cameraToRobotTransform.inverse()));
+//            Logger.recordOutput("Vision/" + name + "_mt2/cameraPose", RobotState.getInstance().getVisionPose().transformBy(cameraToRobotTransform.inverse()));
+            Logger.recordOutput("Vision/" + name + "_mt2/turretTransform", cameraToRobotTransform.getRotation().getDegrees());
 
             return pose.transformBy(cameraToRobotTransform);
         } else {
@@ -205,17 +213,24 @@ public class LimelightFiducialCamera {
                 RobotState.getInstance().setTurretMt1Valid(true);
             } else {
                 Vector<N3> distStdDevs;
-                if (!turretMounted) {
-                    distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 0.0000001);
-                } else {
-                    distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 99999999999.0);
-                }
-
+                distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 4.0, Math.pow(meanDistance, 2) / 4.0, 999999999);
                 VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
                         poseEstimate.timestampSeconds, pose, distStdDevs
                 );
 
                 RobotState.getInstance().addVisionData(List.of(update));
+//                Vector<N3> distStdDevs;
+//                if (!turretMounted) {
+//                    distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 0.0000001);
+//                } else {
+//                    distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 99999999999.0);
+//                }
+//
+//                VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
+//                        poseEstimate.timestampSeconds, pose, distStdDevs
+//                );
+//
+//                RobotState.getInstance().addVisionData(List.of(update));
             }
         }
     }
@@ -288,6 +303,6 @@ public class LimelightFiducialCamera {
         LimelightHelpers.PoseEstimate poseEstimateMt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
 
         addVisionUpdateMt1(poseEstimate);
-        addVisionUpdateMt2(poseEstimateMt2);
+//        addVisionUpdateMt2(poseEstimateMt2);
     }
 }

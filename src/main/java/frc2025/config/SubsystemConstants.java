@@ -26,7 +26,7 @@ public class SubsystemConstants {
     public static double flywheelkI = 0.0;
     public static double flywheelkD = 0.0;
 
-    public static double flywheelkSAmps = 4.57;
+    public static double flywheelkSAmps = 16.00;
     public static double flywheelkVAmps = 0.0;
     public static double flywheelkAAmps = 0.0;
     public static double flywheelkPAmps = 10;
@@ -141,9 +141,10 @@ public class SubsystemConstants {
     public static double robotToTurretCameraYaw = 0.0;
     public static double robotToTurretCameraPitch = 30.0;
     public static double robotToTurretCameraRoll = 0.0;
-    public static boolean ignoreTurretLimelight = true;
+    public static boolean ignoreTurretLimelight = false;
 
-    public static Transform2d robotToFrontCamera = new Transform2d(0.326, -0.0277, Rotation2d.kZero);
+//    public static Transform2d robotToFrontCamera = new Transform2d(0.326, -0.0277, Rotation2d.kZero);
+    public static Transform2d robotToFrontCamera = new Transform2d(0.326, -0.1015, Rotation2d.kZero);
     public static double robotToFrontCameraForward = robotToFrontCamera.getX();
     public static double robotToFrontCameraRight = robotToFrontCamera.getY();
     public static double robotToFrontCameraUp = 0.14641;
@@ -151,7 +152,8 @@ public class SubsystemConstants {
     public static double robotToFrontCameraPitch = 28.0;
     public static double robotToFrontCameraRoll = 180.0;
 
-    public static Transform2d robotToBackCamera = new Transform2d(-0.326, -0.1015, Rotation2d.kZero);
+//    public static Transform2d robotToBackCamera = new Transform2d(-0.326, -0.1015, Rotation2d.kZero);
+public static Transform2d robotToBackCamera = new Transform2d(-0.326, -0.0277, Rotation2d.kZero);
     public static double robotToBackCameraForward = robotToBackCamera.getX();
     public static double robotToBackCameraRight = robotToBackCamera.getY();
     public static double robotToBackCameraUp = 0.14641;
@@ -160,6 +162,7 @@ public class SubsystemConstants {
     public static double robotToBackCameraRoll = 180.0;
 
     public static Transform2d robotToRightCamera = new Transform2d(0.1015, 0.3274, Rotation2d.kZero);
+//    public static Transform2d robotToRightCamera = new Transform2d(0.1015, 0.3274, Rotation2d.kZero);
     public static double robotToRightCameraForward = robotToRightCamera.getX();
     public static double robotToRightCameraRight = robotToRightCamera.getY();
     public static double robotToRightCameraUp = 0.14641;

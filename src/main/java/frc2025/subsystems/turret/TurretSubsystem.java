@@ -37,6 +37,7 @@ public class TurretSubsystem extends SubsystemBase {
         Logger.recordOutput("Vision/aimAngleDiff", RobotState.getInstance().getAngleToVirtualTarget() - fieldRelativeAngleRad);
 
         RobotState.getInstance().setTurretAngle(inputs.positionRadians);
+        RobotState.getInstance().setTurretVelocity(inputs.velocity);
 
         if(SubsystemConstants.hasTurret) {
             if (!zeroed && inputs.throughboresConnected) {
@@ -65,10 +66,18 @@ public class TurretSubsystem extends SubsystemBase {
         }
 
         Logger.recordOutput("Superstructure/TurretAngleRadians", inputs.positionRadians);
-        Logger.recordOutput("Turret/turretPose",
-                new Pose2d(
+
+        Pose2d turretPose = new Pose2d(
                         RobotState.getInstance().getVisionShooterPose().getTranslation(),
-                        Rotation2d.fromRadians(fieldRelativeAngleRad)));
+                        Rotation2d.fromRadians(fieldRelativeAngleRad));
+        Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
+        Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
+        double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
+        Transform2d aimingPoseTransform = new Transform2d(dist, 0.0, Rotation2d.kZero);
+        Pose2d aimingPose = turretPose.transformBy(aimingPoseTransform);
+
+        Logger.recordOutput("Turret/turretPose", turretPose);
+        Logger.recordOutput("Turret/turretAimingPose", new Pose2d(aimingPose.getTranslation(), Rotation2d.kZero));
     }
 
     public Command autoAim() {
@@ -76,11 +85,11 @@ public class TurretSubsystem extends SubsystemBase {
                 () -> {
                     double wantedAngle = RobotState.getInstance().getAngleToVirtualTarget();
                     double visionAngle = RobotState.getInstance().getVisionPose().getRotation().getRadians();
-                    Logger.recordOutput("Turret/error", (Math.abs(inputs.positionRadians + visionAngle - wantedAngle) % (2*Math.PI)));
+
+
                     return wantedAngle;
                 },
                 () -> {
-                    double phaseDelay = 0.02;
                     ChassisSpeeds robotSpeeds = RobotState.getInstance().getFieldRelativeSpeeds();
                     double vx = robotSpeeds.vxMetersPerSecond;
                     double vy = robotSpeeds.vyMetersPerSecond;
@@ -112,6 +121,7 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     public Command setPositionFieldRelative(Supplier<Double> positionRadians, Supplier<Double> velocityRadiansPerSecond) {
+        double posFieldRelative = RobotState.getInstance().getVisionPose().getRotation().getRadians() - positionRadians.get();
         return setPositionSafe(() -> -(positionRadians.get() - RobotState.getInstance().getVisionPose().getRotation().getRadians()),
                 velocityRadiansPerSecond);
     }
