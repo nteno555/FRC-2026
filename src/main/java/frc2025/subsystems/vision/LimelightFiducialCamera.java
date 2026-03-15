@@ -42,11 +42,13 @@ public class LimelightFiducialCamera {
         this.robotToCameraYaw = robotToCameraYaw;
         this.robotToCameraPitch = robotToCameraPitch;
         this.robotToCameraRoll = robotToCameraRoll;
+        LimelightHelpers.SetIMUMode(name, 0);
+        this.imuMode = 0;
     }
 
     public void resetOdometry() {
-        imuMode = 0;
         LimelightHelpers.SetIMUMode(name, 0);
+        imuMode = 0;
     }
 
     public void updateReefAlign() {}
@@ -55,11 +57,11 @@ public class LimelightFiducialCamera {
         String prefix = "Vision/" + name + "_mt2/";
 
 //        LimelightHelpers.SetIMUMode(name, 1);
-        if (imuMode != 4) {
-            imuMode = 4;
-            LimelightHelpers.SetIMUAssistAlpha(name, 0.08);
-            LimelightHelpers.SetIMUMode(name, 0);
-        }
+        LimelightHelpers.SetIMUAssistAlpha(name, 0.08);
+        LimelightHelpers.SetIMUMode(name, 4);
+        imuMode = 4;
+
+        Logger.recordOutput(prefix + "IMU", imuMode);
 
         if(turretMounted){// && robotToCameraPose != null) {
 //            Transform2d robotToShooterReal = new Transform2d(
@@ -212,25 +214,25 @@ public class LimelightFiducialCamera {
                 RobotState.getInstance().setTurretMt1AngleRadians(untransformedPose.getRotation().getRadians());
                 RobotState.getInstance().setTurretMt1Valid(true);
             } else {
+//                Vector<N3> distStdDevs;
+//                distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 4.0, Math.pow(meanDistance, 2) / 4.0, 0.0000001);
+//                VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
+//                        poseEstimate.timestampSeconds, pose, distStdDevs
+//                );
+
+//                RobotState.getInstance().addVisionData(List.of(update));
                 Vector<N3> distStdDevs;
-                distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 4.0, Math.pow(meanDistance, 2) / 4.0, 999999999);
+                if (!turretMounted) {
+                    distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 0.0000001);
+                } else {
+                    distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 99999999999.0);
+                }
+
                 VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
                         poseEstimate.timestampSeconds, pose, distStdDevs
                 );
 
                 RobotState.getInstance().addVisionData(List.of(update));
-//                Vector<N3> distStdDevs;
-//                if (!turretMounted) {
-//                    distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 0.0000001);
-//                } else {
-//                    distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 99999999999.0);
-//                }
-//
-//                VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
-//                        poseEstimate.timestampSeconds, pose, distStdDevs
-//                );
-//
-//                RobotState.getInstance().addVisionData(List.of(update));
             }
         }
     }
@@ -303,6 +305,6 @@ public class LimelightFiducialCamera {
         LimelightHelpers.PoseEstimate poseEstimateMt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
 
         addVisionUpdateMt1(poseEstimate);
-//        addVisionUpdateMt2(poseEstimateMt2);
+        addVisionUpdateMt2(poseEstimateMt2);
     }
 }

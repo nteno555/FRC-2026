@@ -48,13 +48,14 @@ public class SubsystemConstants {
     public static double towerkI = 0.0;
     public static double towerkD = 0.0;
 
+    // Flywheel to Tower is 3 : 1
     public static double towerkSAmps = 0.0;
     public static double towerkVAmps = 0.0;
     public static double towerkAAmps = 0.00;
     public static double towerkPAmps = 5.0;
     public static double towerkIAmps = 0.0;
     public static double towerkDAmps = 0.0;
-    public static double towerFlywheelRatio = 1.0;
+    public static double towerFlywheelRatio = 0.67;
 
     public static double hoodkS = 0.29;
     public static double hoodkV = 0.12;
@@ -120,17 +121,17 @@ public class SubsystemConstants {
     public static double turretPeakForwardTorqueCurrent = 120;
     public static double turretPeakReverseTorqueCurrent = -120;
     public static double turretZeroOffsetRadians = 0.0;
-    public static double turretRotationsPerRadian = 42.0/10.0 * 48.0/26.0 * 125.0/30.0 / (2*Math.PI); //
+    public static double turretRotationsPerRadian = 42.0/10.0 * 48.0/26.0 * 125.0/30.0 / (2*Math.PI);
     public static double turretMinAngleRadians = -1.0;
     public static double turretMaxAngleRadians = 4.30;
-    public static double throughBoreZero1 = 0.929; // 0.802
-    public static double throughBoreZero2 = 0.396; // 0.638
+    public static double throughBoreZero1 = 0.929;
+    public static double throughBoreZero2 = 0.396;
     public static double throughBoreRatio1 = 42.0 / 10.0 * 48.0 / 26.0;
     public static double throughBoreRatio2 = 42.0 / 10.0;
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
     public static boolean hasTurret = true;
     public static boolean useTurretThroughBores = true;
-    public static double turretShotReadyThreshold = 0.052; // 5.73 degrees
+    public static double turretShotReadyThreshold = 0.05; // 5.73 degrees
     public static boolean useTurretVisionCorrection = false;
 
     public static Transform2d robotToShooter = new Transform2d(0.09087, -0.0838, Rotation2d.kZero); // should be x = forward, y = side
@@ -161,7 +162,7 @@ public static Transform2d robotToBackCamera = new Transform2d(-0.326, -0.0277, R
     public static double robotToBackCameraPitch = 28.0;
     public static double robotToBackCameraRoll = 180.0;
 
-    public static Transform2d robotToRightCamera = new Transform2d(0.1015, 0.3274, Rotation2d.kZero);
+    public static Transform2d robotToRightCamera = new Transform2d(0.0762, 0.3274, Rotation2d.kZero);
 //    public static Transform2d robotToRightCamera = new Transform2d(0.1015, 0.3274, Rotation2d.kZero);
     public static double robotToRightCameraForward = robotToRightCamera.getX();
     public static double robotToRightCameraRight = robotToRightCamera.getY();
