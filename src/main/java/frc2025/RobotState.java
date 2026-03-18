@@ -16,7 +16,6 @@ import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.hood.HoodSubsystem;
 import frc2025.subsystems.shooter.ShooterSubsystem;
-import frc2025.subsystems.vision.BallPoseEstimator;
 import frc2025.subsystems.vision.LimelightHelpers;
 import frc2025.subsystems.vision.VisionPoseEstimator;
 import frc2025.util.Alliance;
@@ -57,7 +56,6 @@ public class RobotState {
     private final Field2d field = new Field2d();
     private ArrayList<String> states;
     private String matchState;
-    BallPoseEstimator ballPoseEstimator = new BallPoseEstimator(SubsystemConstants.robotToPhotonCamera);
 
     public RobotState() {
         visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
@@ -343,6 +341,47 @@ public class RobotState {
 
     //     return ballPoses;
     // }
+    public ArrayList<Pose2d> getBallFieldPoses() {
+        ArrayList<Pose2d> ballFieldPoses = new ArrayList<>();
+        if (ballTargets == null) { return ballFieldPoses; }
+
+        Pose2d robotFieldPose = getVisionPose();
+        Rotation2d robotHeading = robotFieldPose.getRotation();
+
+        for (PhotonTrackedTarget target : ballTargets) {
+
+            double distanceMeters = PhotonUtils.calculateDistanceToTargetMeters(
+                SubsystemConstants.photonCameraHeight,
+                0.150114,
+                0,
+                Math.toRadians(target.getPitch())
+            );
+
+            Translation2d cameraToTarget = PhotonUtils.estimateCameraToTargetTranslation(
+                distanceMeters,
+                new Rotation2d(Math.toRadians(target.getYaw()))
+            );
+
+            Translation2d targetFieldTranslation = cameraToTarget
+                .rotateBy(robotHeading);
+            
+            Translation2d cameraOffsetField = SubsystemConstants.robotToPhotonCamera2d
+                .getTranslation()
+                .rotateBy(robotHeading);
+            
+            Translation2d finalTranslation = robotFieldPose.getTranslation()
+                .plus(cameraOffsetField)
+                .plus(targetFieldTranslation);
+
+            ballFieldPoses.add(new Pose2d(finalTranslation, new Rotation2d()));
+        }
+
+        if (!ballFieldPoses.isEmpty()) {
+            Logger.recordOutput("Heatmap/ballPose", ballFieldPoses.get(0));
+        }
+
+        return ballFieldPoses;
+    }
     // public ArrayList<Pose2d> getBallFieldPoses() {
     //     ArrayList<Pose2d> ballFieldPoses = new ArrayList<>();
 
@@ -467,7 +506,7 @@ public class RobotState {
     // }
 
     public Pose2d bestClusterPose(){
-        ArrayList<Pose2d> ballPoses = ballPoseEstimator.getBallFieldPoses(visionPoseEstimator.getLatestPose());
+        ArrayList<Pose2d> ballPoses = getBallFieldPoses();
         Pose2d robotPose = getVisionPose();   
         int bestIndex = -1;
         int bestNumNeighbors = 0;
@@ -509,8 +548,8 @@ public class RobotState {
     }
 
     public void setFieldPoses(){
-        if(ballPoseEstimator.getBallFieldPoses(visionPoseEstimator.getLatestPose()) != null) {
-            field.getObject("Fuel").setPoses(ballPoseEstimator.getBallFieldPoses(visionPoseEstimator.getLatestPose()));   
+        if(getBallFieldPoses() != null) {
+            field.getObject("Fuel").setPoses(getBallFieldPoses());   
         }
         field.setRobotPose(getVisionPose());
     }

@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 
 
@@ -143,7 +144,8 @@ public class SubsystemConstants {
     public static double robotToBackCameraRoll = 0.0;
 
     public static double photonCameraHeight = 0.381;
-    public static Transform3d robotToPhotonCamera = new Transform3d(new Translation3d(0.34163, -0.127, photonCameraHeight), new Rotation3d(0, 0, 0)); //placeholder
+    public static Transform3d robotToPhotonCamera = new Transform3d(new Translation3d(0.34163, -0.127, photonCameraHeight), new Rotation3d(0, 0, 0));
+    public static Transform2d robotToPhotonCamera2d = new Transform2d(new Translation2d(0.34163, -0.127), new Rotation2d());
 
 
     public static double autoAimMaxSpeed = 2.0;

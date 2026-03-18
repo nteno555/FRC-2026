@@ -1,148 +1,126 @@
 package frc2025.commands;
 
-import java.util.List;
-
-import org.littletonrobotics.junction.Logger;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc2025.RobotState;
 import frc2025.subsystems.drive.DriveSubsystem;
+import frc2025.subsystems.vision.VisionSubsystem;
+
+import org.photonvision.targeting.PhotonTrackedTarget;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DriveToClusterCommand extends Command {
 
-    private final DriveSubsystem drive;
+    private final DriveSubsystem driveSubsystem;
 
-    private final PIDController yawPID; 
-    private static final double maxForward = 1.5;
-    private static final double maxOmega = 3.0;
-
-    private static final double speedScaleFactor = 10.0;
-
-    private static final double alignTolerance = 4.0;
-    private static final double areaThreshold = 3.23; 
-
-    private static final double searchOmega = -1.3;
+    private PIDController yawPID;
+    private boolean reachedBall;
+    private final double clusterThreshold = 8.0;
+    private final double areaThreshold = 3.0;
 
     public DriveToClusterCommand(DriveSubsystem drive) {
-        this.drive = drive;
+        this.driveSubsystem = drive;
 
-        yawPID = new PIDController(0.2, 0, 0);
+        yawPID = new PIDController(0.3, 0, 0);
 
-        addRequirements(drive);
+        addRequirements(driveSubsystem);
     }
 
     @Override
     public void initialize() {
         yawPID.reset();
-    }
-
-    public Pair<Double, Double> calculateClusterYawAndTotalArea(List<PhotonTrackedTarget> targets) {
-        double sumX = 0.0;
-        double sumY = 0.0;
-        double totalArea = 0.0;
-
-        for (PhotonTrackedTarget t : targets) {
-            double yawRad = Math.toRadians(t.getYaw());
-            double area = t.getArea();
-
-            sumX += area * Math.cos(yawRad);
-            sumY += area * Math.sin(yawRad);
-            totalArea += area;
-        }
-
-        if (totalArea == 0) {
-            return new Pair<>(0.0, 0.0);
-        }
-
-        double clusterYawRad = Math.atan2(sumY, sumX);
-        double clusterYawDeg = Math.toDegrees(clusterYawRad);
-
-        return new Pair<>(clusterYawDeg, totalArea);
-    }
-
-    public double getLargestArea(List<PhotonTrackedTarget> targets) {
-        double maxArea = 0.0;
-
-        for (PhotonTrackedTarget t : targets) {
-            if (t.getArea() > maxArea) {
-                maxArea = t.getArea();
-            }
-        }
-
-        return maxArea;
+        reachedBall = false;
     }
 
     @Override
     public void execute() {
 
-        List<PhotonTrackedTarget> targets = RobotState.getInstance().getBallTargets();
+        List<PhotonTrackedTarget> balls = RobotState.getInstance().getBallTargets();
 
-        if (targets.isEmpty()) {
-            drive.applyChassisSpeeds(new ChassisSpeeds(0, 0, searchOmega));
+        if (balls.isEmpty()) {
+            driveSubsystem.applyChassisSpeeds(new ChassisSpeeds(0,0,1.0));
             return;
         }
 
-        Pair<Double, Double> stats = calculateClusterYawAndTotalArea(targets);
-        double yaw = stats.getFirst();
-        double totalArea = stats.getSecond();
+        List<List<PhotonTrackedTarget>> clusters = new ArrayList<>();
 
-        if (totalArea == 0) {
-            drive.applyChassisSpeeds(new ChassisSpeeds());
-            return;
+
+        for (PhotonTrackedTarget ball : balls) {
+
+            boolean added = false;
+
+            for (List<PhotonTrackedTarget> cluster : clusters) {
+
+                double clusterYaw = cluster.get(0).getYaw();
+
+                if (Math.abs(ball.getYaw() - clusterYaw) < clusterThreshold) {
+                    cluster.add(ball);
+                    added = true;
+                    break;
+                }
+            }
+
+            if (!added) {
+                List<PhotonTrackedTarget> newCluster = new ArrayList<>();
+                newCluster.add(ball);
+                clusters.add(newCluster);
+            }
         }
 
+        List<PhotonTrackedTarget> bestCluster = clusters.get(0);
+
+        for (List<PhotonTrackedTarget> cluster : clusters) {
+            if (cluster.size() > bestCluster.size()) {
+                bestCluster = cluster;
+            }
+        }
+
+        PhotonTrackedTarget targetBall = bestCluster.get(0);
+
+        for (PhotonTrackedTarget ball : bestCluster) {
+            if (ball.getArea() > targetBall.getArea()) {
+                targetBall = ball;
+            }
+        }
+
+        double yaw = targetBall.getYaw();
+        double area = targetBall.getArea();
 
         double omega = yawPID.calculate(yaw, 0);
-        omega = MathUtil.clamp(omega, -maxOmega, maxOmega);
+        omega = MathUtil.clamp(omega, -2, 2);
 
-        double largestArea = getLargestArea(targets);
+        double speed = 2.0;
 
-        double speed = 0.0;
-        double vx = 0.0;
-        double vy = 0.0;
-
-        if (Math.abs(yaw) < alignTolerance) {
-            speed = speedScaleFactor / (largestArea + 1.0);
-            speed = MathUtil.clamp(speed, 0.2, maxForward);
+        if (area > areaThreshold) {
+            reachedBall = true;
+            speed = 0;
         }
 
         double yawRad = Math.toRadians(yaw);
-        vx = speed * Math.cos(yawRad);
-        vy = speed * Math.sin(yawRad);
 
-        Logger.recordOutput("Cluster/clusterYaw", yaw);
-        Logger.recordOutput("Cluster/totalArea", totalArea);
-        Logger.recordOutput("Cluster/largestArea", largestArea);
-        Logger.recordOutput("Cluster/omega", omega);
-        Logger.recordOutput("Cluster/vx", vx);
-        Logger.recordOutput("Cluster/vy", vy);
+        double vx = speed * Math.cos(yawRad);
+        double vy = speed * Math.sin(yawRad);
 
-        ChassisSpeeds speeds = new ChassisSpeeds(vx, vy, -omega);
+        ChassisSpeeds speeds = new ChassisSpeeds(
+                vx,
+                vy,
+                omega
+        );
 
-        drive.applyChassisSpeeds(speeds);
-    }
-
-    @Override
-    public boolean isFinished() {
-
-        List<PhotonTrackedTarget> targets = RobotState.getInstance().getBallTargets();
-
-        if (targets.isEmpty()) {
-            return false;
-        }
-
-        double largestArea = getLargestArea(targets);
-
-        return (largestArea > areaThreshold);
+        driveSubsystem.applyChassisSpeeds(speeds);
     }
 
     @Override
     public void end(boolean interrupted) {
-        drive.applyChassisSpeeds(new ChassisSpeeds());
+        driveSubsystem.applyChassisSpeeds(new ChassisSpeeds());
+    }
+
+    @Override
+    public boolean isFinished() {
+        return reachedBall;
     }
 }
