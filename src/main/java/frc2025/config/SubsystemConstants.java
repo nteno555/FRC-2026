@@ -121,13 +121,13 @@ public class SubsystemConstants {
     public static double turretPeakForwardTorqueCurrent = 120;
     public static double turretPeakReverseTorqueCurrent = -120;
     public static double turretZeroOffsetRadians = 0.0;
-    public static double turretRotationsPerRadian = 42.0/10.0 * 48.0/26.0 * 125.0/30.0 / (2*Math.PI);
+    public static double turretRotationsPerRadian = 42.0/11.0 * 42.0/26.0 * 110/10.0 / (2*Math.PI); //10.80
     public static double turretMinAngleRadians = -1.0;
     public static double turretMaxAngleRadians = 4.30;
     public static double throughBoreZero1 = 0.929;
     public static double throughBoreZero2 = 0.396;
-    public static double throughBoreRatio1 = 42.0 / 10.0 * 48.0 / 26.0;
-    public static double throughBoreRatio2 = 42.0 / 10.0;
+    public static double throughBoreRatio1 = 42.0 / 11.0 * 42.0 / 26.0; // 6.17
+    public static double throughBoreRatio2 = 42.0 / 11.0; // 3.82
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
     public static boolean hasTurret = true;
     public static boolean useTurretThroughBores = true;

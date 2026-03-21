@@ -77,6 +77,7 @@ public class LimelightFiducialCamera {
 
             double orientation =  RobotState.getInstance().getVisionPose().getRotation().getDegrees() - Units.radiansToDegrees(RobotState.getInstance().getTurretAngle());
 
+            // this might be wrong
             double omega = RobotState.getInstance().getTurretVelocity() - RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
             omega = Units.radiansToDegrees(omega);
 
@@ -196,6 +197,7 @@ public class LimelightFiducialCamera {
 
         double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
         if(turretMounted && SubsystemConstants.hasTurret) {
+            // this might be wrong
             omega -= RobotState.getInstance().getTurretVelocity();
         }
         if(Math.abs(omega) > maxYawRate) {
@@ -271,6 +273,7 @@ public class LimelightFiducialCamera {
 
         double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
         if(turretMounted && SubsystemConstants.hasTurret) {
+            // this might be wrong
             omega += RobotState.getInstance().getTurretVelocity();
         }
 
