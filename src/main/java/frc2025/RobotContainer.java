@@ -79,6 +79,7 @@ public class RobotContainer {
     private boolean slowmode;
     private double manualTurretSpeed = 2.0;
     private boolean sysCheck;
+    private double rpsOffset;
 
     private AimMode aimMode;
     private ManualAimState manualAimState;
@@ -102,13 +103,14 @@ public class RobotContainer {
         configureBindings();
         configureAutoCommands();
         loggerInit();
-        
 
+        rpsOffset = 0.0;
     }
 
     public void periodic() {
         Logger.recordOutput("Superstructure/aimMode", aimMode);
         Logger.recordOutput("Superstructure/manualAimState", manualAimState);
+        Logger.recordOutput("Superstructure/rpsOffset", rpsOffset);
         updateMatchTime();
         loggerPeriodic();
     }
@@ -335,6 +337,24 @@ public class RobotContainer {
         operatorXboxController.rightTrigger()
                 .onTrue(Commands.runOnce(() -> aimMode = AimMode.FIXED));
 
+        operatorXboxController.povUp()
+                .onTrue(Commands.runOnce(() -> {
+                    rpsOffset += 1.0;
+                    ShooterTreeMap.getInstance().changeRPS(1.0);
+                }));
+
+        operatorXboxController.povDown()
+                .onTrue(Commands.runOnce(() -> {
+                    rpsOffset -= 1.0;
+                    ShooterTreeMap.getInstance().changeRPS(-1.0);
+                }));
+
+        operatorXboxController.povLeft()
+                .onTrue(Commands.runOnce(() -> {
+                    rpsOffset = 0.0;
+                    ShooterTreeMap.getInstance().resetRPS();
+                }));
+
         operatorXboxController.y()
                 .and(() -> (aimMode == AimMode.MANUAL))
                 .onTrue(Commands.runOnce(() -> manualAimState = ManualAimState.FLUSH));
@@ -455,7 +475,8 @@ public class RobotContainer {
 //    );
 //
     tuningController.leftBumper().whileTrue(
-            turretSubsystem.autoAim()
+//            turretSubsystem.autoAim()
+            turretSubsystem.rezeroCRT()
     );
 
 

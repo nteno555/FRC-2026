@@ -62,6 +62,7 @@ public class ShooterIOReal implements ShooterIO {
         towerConfigs.Slot1.kI = SubsystemConstants.towerkIAmps;
         towerConfigs.Slot1.kD = SubsystemConstants.towerkDAmps;
 
+        towerConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         towerConfigs.CurrentLimits.SupplyCurrentLimit = 200;
         towerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;

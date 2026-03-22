@@ -26,7 +26,7 @@ public class SubsystemConstants {
     public static double flywheelkI = 0.0;
     public static double flywheelkD = 0.0;
 
-    public static double flywheelkSAmps = 16.00;
+    public static double flywheelkSAmps = 15.0;
     public static double flywheelkVAmps = 0.0;
     public static double flywheelkAAmps = 0.0;
     public static double flywheelkPAmps = 10;
@@ -41,7 +41,7 @@ public class SubsystemConstants {
     public static double flywheelSupplyCurrentLimit = 200;
     public static double flywheelStatorCurrentLimit = 200;
     // to do check
-    public static double towerkS = 0.45;
+    public static double towerkS = 0.37;
     public static double towerkV = 0.095;
     public static double towerkA = 0.00;
     public static double towerkP = 0.2;
@@ -94,7 +94,7 @@ public class SubsystemConstants {
     public static double intakePeakReverseVoltage = -4.0;
     public static double intakeRetractPosition = 0.3;
     public static double intakeDeployPosition = 4.0;
-    public static double intakeRollerVoltage = 8.0;
+    public static double intakeRollerVoltage = 12.0;
     public static double intakeHalfPosition = 1.5;
 
     public static double indexerSupplyCurrentLimit = 120;
@@ -102,30 +102,29 @@ public class SubsystemConstants {
     public static double indexerPeakForwardTorqueCurrent = 120;
     public static double indexerPeakReverseTorqueCurrent = 120;
     public static double indexerTorqueNeutralDeadband = 1;
-    public static double indexerShootVoltage = -12.0;
-    public static double indexerReverseVoltage = 2.0;
+    public static double indexerShootVoltage = 12.0;
+    public static double indexerReverseVoltage = -2.0;
 
     // Turret Gear Ratio: 12:24 & 44:54 & 36:125
-    public static double turretkS = 0.6;
-    public static double turretkV = 0.135;
+    public static double turretkS = 0.3;
+    public static double turretkV = 0.117;
     public static double turretkA = 0.001 * 12.0;
-    public static double turretkP = 3.0;
+    public static double turretkP = 6.0;
     public static double turretkI = 0.0;
     public static double turretkD = 0.1;
     public static double turretCruiseVelocity = 60;
     public static double turretAcceleration = 150;
     public static double turretJerk = 700;
-    public static double turretVoltageLimit = 10.0;
     public static double turretSupplyCurrentLimit = 120;
     public static double turretStatorCurrentLimit = 120;
     public static double turretPeakForwardTorqueCurrent = 120;
     public static double turretPeakReverseTorqueCurrent = -120;
     public static double turretZeroOffsetRadians = 0.0;
     public static double turretRotationsPerRadian = 42.0/11.0 * 42.0/26.0 * 110/10.0 / (2*Math.PI); //10.80
-    public static double turretMinAngleRadians = -1.0;
-    public static double turretMaxAngleRadians = 4.30;
-    public static double throughBoreZero1 = 0.929;
-    public static double throughBoreZero2 = 0.396;
+    public static double turretMinAngleRadians = -3.89;
+    public static double turretMaxAngleRadians = 5.5;
+    public static double throughBoreZero1 = 0.633;
+    public static double throughBoreZero2 = 0.125;
     public static double throughBoreRatio1 = 42.0 / 11.0 * 42.0 / 26.0; // 6.17
     public static double throughBoreRatio2 = 42.0 / 11.0; // 3.82
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
@@ -134,7 +133,7 @@ public class SubsystemConstants {
     public static double turretShotReadyThreshold = 0.05; // 5.73 degrees
     public static boolean useTurretVisionCorrection = false;
 
-    public static Transform2d robotToShooter = new Transform2d(0.09087, -0.0838, Rotation2d.kZero); // should be x = forward, y = side
+    public static Transform2d robotToShooter = new Transform2d(0.0885, -0.1372, Rotation2d.kZero); // should be x = forward, y = side
     public static Transform2d shooterToCamera = new Transform2d(0.1671, 0.0, Rotation2d.kZero);
     public static double robotToTurretCameraForward = 0.0;
     public static double robotToTurretCameraRight = 0.0;
@@ -187,11 +186,11 @@ public static Transform2d robotToBackCamera = new Transform2d(-0.326, -0.0277, R
     public static int flywheelSlaveID = 14;
     public static int hoodID = 15;
     public static int indexerID = 16;
-    public static int intakeDeployMasterID = 17;
-    public static int intakeDeploySlaveID = 18;
-    public static int intakeRollerID = 19;
+    public static int intakeDeployMasterID = 18;
+    public static int intakeDeploySlaveID = 21;
+    public static int intakeRollerID = 17;
     public static int towerID = 20;
-    public static int turretID = 21;
+    public static int turretID = 19;
     public static int turretTb1ID = 5;
     public static int turretTb2ID = 6;
 }

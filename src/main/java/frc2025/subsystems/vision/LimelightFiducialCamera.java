@@ -73,7 +73,7 @@ public class LimelightFiducialCamera {
             LimelightHelpers.setCameraPose_RobotSpace(name, 0.0, 0.0, this.robotToCameraUp,
                     this.robotToCameraRoll, this.robotToCameraPitch, 0.0);
 
-            double orientation =  RobotState.getInstance().getVisionPose().getRotation().getDegrees() - Units.radiansToDegrees(RobotState.getInstance().getTurretAngle());
+            double orientation = RobotState.getInstance().getVisionPose().getRotation().getDegrees() - Units.radiansToDegrees(RobotState.getInstance().getTurretAngle());
 
             // this might be wrong
             double omega = RobotState.getInstance().getTurretVelocity() - RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
@@ -222,11 +222,11 @@ public class LimelightFiducialCamera {
 
 //                RobotState.getInstance().addVisionData(List.of(update));
                 Vector<N3> distStdDevs;
-                if (!turretMounted) {
+//                if (!turretMounted) {
                     distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 0.0000001);
-                } else {
-                    distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 99999999999.0);
-                }
+//                } else {
+//                    distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 99999999999.0);
+//                }
 
                 VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
                         poseEstimate.timestampSeconds, pose, distStdDevs
@@ -272,7 +272,7 @@ public class LimelightFiducialCamera {
         double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
         if(turretMounted && SubsystemConstants.hasTurret) {
             // this might be wrong
-            omega += RobotState.getInstance().getTurretVelocity();
+            omega -= RobotState.getInstance().getTurretVelocity();
         }
 
         if(Math.abs(omega) > maxYawRate) {
