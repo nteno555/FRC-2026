@@ -9,6 +9,8 @@ public interface TurretIO {
         double positionDegreesReal;
         double positionRadians;
         double velocity;
+        double tb1AbsPosition;
+        double tb2AbsPosition;
         boolean throughboresConnected;
         boolean tb1Connected;
         boolean tb2Connected;

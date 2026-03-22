@@ -15,9 +15,6 @@ import java.util.function.Supplier;
 public class IntakeSubsystem extends SubsystemBase {
     IntakeIO io;
     IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
-    boolean usingVoltage = false;
-    private Trigger hasPieceTrigger = (new Trigger(() -> {return inputs.current>28;})).debounce(0.1);
-    private boolean intakeExtended = false;
 
     public IntakeSubsystem(IntakeIO io){
         this.io = io;
@@ -33,7 +30,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public Command setRollerVoltage(Supplier<Double> voltage) {
         return this.run(() -> {
-            usingVoltage = true;
             io.setVoltage(voltage.get());
         });
     }
@@ -82,9 +78,5 @@ public class IntakeSubsystem extends SubsystemBase {
             io.setDeployPosition(SubsystemConstants.intakeDeployPosition);
             io.setVoltage(SubsystemConstants.intakeRollerVoltage);
         });
-    }
-
-    public boolean getHasPiece(){
-        return hasPieceTrigger.getAsBoolean();
     }
 }

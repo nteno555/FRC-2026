@@ -110,11 +110,11 @@ public class TurretIOReal implements TurretIO{
         inputs.tb1Connected = throughBore1.isConnected();
         inputs.tb2Connected = throughBore2.isConnected();
         inputs.velocity = turretMotor.getVelocity().getValueAsDouble() / SubsystemConstants.turretRotationsPerRadian;
+        inputs.tb1AbsPosition = throughBore1.getAbsolutePosition().getValue().in(Units.Rotations) + 0.5;
+        inputs.tb2AbsPosition = throughBore2.getAbsolutePosition().getValue().in(Units.Rotations) + 0.5;
 
         Logger.recordOutput("Turret/voltage", turretMotor.getMotorVoltage().getValue().in(Units.Volts));
         Logger.recordOutput("Turret/current", turretMotor.getSupplyCurrent().getValue().in(Units.Amp));
-        Logger.recordOutput("Turret/tb1AbsPosition", throughBore1.getAbsolutePosition().getValue().in(Units.Rotations) + 0.5);
-        Logger.recordOutput("Turret/tb2AbsPosition", throughBore2.getAbsolutePosition().getValue().in(Units.Rotations) + 0.5);
 //        Logger.recordOutput("Turret/tb1RelativePosition", throughBore1.getPosition().getValue().in(Units.Rotations));
 //        Logger.recordOutput("Turret/tb2RelativePosition", throughBore2.getPosition().getValue().in(Units.Rotations));
         Logger.recordOutput("Turret/RPS", turretMotor.getVelocity().getValueAsDouble());

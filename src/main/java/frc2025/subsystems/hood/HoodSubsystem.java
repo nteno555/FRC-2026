@@ -21,10 +21,7 @@ import java.util.function.Supplier;
 public class HoodSubsystem extends SubsystemBase {
     HoodIO io;
     HoodIOInputsAutoLogged inputs = new HoodIOInputsAutoLogged();
-    double setpoint;
-    double voltage;
-    boolean usingVoltage = false;
-    double voltageRamp = 0;
+    double setpoint = 0.0;
 
     public HoodSubsystem(HoodIO io) {
         io.rezero(0);
@@ -36,35 +33,24 @@ public class HoodSubsystem extends SubsystemBase {
         Logger.processInputs("RealOutputs/Hood", inputs);
         Logger.recordOutput("Superstructure/HoodAngle", inputs.positionRotations);
         Logger.recordOutput("Hood/setpoint", setpoint);
-        if(DriverStation.isDisabled()) {
-            setpoint = inputs.positionRotations;
-        }
-
         io.updateInputs(inputs);
     }
 
     public Command setPosition(Supplier<Double> position) {
         return this.run(() -> {
             setpoint = position.get();
-            usingVoltage = false;
             io.setPosition(setpoint);
         });
     }
 
     public Command setVoltage(Supplier<Double> voltage) {
         return this.run(() -> {
-            usingVoltage = true;
-            this.voltage = voltage.get();
             io.setVoltage(voltage.get());
         });
     }
 
     public Command autoAim() {
         return setPosition(() -> {
-            if (usingVoltage) {
-                return inputs.positionRotations;
-            }
-
             ChassisSpeeds robotVelocity = RobotState.getInstance().getFieldRelativeSpeeds();
             double dt = 1.0;
             Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
@@ -124,27 +110,9 @@ public class HoodSubsystem extends SubsystemBase {
         });
     }
 
-    public Command autoAimFlush() {
-        return setPosition(() -> ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(1.0));
-    }
-
-    public Command voltageRampCommand() {
-        return this.runOnce(() -> { voltageRamp = 0.0; })
-                .andThen(
-                        this.run(() -> {
-                            usingVoltage = true;
-                            io.setVoltage(voltageRamp);
-                            voltageRamp += 0.01;
-                        }));
-    }
-
     public Command homeThenRezero() {
         return this.run(() -> {
-            usingVoltage = true;
             io.setVoltage(SubsystemConstants.hoodRezeroVoltage);
-            io.rezero(0.0);
-        }).andThen(() -> {
-            usingVoltage = false;
             io.rezero(0.0);
         });
     }

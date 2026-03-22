@@ -19,8 +19,6 @@ import java.util.function.Supplier;
 public class IndexerSubsystem extends SubsystemBase {
     IndexerIO io;
     IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
-    boolean usingVoltage = false;
-    private Trigger hasPieceTrigger = (new Trigger(() -> {return inputs.indexerCurrent > 28;})).debounce(0.1);
 
     public IndexerSubsystem(IndexerIO io) {
         this.io = io;
@@ -35,14 +33,12 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public Command setSpeed(Supplier<Double> indexerSpeed) {
         return this.run(() -> {
-            usingVoltage = false;
             io.setSpeed(indexerSpeed.get());
         });
     }
 
     public Command setVoltage(Supplier<Double> indexerVoltage) {
         return this.runEnd(() -> {
-            usingVoltage = true;
             io.setVoltage(indexerVoltage.get());
         }, () -> {
             io.setVoltage(0.0);

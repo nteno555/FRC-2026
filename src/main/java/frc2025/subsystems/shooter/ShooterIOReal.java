@@ -108,19 +108,11 @@ public class ShooterIOReal implements ShooterIO {
 
     @Override
     public void setSpeed(double speed) {
-//        flywheelMaster.setControl(new VelocityVoltage(speed)
-//                .withEnableFOC(true));
-
         flywheelMaster.setControl(
                 new VelocityTorqueCurrentFOC(speed)
                         .withSlot(1)
         );
         tower.setControl(new VelocityVoltage(speed * SubsystemConstants.towerFlywheelRatio)
                 .withEnableFOC(true));
-
-//        tower.setControl(
-//                new VelocityTorqueCurrentFOC(speed * SubsystemConstants.towerFlywheelRatio)
-//                        .withSlot(1)
-//        );
     }
 }

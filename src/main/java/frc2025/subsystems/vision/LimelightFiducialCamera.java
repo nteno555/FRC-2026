@@ -51,8 +51,6 @@ public class LimelightFiducialCamera {
         imuMode = 0;
     }
 
-    public void updateReefAlign() {}
-
     public void writeGyro() {
         String prefix = "Vision/" + name + "_mt2/";
 

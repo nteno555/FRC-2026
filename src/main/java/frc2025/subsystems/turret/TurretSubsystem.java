@@ -16,8 +16,7 @@ import java.util.function.Supplier;
 public class TurretSubsystem extends SubsystemBase {
     TurretIO io;
     TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
-    double setpoint, voltage, voltageRamp;
-    boolean usingVoltage = false;
+    double setpoint, voltage;
     boolean zeroed = false;
 
     public TurretSubsystem(TurretIO io) {
@@ -29,7 +28,6 @@ public class TurretSubsystem extends SubsystemBase {
     public void periodic() {
         Logger.processInputs("RealOutputs/Turret", inputs);
         Logger.recordOutput("Turret/setpoint", setpoint);
-        if(DriverStation.isDisabled()) {setpoint = inputs.positionTicks;}
         io.updateInputs(inputs);
 
         double fieldRelativeAngleRad = -inputs.positionRadians + RobotState.getInstance().getVisionPose().getRotation().getRadians();
@@ -51,20 +49,6 @@ public class TurretSubsystem extends SubsystemBase {
             }
         }
 
-        if(RobotState.getInstance().getTurretMt1Valid() && SubsystemConstants.useTurretVisionCorrection) {
-            double mt1FieldRelativeAngle = RobotState.getInstance().getTurretMt1AngleRadians();
-            if(Math.abs(mt1FieldRelativeAngle - fieldRelativeAngleRad) > 0.1) {
-                double mt1RobotRelativeAngle = (-mt1FieldRelativeAngle + RobotState.getInstance().getVisionPose().getRotation().getRadians());
-                Logger.recordOutput("Turret/mt1RobotRelativeAngle", mt1RobotRelativeAngle);
-                Logger.recordOutput("Turret/visionRezeroHeartbeat", Math.random());
-
-
-                io.rezero(io.toRotations(inputs.positionRadians + 0.01 * (mt1RobotRelativeAngle - inputs.positionRadians)));
-                //io.rezero(io.toRotations(mt1RobotRelativeAngle));
-            }
-            RobotState.getInstance().setTurretMt1Valid(false);
-        }
-
         Logger.recordOutput("Superstructure/TurretAngleRadians", inputs.positionRadians);
 
         Pose2d turretPose = new Pose2d(
@@ -84,9 +68,6 @@ public class TurretSubsystem extends SubsystemBase {
         return setPositionFieldRelative(
                 () -> {
                     double wantedAngle = RobotState.getInstance().getAngleToVirtualTarget();
-                    double visionAngle = RobotState.getInstance().getVisionPose().getRotation().getRadians();
-
-
                     return wantedAngle;
                 },
                 () -> {
@@ -121,14 +102,9 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     public Command setPositionFieldRelative(Supplier<Double> positionRadians, Supplier<Double> velocityRadiansPerSecond) {
-        double posFieldRelative = RobotState.getInstance().getVisionPose().getRotation().getRadians() - positionRadians.get();
         return setPositionSafe(() -> -(positionRadians.get() - RobotState.getInstance().getVisionPose().getRotation().getRadians()),
                 velocityRadiansPerSecond);
     }
-
-//    public Command setPositionSafe(Supplier<Double> positionRadians) {
-//        return setPositionSafe(positionRadians, () -> 0.0);
-//    }
 
     public Command setPositionSafe(Supplier<Double> positionRadians, Supplier<Double> velocityRadiansPerSecond) {
         return this.run(() -> {
@@ -166,10 +142,6 @@ public class TurretSubsystem extends SubsystemBase {
 
             setpoint = io.toRotations(bestAngle);
 
-            usingVoltage = false;
-            //io.setPosition(setpoint, velocityFF);
-
-
             if(io.toRadians(Math.abs(setpoint - inputs.positionTicks)) < 0.5) {
                 Logger.recordOutput("Turret/slot0heartbeat", Math.random());
                 io.setPosition(setpoint, velocityFF);
@@ -186,27 +158,14 @@ public class TurretSubsystem extends SubsystemBase {
     public Command setPosition(Supplier<Double> position) {
         return this.run(() -> {
             setpoint = position.get();
-            usingVoltage = false;
-
         });
     }
 
     public Command setVoltage(Supplier<Double> voltage) {
         return this.run(() -> {
-            usingVoltage = true;
             this.voltage = voltage.get();
             io.setVoltage(voltage.get());
         });
-    }
-
-    public Command voltageRampCommand() {
-        return this.runOnce(() -> { voltageRamp = 0.0; })
-                .andThen(
-                        this.run(() -> {
-                            usingVoltage = true;
-                            io.setVoltage(voltageRamp);
-                            voltageRamp += 0.01;
-                        }));
     }
 
     public Command rezeroCRT() {
@@ -238,7 +197,6 @@ public class TurretSubsystem extends SubsystemBase {
         Logger.recordOutput("Turret/errorRads", Math.abs(inputs.positionRadians - io.toRadians(setpoint)));
         return Math.abs(inputs.positionRadians - io.toRadians(setpoint)) < SubsystemConstants.turretShotReadyThreshold
                 && !(equals(setpoint, io.toRotations(SubsystemConstants.turretMinAngleRadians)) || equals(setpoint, io.toRotations(SubsystemConstants.turretMaxAngleRadians)));
-//        return Math.abs(inputs.positionRadians - io.toRadians(setpoint)) < SubsystemConstants.turretShotReadyThreshold;
     }
 
 }
