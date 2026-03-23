@@ -55,8 +55,13 @@ public class LimelightFiducialCamera {
         String prefix = "Vision/" + name + "_mt2/";
 
 //        LimelightHelpers.SetIMUMode(name, 1);
-        LimelightHelpers.SetIMUAssistAlpha(name, 0.08);
+//        imuMode = 1;
+        LimelightHelpers.SetIMUAssistAlpha(name, 0.1);
         LimelightHelpers.SetIMUMode(name, 4);
+
+//        if (turretMounted) {
+//            LimelightHelpers.set
+//        }
         imuMode = 4;
 
         Logger.recordOutput(prefix + "IMU", imuMode);
@@ -76,7 +81,7 @@ public class LimelightFiducialCamera {
             double orientation = RobotState.getInstance().getVisionPose().getRotation().getDegrees() - Units.radiansToDegrees(RobotState.getInstance().getTurretAngle());
 
             // this might be wrong
-            double omega = RobotState.getInstance().getTurretVelocity() - RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
+            double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond - RobotState.getInstance().getTurretVelocity();
             omega = Units.radiansToDegrees(omega);
 
             LimelightHelpers.SetRobotOrientation(name, orientation, omega, 0, 0, 0, 0);

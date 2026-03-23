@@ -26,10 +26,10 @@ public class SubsystemConstants {
     public static double flywheelkI = 0.0;
     public static double flywheelkD = 0.0;
 
-    public static double flywheelkSAmps = 15.0;
+    public static double flywheelkSAmps = 17.0;
     public static double flywheelkVAmps = 0.0;
     public static double flywheelkAAmps = 0.0;
-    public static double flywheelkPAmps = 10;
+    public static double flywheelkPAmps = 10.0;
     public static double flywheelkIAmps = 0.0;
     public static double flywheelkDAmps = 0.0;
 
@@ -55,7 +55,7 @@ public class SubsystemConstants {
     public static double towerkPAmps = 5.0;
     public static double towerkIAmps = 0.0;
     public static double towerkDAmps = 0.0;
-    public static double towerFlywheelRatio = 0.67;
+    public static double towerFlywheelRatio = 1.0;
 
     public static double hoodkS = 0.29;
     public static double hoodkV = 0.12;
@@ -109,7 +109,7 @@ public class SubsystemConstants {
     public static double turretkS = 0.3;
     public static double turretkV = 0.117;
     public static double turretkA = 0.001 * 12.0;
-    public static double turretkP = 6.0;
+    public static double turretkP = 5.0;
     public static double turretkI = 0.0;
     public static double turretkD = 0.1;
     public static double turretCruiseVelocity = 60;
@@ -143,7 +143,6 @@ public class SubsystemConstants {
     public static double robotToTurretCameraRoll = 0.0;
     public static boolean ignoreTurretLimelight = false;
 
-//    public static Transform2d robotToFrontCamera = new Transform2d(0.326, -0.0277, Rotation2d.kZero);
     public static Transform2d robotToFrontCamera = new Transform2d(0.326, -0.1015, Rotation2d.kZero);
     public static double robotToFrontCameraForward = robotToFrontCamera.getX();
     public static double robotToFrontCameraRight = robotToFrontCamera.getY();
@@ -152,31 +151,30 @@ public class SubsystemConstants {
     public static double robotToFrontCameraPitch = 28.0;
     public static double robotToFrontCameraRoll = 180.0;
 
-//    public static Transform2d robotToBackCamera = new Transform2d(-0.326, -0.1015, Rotation2d.kZero);
-public static Transform2d robotToBackCamera = new Transform2d(-0.326, -0.0277, Rotation2d.kZero);
+    public static Transform2d robotToBackCamera = new Transform2d(-0.3429, 0.064, Rotation2d.kZero);
     public static double robotToBackCameraForward = robotToBackCamera.getX();
     public static double robotToBackCameraRight = robotToBackCamera.getY();
-    public static double robotToBackCameraUp = 0.14641;
+    public static double robotToBackCameraUp = 0.1651;
     public static double robotToBackCameraYaw = 180.0;
     public static double robotToBackCameraPitch = 28.0;
     public static double robotToBackCameraRoll = 180.0;
 
-    public static Transform2d robotToRightCamera = new Transform2d(0.0762, 0.3274, Rotation2d.kZero);
+    public static Transform2d robotToRightCamera = new Transform2d(-0.2766, 0.3429, Rotation2d.kZero);
 //    public static Transform2d robotToRightCamera = new Transform2d(0.1015, 0.3274, Rotation2d.kZero);
     public static double robotToRightCameraForward = robotToRightCamera.getX();
     public static double robotToRightCameraRight = robotToRightCamera.getY();
-    public static double robotToRightCameraUp = 0.14641;
+    public static double robotToRightCameraUp = 0.2222;
     public static double robotToRightCameraYaw = -90.0;
     public static double robotToRightCameraPitch = 28.0;
-    public static double robotToRightCameraRoll = 180.0;
+    public static double robotToRightCameraRoll = 0.0;
 
     public static double autoAimMaxSpeed = 10.0;//2.3;
-    public static double shuttlingMaxSpeed = 3.5;
+    public static double shuttlingMaxSpeed = 5.0;
     public static double autoAimMaxSpeedStrict = 10.0;//1.0;
     public static double autoAimMaxAccel = 10.0;
     public static double autoAimMaxAngularVelocity = Math.PI;
     public static double autoAimMaxAngularVelocityStrict = Math.PI/2;
-    public static double shuttlingMaxAngularVelocity = Math.PI * 2;
+    public static double shuttlingMaxAngularVelocity = Math.PI * 4;
 
     public static double flushFlywheelRps = 42.0;
     public static double flushHoodAngle = 0.9;
@@ -186,11 +184,11 @@ public static Transform2d robotToBackCamera = new Transform2d(-0.326, -0.0277, R
     public static int flywheelSlaveID = 14;
     public static int hoodID = 15;
     public static int indexerID = 16;
-    public static int intakeDeployMasterID = 18;
-    public static int intakeDeploySlaveID = 21;
-    public static int intakeRollerID = 17;
+    public static int intakeDeployMasterID = 17;
+    public static int intakeDeploySlaveID = 18;
+    public static int intakeRollerID = 19;
     public static int towerID = 20;
-    public static int turretID = 19;
+    public static int turretID = 21;
     public static int turretTb1ID = 5;
     public static int turretTb2ID = 6;
 }

@@ -183,6 +183,43 @@ public class TurretSubsystem extends SubsystemBase {
         }, () -> io.setVoltage(0.0));
     }
 
+    public Command aimAtHub() {
+        return setPositionFieldRelative(
+                () -> {
+                    double wantedAngle = RobotState.getInstance().getAngleToRealHub();
+                    return wantedAngle;
+                },
+                () -> {
+                    ChassisSpeeds robotSpeeds = RobotState.getInstance().getFieldRelativeSpeeds();
+                    double vx = robotSpeeds.vxMetersPerSecond;
+                    double vy = robotSpeeds.vyMetersPerSecond;
+                    double vOmega = robotSpeeds.omegaRadiansPerSecond;
+
+                    Translation2d targetPos = RobotState.getInstance().getShootingWhileMovingVirtualPose().getTranslation();
+                    var robotPose = RobotState.getInstance().getDelayedPose();
+                    Translation2d shooterPos = robotPose.transformBy(SubsystemConstants.robotToShooter).getTranslation();
+
+                    var robotToTargetXY = targetPos.minus(shooterPos);
+                    Translation2d shooterRobotRelative = SubsystemConstants.robotToShooter.getTranslation().rotateBy(robotPose.getRotation());
+
+                    robotSpeeds = new ChassisSpeeds(
+                            vx + vOmega * shooterRobotRelative.getY(),
+                            vy - vOmega * shooterRobotRelative.getX(),
+                            vOmega
+                    );
+
+                    var targetFrameToRobot = new Translation2d(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond)
+                            .rotateBy(robotToTargetXY.getAngle());
+
+                    var tangent = targetFrameToRobot.getY();
+                    var angular = robotSpeeds.omegaRadiansPerSecond;
+                    var distanceToTarget = robotToTargetXY.getNorm();
+
+                    return (angular + tangent / distanceToTarget);
+                }
+        );
+    }
+
 
     public double getPosition() { return inputs.positionTicks; }
     public double getPositionRadians() { return inputs.positionRadians; }
@@ -191,6 +228,7 @@ public class TurretSubsystem extends SubsystemBase {
         double epsilon = 0.001;
         return Math.abs(a - b) < epsilon;
     }
+
 
     public boolean getShotReady() {
         Logger.recordOutput("Turret/errorRots", Math.abs(inputs.positionTicks - setpoint));

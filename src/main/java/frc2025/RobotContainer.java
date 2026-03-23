@@ -150,7 +150,7 @@ public class RobotContainer {
 
             autoChooser.addOption("High x2 Neutral", autos.HighDoubleNeutral());
             autoChooser.addOption("High x2 Loop", autos.HighDoubleLoop());
-            autoChooser.addOption("High Neutral Close", autos.HighNeutralClose());
+            autoChooser.addOption("High Neutral Loop", autos.HighNeutralLoop());
 
         } else {
             autoChooser.addOption("Low Neutral Station", autos.LowNeutralStation());

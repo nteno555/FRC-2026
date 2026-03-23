@@ -35,6 +35,13 @@ public class FieldConstants {
     public static Pose2d blueTrenchLowReturn = new Pose2d(3.638, 0.510, Rotation2d.kCCW_90deg);
     public static Pose2d blueTrenchHighReturn = new Pose2d(3.572, 7.544, Rotation2d.kCW_90deg);
 
+    public static double blueClimbHighY = 4.162;
+    public static double blueClimbLowY = 3.282;
+    public static double blueClimbX = 1.052;
+    public static double redClimbHighY = 4.721;
+    public static double redClimbLowY = 3.836;
+    public static double redClimbX = 15.513;
+
     public static double inBlueZoneX = 3.7;
     public static double inRedZoneX = 12.8;
 }

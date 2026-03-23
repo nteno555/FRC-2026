@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc2025.config.SubsystemConstants;
 
@@ -25,6 +26,8 @@ public class IndexerIOReal implements IndexerIO {
         configTorque.PeakForwardTorqueCurrent = SubsystemConstants.indexerPeakForwardTorqueCurrent;
         configTorque.PeakReverseTorqueCurrent = SubsystemConstants.indexerPeakReverseTorqueCurrent;
         configTorque.TorqueNeutralDeadband = SubsystemConstants.indexerTorqueNeutralDeadband;
+
+        indexerConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         indexer.getConfigurator().apply(indexerConfigs, 0.050);
         indexer.getConfigurator().apply(configTorque, 0.05);

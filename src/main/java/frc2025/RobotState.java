@@ -197,6 +197,18 @@ public class RobotState {
         Logger.recordOutput("Vision/angleToVirtualTarget", angleToVirtualTarget);
     }
 
+    public double getAngleToRealHub() {
+        Pose2d target = (Alliance.get()) ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
+
+        Pose2d shooterPose = getDelayedPose().transformBy(SubsystemConstants.robotToShooter);
+        double angle = Math.atan2(
+                target.getY() - shooterPose.getY(),
+                target.getX() - shooterPose.getX()
+        );
+
+        return angle;
+    }
+
     public double getAngleToVirtualTarget() {
         return angleToVirtualTarget;
     }

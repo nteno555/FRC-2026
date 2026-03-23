@@ -55,6 +55,7 @@ public class AutoAimCommands {
         );
     }
 
+    // For Auto
    public static Command autoIndex(RobotContainer robotContainer) {
         BooleanSupplier readySupplier = () -> {
             boolean good;
@@ -65,56 +66,14 @@ public class AutoAimCommands {
             }
 
             Pose2d pose = RobotState.getInstance().getVisionShooterPose();
-            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
-            double dist = pose.getTranslation().getDistance(targetPose.getTranslation());
-
-            boolean nearBlueTrench = Math.abs(pose.getX() - FieldConstants.blueTrenchX) < FieldConstants.trenchThreshold;
-            boolean nearRedTrench = Math.abs(pose.getX() - FieldConstants.redTrenchX) < FieldConstants.trenchThreshold;
-            boolean onBumpTrench = (pose.getY() > FieldConstants.highBumpY) || (pose.getY() < FieldConstants.lowBumpY);
-
-            good = good && !((nearBlueTrench || nearRedTrench) && onBumpTrench);
 
             boolean inBlueZone = pose.getX() < FieldConstants.inBlueZoneX && !Alliance.get();
             boolean inRedZone = pose.getX() > FieldConstants.inRedZoneX && Alliance.get();
+            good = good && (inBlueZone || inRedZone);
 
-            if (inBlueZone || inRedZone) {
-                good = good && (dist < ShooterTreeMap.getInstance().getMaxDistance());
-            }
-
-            if(DriverStation.isAutonomousEnabled()) {
-                good = good && (inBlueZone || inRedZone);
-            }
-
-            double a = RobotState.getInstance().getPigeonAcceleration();
-
-            if(RobotState.getInstance().getShuttling()) {
-                good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.shuttlingMaxSpeed) && (RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond < SubsystemConstants.shuttlingMaxAngularVelocity);
-            }
-            else {
-                double targetDist = RobotState.getInstance().getTargetPose().getTranslation().getDistance(RobotState.getInstance().getVisionPose().getTranslation());
-
-                if (targetDist < ShooterTreeMap.getInstance().getMinDistance()) {
-                    good = good && (RobotState.getInstance().getSpeed() < 0.5);
-                }
-                else if(targetDist < 3.0) {
-                    good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed)
-                            && (RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond < SubsystemConstants.autoAimMaxAngularVelocity);
-                }
-                else {
-                    good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeedStrict)
-                            && (RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond < SubsystemConstants.autoAimMaxAngularVelocityStrict);
-
-                }
-            }
-
-//            Logger.recordOutput("Indexer/autoIndex/nearTrenchBump", ((nearBlueTrench || nearRedTrench) && onBumpTrench));
-//            Logger.recordOutput("Indexer/autoIndex/autoInZone", (DriverStation.isAutonomousEnabled()) && (inBlueZone || inRedZone));
-            Logger.recordOutput("Indexer/autoIndex/accelReady", (a < SubsystemConstants.autoAimMaxAccel));
             Logger.recordOutput("Indexer/autoIndex/shooterReady", robotContainer.getShooter().getShotReady());
             Logger.recordOutput("Indexer/autoIndex/turretReady", robotContainer.getTurret().getShotReady());
-            Logger.recordOutput("Indexer/autoIndex/speedReady", (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed));
             Logger.recordOutput("Indexer/autoIndex/speed", RobotState.getInstance().getSpeed());
-            Logger.recordOutput("Indexer/autoIndex/accel", a);
             Logger.recordOutput("Indexer/autoIndexReady", good);
 
             return good;
@@ -131,38 +90,53 @@ public class AutoAimCommands {
     public static Command autoIndex(RobotContainer robotContainer, Supplier<Boolean> hasTurret) {
         BooleanSupplier readySupplier = () -> {
             boolean good;
+
             if(!hasTurret.get()) {
                 good = robotContainer.getShooter().getShotReady() && robotContainer.getDrive().getShotReady() && robotContainer.getHood().getShotReady();
             } else {
                 good = robotContainer.getShooter().getShotReady() && robotContainer.getTurret().getShotReady() && robotContainer.getHood().getShotReady();
             }
 
+            if (RobotState.getInstance().getShuttling() && !DriverStation.isAutonomousEnabled()) {
+                return good;
+            }
+
             Pose2d pose = RobotState.getInstance().getVisionShooterPose();
             Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
             double dist = pose.getTranslation().getDistance(targetPose.getTranslation());
+            double xPos = pose.getX();
+            double yPos = pose.getY();
 
-            boolean nearBlueTrench = Math.abs(pose.getX() - FieldConstants.blueTrenchX) < FieldConstants.trenchThreshold;
-            boolean nearRedTrench = Math.abs(pose.getX() - FieldConstants.redTrenchX) < FieldConstants.trenchThreshold;
-            boolean onBumpTrench = (pose.getY() > FieldConstants.highBumpY) || (pose.getY() < FieldConstants.lowBumpY);
+            boolean nearBlueTrench = Math.abs(xPos - FieldConstants.blueTrenchX) < FieldConstants.trenchThreshold;
+            boolean nearRedTrench = Math.abs(xPos - FieldConstants.redTrenchX) < FieldConstants.trenchThreshold;
+            boolean onBumpTrench = (yPos > FieldConstants.highBumpY) || (yPos < FieldConstants.lowBumpY);
 
             good = good && !((nearBlueTrench || nearRedTrench) && onBumpTrench);
 
-            boolean inBlueZone = pose.getX() < FieldConstants.inBlueZoneX && !Alliance.get();
-            boolean inRedZone = pose.getX() > FieldConstants.inRedZoneX && Alliance.get();
+            boolean inZone;
+            boolean inClimb;
 
-            if (inBlueZone || inRedZone) {
-                good = good && (dist < ShooterTreeMap.getInstance().getMaxDistance());
+            if (Alliance.get()) {
+                inZone = xPos > FieldConstants.inRedZoneX;
+                inClimb = (xPos > FieldConstants.redClimbX) && (yPos > FieldConstants.redClimbLowY) && (yPos < FieldConstants.redClimbHighY);
+            }
+            else {
+                inZone = xPos < FieldConstants.inBlueZoneX;
+                inClimb = (xPos < FieldConstants.blueClimbX) && (yPos > FieldConstants.blueClimbLowY) && (yPos < FieldConstants.blueClimbHighY);
             }
 
-            if(DriverStation.isAutonomousEnabled()) {
-                good = good && (inBlueZone || inRedZone);
+            good = good && (!inClimb);
+
+            if (inZone) {
+                good = good && (dist < ShooterTreeMap.getInstance().getMaxDistance());
             }
 
             double a = RobotState.getInstance().getPigeonAcceleration();
 
             if(RobotState.getInstance().getShuttling()) {
                 good = good && (RobotState.getInstance().getSpeed() < SubsystemConstants.shuttlingMaxSpeed) && (RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond < SubsystemConstants.shuttlingMaxAngularVelocity);
-            } else {
+            }
+            else {
                 double targetDist = RobotState.getInstance().getTargetPose().getTranslation().getDistance(RobotState.getInstance().getVisionPose().getTranslation());
                 if (targetDist < ShooterTreeMap.getInstance().getMinDistance()) {
                     good = good && (RobotState.getInstance().getSpeed() < 0.1)
@@ -179,7 +153,8 @@ public class AutoAimCommands {
             }
 
             Logger.recordOutput("Indexer/autoIndex/nearTrenchBump", ((nearBlueTrench || nearRedTrench) && onBumpTrench));
-            Logger.recordOutput("Indexer/autoIndex/autoInZone", (DriverStation.isAutonomousEnabled()) && (inBlueZone || inRedZone));
+            Logger.recordOutput("Indexer/autoIndex/inZone", inZone);
+            Logger.recordOutput("Indexer/autoIndex/inClimb", inClimb);
             Logger.recordOutput("Indexer/autoIndex/accelReady", (a < SubsystemConstants.autoAimMaxAccel));
             Logger.recordOutput("Indexer/autoIndex/shooterReady", robotContainer.getShooter().getShotReady());
             Logger.recordOutput("Indexer/autoIndex/turretReady", robotContainer.getTurret().getShotReady());

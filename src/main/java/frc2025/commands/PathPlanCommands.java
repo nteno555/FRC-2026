@@ -43,7 +43,7 @@ public class PathPlanCommands {
                 endWaypoint
         );
 
-        PathConstraints constraints = new PathConstraints(4.0, 4.0, 4*Math.PI, 4*Math.PI);
+        PathConstraints constraints = new PathConstraints(3.0, 4.0, 3*Math.PI, 4*Math.PI);
         PathPlannerPath path = new PathPlannerPath(
                 waypoints,
                 constraints,
@@ -58,11 +58,11 @@ public class PathPlanCommands {
         Supplier<PathPlannerPath> preTrenchPathSupplier = () -> {
             var robotPose = RobotState.getInstance().getVisionPose();
             var xPos = robotPose.getX();
-            if (xPos < FieldConstants.blueTrenchHighMid.getX() + 0.2) {
-                xPos = FieldConstants.blueTrenchHighMid.getX() + 0.2;
+            if (xPos < FieldConstants.blueTrenchHighMid.getX() + 0.3) {
+                xPos = FieldConstants.blueTrenchHighMid.getX() + 0.3;
             }
-            if (xPos > FieldConstants.redTrenchHighMid.getX() - 0.2) {
-                xPos = FieldConstants.redTrenchHighMid.getX() - 0.2;
+            if (xPos > FieldConstants.redTrenchHighMid.getX() - 0.3) {
+                xPos = FieldConstants.redTrenchHighMid.getX() - 0.3;
             }
             var preTrenchEndPose = new Pose2d(xPos, endPose.get().getY(), endPose.get().getRotation());
             return straightPathFromPoses(robotPose, preTrenchEndPose, 0.0);

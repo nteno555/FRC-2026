@@ -49,7 +49,8 @@ public class Autos {
                                         driveCommand
                                         .deadlineFor(
                                                 robotContainer.getIntake().setIntakingAuto()
-                                                .alongWith(robotContainer.indexerSubsystem.setVoltage(() -> SubsystemConstants.indexerReverseVoltage))
+                                                .alongWith(robotContainer.getIndexer().setVoltage(() -> SubsystemConstants.indexerReverseVoltage)
+                                                .alongWith(robotContainer.getTurret().aimAtHub()))
                                         )
                                 );
     }
@@ -105,6 +106,7 @@ public class Autos {
 
     public Command buildAuto(List<String> paths, boolean climb) {
         Command aim = robotContainer.getShooter().autoAim();
+//                .alongWith(robotContainer.getTurret().aimAtHub());
 
         Command pathCommands = intakePathResetOdometry(paths.get(0));
 
@@ -220,6 +222,10 @@ public class Autos {
 
     public Command MidStationDepotClimb() {
         return buildAuto(List.of("Mid-Station", WAIT_SHOOT, "Station-Depot", "Depot-Climb"), true);
+    }
+
+    public Command HighNeutralLoop() {
+        return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "High-Loop", RETURN_UNDER_TRENCH_HIGH), false);
     }
 
     public Command HighDoubleNeutral() {
