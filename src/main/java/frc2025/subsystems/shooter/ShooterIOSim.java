@@ -22,9 +22,5 @@ public class ShooterIOSim implements ShooterIO {
     public void setVoltage(double voltage) {
         this.voltage = voltage;
     }
-
-    @Override
-    public void setPercentOutput(double percentOutput) {this.percentOutput = percentOutput;}
-
 }
 

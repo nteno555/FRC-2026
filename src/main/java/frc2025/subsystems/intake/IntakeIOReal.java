@@ -1,8 +1,10 @@
 package frc2025.subsystems.intake;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.Units;
@@ -10,9 +12,9 @@ import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class IntakeIOReal implements IntakeIO {
-    private final TalonFX intakeDeployMaster = new TalonFX(SubsystemConstants.intakeDeployMasterID, "rio");
-    private final TalonFX intakeDeploySlave = new TalonFX(SubsystemConstants.intakeDeploySlaveID, "rio");
-    private final TalonFX intakeRoller = new TalonFX(SubsystemConstants.intakeRollerID,"rio");
+    private final TalonFX intakeDeployMaster = new TalonFX(SubsystemConstants.intakeDeployMasterID, CANBus.roboRIO());
+    private final TalonFX intakeDeploySlave = new TalonFX(SubsystemConstants.intakeDeploySlaveID, CANBus.roboRIO());
+    private final TalonFX intakeRoller = new TalonFX(SubsystemConstants.intakeRollerID,CANBus.roboRIO());
 
     public IntakeIOReal() {
         var rollerConfigs = new TalonFXConfiguration();
@@ -37,6 +39,7 @@ public class IntakeIOReal implements IntakeIO {
         deployConfigs.MotionMagic.MotionMagicJerk = SubsystemConstants.intakeMotionMagicJerk;
 
         deployConfigs.MotionMagic.MotionMagicJerk = SubsystemConstants.intakeMotionMagicJerk;
+        deployConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         var slot0 = deployConfigs.Slot0;
         slot0.kS = SubsystemConstants.intakekS;

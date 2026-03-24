@@ -27,7 +27,7 @@ public class IndexerSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         Logger.processInputs("RealOutputs/Indexer", inputs);
-        Logger.recordOutput("Superstructure/IndexerVoltage", inputs.indexerVoltage);
+        Logger.recordOutput("Superstructure/Indexing", inputs.indexerVoltage > 1.0);
         io.updateInputs(inputs);
     }
 

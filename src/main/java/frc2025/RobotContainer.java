@@ -110,7 +110,7 @@ public class RobotContainer {
     public void periodic() {
         Logger.recordOutput("Superstructure/aimMode", aimMode);
         Logger.recordOutput("Superstructure/manualAimState", manualAimState);
-        Logger.recordOutput("Superstructure/rpsOffset", rpsOffset);
+        Logger.recordOutput("Superstructure/RPS Offset", rpsOffset);
         updateMatchTime();
         loggerPeriodic();
     }

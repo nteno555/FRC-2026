@@ -130,7 +130,7 @@ public class SubsystemConstants {
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
     public static boolean hasTurret = true;
     public static boolean useTurretThroughBores = true;
-    public static double turretShotReadyThreshold = 0.05; // 5.73 degrees
+    public static double turretShotReadyThreshold = 0.1; // 5.73 degrees
     public static boolean useTurretVisionCorrection = false;
 
     public static Transform2d robotToShooter = new Transform2d(0.0885, -0.1372, Rotation2d.kZero); // should be x = forward, y = side

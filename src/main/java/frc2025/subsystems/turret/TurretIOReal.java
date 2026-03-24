@@ -1,5 +1,6 @@
 package frc2025.subsystems.turret;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -22,7 +23,7 @@ import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class TurretIOReal implements TurretIO{
-    private final TalonFX turretMotor = new TalonFX(SubsystemConstants.turretID, "rio");
+    private final TalonFX turretMotor = new TalonFX(SubsystemConstants.turretID, CANBus.roboRIO());
     private final CANcoder throughBore1 = new CANcoder(SubsystemConstants.turretTb1ID);
     private final CANcoder throughBore2 = new CANcoder(SubsystemConstants.turretTb2ID);
 
@@ -47,7 +48,7 @@ public class TurretIOReal implements TurretIO{
         slot1Configs.kS = 0;
         slot1Configs.kV = 0;
         slot1Configs.kA = 0;
-        slot1Configs.kP = 8.0;
+        slot1Configs.kP = 10.0;
         slot1Configs.kI = 0;
         slot1Configs.kD = 0.1;
 

@@ -1,5 +1,6 @@
 package frc2025.subsystems.shooter;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -14,9 +15,9 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc2025.config.SubsystemConstants;
 
 public class ShooterIOReal implements ShooterIO {
-    private TalonFX flywheelMaster = new TalonFX(SubsystemConstants.flywheelMasterID, "rio");
-    private TalonFX flywheelSlave = new TalonFX(SubsystemConstants.flywheelSlaveID, "rio");
-    private TalonFX tower = new TalonFX(SubsystemConstants.towerID, "rio");
+    private TalonFX flywheelMaster = new TalonFX(SubsystemConstants.flywheelMasterID, CANBus.roboRIO());
+    private TalonFX flywheelSlave = new TalonFX(SubsystemConstants.flywheelSlaveID, CANBus.roboRIO());
+    private TalonFX tower = new TalonFX(SubsystemConstants.towerID, CANBus.roboRIO());
 
     public ShooterIOReal() {
 		flywheelMaster.getConfigurator().apply(new TalonFXConfiguration());
@@ -100,11 +101,6 @@ public class ShooterIOReal implements ShooterIO {
     public void setVoltage(double voltage) {
         flywheelMaster.setControl(new VoltageOut(voltage));
         tower.setControl(new VoltageOut(0.0));
-    }
-
-    @Override
-    public void setPercentOutput(double percentOutput) {
-        flywheelMaster.setControl(new DutyCycleOut(percentOutput));
     }
 
     @Override

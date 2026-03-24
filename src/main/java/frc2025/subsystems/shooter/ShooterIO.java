@@ -17,6 +17,4 @@ public interface ShooterIO {
     public void setSpeed(double speed);
     public void setVoltage(double voltage);
     public void updateInputs(ShooterIOInputs inputs);
-    public void setPercentOutput(double percentOutput);
-//    public boolean getShotReady(double wantedSpeed);
 }

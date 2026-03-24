@@ -184,40 +184,7 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     public Command aimAtHub() {
-        return setPositionFieldRelative(
-                () -> {
-                    double wantedAngle = RobotState.getInstance().getAngleToRealHub();
-                    return wantedAngle;
-                },
-                () -> {
-                    ChassisSpeeds robotSpeeds = RobotState.getInstance().getFieldRelativeSpeeds();
-                    double vx = robotSpeeds.vxMetersPerSecond;
-                    double vy = robotSpeeds.vyMetersPerSecond;
-                    double vOmega = robotSpeeds.omegaRadiansPerSecond;
-
-                    Translation2d targetPos = RobotState.getInstance().getShootingWhileMovingVirtualPose().getTranslation();
-                    var robotPose = RobotState.getInstance().getDelayedPose();
-                    Translation2d shooterPos = robotPose.transformBy(SubsystemConstants.robotToShooter).getTranslation();
-
-                    var robotToTargetXY = targetPos.minus(shooterPos);
-                    Translation2d shooterRobotRelative = SubsystemConstants.robotToShooter.getTranslation().rotateBy(robotPose.getRotation());
-
-                    robotSpeeds = new ChassisSpeeds(
-                            vx + vOmega * shooterRobotRelative.getY(),
-                            vy - vOmega * shooterRobotRelative.getX(),
-                            vOmega
-                    );
-
-                    var targetFrameToRobot = new Translation2d(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond)
-                            .rotateBy(robotToTargetXY.getAngle());
-
-                    var tangent = targetFrameToRobot.getY();
-                    var angular = robotSpeeds.omegaRadiansPerSecond;
-                    var distanceToTarget = robotToTargetXY.getNorm();
-
-                    return (angular + tangent / distanceToTarget);
-                }
-        );
+        return setPositionFieldRelative(() -> RobotState.getInstance().getAngleToRealHub(), () -> 0.0);
     }
 
 
@@ -231,7 +198,6 @@ public class TurretSubsystem extends SubsystemBase {
 
 
     public boolean getShotReady() {
-        Logger.recordOutput("Turret/errorRots", Math.abs(inputs.positionTicks - setpoint));
         Logger.recordOutput("Turret/errorRads", Math.abs(inputs.positionRadians - io.toRadians(setpoint)));
         return Math.abs(inputs.positionRadians - io.toRadians(setpoint)) < SubsystemConstants.turretShotReadyThreshold
                 && !(equals(setpoint, io.toRotations(SubsystemConstants.turretMinAngleRadians)) || equals(setpoint, io.toRotations(SubsystemConstants.turretMaxAngleRadians)));

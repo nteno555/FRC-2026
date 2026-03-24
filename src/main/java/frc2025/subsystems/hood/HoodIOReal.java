@@ -1,5 +1,6 @@
 package frc2025.subsystems.hood;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -12,7 +13,7 @@ import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class HoodIOReal implements HoodIO {
-    private final TalonFX hood = new TalonFX(SubsystemConstants.hoodID, "rio");
+    private final TalonFX hood = new TalonFX(SubsystemConstants.hoodID, CANBus.roboRIO());
 
     public HoodIOReal() {
         hood.getConfigurator().apply(new TalonFXConfiguration());

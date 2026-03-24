@@ -58,12 +58,12 @@ public class PathPlanCommands {
         Supplier<PathPlannerPath> preTrenchPathSupplier = () -> {
             var robotPose = RobotState.getInstance().getVisionPose();
             var xPos = robotPose.getX();
-            if (xPos < FieldConstants.blueTrenchHighMid.getX() + 0.3) {
-                xPos = FieldConstants.blueTrenchHighMid.getX() + 0.3;
-            }
-            if (xPos > FieldConstants.redTrenchHighMid.getX() - 0.3) {
-                xPos = FieldConstants.redTrenchHighMid.getX() - 0.3;
-            }
+//            if (xPos < FieldConstants.blueTrenchHighMid.getX() + 0.2) {
+//                xPos = FieldConstants.blueTrenchHighMid.getX() + 0.2;
+//            }
+//            if (xPos > FieldConstants.redTrenchHighMid.getX() - 0.2) {
+//                xPos = FieldConstants.redTrenchHighMid.getX() - 0.2;
+//            }
             var preTrenchEndPose = new Pose2d(xPos, endPose.get().getY(), endPose.get().getRotation());
             return straightPathFromPoses(robotPose, preTrenchEndPose, 0.0);
         };

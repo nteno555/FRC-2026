@@ -17,7 +17,6 @@ public class ShooterSubsystem extends SubsystemBase {
     double wantedVelocity = 0.0;
     double wantedVoltage = 0.0;
     boolean usingVoltage = false;
-    double wantedPercentOutput = 0.0;
     ShooterIO io;
     ShooterIOInputsAutoLogged inputs;
 
@@ -69,7 +68,6 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public boolean getShotReady() {
-//        return Math.abs(wantedVelocity - inputs.masterVelocityRPM) < 2.0 && wantedVelocity != 0.0;
-        return inputs.masterVelocityRPM != 0;
+        return Math.abs(wantedVelocity - inputs.masterVelocityRPM) < 10.0 && inputs.masterVelocityRPM > 1.0;
     }
 }

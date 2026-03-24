@@ -1,5 +1,6 @@
 package frc2025.subsystems.indexer;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -10,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc2025.config.SubsystemConstants;
 
 public class IndexerIOReal implements IndexerIO {
-    private final TalonFX indexer = new TalonFX(SubsystemConstants.indexerID, "rio");
+    private final TalonFX indexer = new TalonFX(SubsystemConstants.indexerID, CANBus.roboRIO());
 
     public IndexerIOReal() {
         indexer.getConfigurator().apply(new TalonFXConfiguration());
@@ -27,7 +28,7 @@ public class IndexerIOReal implements IndexerIO {
         configTorque.PeakReverseTorqueCurrent = SubsystemConstants.indexerPeakReverseTorqueCurrent;
         configTorque.TorqueNeutralDeadband = SubsystemConstants.indexerTorqueNeutralDeadband;
 
-        indexerConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        indexerConfigs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
         indexer.getConfigurator().apply(indexerConfigs, 0.050);
         indexer.getConfigurator().apply(configTorque, 0.05);
