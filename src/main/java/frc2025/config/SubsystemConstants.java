@@ -93,7 +93,7 @@ public class SubsystemConstants {
     public static double intakePeakForwardVoltage = 4.0;
     public static double intakePeakReverseVoltage = -4.0;
     public static double intakeRetractPosition = 0.3;
-    public static double intakeDeployPosition = 4.0;
+    public static double intakeDeployPosition = 4.1;
     public static double intakeRollerVoltage = 12.0;
     public static double intakeHalfPosition = 1.5;
 
