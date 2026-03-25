@@ -33,6 +33,13 @@ public class SubsystemConstants {
     public static double flywheelkIAmps = 0.0;
     public static double flywheelkDAmps = 0.0;
 
+    public static double flywheelkSAmpsBangBang = 17.0;
+    public static double flywheelkVAmpsBangBang = 0.0;
+    public static double flywheelkAAmpsBangBang = 0.0;
+    public static double flywheelkPAmpsBangBang = 0.0;
+    public static double flywheelkIAmpsBangBang = 0.0;
+    public static double flywheelkDAmpsBangBang = 0.0;
+
     public static double topFlywheelGearRatio = 1.0;
     public static double bottomFlywheelGearRatio = 2.0;
     public static double topFlywheelDiameter = 0.05; // 2 inches in meters

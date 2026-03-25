@@ -3,13 +3,10 @@ package frc2025.subsystems.shooter;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.*;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.MotorOutputStatusValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc2025.config.SubsystemConstants;
@@ -38,6 +35,17 @@ public class ShooterIOReal implements ShooterIO {
         flywheelConfig.Slot1.kP = SubsystemConstants.flywheelkPAmps;
         flywheelConfig.Slot1.kI = SubsystemConstants.flywheelkIAmps;
         flywheelConfig.Slot1.kD = SubsystemConstants.flywheelkDAmps;
+
+        flywheelConfig.Slot2.kS = SubsystemConstants.flywheelkSAmpsBangBang;
+        flywheelConfig.Slot2.kV = SubsystemConstants.flywheelkVAmpsBangBang;
+        flywheelConfig.Slot2.kA = SubsystemConstants.flywheelkAAmpsBangBang;
+        flywheelConfig.Slot2.kP = SubsystemConstants.flywheelkPAmpsBangBang;
+        flywheelConfig.Slot2.kI = SubsystemConstants.flywheelkIAmpsBangBang;
+        flywheelConfig.Slot2.kD = SubsystemConstants.flywheelkDAmpsBangBang;
+        flywheelConfig.Slot2.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
+
+//        flywheelConfig.TorqueCurrent.PeakForwardTorqueCurrent = 200;
+        flywheelConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0; // uh this is really scuffed... for bangbang control..
 
 		flywheelConfig.CurrentLimits.SupplyCurrentLimit = SubsystemConstants.flywheelSupplyCurrentLimit;
 		flywheelConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -107,7 +115,8 @@ public class ShooterIOReal implements ShooterIO {
     public void setSpeed(double speed) {
         flywheelMaster.setControl(
                 new VelocityTorqueCurrentFOC(speed)
-                        .withSlot(1)
+                        .withSlot(2)
+//                        .withSlot(1)
         );
         tower.setControl(new VelocityVoltage(speed * SubsystemConstants.towerFlywheelRatio)
                 .withEnableFOC(true));

@@ -50,7 +50,8 @@ public class Autos {
                                         .deadlineFor(
                                                 robotContainer.getIntake().setIntakingAuto()
                                                 .alongWith(robotContainer.getIndexer().setVoltage(() -> SubsystemConstants.indexerReverseVoltage)
-                                                .alongWith(robotContainer.getTurret().aimAtHub()))
+                                                .alongWith(robotContainer.getTurret().setPositionSafe(() -> 0.0, () -> 0.0)))
+//                                                .alongWith(robotContainer.getTurret().aimAtHub()))
                                         )
                                 );
     }
