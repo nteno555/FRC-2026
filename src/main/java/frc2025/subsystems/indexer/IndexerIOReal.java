@@ -28,7 +28,7 @@ public class IndexerIOReal implements IndexerIO {
         configTorque.PeakReverseTorqueCurrent = SubsystemConstants.indexerPeakReverseTorqueCurrent;
         configTorque.TorqueNeutralDeadband = SubsystemConstants.indexerTorqueNeutralDeadband;
 
-        indexerConfigs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        indexerConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         indexer.getConfigurator().apply(indexerConfigs, 0.050);
         indexer.getConfigurator().apply(configTorque, 0.05);

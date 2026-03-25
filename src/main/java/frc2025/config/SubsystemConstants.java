@@ -26,10 +26,10 @@ public class SubsystemConstants {
     public static double flywheelkI = 0.0;
     public static double flywheelkD = 0.0;
 
-    public static double flywheelkSAmps = 17.0;
+    public static double flywheelkSAmps = 10.0;
     public static double flywheelkVAmps = 0.0;
     public static double flywheelkAAmps = 0.0;
-    public static double flywheelkPAmps = 10.0;
+    public static double flywheelkPAmps = 5.0;
     public static double flywheelkIAmps = 0.0;
     public static double flywheelkDAmps = 0.0;
 

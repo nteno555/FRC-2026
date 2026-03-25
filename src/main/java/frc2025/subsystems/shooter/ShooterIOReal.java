@@ -44,8 +44,8 @@ public class ShooterIOReal implements ShooterIO {
         flywheelConfig.Slot2.kD = SubsystemConstants.flywheelkDAmpsBangBang;
         flywheelConfig.Slot2.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
-//        flywheelConfig.TorqueCurrent.PeakForwardTorqueCurrent = 200;
-        flywheelConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0; // uh this is really scuffed... for bangbang control..
+        flywheelConfig.TorqueCurrent.PeakForwardTorqueCurrent = 200;
+        flywheelConfig.TorqueCurrent.PeakReverseTorqueCurrent = -200; // uh this is really scuffed... for bangbang control..
 
 		flywheelConfig.CurrentLimits.SupplyCurrentLimit = SubsystemConstants.flywheelSupplyCurrentLimit;
 		flywheelConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -115,8 +115,8 @@ public class ShooterIOReal implements ShooterIO {
     public void setSpeed(double speed) {
         flywheelMaster.setControl(
                 new VelocityTorqueCurrentFOC(speed)
-                        .withSlot(2)
-//                        .withSlot(1)
+//                        .withSlot(2)
+                        .withSlot(1)
         );
         tower.setControl(new VelocityVoltage(speed * SubsystemConstants.towerFlywheelRatio)
                 .withEnableFOC(true));

@@ -93,7 +93,9 @@ public class AutoAimCommands {
             }
 
             if (RobotState.getInstance().getShuttling()) {
-                return good;
+//                return good;
+//                return true;
+                return robotContainer.getTurret().getShotReady() && robotContainer.getHood().getShotReady();
             }
 
             Pose2d pose = RobotState.getInstance().getVisionPose();
