@@ -517,8 +517,7 @@ public class RobotContainer {
 //                .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
         tuningController.rightTrigger().whileTrue(
-            indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> SubsystemConstants.indexerShootVoltage, () -> 0.0))
-            .whileFalse(indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0));
+            indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> SubsystemConstants.indexerShootVoltage, () -> 0.0));
     }
 
 

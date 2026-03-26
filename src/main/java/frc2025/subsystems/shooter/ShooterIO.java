@@ -14,8 +14,7 @@ public interface ShooterIO {
         double towerRPS;
     }
     
-    public void setSpeed(double speed);
-//    public void setSpeed(double speed, double velocityFF);
+    public void setSpeed(double speed, double acceleration);
     public void setVoltage(double voltage);
     public void updateInputs(ShooterIOInputs inputs);
 }

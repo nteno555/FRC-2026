@@ -17,6 +17,9 @@ public class ShooterIOReal implements ShooterIO {
     private TalonFX flywheelSlave = new TalonFX(SubsystemConstants.flywheelSlaveID, CANBus.roboRIO());
 //    private TalonFX tower = new TalonFX(SubsystemConstants.towerID, CANBus.roboRIO());
 
+    private final VoltageOut voltageRequest = new VoltageOut(0);
+    private final VelocityTorqueCurrentFOC speedRequest = new VelocityTorqueCurrentFOC(0).withSlot(1);
+
     public ShooterIOReal() {
 		flywheelMaster.getConfigurator().apply(new TalonFXConfiguration());
 //        tower.getConfigurator().apply(new TalonFXConfiguration());
@@ -108,19 +111,17 @@ public class ShooterIOReal implements ShooterIO {
 
     @Override
     public void setVoltage(double voltage) {
-        flywheelMaster.setControl(new VoltageOut(voltage));
+        flywheelMaster.setControl(voltageRequest.withOutput(voltage));
 //        tower.setControl(new VoltageOut(0.0));
     }
 
     @Override
-    public void setSpeed(double speed) {
+    public void setSpeed(double speed, double acceleration) {
         double currentFF = speed < flywheelMaster.getVelocity().getValueAsDouble() ? -SubsystemConstants.flywheelkSAmps : SubsystemConstants.flywheelkSAmps;
         Logger.recordOutput("Shooter/currentFF", currentFF);
 
         flywheelMaster.setControl(
-                new VelocityTorqueCurrentFOC(speed)
-//                        .withSlot(2)
-                        .withSlot(1)
+                speedRequest.withVelocity(speed).withAcceleration(acceleration)
         );
 //        tower.setControl(new VelocityVoltage(speed * SubsystemConstants.towerFlywheelRatio)
 //                .withEnableFOC(true));

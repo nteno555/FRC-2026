@@ -91,8 +91,7 @@ public class HoodIOReal implements HoodIO {
 //        double voltageFF = position < hood.getPosition().getValueAsDouble() ? -SubsystemConstants.hoodFF : SubsystemConstants.hoodFF;
         hood.setControl(new PositionVoltage(position)
                 .withEnableFOC(true)
-                .withSlot(0)
-//                .withVelocity(SubsystemConstants.hoodkV * position)
+                .withVelocity(velocity)
         );
     }
 

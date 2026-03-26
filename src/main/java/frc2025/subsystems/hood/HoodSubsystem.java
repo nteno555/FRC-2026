@@ -2,6 +2,7 @@ package frc2025.subsystems.hood;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,6 +44,13 @@ public class HoodSubsystem extends SubsystemBase {
         });
     }
 
+    public Command setPosition(Supplier<Double> position, Supplier<Double> velocity) {
+        return this.run(() -> {
+            setpoint = position.get();
+            io.setPosition(setpoint, velocity.get());
+        });
+    }
+
     public Command setVoltage(Supplier<Double> voltage) {
         return this.run(() -> {
             io.setVoltage(voltage.get());
@@ -60,11 +68,11 @@ public class HoodSubsystem extends SubsystemBase {
             Pose2d futureRobotPose = new Pose2d(
                     robotXpose + robotVelocity.vxMetersPerSecond * dt,
                     robotYpose + robotVelocity.vyMetersPerSecond * dt,
-                    Rotation2d.kZero
-            );
+                    Rotation2d.kZero);
 
             double thresh = FieldConstants.trenchThreshold;
-            if(DriverStation.isAutonomous()) thresh = FieldConstants.trenchThresholdAuto;
+            if (DriverStation.isAutonomous())
+                thresh = FieldConstants.trenchThresholdAuto;
 
             boolean nearBlueTrench = Math.abs(robotXpose - FieldConstants.blueTrenchX) < thresh;
             boolean nearRedTrench = Math.abs(robotXpose - FieldConstants.redTrenchX) < thresh;
@@ -82,7 +90,8 @@ public class HoodSubsystem extends SubsystemBase {
                 return 0.0;
             }
 
-            if(DriverStation.isAutonomous() && (currentBlueTrench != futureBlueTrench || currentRedTrench != futureRedTrench)) {
+            if (DriverStation.isAutonomous()
+                    && (currentBlueTrench != futureBlueTrench || currentRedTrench != futureRedTrench)) {
                 return 0.0;
             }
 
@@ -94,6 +103,27 @@ public class HoodSubsystem extends SubsystemBase {
             }
 
             return ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist);
+        }, () -> {
+            Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
+            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
+
+            ChassisSpeeds robotSpeeds = RobotState.getInstance().getFieldRelativeSpeeds();
+            Translation2d robotToTargetXY = targetPose.getTranslation()
+                    .minus(robotPose.transformBy(SubsystemConstants.robotToShooter).getTranslation());
+            double distanceToTarget = robotToTargetXY.getNorm();
+
+            double radialVelocity = (robotSpeeds.vxMetersPerSecond * robotToTargetXY.getX()
+                    + robotSpeeds.vyMetersPerSecond * robotToTargetXY.getY()) / distanceToTarget;
+            double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
+
+            double dAng_dDist;
+            if (RobotState.getInstance().getShuttling()) {
+                dAng_dDist = 0.0;
+            } else {
+                dAng_dDist = (ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist + 0.05)
+                        - ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist - 0.05)) / 0.1;
+            }
+            return dAng_dDist * (-radialVelocity);
         });
     }
 
@@ -117,18 +147,27 @@ public class HoodSubsystem extends SubsystemBase {
         });
     }
 
-    public double getPosition() { return inputs.positionRotations; }
-    public double getPositionRadians() { return inputs.positionRadians; }
+    public double getPosition() {
+        return inputs.positionRotations;
+    }
+
+    public double getPositionRadians() {
+        return inputs.positionRadians;
+    }
+
     public boolean getShotReady() {
         return (inputs.positionRotations > 0.15) && (Math.abs(inputs.positionRotations - setpoint) < 0.1);
     }
 
     public static double toRadians(double rotations) {
-        double m = (SubsystemConstants.hoodMaxAngleRadians - SubsystemConstants.hoodMinAngleRadians) / (SubsystemConstants.hoodMaxAngleRotations - SubsystemConstants.hoodMinAngleRotations);
+        double m = (SubsystemConstants.hoodMaxAngleRadians - SubsystemConstants.hoodMinAngleRadians)
+                / (SubsystemConstants.hoodMaxAngleRotations - SubsystemConstants.hoodMinAngleRotations);
         return (rotations - SubsystemConstants.hoodMinAngleRotations) * m + SubsystemConstants.hoodMinAngleRadians;
     }
+
     public static double toRotations(double radians) {
-        double m = (SubsystemConstants.hoodMaxAngleRotations - SubsystemConstants.hoodMinAngleRotations) / (SubsystemConstants.hoodMaxAngleRadians - SubsystemConstants.hoodMinAngleRadians);
+        double m = (SubsystemConstants.hoodMaxAngleRotations - SubsystemConstants.hoodMinAngleRotations)
+                / (SubsystemConstants.hoodMaxAngleRadians - SubsystemConstants.hoodMinAngleRadians);
         return (radians - SubsystemConstants.hoodMinAngleRadians) * m + SubsystemConstants.hoodMinAngleRotations;
     }
 }

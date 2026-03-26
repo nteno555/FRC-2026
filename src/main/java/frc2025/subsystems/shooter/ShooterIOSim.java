@@ -13,7 +13,7 @@ public class ShooterIOSim implements ShooterIO {
     }
 
     @Override
-    public void setSpeed(double speed) {
+    public void setSpeed(double speed, double acceleration) {
         Logger.recordOutput("Shooter/simAutoSpeed", speed);
         voltage = speed;
     }

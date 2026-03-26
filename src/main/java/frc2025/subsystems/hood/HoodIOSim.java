@@ -18,7 +18,7 @@ public class HoodIOSim implements HoodIO {
 
     @Override
     public void setPosition(double position, double velocity) {
-
+        targetPosition = position;
     }
 
     @Override

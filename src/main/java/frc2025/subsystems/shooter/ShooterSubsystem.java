@@ -4,6 +4,8 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N2;
 import frc2025.RobotState;
 import frc2025.config.ShooterTreeMap;
@@ -46,10 +48,22 @@ public class ShooterSubsystem extends SubsystemBase {
             Logger.recordOutput("Shooter/wantedSpeed", speed.get());
             usingVoltage = false;
             wantedVelocity = speed.get();
-            io.setSpeed(speed.get());
+            io.setSpeed(speed.get(), 0.0);
         }, () -> {
             usingVoltage = false;
-            io.setSpeed(0.0);
+            io.setSpeed(0.0, 0.0);
+        });
+    }
+
+    public Command setSpeed(Supplier<Double> speed, Supplier<Double> acceleration) {
+        return this.runEnd(() -> {
+            Logger.recordOutput("Shooter/wantedSpeed", speed.get());
+            usingVoltage = false;
+            wantedVelocity = speed.get();
+            io.setSpeed(speed.get(), acceleration.get());
+        }, () -> {
+            usingVoltage = false;
+            io.setSpeed(0.0, 0.0);
         });
     }
 
@@ -64,6 +78,25 @@ public class ShooterSubsystem extends SubsystemBase {
             }
 
             return ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist);
+        }, () -> {
+            Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
+            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
+            double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
+
+            ChassisSpeeds robotSpeeds = RobotState.getInstance().getFieldRelativeSpeeds();
+            Translation2d robotToTargetXY = targetPose.getTranslation().minus(robotPose.transformBy(SubsystemConstants.robotToShooter).getTranslation());
+            double distanceToTarget = robotToTargetXY.getNorm();
+
+            double radialVelocity = (robotSpeeds.vxMetersPerSecond * robotToTargetXY.getX() + robotSpeeds.vyMetersPerSecond * robotToTargetXY.getY()) / distanceToTarget;
+            
+            double dRps_dDist;
+            if (RobotState.getInstance().getShuttling()) {
+                dRps_dDist = (ShooterTreeMap.getInstance().shuttlingRPSTreeMap.getInterpolated(dist + 0.05) - ShooterTreeMap.getInstance().shuttlingRPSTreeMap.getInterpolated(dist - 0.05)) / 0.1;
+            } else {
+                dRps_dDist = (ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist + 0.05) - ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist - 0.05)) / 0.1;
+            }
+            double acceleration = dRps_dDist * (-radialVelocity);
+            return acceleration;
         });
     }
 

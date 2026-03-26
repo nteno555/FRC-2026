@@ -37,7 +37,7 @@ public class PathPlanCommands {
                 endWaypoint
         );
 
-        PathConstraints constraints = new PathConstraints(3.0, 4.0, 3*Math.PI, 4*Math.PI);
+        PathConstraints constraints = new PathConstraints(3.5, 4.0, 3*Math.PI, 4*Math.PI);
         PathPlannerPath path = new PathPlannerPath(
                 waypoints,
                 constraints,

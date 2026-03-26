@@ -26,9 +26,14 @@ public class SubsystemConstants {
     public static double flywheelkI = 0.0;
     public static double flywheelkD = 0.0;
 
+
+    // 20/4.8 = 4.167 rps/s^2 @ 10A
+    // 20/0.4 = 50 rps/s^2 @ 20A
+    // kA = (20A - 10A) / (50.0 - 4.167) = 10 / 45.833 = 0.218 A/(rps/s^2)
+
     public static double flywheelkSAmps = 10.0;
     public static double flywheelkVAmps = 0.0;
-    public static double flywheelkAAmps = 0.0;
+    public static double flywheelkAAmps = 0.218;
     public static double flywheelkPAmps = 5.0;
     public static double flywheelkIAmps = 0.0;
     public static double flywheelkDAmps = 0.0;
@@ -198,4 +203,10 @@ public class SubsystemConstants {
     public static int turretID = 21;
     public static int turretTb1ID = 5;
     public static int turretTb2ID = 6;
+
+
+    /*
+
+    ```
+     */
 }

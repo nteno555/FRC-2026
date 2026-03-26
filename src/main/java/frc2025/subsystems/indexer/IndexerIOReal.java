@@ -16,6 +16,10 @@ public class IndexerIOReal implements IndexerIO {
     private final TalonFX indexer = new TalonFX(SubsystemConstants.indexerID, CANBus.roboRIO());
     private final TalonFX tower = new TalonFX(SubsystemConstants.towerID, CANBus.roboRIO());
 
+    private final DutyCycleOut speedRequest = new DutyCycleOut(0);
+    private final VoltageOut voltageRequest = new VoltageOut(0);
+    private final VelocityVoltage towerSpeedRequest = new VelocityVoltage(0).withEnableFOC(true);
+
     public IndexerIOReal() {
         indexer.getConfigurator().apply(new TalonFXConfiguration());
 
@@ -77,17 +81,16 @@ public class IndexerIOReal implements IndexerIO {
 
     @Override
     public void setSpeed(double indexerSpeed) {
-        indexer.setControl(new DutyCycleOut(indexerSpeed));
+        indexer.setControl(speedRequest.withOutput(indexerSpeed));
     }
 
     @Override
     public void setVoltage(double indexerVoltage) {
-        indexer.setControl(new VoltageOut(indexerVoltage));
+        indexer.setControl(voltageRequest.withOutput(indexerVoltage));
     }
 
     @Override
     public void setTowerSpeed(double speed) {
-        tower.setControl(new VelocityVoltage(speed * SubsystemConstants.towerFlywheelRatio)
-            .withEnableFOC(true));
+        tower.setControl(towerSpeedRequest.withVelocity(speed * SubsystemConstants.towerFlywheelRatio));
     }
 }
