@@ -15,6 +15,7 @@ public interface ShooterIO {
     }
     
     public void setSpeed(double speed);
+//    public void setSpeed(double speed, double velocityFF);
     public void setVoltage(double voltage);
     public void updateInputs(ShooterIOInputs inputs);
 }

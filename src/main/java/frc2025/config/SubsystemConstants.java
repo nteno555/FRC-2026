@@ -116,7 +116,7 @@ public class SubsystemConstants {
     public static double turretkS = 0.3;
     public static double turretkV = 0.117;
     public static double turretkA = 0.001 * 12.0;
-    public static double turretkP = 5.0;
+    public static double turretkP = 3.0;
     public static double turretkI = 0.0;
     public static double turretkD = 0.1;
     public static double turretCruiseVelocity = 60;

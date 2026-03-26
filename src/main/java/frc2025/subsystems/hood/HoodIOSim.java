@@ -17,6 +17,11 @@ public class HoodIOSim implements HoodIO {
     }
 
     @Override
+    public void setPosition(double position, double velocity) {
+
+    }
+
+    @Override
     public void setVoltage(double voltage) {
         targetPosition += voltage * 0.1;
     }

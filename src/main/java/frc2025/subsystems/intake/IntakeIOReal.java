@@ -50,6 +50,15 @@ public class IntakeIOReal implements IntakeIO {
         slot0.kI = SubsystemConstants.intakekI;
         slot0.kD = SubsystemConstants.intakekD;
 
+        var slot1 = deployConfigs.Slot1;
+        slot1.kS = SubsystemConstants.intakekS;
+        slot1.kV = SubsystemConstants.intakekV;
+        slot1.kA = SubsystemConstants.intakekA;
+        slot1.kG = SubsystemConstants.intakekG;
+        slot1.kP = SubsystemConstants.intakekP * 0.2;
+        slot1.kI = SubsystemConstants.intakekI;
+        slot1.kD = SubsystemConstants.intakekD;
+
         intakeRoller.getConfigurator().apply(rollerConfigs);
         intakeDeployMaster.getConfigurator().apply(deployConfigs);
         intakeDeploySlave.getConfigurator().apply(deployConfigs);
@@ -69,7 +78,7 @@ public class IntakeIOReal implements IntakeIO {
         inputs.position = intakeDeployMaster.getPosition().getValueAsDouble();
         inputs.deployConnected = intakeDeployMaster.isConnected() && intakeDeploySlave.isConnected();
         Logger.recordOutput("Intake/deployVoltage", intakeDeployMaster.getMotorVoltage().getValue().in(Units.Volts));
-
+        Logger.recordOutput("Intake/deployRPS", intakeDeployMaster.getVelocity().getValueAsDouble());
         Logger.recordOutput("Intake/masterPosition", intakeDeployMaster.getPosition().getValueAsDouble());
         Logger.recordOutput("Intake/slavePosition", intakeDeploySlave.getPosition().getValueAsDouble());
     }
@@ -80,19 +89,22 @@ public class IntakeIOReal implements IntakeIO {
     }
 
     @Override
-    public void setDeployPosition(double position) {
+    public void setDeployPosition(double position, boolean fast) {
         Logger.recordOutput("Intake/wantedPositionRotations", position);
-        intakeDeployMaster.setControl(
-                new MotionMagicVoltage(position)
+        if (fast) {
+            intakeDeployMaster.setControl(
+                    new PositionVoltage(position)
+                            .withEnableFOC(true)
+                            .withSlot(0)
+            );
+        } else {
+            Logger.recordOutput("Intake/slowHeartbeat", Math.random());
+            intakeDeployMaster.setControl(
+                new PositionVoltage(position)
                         .withEnableFOC(true)
-                        .withSlot(0)
-        );
-
-//        intakeDeploySlave.setControl(
-//                new MotionMagicVoltage(-position)
-//                        .withEnableFOC(true)
-//                        .withSlot(0)
-//        );
+                        .withSlot(1)
+            );
+        }
     }
 
     @Override

@@ -25,4 +25,9 @@ public class IndexerIOSim implements IndexerIO{
     public void setVoltage(double indexerVoltage) {
         this.voltage = indexerVoltage;
     }
+
+    @Override
+    public void setTowerSpeed(double speed) {
+
+    }
 }

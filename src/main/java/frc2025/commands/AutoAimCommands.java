@@ -3,7 +3,6 @@ package frc2025.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc2025.RobotContainer;
 import frc2025.RobotState;
@@ -74,11 +73,18 @@ public class AutoAimCommands {
             return good;
         };
 
-        return robotContainer.getIndexer().setVoltage(() -> {
+        return robotContainer.getIndexer().setIndexerVoltageWithTowerSpeed(() -> {
             if(readySupplier.getAsBoolean()) {
                 return SubsystemConstants.indexerShootVoltage;
             } else {
                 return SubsystemConstants.indexerReverseVoltage;
+            }
+        }, () -> {
+            if(readySupplier.getAsBoolean()) {
+                double indexerSpeed = robotContainer.getShooter().getVelocity() * SubsystemConstants.towerFlywheelRatio;
+                return indexerSpeed;
+            } else {
+                return 0.0;
             }
         });
    }
@@ -162,9 +168,16 @@ public class AutoAimCommands {
             return good;
         };
 
-        return robotContainer.getIndexer().setVoltage(() -> {
+        return robotContainer.getIndexer().setIndexerVoltageWithTowerSpeed(() -> {
             if(readySupplier.getAsBoolean()) {
                 return SubsystemConstants.indexerShootVoltage;
+            } else {
+                return 0.0;
+            }
+        }, () -> {
+            if(readySupplier.getAsBoolean()) {
+                double indexerSpeed = robotContainer.getShooter().getVelocity() * SubsystemConstants.towerFlywheelRatio;
+                return indexerSpeed;
             } else {
                 return 0.0;
             }

@@ -16,13 +16,16 @@ public class ShooterTreeMap {
     public ShooterTreeMap() {
 
         // 2 MOTORS
-        hoodTreeMap.put(5.24, 2.5);
+//        hoodTreeMap.put(5.24, 2.5);
+        hoodTreeMap.put(5.24, 2.4);
         hoodTreeMap.put(4.04, 2.4);
         hoodTreeMap.put(3.07, 2.0);
         hoodTreeMap.put(2.47, 1.7);
         hoodTreeMap.put(1.29, 0.8);
 
-        lowerWheelTreeMap.put(5.24, 56.0); // 47.41
+//        lowerWheelTreeMap.put(5.24, 56.0); // 47.41
+        lowerWheelTreeMap.put(5.24, 58.0); // 47.41
+
         lowerWheelTreeMap.put(4.04, 50.0); //43.13
         lowerWheelTreeMap.put(3.07, 45.0); // 41.05
         lowerWheelTreeMap.put(2.47, 43.0); // 39.71

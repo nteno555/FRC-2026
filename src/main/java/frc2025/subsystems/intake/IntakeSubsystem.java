@@ -1,15 +1,11 @@
 package frc2025.subsystems.intake;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc2025.RobotState;
 import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
-import java.sql.Driver;
 import java.util.function.Supplier;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -42,7 +38,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public Command setDeployPosition(Supplier<Double> position) {
         return this.run(() -> {
             if (position.get() == SubsystemConstants.intakeRetractPosition) io.setVoltage(0.0);
-            io.setDeployPosition(position.get());
+            io.setDeployPosition(position.get(), true);
         });
     }
 
@@ -50,10 +46,17 @@ public class IntakeSubsystem extends SubsystemBase {
         return this.run(() -> {
             double time = (Timer.getFPGATimestamp());
 
-            if (time % 0.67 < 0.335) io.setDeployPosition(SubsystemConstants.intakeDeployPosition);
-            else io.setDeployPosition(SubsystemConstants.intakeHalfPosition);
+            if (time % 0.67 < 0.335) io.setDeployPosition(SubsystemConstants.intakeDeployPosition, true);
+            else io.setDeployPosition(SubsystemConstants.intakeHalfPosition, true);
 
             io.setVoltage(SubsystemConstants.intakeRollerVoltage);
+        });
+    }
+
+    public Command retractSlow() {
+        return this.run(() -> {
+            io.setDeployPosition(SubsystemConstants.intakeRetractPosition, false);
+//            io.setVoltage(SubsystemConstants.intakeRollerVoltage);
         });
     }
 
@@ -75,7 +78,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public Command setIntakingAuto() {
         return this.run(() -> {
-            io.setDeployPosition(SubsystemConstants.intakeDeployPosition);
+            io.setDeployPosition(SubsystemConstants.intakeDeployPosition, true);
             io.setVoltage(SubsystemConstants.intakeRollerVoltage);
         });
     }

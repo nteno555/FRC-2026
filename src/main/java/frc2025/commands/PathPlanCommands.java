@@ -6,16 +6,10 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc2025.Robot;
 import frc2025.RobotContainer;
 import frc2025.RobotState;
-import frc2025.config.FieldConstants;
-import frc2025.config.SubsystemConstants;
-import org.littletonrobotics.junction.Logger;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -54,7 +48,26 @@ public class PathPlanCommands {
         return path;
     }
 
-    public static Command returnUnderTrenchAuto(RobotContainer robotContainer, Supplier<Pose2d> endPose, Supplier<Double> endVelocity) {
+    public static Command returnUnderTrenchAuto(RobotContainer robotContainer, Supplier<Pose2d> endPose, Supplier<Double> endVelocity, Supplier<Pose2d> preTrenchPose) {
+//        Supplier<PathPlannerPath> preTrenchPathSupplier = () -> {
+//            var robotPose = RobotState.getInstance().getVisionPose();
+//            var xPos = robotPose.getX();
+////            if (xPos < FieldConstants.blueTrenchHighMid.getX() + 0.2) {
+////                xPos = FieldConstants.blueTrenchHighMid.getX() + 0.2;
+////            }
+////            if (xPos > FieldConstants.redTrenchHighMid.getX() - 0.2) {
+////                xPos = FieldConstants.redTrenchHighMid.getX() - 0.2;
+////            }
+//            var preTrenchEndPose = new Pose2d(xPos, endPose.get().getY(), endPose.get().getRotation());
+//            return straightPathFromPoses(robotPose, preTrenchEndPose, 0.0);
+//        };
+//
+//        Supplier<PathPlannerPath> trenchPathSupplier = () -> {
+//            var robotPose = RobotState.getInstance().getVisionPose();
+//            var preTrenchEndPose = endPose.get();
+//            return straightPathFromPoses(robotPose, preTrenchEndPose, endVelocity.get());
+//        };
+
         Supplier<PathPlannerPath> preTrenchPathSupplier = () -> {
             var robotPose = RobotState.getInstance().getVisionPose();
             var xPos = robotPose.getX();
@@ -65,7 +78,7 @@ public class PathPlanCommands {
 //                xPos = FieldConstants.redTrenchHighMid.getX() - 0.2;
 //            }
             var preTrenchEndPose = new Pose2d(xPos, endPose.get().getY(), endPose.get().getRotation());
-            return straightPathFromPoses(robotPose, preTrenchEndPose, 0.0);
+            return straightPathFromPoses(robotPose, preTrenchPose.get(), 0.0);
         };
 
         Supplier<PathPlannerPath> trenchPathSupplier = () -> {

@@ -1,18 +1,10 @@
 package frc2025.subsystems.indexer;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc2025.Robot;
-import frc2025.RobotState;
-import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 
@@ -37,12 +29,22 @@ public class IndexerSubsystem extends SubsystemBase {
         });
     }
 
-    public Command setVoltage(Supplier<Double> indexerVoltage) {
+    public Command setIndexerVoltageWithTowerSpeed(Supplier<Double> indexerVoltage, Supplier<Double> towerSpeed) {
         return this.runEnd(() -> {
             io.setVoltage(indexerVoltage.get());
         }, () -> {
             io.setVoltage(0.0);
         });
     }
+
+//    public Command setIndexerVoltageWithTowerSpeed(Supplier<Double> indexerVoltage, Supplier<Double> towerSpeed) {
+//        return this.runEnd(() -> {
+//            io.setVoltage(indexerVoltage.get());
+//            io.setTowerSpeed(towerSpeed.get());
+//        }, () -> {
+//            io.setVoltage(0.0);
+//            io.setTowerSpeed(0.0);
+//        });
+//    }
 }
 

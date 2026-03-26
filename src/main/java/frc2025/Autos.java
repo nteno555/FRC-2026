@@ -49,8 +49,8 @@ public class Autos {
                                         driveCommand
                                         .deadlineFor(
                                                 robotContainer.getIntake().setIntakingAuto()
-                                                .alongWith(robotContainer.getIndexer().setVoltage(() -> SubsystemConstants.indexerReverseVoltage)
-                                                .alongWith(robotContainer.getTurret().setPositionSafe(() -> 0.0, () -> 0.0)))
+                                                .alongWith(robotContainer.getIndexer().setIndexerVoltageWithTowerSpeed(() -> SubsystemConstants.indexerReverseVoltage, () -> 0.0)
+                                                .alongWith(robotContainer.getTurret().setPositionSafe(() -> 0.0, () -> 0.0, () -> true)))
 //                                                .alongWith(robotContainer.getTurret().aimAtHub()))
                                         )
                                 );
@@ -117,7 +117,7 @@ public class Autos {
                 if(SubsystemConstants.hasTurret) {
                     pathCommands = pathCommands.andThen(
                             (AutoAimCommands.autoIndex(robotContainer)
-                                    .alongWith(robotContainer.getTurret().autoAim())
+                                    .alongWith(robotContainer.getTurret().snapThenTrack())
                                     .alongWith(robotContainer.getHood().autoAimUnsafe())
                                     .alongWith(robotContainer.getIntake().oscillateIntake()))
                             .withTimeout(waitTime)
@@ -150,7 +150,16 @@ public class Autos {
                     }
                     return pose;
                 };
-                pathCommands = pathCommands.andThen(intakeDrive(PathPlanCommands.returnUnderTrenchAuto(robotContainer, endPoseSupplier, () -> 0.0)));
+
+                Supplier<Pose2d> preTrench = () -> {
+                    Pose2d pose = FieldConstants.redTrenchHighMid;
+                    if (!Alliance.get()) {
+                        pose = mirrorPose(pose);
+                    }
+                    return pose;
+                };
+
+                pathCommands = pathCommands.andThen(intakeDrive(PathPlanCommands.returnUnderTrenchAuto(robotContainer, endPoseSupplier, () -> 0.0, preTrench)));
             } else if(paths.get(i).equals(RETURN_UNDER_TRENCH_LOW) || paths.get(i).equals(RETURN_UNDER_TRENCH_STATION)) {
                 Supplier<Pose2d> endPoseSupplier = () -> {
                     Pose2d pose = FieldConstants.blueTrenchLowReturn;
@@ -162,12 +171,20 @@ public class Autos {
                     return pose;
                 };
 
+                Supplier<Pose2d> preTrench = () -> {
+                    Pose2d pose = FieldConstants.redTrenchLowMid;
+                    if (!Alliance.get()) {
+                        pose = mirrorPose(pose);
+                    }
+                    return pose;
+                };
+
                 boolean station = paths.get(i).equals(RETURN_UNDER_TRENCH_STATION);
                 Supplier<Double> endVelocity = () -> {
                     if (station) return 2.5;
                     return 0.0;
                 };
-                pathCommands = pathCommands.andThen(intakeDrive(PathPlanCommands.returnUnderTrenchAuto(robotContainer, endPoseSupplier, endVelocity)));
+                pathCommands = pathCommands.andThen(intakeDrive(PathPlanCommands.returnUnderTrenchAuto(robotContainer, endPoseSupplier, endVelocity, preTrench)));
             } else {
                 pathCommands = pathCommands.andThen(intakePath(paths.get(i)));
             }

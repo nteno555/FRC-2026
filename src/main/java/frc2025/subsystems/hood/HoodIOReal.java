@@ -73,11 +73,27 @@ public class HoodIOReal implements HoodIO {
     @Override
     public void setPosition(double position) {
         Logger.recordOutput("Hood/wantedPosition", position);
+//        Logger.recordOutput("Hood/setPositionHeartbeat", Math.random());
+
+        double voltageFF = position < hood.getPosition().getValueAsDouble() ? -SubsystemConstants.hoodkS : SubsystemConstants.hoodkS;
+        Logger.recordOutput("Hood/voltageFF", voltageFF);
+        hood.setControl(new PositionVoltage(position)
+                .withEnableFOC(true)
+//                .withFeedForward(voltageFF)
+        );
+    }
+
+    @Override
+    public void setPosition(double position, double velocity) {
+        Logger.recordOutput("Hood/wantedPosition", position);
         Logger.recordOutput("Hood/setPositionHeartbeat", Math.random());
 
 //        double voltageFF = position < hood.getPosition().getValueAsDouble() ? -SubsystemConstants.hoodFF : SubsystemConstants.hoodFF;
         hood.setControl(new PositionVoltage(position)
-                .withEnableFOC(true));
+                .withEnableFOC(true)
+                .withSlot(0)
+//                .withVelocity(SubsystemConstants.hoodkV * position)
+        );
     }
 
     @Override

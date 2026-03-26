@@ -220,9 +220,9 @@ public class RobotContainer {
         intakeSubsystem.setDefaultCommand(intakeSubsystem.setDeployVoltage(() -> 0.0));
         hoodSubsystem.setDefaultCommand(hoodSubsystem.setPosition(() -> 0.1));
         shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
-        indexerSubsystem.setDefaultCommand(indexerSubsystem.setVoltage(() -> 0.0));
+        indexerSubsystem.setDefaultCommand(indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0));
 //        turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
-        turretSubsystem.setDefaultCommand(turretSubsystem.setPositionSafe(() -> 0.0, () -> 0.0)); // for turret ll
+        turretSubsystem.setDefaultCommand(turretSubsystem.setPositionSafe(() -> 0.0, () -> 0.0, () -> true)); // for turret ll
 
         driverXboxController.a().onTrue(
                 SuperstructureCommands.resetOdometry(
@@ -281,7 +281,7 @@ public class RobotContainer {
                 .and(() -> (aimMode == AimMode.TURRET))
                 .whileTrue(
                         shooterSubsystem.autoAim()
-                                .alongWith(turretSubsystem.autoAim())
+                                .alongWith(turretSubsystem.snapThenTrack())
                                 .alongWith(hoodSubsystem.autoAim())
                 );
 
@@ -293,12 +293,12 @@ public class RobotContainer {
         new Trigger(() -> aiming)
                 .and(() -> (aimMode == AimMode.MANUAL))
                 .and(driverXboxController.y().negate())
-                .whileTrue(indexerSubsystem.setVoltage(() -> SubsystemConstants.indexerShootVoltage));
+                .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> SubsystemConstants.indexerShootVoltage, () -> 12.0));
 
         driverXboxController
                 .y()
                 .and(driverXboxController.back().negate())
-                .whileTrue(indexerSubsystem.setVoltage(() -> SubsystemConstants.indexerReverseVoltage));
+                .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> SubsystemConstants.indexerReverseVoltage, () -> 0.0));
 
         driverXboxController
                 .b()
@@ -385,7 +385,7 @@ public class RobotContainer {
                 shooterSubsystem.setSpeed(() -> 15.0)
         );
         testSystemsController.b().whileTrue(
-                indexerSubsystem.setVoltage(() -> -2.0)
+                indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> -2.0, () -> 0.0)
         );
         testSystemsController.leftTrigger().whileTrue(
                 intakeSubsystem.homeThenRezero()
@@ -410,7 +410,7 @@ public class RobotContainer {
                 turretSubsystem.setVoltage(() -> 0.0)
                         .alongWith(hoodSubsystem.setVoltage(() -> 0.0))
                         .alongWith(shooterSubsystem.setVoltage(() -> 0.0))
-                        .alongWith(indexerSubsystem.setVoltage(() -> 0.0))
+                        .alongWith(indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0))
         );
 
 //        driveTuningController.a()
@@ -437,7 +437,7 @@ public class RobotContainer {
 
     tuningController.povDown().whileTrue(
 //            turretSubsystem.setVoltage(() -> -1.0);
-            turretSubsystem.setPositionSafe(() -> 0.0, () -> 0.0)
+            turretSubsystem.setPositionSafe(() -> 0.0, () -> 0.0, () -> true)
     );
 
     tuningController.povRight().whileTrue(
@@ -446,13 +446,17 @@ public class RobotContainer {
     );
 
     tuningController.povUp().whileTrue(
-            turretSubsystem.setPositionSafe(() -> Math.PI * 0.5, () -> 0.0)
+            turretSubsystem.setPositionSafe(() -> Math.PI * 0.5, () -> 0.0, () -> true)
     );
 
     tuningController.povLeft().whileTrue(
             turretSubsystem.setVoltage(() -> -2.0)
 //            turretSubsystem.setPositionSafe(() -> Math.PI, () -> 0.0)
     );
+
+    tuningController.x().onTrue(intakeSubsystem.retractSlow());
+
+    tuningController.y().onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
 
 //    tuningController.povLeft().whileTrue(
 //            turretSubsystem.setVoltage(() -> 2.0)
@@ -513,8 +517,8 @@ public class RobotContainer {
 //                .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
         tuningController.rightTrigger().whileTrue(
-            indexerSubsystem.setVoltage(() -> SubsystemConstants.indexerShootVoltage))
-            .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
+            indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> SubsystemConstants.indexerShootVoltage, () -> 0.0))
+            .whileFalse(indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0));
     }
 
 
@@ -663,7 +667,7 @@ public class RobotContainer {
         //autoCommand.cancel();
         CommandScheduler.getInstance().cancelAll();
         shooterSubsystem.setSpeed(() -> 0.0);
-        indexerSubsystem.setVoltage(() -> 0.0);
+        indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0);
         intakeSubsystem.setDeployVoltage(() -> 0.0);
         intakeSubsystem.setRollerVoltage(() -> 0.0);
         matchTime.reset();

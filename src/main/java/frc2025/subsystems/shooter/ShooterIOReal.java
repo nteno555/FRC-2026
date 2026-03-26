@@ -10,15 +10,16 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc2025.config.SubsystemConstants;
+import org.littletonrobotics.junction.Logger;
 
 public class ShooterIOReal implements ShooterIO {
     private TalonFX flywheelMaster = new TalonFX(SubsystemConstants.flywheelMasterID, CANBus.roboRIO());
     private TalonFX flywheelSlave = new TalonFX(SubsystemConstants.flywheelSlaveID, CANBus.roboRIO());
-    private TalonFX tower = new TalonFX(SubsystemConstants.towerID, CANBus.roboRIO());
+//    private TalonFX tower = new TalonFX(SubsystemConstants.towerID, CANBus.roboRIO());
 
     public ShooterIOReal() {
 		flywheelMaster.getConfigurator().apply(new TalonFXConfiguration());
-        tower.getConfigurator().apply(new TalonFXConfiguration());
+//        tower.getConfigurator().apply(new TalonFXConfiguration());
 
         var flywheelConfig = new TalonFXConfiguration();
 
@@ -55,33 +56,33 @@ public class ShooterIOReal implements ShooterIO {
         flywheelConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 //        flywheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-        var towerConfigs = new TalonFXConfiguration();
-
-        towerConfigs.Slot0.kS = SubsystemConstants.towerkS;
-        towerConfigs.Slot0.kV = SubsystemConstants.towerkV;
-        towerConfigs.Slot0.kA = SubsystemConstants.towerkA;
-        towerConfigs.Slot0.kP = SubsystemConstants.towerkP;
-        towerConfigs.Slot0.kI = SubsystemConstants.towerkI;
-        towerConfigs.Slot0.kD = SubsystemConstants.towerkD;
-
-        towerConfigs.Slot1.kS = SubsystemConstants.towerkSAmps;
-        towerConfigs.Slot1.kV = SubsystemConstants.towerkVAmps;
-        towerConfigs.Slot1.kA = SubsystemConstants.towerkAAmps;
-        towerConfigs.Slot1.kP = SubsystemConstants.towerkPAmps;
-        towerConfigs.Slot1.kI = SubsystemConstants.towerkIAmps;
-        towerConfigs.Slot1.kD = SubsystemConstants.towerkDAmps;
-
-        towerConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-
-        towerConfigs.CurrentLimits.SupplyCurrentLimit = 200;
-        towerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
-        towerConfigs.CurrentLimits.StatorCurrentLimit = 200;
-        towerConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
-
-        TorqueCurrentConfigs towerConfigTorque =  new TorqueCurrentConfigs();
-        towerConfigTorque.PeakForwardTorqueCurrent = 200;
-        towerConfigTorque.PeakReverseTorqueCurrent = 200;
-        towerConfigTorque.TorqueNeutralDeadband = 1;
+//        var towerConfigs = new TalonFXConfiguration();
+//
+//        towerConfigs.Slot0.kS = SubsystemConstants.towerkS;
+//        towerConfigs.Slot0.kV = SubsystemConstants.towerkV;
+//        towerConfigs.Slot0.kA = SubsystemConstants.towerkA;
+//        towerConfigs.Slot0.kP = SubsystemConstants.towerkP;
+//        towerConfigs.Slot0.kI = SubsystemConstants.towerkI;
+//        towerConfigs.Slot0.kD = SubsystemConstants.towerkD;
+//
+//        towerConfigs.Slot1.kS = SubsystemConstants.towerkSAmps;
+//        towerConfigs.Slot1.kV = SubsystemConstants.towerkVAmps;
+//        towerConfigs.Slot1.kA = SubsystemConstants.towerkAAmps;
+//        towerConfigs.Slot1.kP = SubsystemConstants.towerkPAmps;
+//        towerConfigs.Slot1.kI = SubsystemConstants.towerkIAmps;
+//        towerConfigs.Slot1.kD = SubsystemConstants.towerkDAmps;
+//
+//        towerConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+//
+//        towerConfigs.CurrentLimits.SupplyCurrentLimit = 200;
+//        towerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
+//        towerConfigs.CurrentLimits.StatorCurrentLimit = 200;
+//        towerConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+//
+//        TorqueCurrentConfigs towerConfigTorque =  new TorqueCurrentConfigs();
+//        towerConfigTorque.PeakForwardTorqueCurrent = 200;
+//        towerConfigTorque.PeakReverseTorqueCurrent = 200;
+//        towerConfigTorque.TorqueNeutralDeadband = 1;
 
         flywheelMaster.getConfigurator().apply(flywheelConfig, 0.050);
         flywheelSlave.getConfigurator().apply(flywheelConfig, 0.050);
@@ -89,8 +90,8 @@ public class ShooterIOReal implements ShooterIO {
         flywheelSlave.setNeutralMode(NeutralModeValue.Coast);
         flywheelSlave.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Opposed));
 
-        tower.getConfigurator().apply(towerConfigs, 0.050);
-        tower.getConfigurator().apply(towerConfigTorque, 0.05);
+//        tower.getConfigurator().apply(towerConfigs, 0.050);
+//        tower.getConfigurator().apply(towerConfigTorque, 0.05);
     }
 
     @Override
@@ -101,24 +102,27 @@ public class ShooterIOReal implements ShooterIO {
         inputs.slaveVoltage = flywheelSlave.getMotorVoltage().getValueAsDouble();
         inputs.slaveVelocityRPM = flywheelSlave.getVelocity().getValueAsDouble();
 
-        inputs.towerVoltage = tower.getMotorVoltage().getValueAsDouble();
-        inputs.towerRPS = tower.getVelocity().getValueAsDouble();
+//        inputs.towerVoltage = tower.getMotorVoltage().getValueAsDouble();
+//        inputs.towerRPS = tower.getVelocity().getValueAsDouble();
     }
 
     @Override
     public void setVoltage(double voltage) {
         flywheelMaster.setControl(new VoltageOut(voltage));
-        tower.setControl(new VoltageOut(0.0));
+//        tower.setControl(new VoltageOut(0.0));
     }
 
     @Override
     public void setSpeed(double speed) {
+        double currentFF = speed < flywheelMaster.getVelocity().getValueAsDouble() ? -SubsystemConstants.flywheelkSAmps : SubsystemConstants.flywheelkSAmps;
+        Logger.recordOutput("Shooter/currentFF", currentFF);
+
         flywheelMaster.setControl(
                 new VelocityTorqueCurrentFOC(speed)
 //                        .withSlot(2)
                         .withSlot(1)
         );
-        tower.setControl(new VelocityVoltage(speed * SubsystemConstants.towerFlywheelRatio)
-                .withEnableFOC(true));
+//        tower.setControl(new VelocityVoltage(speed * SubsystemConstants.towerFlywheelRatio)
+//                .withEnableFOC(true));
     }
 }
