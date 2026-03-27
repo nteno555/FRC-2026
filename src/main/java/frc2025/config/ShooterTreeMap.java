@@ -28,8 +28,7 @@ public class ShooterTreeMap {
         // kA = (50-4.167)/10 =
 
 //        lowerWheelTreeMap.put(5.24, 56.0); // 47.41
-        lowerWheelTreeMap.put(5.24, 58.0); // 47.41
-
+        lowerWheelTreeMap.put(5.24, 60.0); // 47.41
         lowerWheelTreeMap.put(4.04, 50.0); // 43.13
         lowerWheelTreeMap.put(3.07, 45.0); // 41.05
         lowerWheelTreeMap.put(2.47, 43.0); // 39.71
@@ -119,7 +118,7 @@ public class ShooterTreeMap {
     }
 
     public double getMaxDistance() {
-        return 5.13;
+        return 6.0;
     }
 
     private void updateDashboardMap() {
