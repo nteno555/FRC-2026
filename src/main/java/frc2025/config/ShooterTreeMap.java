@@ -34,11 +34,18 @@ public class ShooterTreeMap {
         lowerWheelTreeMap.put(2.47, 43.0); // 39.71
         lowerWheelTreeMap.put(1.29, 40.0); // 39.67
 
-        tofTreeMap.put(4.97, 1.32); // 1.32 1.33
-        tofTreeMap.put(3.89, 1.20); // 1.19 1.21 1.22 1.15
-        tofTreeMap.put(2.78, 1.13); // 0.71 0.96 0.66 1.13 1.13
-        tofTreeMap.put(2.18, 1.09); // 1.05 1.06 1.12 1.10 1.09
-        tofTreeMap.put(1.39, 1.03); // 1.02 1.02 1.06 1.04
+//        tofTreeMap.put(4.97, 1.32); // 1.32 1.33
+//        tofTreeMap.put(3.89, 1.20); // 1.19 1.21 1.22 1.15
+//        tofTreeMap.put(2.78, 1.13); // 0.71 0.96 0.66 1.13 1.13
+//        tofTreeMap.put(2.18, 1.09); // 1.05 1.06 1.12 1.10 1.09
+//        tofTreeMap.put(1.39, 1.03); // 1.02 1.02 1.06 1.04
+
+        // Antigravity
+        tofTreeMap.put(1.29, 0.900);
+        tofTreeMap.put(2.47, 0.948);
+        tofTreeMap.put(3.07, 1.003);
+        tofTreeMap.put(4.04, 1.048);
+        tofTreeMap.put(5.24, 1.195);
 
         // // 1 MOTOR
         // hoodTreeMap.put(5.24, 2.5);

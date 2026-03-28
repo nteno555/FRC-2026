@@ -218,6 +218,10 @@ public class Autos {
         return buildAuto(List.of("Low-NeutralMid (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "LowScore-Station", WAIT_NO_SHOOT, "Station-Score"), false);
     }
 
+    public Command NathanHuntAuto() {
+        return buildAuto(List.of("Copy of Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-Loop", RETURN_UNDER_TRENCH_LOW), false);
+    }
+
     public Command LowDoubleNeutralStation() {
         return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid", RETURN_UNDER_TRENCH_STATION, "Low-Station"), false);
     }

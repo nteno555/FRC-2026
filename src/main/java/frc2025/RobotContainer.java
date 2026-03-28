@@ -141,6 +141,7 @@ public class RobotContainer {
         autoChooser.setDefaultOption("No Auto", new InstantCommand());
 
         if(SubsystemConstants.hasTurret) {
+            autoChooser.addOption("Nathan Hunt Auto", autos.NathanHuntAuto());
             autoChooser.addOption("Low x2 Neutral Station", autos.LowDoubleNeutralStation());
             autoChooser.addOption("Low x2 Neutral", autos.LowDoubleNeutral());
             autoChooser.addOption("Low Neutral Loop", autos.LowNeutralLoop());

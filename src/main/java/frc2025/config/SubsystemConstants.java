@@ -118,12 +118,12 @@ public class SubsystemConstants {
     public static double indexerReverseVoltage = -2.0;
 
     // Turret Gear Ratio: 12:24 & 44:54 & 36:125
-    public static double turretkS = 0.3;
-    public static double turretkV = 0.117;
+    public static double turretkS = 0.27;
+    public static double turretkV = 0.114;
     public static double turretkA = 0.001 * 12.0;
-    public static double turretkP = 3.0;
+    public static double turretkP = 5.0;
     public static double turretkI = 0.0;
-    public static double turretkD = 0.1;
+    public static double turretkD = 0.15;
     public static double turretCruiseVelocity = 60;
     public static double turretAcceleration = 150;
     public static double turretJerk = 700;
@@ -135,14 +135,14 @@ public class SubsystemConstants {
     public static double turretRotationsPerRadian = 42.0/11.0 * 42.0/26.0 * 110/10.0 / (2*Math.PI); //10.80
     public static double turretMinAngleRadians = -3.89;
     public static double turretMaxAngleRadians = 5.5;
-    public static double throughBoreZero1 = 0.633;
-    public static double throughBoreZero2 = 0.125;
+    public static double throughBoreZero1 = 0.831;
+    public static double throughBoreZero2 = 0.457;
     public static double throughBoreRatio1 = 42.0 / 11.0 * 42.0 / 26.0; // 6.17
     public static double throughBoreRatio2 = 42.0 / 11.0; // 3.82
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
     public static boolean hasTurret = true;
     public static boolean useTurretThroughBores = true;
-    public static double turretShotReadyThreshold = 0.1; // 5.73 degrees
+    public static double turretShotReadyThreshold = 0.15; // 5.73 degrees
     public static boolean useTurretVisionCorrection = false;
 
     public static Transform2d robotToShooter = new Transform2d(0.0885, -0.1372, Rotation2d.kZero); // should be x = forward, y = side
