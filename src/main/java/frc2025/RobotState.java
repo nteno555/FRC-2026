@@ -1,6 +1,8 @@
 package frc2025;
 
 import com.ctre.phoenix6.Utils;
+import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
@@ -40,6 +42,11 @@ public class RobotState {
     private double angleToVirtualTarget;
 
     private Pose2d shootingWhileMovingVirtualPose;
+
+    private double prevAngleToVirtualTarget = 0.0;
+    private double prevVirtualTargetTimestamp = -1.0;
+    private double virtualTargetAngularVelocity = 0.0;
+    private LinearFilter virtualTargetVelocityFilter = LinearFilter.singlePoleIIR(0.05, 0.02);
 
     private double turretAngle;
     private double turretVelocity;
@@ -192,9 +199,25 @@ public class RobotState {
                 virtualPose.getY() - shooterPose.getY(),
                 virtualPose.getX() - shooterPose.getX()
         );
+
+        double currentTimestamp = Timer.getFPGATimestamp();
+        if (prevVirtualTargetTimestamp != -1.0) {
+            double dt = currentTimestamp - prevVirtualTargetTimestamp;
+            if (dt > 0.0) {
+                double deltaAngle = MathUtil.angleModulus(angleToVirtualTarget - prevAngleToVirtualTarget);
+                double unfilteredVelocity = deltaAngle / dt;
+                virtualTargetAngularVelocity = virtualTargetVelocityFilter.calculate(unfilteredVelocity);
+            }
+        } else {
+            virtualTargetVelocityFilter.calculate(0.0);
+        }
+        prevVirtualTargetTimestamp = currentTimestamp;
+        prevAngleToVirtualTarget = angleToVirtualTarget;
+
         Logger.recordOutput("Drive/speed", Math.hypot(vx, vy));
         Logger.recordOutput("Vision/shootingWhileMovingVirtualPose", shootingWhileMovingVirtualPose);
         Logger.recordOutput("Vision/angleToVirtualTarget", angleToVirtualTarget);
+        Logger.recordOutput("Vision/virtualTargetAngularVelocity", virtualTargetAngularVelocity);
     }
 
     public double getAngleToRealHub() {
@@ -211,6 +234,10 @@ public class RobotState {
 
     public double getAngleToVirtualTarget() {
         return angleToVirtualTarget;
+    }
+
+    public double getVirtualTargetAngularVelocity() {
+        return virtualTargetAngularVelocity;
     }
 
     public void setTurretAngle(double angleRadians) {
