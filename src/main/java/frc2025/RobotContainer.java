@@ -36,6 +36,8 @@ import frc2025.subsystems.indexer.IndexerSubsystem;
 import frc2025.subsystems.intake.IntakeIOReal;
 import frc2025.subsystems.intake.IntakeIOSim;
 import frc2025.subsystems.intake.IntakeSubsystem;
+import frc2025.subsystems.led.LedIOReal;
+import frc2025.subsystems.led.LedSubsystem;
 import frc2025.subsystems.hood.HoodIOReal;
 import frc2025.subsystems.hood.HoodSubsystem;
 import frc2025.subsystems.shooter.ShooterIOReal;
@@ -68,6 +70,7 @@ public class RobotContainer {
     HoodSubsystem hoodSubsystem;
     ShooterSubsystem shooterSubsystem;
     TurretSubsystem turretSubsystem;
+    LedSubsystem ledSubsystem;
 
     Autos autos;
     Command autoCommand;
@@ -125,6 +128,7 @@ public class RobotContainer {
             hoodSubsystem = new HoodSubsystem(new HoodIOReal());
             shooterSubsystem = new ShooterSubsystem(new ShooterIOReal());
             turretSubsystem = new TurretSubsystem(new TurretIOReal());
+            ledSubsystem = new LedSubsystem(new LedIOReal());
         } else {
             driveSubsystem = new DriveSubsystem(new DriveIOSim(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOSim());
@@ -188,6 +192,10 @@ public class RobotContainer {
 
     public TurretSubsystem getTurret() {
         return turretSubsystem;
+    }
+
+    public LedSubsystem getLED() {
+        return ledSubsystem;
     }
 
     private void configureBindings() {
@@ -292,12 +300,14 @@ public class RobotContainer {
         new Trigger(() -> aiming)
                 .and(() -> (aimMode == AimMode.MANUAL))
                 .and(driverXboxController.y().negate())
-                .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> SubsystemConstants.indexerShootVoltage, () -> 12.0));
+                .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> SubsystemConstants.indexerShootVoltage, () -> 12.0).alongWith(ledSubsystem.setIndexing()))
+                .whileFalse(ledSubsystem.setEnabled());
 
         driverXboxController
                 .y()
                 .and(driverXboxController.back().negate())
-                .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> SubsystemConstants.indexerReverseVoltage, () -> 0.0));
+                .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> SubsystemConstants.indexerReverseVoltage, () -> 0.0).alongWith(ledSubsystem.setIndexing()))
+                .whileFalse(ledSubsystem.setEnabled());
 
         driverXboxController
                 .b()
@@ -518,6 +528,7 @@ public class RobotContainer {
         tuningController.rightTrigger().whileTrue(
             indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> SubsystemConstants.indexerShootVoltage, () -> 0.0));
     }
+
 
 
 	public static double handleDeadBand(double value, double deadBand, boolean scale) {

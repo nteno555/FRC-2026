@@ -9,6 +9,7 @@ import frc2025.RobotState;
 import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
+import frc2025.subsystems.led.LedSubsystem;
 import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
 
@@ -168,19 +169,36 @@ public class AutoAimCommands {
             return good;
         };
 
-        return robotContainer.getIndexer().setIndexerVoltageWithTowerSpeed(() -> {
-            if(readySupplier.getAsBoolean()) {
-                return SubsystemConstants.indexerShootVoltage;
-            } else {
-                return 0.0;
-            }
-        }, () -> {
-            if(readySupplier.getAsBoolean()) {
-                double indexerSpeed = robotContainer.getShooter().getVelocity() * SubsystemConstants.towerFlywheelRatio;
-                return indexerSpeed;
-            } else {
-                return 0.0;
-            }
-        });
+        if (readySupplier.getAsBoolean()) {
+            return robotContainer.getIndexer().setIndexerVoltageWithTowerSpeed(() -> {
+                if(readySupplier.getAsBoolean()) {
+                    return SubsystemConstants.indexerShootVoltage;
+                } else {
+                    return 0.0;
+                }
+            }, () -> {
+                if(readySupplier.getAsBoolean()) {
+                    double indexerSpeed = robotContainer.getShooter().getVelocity() * SubsystemConstants.towerFlywheelRatio;
+                    return indexerSpeed;
+                } else {
+                    return 0.0;
+                }
+            }).alongWith(robotContainer.getLED().setIndexing());
+        } else {
+            return robotContainer.getIndexer().setIndexerVoltageWithTowerSpeed(() -> {
+                if(readySupplier.getAsBoolean()) {
+                    return SubsystemConstants.indexerShootVoltage;
+                } else {
+                    return 0.0;
+                }
+            }, () -> {
+                if(readySupplier.getAsBoolean()) {
+                    double indexerSpeed = robotContainer.getShooter().getVelocity() * SubsystemConstants.towerFlywheelRatio;
+                    return indexerSpeed;
+                } else {
+                    return 0.0;
+                }
+            }).alongWith(robotContainer.getLED().setEnabled());
+        }
    }
 }
