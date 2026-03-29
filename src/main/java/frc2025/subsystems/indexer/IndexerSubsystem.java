@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 public class IndexerSubsystem extends SubsystemBase {
     IndexerIO io;
     IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
+    private boolean indexing = false;
 
     public IndexerSubsystem(IndexerIO io) {
         this.io = io;
@@ -20,6 +21,7 @@ public class IndexerSubsystem extends SubsystemBase {
     public void periodic() {
         Logger.processInputs("RealOutputs/Indexer", inputs);
         Logger.recordOutput("Superstructure/Indexing", inputs.indexerVoltage > 1.0);
+        this.indexing = inputs.indexerVoltage > 1.0;
         io.updateInputs(inputs);
     }
 
@@ -37,6 +39,10 @@ public class IndexerSubsystem extends SubsystemBase {
             io.setVoltage(0.0);
             io.setTowerSpeed(0.0);
         });
+    }
+
+    public boolean getIndexing() {
+        return this.indexing;
     }
 
 //    public Command setIndexerVoltageWithTowerSpeed(Supplier<Double> indexerVoltage, Supplier<Double> towerSpeed) {

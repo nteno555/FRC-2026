@@ -15,11 +15,13 @@ public class LedSubsystem extends SubsystemBase {
     private final LedIO io;
     private final LedIOInputsAutoLogged inputs = new LedIOInputsAutoLogged();
 
-    private LEDState currentState = LEDState.ENABLED;
+    private LEDState currentState = LEDState.DEFAULT;
 
     public enum LEDState {
         INDEXING,
-        ENABLED
+        SHOOTING,
+        PHASE_SHIFT_WARNING,
+        DEFAULT
     }
 
     public LedSubsystem(LedIO io) {
@@ -30,7 +32,7 @@ public class LedSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("RealOutputs/LED", inputs);
-        Logger.recordOutput("LED/state", currentState.toString());
+        Logger.recordOutput("LED/state", this.currentState.toString());
     }
 
     private void applyState(LEDState state) {
@@ -38,33 +40,31 @@ public class LedSubsystem extends SubsystemBase {
             case INDEXING ->
                 io.setStrobe(firstBoardLed, lastStripLed, 0, 255, 0, 50, 0);
 
-            case ENABLED ->
-                io.setSolidColor(firstBoardLed, lastStripLed, 0, 255, 0);
+            case SHOOTING ->
+                io.setColorFlow(firstBoardLed, lastStripLed, 0, 100, 255, 40, 0);
+
+            case PHASE_SHIFT_WARNING ->
+                io.setStrobe(firstBoardLed, lastStripLed, 255, 255, 0, 10, 0);
+
+            case DEFAULT ->
+                io.setRainbow(firstBoardLed, lastStripLed, 1.0, 20, 0);
         }
-        currentState = state;
+        this.currentState = state;
     }
 
     public Command setState(LEDState state) {
-        return this.runOnce(() -> applyState(state));
-    }
-
-    public Command setIndexing() {
-        return setState(LEDState.INDEXING);
-    }
-
-    public Command setEnabled() {
-        return setState(LEDState.ENABLED);
+        return this.run(() -> applyState(state));
     }
 
     public Command solidColor(int r, int g, int b) {
-        return this.runOnce(() -> io.setSolidColor(firstBoardLed, lastStripLed, r, g, b));
+        return this.run(() -> io.setSolidColor(firstBoardLed, lastStripLed, r, g, b));
     }
 
     public Command off() {
-        return this.runOnce(() -> io.setOff());
+        return this.run(() -> io.setOff());
     }
 
     public LEDState getCurrentState() {
-        return currentState;
+        return this.currentState;
     }
 }

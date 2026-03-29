@@ -169,36 +169,20 @@ public class AutoAimCommands {
             return good;
         };
 
-        if (readySupplier.getAsBoolean()) {
-            return robotContainer.getIndexer().setIndexerVoltageWithTowerSpeed(() -> {
-                if(readySupplier.getAsBoolean()) {
-                    return SubsystemConstants.indexerShootVoltage;
-                } else {
-                    return 0.0;
-                }
-            }, () -> {
-                if(readySupplier.getAsBoolean()) {
-                    double indexerSpeed = robotContainer.getShooter().getVelocity() * SubsystemConstants.towerFlywheelRatio;
-                    return indexerSpeed;
-                } else {
-                    return 0.0;
-                }
-            }).alongWith(robotContainer.getLED().setIndexing());
-        } else {
-            return robotContainer.getIndexer().setIndexerVoltageWithTowerSpeed(() -> {
-                if(readySupplier.getAsBoolean()) {
-                    return SubsystemConstants.indexerShootVoltage;
-                } else {
-                    return 0.0;
-                }
-            }, () -> {
-                if(readySupplier.getAsBoolean()) {
-                    double indexerSpeed = robotContainer.getShooter().getVelocity() * SubsystemConstants.towerFlywheelRatio;
-                    return indexerSpeed;
-                } else {
-                    return 0.0;
-                }
-            }).alongWith(robotContainer.getLED().setEnabled());
-        }
+
+        return robotContainer.getIndexer().setIndexerVoltageWithTowerSpeed(() -> {
+            if(readySupplier.getAsBoolean()) {
+                return SubsystemConstants.indexerShootVoltage;
+            } else {
+                return 0.0;
+            }
+        }, () -> {
+            if(readySupplier.getAsBoolean()) {
+                double indexerSpeed = robotContainer.getShooter().getVelocity() * SubsystemConstants.towerFlywheelRatio;
+                return indexerSpeed;
+            } else {
+                return 0.0;
+            }
+        });
    }
 }

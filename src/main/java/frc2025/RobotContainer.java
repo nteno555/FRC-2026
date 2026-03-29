@@ -38,6 +38,7 @@ import frc2025.subsystems.intake.IntakeIOSim;
 import frc2025.subsystems.intake.IntakeSubsystem;
 import frc2025.subsystems.led.LedIOReal;
 import frc2025.subsystems.led.LedSubsystem;
+import frc2025.subsystems.led.LedSubsystem.LEDState;
 import frc2025.subsystems.hood.HoodIOReal;
 import frc2025.subsystems.hood.HoodSubsystem;
 import frc2025.subsystems.shooter.ShooterIOReal;
@@ -300,14 +301,24 @@ public class RobotContainer {
         new Trigger(() -> aiming)
                 .and(() -> (aimMode == AimMode.MANUAL))
                 .and(driverXboxController.y().negate())
-                .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> SubsystemConstants.indexerShootVoltage, () -> 12.0).alongWith(ledSubsystem.setIndexing()))
-                .whileFalse(ledSubsystem.setEnabled());
+                .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> SubsystemConstants.indexerShootVoltage, () -> 12.0));
+        
+        new Trigger(() -> indexerSubsystem.getIndexing() && !isPhaseShiftWarning())
+                .whileTrue(ledSubsystem.setState(LEDState.INDEXING))
+                .whileFalse(ledSubsystem.setState(LEDState.DEFAULT));
+
+        new Trigger(() -> shooterSubsystem.getShotReady() && !indexerSubsystem.getIndexing() && !isPhaseShiftWarning())
+                .whileTrue(ledSubsystem.setState(LEDState.SHOOTING))
+                .whileFalse(ledSubsystem.setState(LEDState.DEFAULT));
+        
+        new Trigger(() -> isPhaseShiftWarning())
+                .whileTrue(ledSubsystem.setState(LEDState.PHASE_SHIFT_WARNING))
+                .whileFalse(ledSubsystem.setState(LEDState.DEFAULT));
 
         driverXboxController
                 .y()
                 .and(driverXboxController.back().negate())
-                .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> SubsystemConstants.indexerReverseVoltage, () -> 0.0).alongWith(ledSubsystem.setIndexing()))
-                .whileFalse(ledSubsystem.setEnabled());
+                .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> SubsystemConstants.indexerReverseVoltage, () -> 0.0));
 
         driverXboxController
                 .b()
@@ -529,6 +540,15 @@ public class RobotContainer {
             indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> SubsystemConstants.indexerShootVoltage, () -> 0.0));
     }
 
+        private boolean isPhaseShiftWarning() {
+                double t = DriverStation.getMatchTime();
+                return DriverStation.isTeleopEnabled() && (
+                        (t <= 115 && t > 105) ||
+                        (t <= 90  && t > 80)  ||
+                        (t <= 65  && t > 55)  ||
+                        (t <= 40  && t > 30)
+                );
+        }
 
 
 	public static double handleDeadBand(double value, double deadBand, boolean scale) {
