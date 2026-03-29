@@ -54,15 +54,12 @@ public class LimelightFiducialCamera {
     public void writeGyro() {
         String prefix = "Vision/" + name + "_mt2/";
 
-//        LimelightHelpers.SetIMUMode(name, 1);
-//        imuMode = 1;
+//        LimelightHelpers.SetIMUMode(name, 0);
+//        imuMode = 0;
         LimelightHelpers.SetIMUAssistAlpha(name, 0.1);
         LimelightHelpers.SetIMUMode(name, 4);
 
-//        if (turretMounted) {
-//            LimelightHelpers.set
-//        }
-        imuMode = 4;
+//        imuMode = 4;
 
         Logger.recordOutput(prefix + "IMU", imuMode);
 
@@ -207,6 +204,10 @@ public class LimelightFiducialCamera {
             reject = true;
         }
 
+
+        if(turretMounted && RobotState.getInstance().getTurretVelocity() > 0.1)
+            reject = true;
+
         Logger.recordOutput(prefix + "meanDistance", meanDistance);
         Logger.recordOutput(prefix + "meanAmbiguity", meanAmbiguity);
         Logger.recordOutput(prefix + "meanArea", meanArea);
@@ -291,6 +292,9 @@ public class LimelightFiducialCamera {
         Logger.recordOutput(prefix + "rawPose", pose);
 
         if(SubsystemConstants.ignoreTurretLimelight && turretMounted)
+            reject = true;
+
+        if(turretMounted && RobotState.getInstance().getTurretVelocity() > 0.1)
             reject = true;
 
         if(!reject) {

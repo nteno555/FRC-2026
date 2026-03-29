@@ -1,5 +1,7 @@
 package frc2025;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -19,18 +21,51 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class Autos {
     private DriveSubsystem drive;
 
     private RobotContainer robotContainer;
+    private String firstPath;
+    public static final String LOW_NEUTRAL_LOOP_ANGLED = "Low Neutral Loop Angled";
+    public static final String LOW_X2_NEUTRAL_STATION = "Low x2 Neutral Station";
+    public static final String LOW_X2_NEUTRAL = "Low x2 Neutral";
+    public static final String LOW_NEUTRAL_LOOP = "Low Neutral Loop";
+    public static final String MID_STATION_DEPOT = "Mid Station Depot";
+    public static final String HIGH_X2_NEUTRAL = "High x2 Neutral";
+    public static final String HIGH_NEUTRAL_LOOP = "High Neutral Loop";
+    public static final String LOW_NEUTRAL_STATION = "Low Neutral Station";
+
     private final String WAIT_SHOOT = "wait_shoot";
     private final String WAIT_SHOOT_EXTENDED = "wait_shoot_extended";
     private final String WAIT_NO_SHOOT = "wait_no_shoot";
     private final String RETURN_UNDER_TRENCH_HIGH = "return_under_trench_high";
     private final String RETURN_UNDER_TRENCH_LOW = "return_under_trench_low";
     private final String RETURN_UNDER_TRENCH_STATION = "return_under_trench_station";
+
+    /**
+     * Returns the alliance-corrected starting pose of the first path in an auto
+     * sequence. Used to pre-seed odometry while disabled.
+     *
+     * @param firstPathName the PathPlanner path file name (no extension)
+     * @return the starting Pose2d, or empty if the path cannot be loaded
+     */
+    public static Optional<Pose2d> getStartPose(String firstPathName) {
+        try {
+            PathPlannerPath path = PathPlannerPath.fromPathFile(firstPathName);
+            Pose2d pose = new Pose2d(
+                    path.getStartingDifferentialPose().getTranslation(),
+                    path.getIdealStartingState().rotation());
+            if (Alliance.get()) {
+                pose = FlippingUtil.flipFieldPose(pose);
+            }
+            return Optional.of(pose);
+        } catch (IOException | ParseException e) {
+            return Optional.empty();
+        }
+    }
 
     public Autos(RobotContainer robotContainer) {
         this.robotContainer = robotContainer;
@@ -42,18 +77,39 @@ public class Autos {
 
     private Command intakeDrive(Command driveCommand) {
         return robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
-                                .alongWith(robotContainer.getHood().setPosition(() -> 0.0))
-                                                .until(() -> robotContainer.getIntake().getDeployReady() && robotContainer.getHood().getPosition() < 0.3)
-                                .withTimeout(1.0)
-                                .andThen(
-                                        driveCommand
-                                        .deadlineFor(
-                                                robotContainer.getIntake().setIntakingAuto()
-                                                .alongWith(robotContainer.getIndexer().setIndexerVoltageWithTowerSpeed(() -> SubsystemConstants.indexerReverseVoltage, () -> 0.0)
-                                                .alongWith(robotContainer.getTurret().setPositionSafe(() -> 0.0, () -> 0.0, () -> true)))
-//                                                .alongWith(robotContainer.getTurret().aimAtHub()))
-                                        )
-                                );
+                .alongWith(robotContainer.getHood().setPosition(() -> 0.0))
+                .until(() -> robotContainer.getIntake().getDeployReady()
+                        && robotContainer.getHood().getPosition() < 0.3)
+                .withTimeout(1.0)
+                .andThen(
+                        driveCommand
+                                .deadlineFor(
+                                        robotContainer.getIntake().setIntakingAuto()
+                                                .alongWith(robotContainer.getIndexer().setIndexerVoltageWithTowerSpeed(
+                                                        () -> SubsystemConstants.indexerReverseVoltage, () -> 0.0)
+                                                        // .alongWith(robotContainer.getTurret().setPositionSafe(() -> 0.0,
+                                                        //         () -> 0.0, () -> true))))
+//                                .alongWith(robotContainer.getTurret().aimAtHub())))
+                )));
+    }
+
+    private Command intakePathBuiltin(String pathName) {
+        PathPlannerPath path;
+
+        try {
+            path = PathPlannerPath.fromPathFile(pathName);
+        } catch (IOException | ParseException e) {
+            System.out.println("BAD PATH BAD PATH BAD PATH");
+            return null;
+        }
+
+        PathPlannerPath finalPath = path;
+
+        var followPath = AutoBuilder.followPath(finalPath);
+
+
+        return intakeDrive(followPath);
+
     }
 
     private Command intakePath(String pathName) {
@@ -85,8 +141,7 @@ public class Autos {
 
         Pose2d startPose = new Pose2d(
                 finalPath.getStartingDifferentialPose().getTranslation(),
-                finalPath.getIdealStartingState().rotation()
-        );
+                finalPath.getIdealStartingState().rotation());
 
         return SuperstructureCommands.resetOdometry(robotContainer, startPoseSupplier(startPose))
                 .andThen(intakePath(pathName));
@@ -107,44 +162,42 @@ public class Autos {
 
     public Command buildAuto(List<String> paths, boolean climb) {
         Command aim = robotContainer.getShooter().autoAim();
-//                .alongWith(robotContainer.getTurret().aimAtHub());
+        // .alongWith(robotContainer.getTurret().aimAtHub());
 
         Command pathCommands = intakePathResetOdometry(paths.get(0));
 
-        for(int i = 1; i < paths.size(); i++) {
-            if(paths.get(i).equals(WAIT_SHOOT) || paths.get(i).equals(WAIT_SHOOT_EXTENDED)) {
-                double waitTime = (paths.get(i).equals(WAIT_SHOOT)) ? 2.0 : 3.0;
-                if(SubsystemConstants.hasTurret) {
+        for (int i = 1; i < paths.size(); i++) {
+            if (paths.get(i).equals(WAIT_SHOOT) || paths.get(i).equals(WAIT_SHOOT_EXTENDED)) {
+                double waitTime = (paths.get(i).equals(WAIT_SHOOT)) ? 2.0 : 4.0;
+                if (SubsystemConstants.hasTurret) {
                     pathCommands = pathCommands.andThen(
                             (AutoAimCommands.autoIndex(robotContainer)
+                                    .alongWith(robotContainer.getShooter().autoAim())
                                     .alongWith(robotContainer.getTurret().snapThenTrack())
                                     .alongWith(robotContainer.getHood().autoAimUnsafe())
-                                    .alongWith(robotContainer.getIntake().oscillateIntake()))
-                            .withTimeout(waitTime)
-                    );
+                                    .alongWith(robotContainer.getIntake().retractSlow()))
+                                    .withTimeout(waitTime));
                 } else {
                     pathCommands = pathCommands.andThen(
                             AutoAimCommands.driveAutoAim(
-                                            robotContainer,
-                                            () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
-                                            () -> new ChassisSpeeds(0, 0, 0)
-                                    )
+                                    robotContainer,
+                                    () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
+                                    () -> new ChassisSpeeds(0, 0, 0))
                                     .alongWith(AutoAimCommands.autoIndex(robotContainer)
+                                            .alongWith(robotContainer.getShooter().autoAim())
                                             .alongWith(robotContainer.getHood().autoAimUnsafe())
-                                            .alongWith(robotContainer.getIntake().oscillateIntake()))
-                                    .withTimeout(waitTime)
-                    );
+                                            .alongWith(robotContainer.getIntake().retractSlow()))
+                                    .withTimeout(waitTime));
                 }
-            }
-            else if (paths.get(i).equals(WAIT_NO_SHOOT)) {
+            } else if (paths.get(i).equals(WAIT_NO_SHOOT)) {
                 pathCommands = pathCommands.andThen(
-                        Commands.waitSeconds(1.0)
-                );
-            } else if(paths.get(i).equals(RETURN_UNDER_TRENCH_HIGH)) {
+                        Commands.waitSeconds(1.0));
+            } else if (paths.get(i).equals(RETURN_UNDER_TRENCH_HIGH)) {
                 Supplier<Pose2d> endPoseSupplier = () -> {
                     Pose2d pose = FieldConstants.blueTrenchHighReturn;
                     var alliance = DriverStation.Alliance.Red;
-                    if(DriverStation.getAlliance().isPresent()) alliance = DriverStation.getAlliance().get();
+                    if (DriverStation.getAlliance().isPresent())
+                        alliance = DriverStation.getAlliance().get();
                     if (alliance == DriverStation.Alliance.Red) {
                         pose = mirrorPose(pose);
                     }
@@ -159,12 +212,15 @@ public class Autos {
                     return pose;
                 };
 
-                pathCommands = pathCommands.andThen(intakeDrive(PathPlanCommands.returnUnderTrenchAuto(robotContainer, endPoseSupplier, () -> 0.0, preTrench)));
-            } else if(paths.get(i).equals(RETURN_UNDER_TRENCH_LOW) || paths.get(i).equals(RETURN_UNDER_TRENCH_STATION)) {
+                pathCommands = pathCommands.andThen(intakeDrive(
+                        PathPlanCommands.returnUnderTrenchAuto(robotContainer, endPoseSupplier, () -> 0.0, preTrench)));
+            } else if (paths.get(i).equals(RETURN_UNDER_TRENCH_LOW)
+                    || paths.get(i).equals(RETURN_UNDER_TRENCH_STATION)) {
                 Supplier<Pose2d> endPoseSupplier = () -> {
                     Pose2d pose = FieldConstants.blueTrenchLowReturn;
                     var alliance = DriverStation.Alliance.Red;
-                    if (DriverStation.getAlliance().isPresent()) alliance = DriverStation.getAlliance().get();
+                    if (DriverStation.getAlliance().isPresent())
+                        alliance = DriverStation.getAlliance().get();
                     if (alliance == DriverStation.Alliance.Red) {
                         pose = mirrorPose(pose);
                     }
@@ -181,65 +237,76 @@ public class Autos {
 
                 boolean station = paths.get(i).equals(RETURN_UNDER_TRENCH_STATION);
                 Supplier<Double> endVelocity = () -> {
-                    if (station) return 2.5;
+                    if (station)
+                        return 2.5;
                     return 0.0;
                 };
-                pathCommands = pathCommands.andThen(intakeDrive(PathPlanCommands.returnUnderTrenchAuto(robotContainer, endPoseSupplier, endVelocity, preTrench)));
+                pathCommands = pathCommands.andThen(intakeDrive(PathPlanCommands.returnUnderTrenchAuto(robotContainer,
+                        endPoseSupplier, endVelocity, preTrench)));
             } else {
                 pathCommands = pathCommands.andThen(intakePath(paths.get(i)));
             }
         }
 
-        if(SubsystemConstants.hasTurret) {
-            return aim.alongWith(pathCommands
+        if (SubsystemConstants.hasTurret) {
+            return pathCommands
                     .andThen(
                             AutoAimCommands.autoIndex(robotContainer)
                                     .alongWith(robotContainer.getTurret().autoAim())
                                     .alongWith(robotContainer.getHood().autoAimUnsafe())
-                                    .alongWith(robotContainer.getIntake().oscillateIntake())
-                    ));
+                                    .alongWith(robotContainer.getIntake().retractSlow())
+                                    .alongWith(robotContainer.getShooter().autoAim()));
         } else {
-            return aim.alongWith(pathCommands
+            return pathCommands
                     .andThen(
-                            AutoAimCommands.driveAutoAim(robotContainer, () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(), () -> new ChassisSpeeds(0, 0, 0))
+                            AutoAimCommands
+                                    .driveAutoAim(robotContainer,
+                                            () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
+                                            () -> new ChassisSpeeds(0, 0, 0))
                                     .alongWith(robotContainer.getHood().autoAimUnsafe())
                                     .alongWith(AutoAimCommands.autoIndex(robotContainer)
-                                    .alongWith(robotContainer.getIntake().oscillateIntake()))
-                    ));
+                                            .alongWith(robotContainer.getIntake().oscillateIntake()))
+                                    .alongWith(robotContainer.getShooter().autoAim()));
         }
     }
-
-
 
     public Command LowNeutralStation() {
         if (SubsystemConstants.hasTurret) {
-            return buildAuto(List.of("Low-NeutralMid (under trench)", RETURN_UNDER_TRENCH_STATION, "Low-Station"), false);
+            return buildAuto(List.of("Low-NeutralMid (under trench)", RETURN_UNDER_TRENCH_STATION, "Low-Station"),
+                    false);
         }
-        return buildAuto(List.of("Low-NeutralMid (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "LowScore-Station", WAIT_NO_SHOOT, "Station-Score"), false);
+        return buildAuto(List.of("Low-NeutralMid (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT,
+                "LowScore-Station", WAIT_NO_SHOOT, "Station-Score"), false);
     }
 
-    public Command NathanHuntAuto() {
-        return buildAuto(List.of("Copy of Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-Loop", RETURN_UNDER_TRENCH_LOW), false);
+    public Command LowNeutralLoopAngled() {
+        return buildAuto(List.of("Low-Neutral-Angled (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-Loop",
+                RETURN_UNDER_TRENCH_LOW), false);
     }
 
     public Command LowDoubleNeutralStation() {
-        return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid", RETURN_UNDER_TRENCH_STATION, "Low-Station"), false);
+        return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid",
+                RETURN_UNDER_TRENCH_STATION, "Low-Station"), false);
     }
 
     public Command LowDoubleNeutral() {
-        return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid", RETURN_UNDER_TRENCH_LOW), false);
+        return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid",
+                RETURN_UNDER_TRENCH_LOW), false);
     }
 
     public Command LowNeutralClose() {
-        return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-Close", RETURN_UNDER_TRENCH_LOW), false);
+        return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-Close",
+                RETURN_UNDER_TRENCH_LOW), false);
     }
 
     public Command LowNeutralLoop() {
-        return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-Loop", RETURN_UNDER_TRENCH_LOW), false);
+        return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT_EXTENDED, "Low-Loop",
+                RETURN_UNDER_TRENCH_LOW), false);
     }
 
     public Command LowDoubleLoop() {
-        return buildAuto(List.of("Low-Loop (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-Loop", RETURN_UNDER_TRENCH_LOW), false);
+        return buildAuto(List.of("Low-Loop (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-Loop",
+                RETURN_UNDER_TRENCH_LOW), false);
     }
 
     public Command MidStationDepotClimb() {
@@ -247,18 +314,47 @@ public class Autos {
     }
 
     public Command HighNeutralLoop() {
-        return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "High-Loop", RETURN_UNDER_TRENCH_HIGH), false);
+        return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "High-Loop",
+                RETURN_UNDER_TRENCH_HIGH), false);
     }
 
     public Command HighDoubleNeutral() {
-        return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "High-NeutralMid", RETURN_UNDER_TRENCH_HIGH), false);
+        return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "High-NeutralMid",
+                RETURN_UNDER_TRENCH_HIGH), false);
     }
 
     public Command HighNeutralClose() {
-        return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "High-Close", RETURN_UNDER_TRENCH_HIGH), false);
+        return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "High-Close",
+                RETURN_UNDER_TRENCH_HIGH), false);
     }
 
     public Command HighDoubleLoop() {
-        return buildAuto(List.of("High-Loop (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "High-Loop", RETURN_UNDER_TRENCH_HIGH), false);
+        return buildAuto(List.of("High-Loop (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "High-Loop",
+                RETURN_UNDER_TRENCH_HIGH), false);
+    }
+
+    public Command getCommand(String autoName) {
+        return switch (autoName) {
+            case LOW_NEUTRAL_LOOP_ANGLED -> LowNeutralLoopAngled();
+            case LOW_X2_NEUTRAL_STATION -> LowDoubleNeutralStation();
+            case LOW_X2_NEUTRAL -> LowDoubleNeutral();
+            case LOW_NEUTRAL_LOOP -> LowNeutralLoop();
+            case MID_STATION_DEPOT -> MidStationDepotClimb();
+            case HIGH_X2_NEUTRAL -> HighDoubleNeutral();
+            case HIGH_NEUTRAL_LOOP -> HighNeutralLoop();
+            case LOW_NEUTRAL_STATION -> LowNeutralStation();
+            default -> Commands.none();
+        };
+    }
+
+    public String getFirstPath(String autoName) {
+        return switch (autoName) {
+            case LOW_NEUTRAL_LOOP_ANGLED -> "Low-Neutral-Angled (under trench)";
+            case LOW_X2_NEUTRAL_STATION, LOW_X2_NEUTRAL, LOW_NEUTRAL_LOOP -> "Low-Neutral (under trench)";
+            case LOW_NEUTRAL_STATION, "Low-NeutralMid (under trench)" -> "Low-NeutralMid (under trench)";
+            case MID_STATION_DEPOT -> "Mid-Station";
+            case HIGH_X2_NEUTRAL, HIGH_NEUTRAL_LOOP -> "High-Neutral (under trench)";
+            default -> "";
+        };
     }
 }

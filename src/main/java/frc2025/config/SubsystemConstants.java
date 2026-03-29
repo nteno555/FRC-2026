@@ -34,7 +34,10 @@ public class SubsystemConstants {
     public static double flywheelkSAmps = 10.0;
     public static double flywheelkVAmps = 0.0;
     public static double flywheelkAAmps = 0.218;
-    public static double flywheelkPAmps = 5.0;
+    // Two Flywheels
+//    public static double flywheelkPAmps = 5.0;
+    // One Flywheel
+    public static double flywheelkPAmps = 10.0;
     public static double flywheelkIAmps = 0.0;
     public static double flywheelkDAmps = 0.0;
 
@@ -83,7 +86,7 @@ public class SubsystemConstants {
     public static double hoodReverseSoftLimit = -0.1;
     public static double hoodRezeroVoltage = -3.5;
     public static double hoodMinAngleRotations = 0;
-    public static double hoodMaxAngleRotations = 2.90;
+    public static double hoodMaxAngleRotations = 3.0;
     public static double hoodMinAngleRadians = 1.48;
     public static double hoodMaxAngleRadians = 0.87;
 
@@ -106,8 +109,9 @@ public class SubsystemConstants {
     public static double intakePeakReverseVoltage = -4.0;
     public static double intakeRetractPosition = 0.3;
     public static double intakeDeployPosition = 4.1;
-    public static double intakeRollerVoltage = 8.0;
+    public static double intakeRollerVoltage = 12.0;
     public static double intakeHalfPosition = 1.5;
+    public static double intakeQuarterPosition = 1.0;
 
     public static double indexerSupplyCurrentLimit = 120;
     public static double indexerStatorCurrentLimit = 120;
@@ -116,6 +120,7 @@ public class SubsystemConstants {
     public static double indexerTorqueNeutralDeadband = 1;
     public static double indexerShootVoltage = 12.0;
     public static double indexerReverseVoltage = -2.0;
+    public static double autoIndexDebounceTime = 0.1;
 
     // Turret Gear Ratio: 12:24 & 44:54 & 36:125
     public static double turretkS = 0.27;

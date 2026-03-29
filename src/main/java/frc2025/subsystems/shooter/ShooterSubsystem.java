@@ -2,11 +2,7 @@ package frc2025.subsystems.shooter;
 
 import java.util.function.Supplier;
 
-import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.numbers.N2;
 import frc2025.RobotState;
 import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
@@ -30,7 +26,7 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         Logger.processInputs("RealOutputs/Shooter", inputs);
-        Logger.recordOutput("Superstructure/ShooterSpeed", inputs.masterVelocityRPM);
+        Logger.recordOutput("Superstructure/ShooterSpeed", inputs.masterVelocityRPS);
         io.updateInputs(this.inputs);
     }
 
@@ -79,32 +75,15 @@ public class ShooterSubsystem extends SubsystemBase {
 
             return ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist);
         }, () -> {
-            Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
-            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
-            double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
-
-            ChassisSpeeds robotSpeeds = RobotState.getInstance().getFieldRelativeSpeeds();
-            Translation2d robotToTargetXY = targetPose.getTranslation().minus(robotPose.transformBy(SubsystemConstants.robotToShooter).getTranslation());
-            double distanceToTarget = robotToTargetXY.getNorm();
-
-            double radialVelocity = (robotSpeeds.vxMetersPerSecond * robotToTargetXY.getX() + robotSpeeds.vyMetersPerSecond * robotToTargetXY.getY()) / distanceToTarget;
-            
-            double dRps_dDist;
-            if (RobotState.getInstance().getShuttling()) {
-                dRps_dDist = (ShooterTreeMap.getInstance().shuttlingRPSTreeMap.getInterpolated(dist + 0.05) - ShooterTreeMap.getInstance().shuttlingRPSTreeMap.getInterpolated(dist - 0.05)) / 0.1;
-            } else {
-                dRps_dDist = (ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist + 0.05) - ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist - 0.05)) / 0.1;
-            }
-            double acceleration = dRps_dDist * (-radialVelocity);
-            return acceleration;
+            return RobotState.getInstance().getWantedShooterAcceleration();
         });
     }
 
     public boolean getShotReady() {
-        return Math.abs(wantedVelocity - inputs.masterVelocityRPM) < 10.0 && inputs.masterVelocityRPM > 1.0;
+        return Math.abs(wantedVelocity - inputs.masterVelocityRPS) < 10.0 && inputs.masterVelocityRPS > 1.0;
     }
 
     public double getVelocity() {
-        return inputs.masterVelocityRPM;
+        return inputs.masterVelocityRPS;
     }
 }

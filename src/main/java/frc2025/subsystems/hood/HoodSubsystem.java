@@ -2,7 +2,6 @@ package frc2025.subsystems.hood;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -104,26 +103,8 @@ public class HoodSubsystem extends SubsystemBase {
 
             return ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist);
         }, () -> {
-            Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
-            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
-
-            ChassisSpeeds robotSpeeds = RobotState.getInstance().getFieldRelativeSpeeds();
-            Translation2d robotToTargetXY = targetPose.getTranslation()
-                    .minus(robotPose.transformBy(SubsystemConstants.robotToShooter).getTranslation());
-            double distanceToTarget = robotToTargetXY.getNorm();
-
-            double radialVelocity = (robotSpeeds.vxMetersPerSecond * robotToTargetXY.getX()
-                    + robotSpeeds.vyMetersPerSecond * robotToTargetXY.getY()) / distanceToTarget;
-            double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
-
-            double dAng_dDist;
-            if (RobotState.getInstance().getShuttling()) {
-                dAng_dDist = 0.0;
-            } else {
-                dAng_dDist = (ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist + 0.05)
-                        - ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist - 0.05)) / 0.1;
-            }
-            return dAng_dDist * (-radialVelocity);
+            return 0.0;
+//            return RobotState.getInstance().getWantedHoodVelocity();
         });
     }
 

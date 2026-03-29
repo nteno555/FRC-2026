@@ -46,8 +46,8 @@ public class FollowPathCommand extends Command {
         this.driveSubsystem = drive;
         this.flip = flip;
 
-        translationPID = new PIDController(2.5, 0, 0);
-        rotationPID = new PIDController(3.0, 0, 0);
+        translationPID = new PIDController(3.0, 0, 0);
+        rotationPID = new PIDController(1.0, 0, 0);
         rotationPID.enableContinuousInput(-Math.PI, Math.PI);
 
         addRequirements(this.driveSubsystem);
@@ -131,7 +131,7 @@ public class FollowPathCommand extends Command {
                 desiredState.fieldSpeeds.vxMetersPerSecond,
                 desiredState.fieldSpeeds.vyMetersPerSecond,
                 desiredState.fieldSpeeds.omegaRadiansPerSecond
-//                omegaFeedback * -1
+            //    omegaFeedback * -1
         );
 
         if(!SubsystemConstants.hasTurret && autoAimOverride) {
@@ -165,7 +165,7 @@ public class FollowPathCommand extends Command {
             Logger.recordOutput("Vision/alignDistance", translation.getNorm());
             Logger.recordOutput("Drive/targetPose", endPose);
 
-            return (translation.getNorm() < 0.2 && rotationDistance < 10) && RobotState.getInstance().getSpeed() < 0.5;// && velocity < 0.02 && angularVelocity < 0.1;
+            return (translation.getNorm() < 0.3 && rotationDistance < 20) && RobotState.getInstance().getSpeed() < 1.0;// && velocity < 0.02 && angularVelocity < 0.1;
         }
         return this.timer.hasElapsed(trajectory.getTotalTimeSeconds());
     }

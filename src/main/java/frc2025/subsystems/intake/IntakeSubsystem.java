@@ -46,7 +46,7 @@ public class IntakeSubsystem extends SubsystemBase {
         return this.run(() -> {
             double time = (Timer.getFPGATimestamp());
 
-            if (time % 0.67 < 0.335) io.setDeployPosition(SubsystemConstants.intakeDeployPosition, true);
+            if (time % 1.34 < 0.67) io.setDeployPosition(SubsystemConstants.intakeDeployPosition, true);
             else io.setDeployPosition(SubsystemConstants.intakeHalfPosition, true);
 
             io.setVoltage(SubsystemConstants.intakeRollerVoltage);
@@ -55,7 +55,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public Command retractSlow() {
         return this.run(() -> {
-            io.setDeployPosition(SubsystemConstants.intakeRetractPosition, false);
+            io.setDeployPosition(SubsystemConstants.intakeQuarterPosition, false);
 //            io.setVoltage(SubsystemConstants.intakeRollerVoltage);
         });
     }
@@ -67,7 +67,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public Command homeThenRezero() {
         return this.run(() -> {
             io.setVoltage(0.0);
-            io.setDeployVoltage(-3.0);
+            io.setDeployVoltage(-1.0);
             io.rezero(0.0);
         });
     }

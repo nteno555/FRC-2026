@@ -8,8 +8,8 @@ public class ShooterIOSim implements ShooterIO {
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
-        inputs.slaveVelocityRPM = voltage;
-        inputs.masterVelocityRPM = voltage;
+        inputs.slaveVelocityRPS = voltage;
+        inputs.masterVelocityRPS = voltage;
     }
 
     @Override

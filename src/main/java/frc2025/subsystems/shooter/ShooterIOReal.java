@@ -56,8 +56,8 @@ public class ShooterIOReal implements ShooterIO {
 		flywheelConfig.CurrentLimits.StatorCurrentLimit = SubsystemConstants.flywheelStatorCurrentLimit;
 		flywheelConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
-        flywheelConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-//        flywheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+//        flywheelConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        flywheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
 //        var towerConfigs = new TalonFXConfiguration();
 //
@@ -100,10 +100,10 @@ public class ShooterIOReal implements ShooterIO {
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
         inputs.masterVoltage = flywheelMaster.getMotorVoltage().getValueAsDouble();
-        inputs.masterVelocityRPM = flywheelMaster.getVelocity().getValueAsDouble();
+        inputs.masterVelocityRPS = flywheelMaster.getVelocity().getValueAsDouble();
 
         inputs.slaveVoltage = flywheelSlave.getMotorVoltage().getValueAsDouble();
-        inputs.slaveVelocityRPM = flywheelSlave.getVelocity().getValueAsDouble();
+        inputs.slaveVelocityRPS = flywheelSlave.getVelocity().getValueAsDouble();
 
 //        inputs.towerVoltage = tower.getMotorVoltage().getValueAsDouble();
 //        inputs.towerRPS = tower.getVelocity().getValueAsDouble();

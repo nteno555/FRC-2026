@@ -6,9 +6,9 @@ public interface ShooterIO {
     @AutoLog
     public class ShooterIOInputs {
         double slaveVoltage;
-        double slaveVelocityRPM;
+        double slaveVelocityRPS;
         double masterVoltage;
-        double masterVelocityRPM;
+        double masterVelocityRPS;
         double percentOutput;
         double towerVoltage;
         double towerRPS;

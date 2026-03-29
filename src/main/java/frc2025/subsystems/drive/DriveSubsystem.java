@@ -4,14 +4,21 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc2025.RobotState;
@@ -75,23 +82,24 @@ public class DriveSubsystem extends SubsystemBase {
     public Command driveFieldRelative(Supplier<ChassisSpeeds> chassisSpeedsSupplier) {
         return this.applyChassisSpeedsCommand(() -> {
             return ChassisSpeeds.fromFieldRelativeSpeeds(
-                            chassisSpeedsSupplier.get(),
-                            RobotState.getInstance().getVisionPose().getRotation());
+                    chassisSpeedsSupplier.get(),
+                    RobotState.getInstance().getVisionPose().getRotation());
         });
     }
 
     public Command driveFieldRelativeVision(Supplier<ChassisSpeeds> chassisSpeedsSupplier) {
         return this.applyChassisSpeedsCommand(() -> {
             return ChassisSpeeds.fromFieldRelativeSpeeds(
-                            chassisSpeedsSupplier.get(),
-                            RobotState.getInstance().getVisionPose().getRotation());
+                    chassisSpeedsSupplier.get(),
+                    RobotState.getInstance().getVisionPose().getRotation());
         });
     }
 
     public Command driveTeleop(DoubleSupplier x, DoubleSupplier y, DoubleSupplier omega) {
         return this.driveFieldRelative(() -> {
             Translation2d translation = new Translation2d(x.getAsDouble(), y.getAsDouble());
-            if(!Alliance.get()) translation = translation.times(-1);
+            if (!Alliance.get())
+                translation = translation.times(-1);
             return new ChassisSpeeds(translation.getX(), translation.getY(), omega.getAsDouble());
         });
     }
@@ -126,8 +134,14 @@ public class DriveSubsystem extends SubsystemBase {
         return config;
     }
 
-    public ChassisSpeeds getRobotRelativeSpeeds() { return inputs.currentChassisSpeeds; }
-    public ChassisSpeeds getFieldRelativeSpeeds() { return ChassisSpeeds.fromRobotRelativeSpeeds(inputs.currentChassisSpeeds, inputs.swervePoseMeters.getRotation()); }
+    public ChassisSpeeds getRobotRelativeSpeeds() {
+        return inputs.currentChassisSpeeds;
+    }
+
+    public ChassisSpeeds getFieldRelativeSpeeds() {
+        return ChassisSpeeds.fromRobotRelativeSpeeds(inputs.currentChassisSpeeds,
+                inputs.swervePoseMeters.getRotation());
+    }
 
     private ChassisSpeeds applyAccelLimits() {
         double dt = Timer.getFPGATimestamp() - prevTimestamp;
@@ -137,9 +151,9 @@ public class DriveSubsystem extends SubsystemBase {
 
         Logger.recordOutput("Drive/wantedAccel", wantedAccel);
         // tilt limits
-        wantedAccel.vxMetersPerSecond = MathUtil.clamp(wantedAccel.vxMetersPerSecond, -FORWARD_ACCEL_MAX, FORWARD_ACCEL_MAX);
+        wantedAccel.vxMetersPerSecond = MathUtil.clamp(wantedAccel.vxMetersPerSecond, -FORWARD_ACCEL_MAX,
+                FORWARD_ACCEL_MAX);
         wantedAccel.vyMetersPerSecond = MathUtil.clamp(wantedAccel.vyMetersPerSecond, -SIDE_ACCEL_MAX, SIDE_ACCEL_MAX);
-
 
         prevTimestamp = Timer.getFPGATimestamp();
 
@@ -148,7 +162,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     public ChassisSpeeds getTeleopSpeeds(double x, double y, double omega) {
         Translation2d translation = new Translation2d(x, y);
-        if(!Alliance.get()) translation = translation.times(-1);
+        if (!Alliance.get())
+            translation = translation.times(-1);
         return new ChassisSpeeds(translation.getX(), translation.getY(), omega);
     }
 
@@ -160,74 +175,121 @@ public class DriveSubsystem extends SubsystemBase {
         return ready;
     }
 
+//    public Command followPathBuiltinCommand(String pathName) {
+//        try {
+//            PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+//
+//            return new FollowPathCommand(
+//                    path,
+//                    RobotState.getInstance().getVisionPose(), // Robot pose supplier
+//                    this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+//                    this::drive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds, AND
+//                                 // feedforwards
+//                    new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller
+//                                                    // for holonomic drive trains
+//                            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+//                            new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+//                    ),
+//                    Constants.robotConfig, // The robot configuration
+//                    () -> {
+//                        // Boolean supplier that controls when the path will be mirrored for the red
+//                        // alliance
+//                        // This will flip the path being followed to the red side of the field.
+//                        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+//
+//                        var alliance = DriverStation.getAlliance();
+//                        if (alliance.isPresent()) {
+//                            return alliance.get() == DriverStation.Alliance.Red;
+//                        }
+//                        return false;
+//                    },
+//                    this // Reference to this subsystem to set requirements
+//            );
+//        } catch (Exception e) {
+//            DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+//            return Commands.none();
+//        }
+//    }
+
     // characterization
 
     private SwerveSysidVoltageRequest driveVoltageRequest = new SwerveSysidVoltageRequest(true);
 
-    private SysIdRoutine m_driveSysIdRoutine =
-            new SysIdRoutine(
-                    new SysIdRoutine.Config(
-                            null,
-                            Volts.of(7),
-                            null,
-                            (state) -> {
-                                SignalLogger.start();
-                                SignalLogger.writeString("drive-state", state.toString());
-                            }
-                    ),
-                    new SysIdRoutine.Mechanism(
-                            (Voltage volts) -> this.io.setControl(driveVoltageRequest.withVoltage(volts.in(Volts))),
-                            null,
-                            this));
+    private SysIdRoutine m_driveSysIdRoutine = new SysIdRoutine(
+            new SysIdRoutine.Config(
+                    null,
+                    Volts.of(7),
+                    null,
+                    (state) -> {
+                        SignalLogger.start();
+                        SignalLogger.writeString("drive-state", state.toString());
+                    }),
+            new SysIdRoutine.Mechanism(
+                    (Voltage volts) -> this.io.setControl(driveVoltageRequest.withVoltage(volts.in(Volts))),
+                    null,
+                    this));
 
     private SwerveSysidVoltageRequest steerVoltageRequest = new SwerveSysidVoltageRequest(false);
 
-    private SysIdRoutine m_steerSysIdRoutine =
-            new SysIdRoutine(
-                    new SysIdRoutine.Config(
-                            null,
-                            Volts.of(7),
-                            null,
-                            (state) -> {
-                                SignalLogger.start();
-                                SignalLogger.writeString("steer-state", state.toString());
-                            }
-                    ),
-                    new SysIdRoutine.Mechanism(
-                            (Voltage volts) -> this.io.setControl(steerVoltageRequest.withVoltage(volts.in(Volts))),
-                            null,
-                            this));
+    private SysIdRoutine m_steerSysIdRoutine = new SysIdRoutine(
+            new SysIdRoutine.Config(
+                    null,
+                    Volts.of(7),
+                    null,
+                    (state) -> {
+                        SignalLogger.start();
+                        SignalLogger.writeString("steer-state", state.toString());
+                    }),
+            new SysIdRoutine.Mechanism(
+                    (Voltage volts) -> this.io.setControl(steerVoltageRequest.withVoltage(volts.in(Volts))),
+                    null,
+                    this));
 
-    private SysIdRoutine m_slipSysIdRoutine =
-            new SysIdRoutine(
-                    new SysIdRoutine.Config(Volts.of(0.25).per(Seconds.of(1).unit()), null, null),
-                    new SysIdRoutine.Mechanism(
-                            (Voltage volts) -> this.io.setControl(driveVoltageRequest.withVoltage(volts.in(Volts))),
-                            null,
-                            this));
+    private SysIdRoutine m_slipSysIdRoutine = new SysIdRoutine(
+            new SysIdRoutine.Config(Volts.of(0.25).per(Seconds.of(1).unit()), null, null),
+            new SysIdRoutine.Mechanism(
+                    (Voltage volts) -> this.io.setControl(driveVoltageRequest.withVoltage(volts.in(Volts))),
+                    null,
+                    this));
 
     public Command runDriveQuasiTest(SysIdRoutine.Direction direction) {
         return m_driveSysIdRoutine.quasistatic(direction)
-                .beforeStarting(() -> {sysIdActive = true;})
-                .finallyDo(() -> {sysIdActive = false;});
+                .beforeStarting(() -> {
+                    sysIdActive = true;
+                })
+                .finallyDo(() -> {
+                    sysIdActive = false;
+                });
     }
 
     public Command runDriveDynamicTest(SysIdRoutine.Direction direction) {
         return m_driveSysIdRoutine.dynamic(direction)
-                .beforeStarting(() -> {sysIdActive = true;})
-                .finallyDo(() -> {sysIdActive = false;});
+                .beforeStarting(() -> {
+                    sysIdActive = true;
+                })
+                .finallyDo(() -> {
+                    sysIdActive = false;
+                });
     }
 
     public Command runSteerQuasiTest(SysIdRoutine.Direction direction) {
         return m_steerSysIdRoutine.quasistatic(direction)
-                .beforeStarting(() -> {sysIdActive = true;})
-                .finallyDo(() -> {sysIdActive = false;});
+                .beforeStarting(() -> {
+                    sysIdActive = true;
+                })
+                .finallyDo(() -> {
+                    sysIdActive = false;
+                });
     }
 
     public Command runSteerDynamicTest(SysIdRoutine.Direction direction) {
         return m_steerSysIdRoutine.dynamic(direction)
-                .beforeStarting(() -> {sysIdActive = true;})
-                .andThen(() -> {sysIdActive = false;});
+                .beforeStarting(() -> {
+                    sysIdActive = true;
+                })
+                .andThen(() -> {
+                    sysIdActive = false;
+                });
     }
 
     public Command runDriveSlipTest() {

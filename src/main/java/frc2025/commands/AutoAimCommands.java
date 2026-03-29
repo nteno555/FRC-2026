@@ -1,6 +1,7 @@
 package frc2025.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,13 +18,16 @@ import java.util.function.Supplier;
 
 public class AutoAimCommands {
     private static double modAngle(double angle) {
-        angle = angle % (2*Math.PI);
-        if(angle > Math.PI) return angle - 2*Math.PI;
-        if(angle < -Math.PI) return angle + 2*Math.PI;
+        angle = angle % (2 * Math.PI);
+        if (angle > Math.PI)
+            return angle - 2 * Math.PI;
+        if (angle < -Math.PI)
+            return angle + 2 * Math.PI;
         return angle;
     }
 
-    public static Command driveAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier, Supplier<ChassisSpeeds> unlockedSpeeds) {
+    public static Command driveAutoAim(RobotContainer robotContainer, Supplier<Pose2d> targetPoseSupplier,
+            Supplier<ChassisSpeeds> unlockedSpeeds) {
         return robotContainer.getDrive().driveFieldRelative(
                 () -> {
                     PIDController angleController = new PIDController(3, 0.0, 0.0);
@@ -33,7 +37,8 @@ public class AutoAimCommands {
                     Pose2d targetPose = targetPoseSupplier.get();
 
                     double angleToTarget = RobotState.getInstance().getAngleToVirtualTarget();
-                    double angularVelocity = angleController.calculate(modAngle(shooterPose.getRotation().getRadians()), modAngle(angleToTarget));
+                    double angularVelocity = angleController.calculate(modAngle(shooterPose.getRotation().getRadians()),
+                            modAngle(angleToTarget));
 
                     Logger.recordOutput("Drive/hubTargetPose", targetPose);
                     Logger.recordOutput("Drive/robotRotation", modAngle(shooterPose.getRotation().getRadians()));
@@ -42,17 +47,16 @@ public class AutoAimCommands {
                     return new ChassisSpeeds(
                             unlockedSpeeds.get().vxMetersPerSecond,
                             unlockedSpeeds.get().vyMetersPerSecond,
-                            angularVelocity
-                    );
-                }
-        );
+                            angularVelocity);
+                });
     }
 
     // For Auto
-   public static Command autoIndex(RobotContainer robotContainer) {
+    public static Command autoIndex(RobotContainer robotContainer) {
+        Debouncer debouncer = new Debouncer(SubsystemConstants.autoIndexDebounceTime);
         BooleanSupplier readySupplier = () -> {
             boolean good = robotContainer.getShooter().getShotReady() && robotContainer.getHood().getShotReady();
-            if(!SubsystemConstants.hasTurret) {
+            if (!SubsystemConstants.hasTurret) {
                 good = good && robotContainer.getDrive().getShotReady();
             } else {
                 good = good && robotContainer.getTurret().getShotReady();
@@ -64,6 +68,8 @@ public class AutoAimCommands {
             boolean inRedZone = pose.getX() > FieldConstants.inRedZoneX && Alliance.get();
             good = good && (inBlueZone || inRedZone);
 
+            // boolean debouncedGood = debouncer.calculate(good);
+
             Logger.recordOutput("Indexer/autoIndex/shooterReady", robotContainer.getShooter().getShotReady());
             Logger.recordOutput("Indexer/autoIndex/turretReady", robotContainer.getTurret().getShotReady());
             Logger.recordOutput("Indexer/autoIndex/hoodReady", robotContainer.getHood().getShotReady());
@@ -74,34 +80,37 @@ public class AutoAimCommands {
         };
 
         return robotContainer.getIndexer().setIndexerVoltageWithTowerSpeed(() -> {
-            if(readySupplier.getAsBoolean()) {
+            if (readySupplier.getAsBoolean()) {
                 return SubsystemConstants.indexerShootVoltage;
             } else {
                 return SubsystemConstants.indexerReverseVoltage;
             }
         }, () -> {
-            if(readySupplier.getAsBoolean()) {
+            if (readySupplier.getAsBoolean()) {
                 double indexerSpeed = robotContainer.getShooter().getVelocity() * SubsystemConstants.towerFlywheelRatio;
                 return indexerSpeed;
             } else {
                 return 0.0;
             }
         });
-   }
-    public static Command autoIndex(RobotContainer robotContainer, Supplier<Boolean> hasTurret) {
+    }
+
+    public static Command autoIndexTeleop(RobotContainer robotContainer, Supplier<Boolean> hasTurret) {
+        Debouncer debouncer = new Debouncer(SubsystemConstants.autoIndexDebounceTime);
         BooleanSupplier readySupplier = () -> {
             boolean good = robotContainer.getShooter().getShotReady() && robotContainer.getHood().getShotReady();
 
-            if(!hasTurret.get()) {
+            if (!hasTurret.get()) {
                 good = good && robotContainer.getDrive().getShotReady();
             } else {
                 good = good && robotContainer.getTurret().getShotReady();
             }
 
             if (RobotState.getInstance().getShuttling()) {
-//                return good;
-//                return true;
-                return robotContainer.getTurret().getShotReady() && robotContainer.getHood().getShotReady();
+                return good;
+                // return true;
+                // return debouncer.calculate(robotContainer.getTurret().getShotReady() &&
+                // robotContainer.getHood().getShotReady());
             }
 
             Pose2d pose = RobotState.getInstance().getVisionPose();
@@ -125,11 +134,12 @@ public class AutoAimCommands {
 
             if (Alliance.get()) {
                 inZone = xPos > FieldConstants.inRedZoneX;
-                inClimb = (xPos > FieldConstants.redClimbX) && (yPos > FieldConstants.redClimbLowY) && (yPos < FieldConstants.redClimbHighY);
-            }
-            else {
+                inClimb = (xPos > FieldConstants.redClimbX) && (yPos > FieldConstants.redClimbLowY)
+                        && (yPos < FieldConstants.redClimbHighY);
+            } else {
                 inZone = xPos < FieldConstants.inBlueZoneX;
-                inClimb = (xPos < FieldConstants.blueClimbX) && (yPos > FieldConstants.blueClimbLowY) && (yPos < FieldConstants.blueClimbHighY);
+                inClimb = (xPos < FieldConstants.blueClimbX) && (yPos > FieldConstants.blueClimbLowY)
+                        && (yPos < FieldConstants.blueClimbHighY);
             }
 
             good = good && (!inClimb);
@@ -137,50 +147,54 @@ public class AutoAimCommands {
             if (inZone) {
                 good = good && (dist < ShooterTreeMap.getInstance().getMaxDistance());
             }
-//            double a = RobotState.getInstance().getPigeonAcceleration();
+            // double a = RobotState.getInstance().getPigeonAcceleration();
 
             // Speed Checks
             if (dist < ShooterTreeMap.getInstance().getMinDistance()) {
-                good = good && (xySpeed < 0.1) && (omegaSpeed < Math.PI/6.0);
-            }
-            else if (dist < 3.0) {
+                good = good && (xySpeed < 0.1) && (omegaSpeed < Math.PI / 6.0);
+            } else if (dist < 3.0) {
                 good = good && (xySpeed < SubsystemConstants.autoAimMaxSpeed)
                         && (omegaSpeed < SubsystemConstants.autoAimMaxAngularVelocity);
-            }
-            else {
+            } else {
                 good = good && (xySpeed < SubsystemConstants.autoAimMaxSpeedStrict)
                         && (omegaSpeed < SubsystemConstants.autoAimMaxAngularVelocityStrict);
 
             }
 
-            Logger.recordOutput("Indexer/autoIndex/notNearTrenchBump", !((nearBlueTrench || nearRedTrench) && onBumpTrench));
+            // boolean debouncedGood = debouncer.calculate(good);
+
+            Logger.recordOutput("Indexer/autoIndex/notNearTrenchBump",
+                    !((nearBlueTrench || nearRedTrench) && onBumpTrench));
             Logger.recordOutput("Indexer/autoIndex/inZone", inZone);
             Logger.recordOutput("Indexer/autoIndex/notInClimb", !inClimb);
             Logger.recordOutput("Indexer/autoIndex/hoodReady", robotContainer.getHood().getShotReady());
-//            Logger.recordOutput("Indexer/autoIndex/accelReady", (a < SubsystemConstants.autoAimMaxAccel));
+            // Logger.recordOutput("Indexer/autoIndex/accelReady", (a <
+            // SubsystemConstants.autoAimMaxAccel));
             Logger.recordOutput("Indexer/autoIndex/shooterReady", robotContainer.getShooter().getShotReady());
             Logger.recordOutput("Indexer/autoIndex/turretReady", robotContainer.getTurret().getShotReady());
-            Logger.recordOutput("Indexer/autoIndex/speedReady", (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed));
+            Logger.recordOutput("Indexer/autoIndex/speedReady",
+                    (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed));
             Logger.recordOutput("Indexer/autoIndex/speed", RobotState.getInstance().getSpeed());
-//            Logger.recordOutput("Indexer/autoIndex/accel", a);
+            // Logger.recordOutput("Indexer/autoIndex/accel", a);
+            // Logger.recordOutput("Indexer/autoIndexReady", debouncedGood);
             Logger.recordOutput("Indexer/autoIndexReady", good);
 
             return good;
         };
 
         return robotContainer.getIndexer().setIndexerVoltageWithTowerSpeed(() -> {
-            if(readySupplier.getAsBoolean()) {
+            if (readySupplier.getAsBoolean()) {
                 return SubsystemConstants.indexerShootVoltage;
             } else {
                 return 0.0;
             }
         }, () -> {
-            if(readySupplier.getAsBoolean()) {
+            if (readySupplier.getAsBoolean()) {
                 double indexerSpeed = robotContainer.getShooter().getVelocity() * SubsystemConstants.towerFlywheelRatio;
                 return indexerSpeed;
             } else {
                 return 0.0;
             }
         });
-   }
+    }
 }

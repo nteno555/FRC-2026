@@ -48,6 +48,14 @@ public class RobotState {
     private double virtualTargetAngularVelocity = 0.0;
     private LinearFilter virtualTargetVelocityFilter = LinearFilter.singlePoleIIR(0.05, 0.02);
 
+    private double prevWantedShooterRPS = 0.0;
+    private double wantedShooterAcceleration = 0.0;
+    private LinearFilter shooterAccelerationFilter = LinearFilter.singlePoleIIR(0.05, 0.02);
+
+    private double prevWantedHoodRotation = 0.0;
+    private double wantedHoodVelocity = 0.0;
+    private LinearFilter hoodVelocityFilter = LinearFilter.singlePoleIIR(0.05, 0.02);
+
     private double turretAngle;
     private double turretVelocity;
     private double prevTurretTimestamp;
@@ -173,17 +181,12 @@ public class RobotState {
 
         double vx = v.getX();
         double vy = v.getY();
-        double vOmega = chassisSpeeds.omegaRadiansPerSecond;
-//        Translation2d shooterFieldRelative = SubsystemConstants.robotToShooter.getTranslation().rotateBy(delayedPose.getRotation());
-//        vx += vOmega * shooterFieldRelative.getY();
-//        vy += -vOmega * shooterFieldRelative.getX();
 
         for (int i = 0; i < 5; i++) {
             double dx = virtualPose.getX() - delayedPose.getX();
             double dy = virtualPose.getY() - delayedPose.getY();
             double distance = Math.hypot(dx, dy);
 
-//            double flightTime = ShooterTreeMap.getInstance().tofTreeMap.getInterpolated(distance);
             double flightTime = ShooterTreeMap.getInstance().getRealTof(distance);
 
             virtualPose = new Pose2d(
@@ -195,29 +198,58 @@ public class RobotState {
         shootingWhileMovingVirtualPose = virtualPose;
 
         Pose2d shooterPose = delayedPose.transformBy(SubsystemConstants.robotToShooter);
+        double distance = virtualPose.getTranslation().getDistance(shooterPose.getTranslation());
+
         angleToVirtualTarget = Math.atan2(
                 virtualPose.getY() - shooterPose.getY(),
                 virtualPose.getX() - shooterPose.getX()
         );
 
+        double wantedShooterRPS;
+        double wantedHoodRotation;
+        if (getShuttling()) {
+            wantedShooterRPS = ShooterTreeMap.getInstance().shuttlingRPSTreeMap.getInterpolated(distance);
+            wantedHoodRotation = SubsystemConstants.hoodMaxAngleRotations;
+        } else {
+            wantedShooterRPS = ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(distance);
+            wantedHoodRotation = ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(distance);
+        }
+
         double currentTimestamp = Timer.getFPGATimestamp();
         if (prevVirtualTargetTimestamp != -1.0) {
             double dt = currentTimestamp - prevVirtualTargetTimestamp;
             if (dt > 0.0) {
+                // Turret Angular Velocity
                 double deltaAngle = MathUtil.angleModulus(angleToVirtualTarget - prevAngleToVirtualTarget);
-                double unfilteredVelocity = deltaAngle / dt;
-                virtualTargetAngularVelocity = virtualTargetVelocityFilter.calculate(unfilteredVelocity);
+                double unfilteredTurretVelocity = deltaAngle / dt;
+                virtualTargetAngularVelocity = virtualTargetVelocityFilter.calculate(unfilteredTurretVelocity);
+
+                // Shooter Acceleration
+                double deltaRPS = wantedShooterRPS - prevWantedShooterRPS;
+                double unfilteredShooterAccel = deltaRPS / dt;
+                wantedShooterAcceleration = shooterAccelerationFilter.calculate(unfilteredShooterAccel);
+
+                // Hood Velocity
+                double deltaHood = wantedHoodRotation - prevWantedHoodRotation;
+                double unfilteredHoodVel = deltaHood / dt;
+                wantedHoodVelocity = hoodVelocityFilter.calculate(unfilteredHoodVel);
             }
         } else {
             virtualTargetVelocityFilter.calculate(0.0);
+            shooterAccelerationFilter.calculate(0.0);
+            hoodVelocityFilter.calculate(0.0);
         }
         prevVirtualTargetTimestamp = currentTimestamp;
         prevAngleToVirtualTarget = angleToVirtualTarget;
+        prevWantedShooterRPS = wantedShooterRPS;
+        prevWantedHoodRotation = wantedHoodRotation;
 
         Logger.recordOutput("Drive/speed", Math.hypot(vx, vy));
         Logger.recordOutput("Vision/shootingWhileMovingVirtualPose", shootingWhileMovingVirtualPose);
         Logger.recordOutput("Vision/angleToVirtualTarget", angleToVirtualTarget);
         Logger.recordOutput("Vision/virtualTargetAngularVelocity", virtualTargetAngularVelocity);
+        Logger.recordOutput("Vision/wantedShooterAcceleration", wantedShooterAcceleration);
+        Logger.recordOutput("Vision/wantedHoodVelocity", wantedHoodVelocity);
     }
 
     public double getAngleToRealHub() {
@@ -238,6 +270,14 @@ public class RobotState {
 
     public double getVirtualTargetAngularVelocity() {
         return virtualTargetAngularVelocity;
+    }
+
+    public double getWantedShooterAcceleration() {
+        return wantedShooterAcceleration;
+    }
+
+    public double getWantedHoodVelocity() {
+        return wantedHoodVelocity;
     }
 
     public void setTurretAngle(double angleRadians) {
