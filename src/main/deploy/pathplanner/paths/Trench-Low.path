@@ -3,41 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.572,
-        "y": 0.625
+        "x": 6.0,
+        "y": 0.741
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.812050785771124,
-        "y": 0.5496588259096507
+        "x": 5.025656563087746,
+        "y": 0.7126251367639612
       },
       "isLocked": false,
-      "linkedName": "low trench return"
+      "linkedName": "trench low mid"
     },
     {
       "anchor": {
-        "x": 7.990253092447917,
-        "y": 3.1785641920301644
+        "x": 3.6379164027461304,
+        "y": 0.6249838177716287
       },
       "prevControl": {
-        "x": 7.937935869004992,
-        "y": 0.6925032066062644
+        "x": 4.635323103162977,
+        "y": 0.6950445895724828
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Low Neutral"
+      "linkedName": "low flipped"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.2749283640008223,
-      "rotationDegrees": 90.0
-    },
-    {
-      "waypointRelativePos": 0.7535040604440788,
-      "rotationDegrees": 0.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -51,12 +42,12 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "reversed": false,
-  "folder": "low start",
+  "folder": "trench returns",
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 90.0
   },
   "useDefaultConstraints": true

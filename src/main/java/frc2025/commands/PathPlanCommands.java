@@ -9,7 +9,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc2025.RobotContainer;
 import frc2025.RobotState;
+import frc2025.config.SubsystemConstants;
+import frc2025.util.Alliance;
+import org.littletonrobotics.junction.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -48,7 +52,43 @@ public class PathPlanCommands {
         return path;
     }
 
-    public static Command returnUnderTrenchAuto(RobotContainer robotContainer, Supplier<Pose2d> endPose, Supplier<Double> endVelocity, Supplier<Pose2d> preTrenchPose) {
+    private static PathPlannerPath straightPathFromPoses(List<Pose2d> poses, double endVelocity) {
+        int len = poses.toArray().length;
+
+        List<Pose2d> posesStraight = new ArrayList<>();
+        Pose2d start = poses.get(0);
+        Pose2d end = poses.get(1);
+        // the rotations do not work
+        posesStraight.add(new Pose2d(
+                start.getTranslation(),
+                Rotation2d.fromRadians(Math.atan2(end.getY() - start.getY(), end.getX() - start.getX())) // direction of velocity
+        ));
+        posesStraight.add(new Pose2d(
+                end.getTranslation(),
+                Rotation2d.fromRadians(Math.atan2(end.getY() - start.getY(), end.getX() - start.getX())) // direction of velocity
+        ));
+
+        if (!SubsystemConstants.hasTurret) {
+            posesStraight.add(new Pose2d(
+                    poses.get(2).getTranslation(),
+                    Rotation2d.fromRadians(Math.atan2(end.getY() - start.getY(), end.getX() - start.getX())) // direction of velocity
+            ));
+        }
+
+        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(posesStraight);
+
+        PathConstraints constraints = new PathConstraints(3.5, 3.5, 2*Math.PI, 2*Math.PI);
+        PathPlannerPath path = new PathPlannerPath(
+                waypoints,
+                constraints,
+                null,
+                new GoalEndState(endVelocity, poses.get(len-1).getRotation())
+        );
+
+        return path;
+    }
+
+    public static Command returnUnderTrenchAuto(RobotContainer robotContainer, Supplier<Pose2d> preTrenchPose, Supplier<Double> endVelocity, Supplier<Boolean> isLow) {
 //        Supplier<PathPlannerPath> preTrenchPathSupplier = () -> {
 //            var robotPose = RobotState.getInstance().getVisionPose();
 //            var xPos = robotPose.getX();
@@ -68,26 +108,14 @@ public class PathPlanCommands {
 //            return straightPathFromPoses(robotPose, preTrenchEndPose, endVelocity.get());
 //        };
 
+
+        Logger.recordOutput("Drive/preTrenchPose", preTrenchPose.get());
+
         Supplier<PathPlannerPath> preTrenchPathSupplier = () -> {
             var robotPose = RobotState.getInstance().getVisionPose();
-            var xPos = robotPose.getX();
-//            if (xPos < FieldConstants.blueTrenchHighMid.getX() + 0.2) {
-//                xPos = FieldConstants.blueTrenchHighMid.getX() + 0.2;
-//            }
-//            if (xPos > FieldConstants.redTrenchHighMid.getX() - 0.2) {
-//                xPos = FieldConstants.redTrenchHighMid.getX() - 0.2;
-//            }
-            var preTrenchEndPose = new Pose2d(xPos, endPose.get().getY(), endPose.get().getRotation());
             return straightPathFromPoses(robotPose, preTrenchPose.get(), 0.0);
         };
 
-        Supplier<PathPlannerPath> trenchPathSupplier = () -> {
-            var robotPose = RobotState.getInstance().getVisionPose();
-            var preTrenchEndPose = endPose.get();
-            return straightPathFromPoses(robotPose, preTrenchEndPose, endVelocity.get());
-        };
-
-        return new FollowPathCommand(robotContainer.getDrive(), preTrenchPathSupplier, () -> false, false)
-                .andThen(new FollowPathCommand(robotContainer.getDrive(), trenchPathSupplier, () -> false, true));
+        return new FollowPathCommand(robotContainer.getDrive(), preTrenchPathSupplier, () -> false, false);
     }
 }

@@ -1,12 +1,10 @@
 package frc2025;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc2025.commands.AutoAimCommands;
@@ -20,6 +18,7 @@ import frc2025.util.Alliance;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -193,17 +192,6 @@ public class Autos {
                 pathCommands = pathCommands.andThen(
                         Commands.waitSeconds(1.0));
             } else if (paths.get(i).equals(RETURN_UNDER_TRENCH_HIGH)) {
-                Supplier<Pose2d> endPoseSupplier = () -> {
-                    Pose2d pose = FieldConstants.blueTrenchHighReturn;
-                    var alliance = DriverStation.Alliance.Red;
-                    if (DriverStation.getAlliance().isPresent())
-                        alliance = DriverStation.getAlliance().get();
-                    if (alliance == DriverStation.Alliance.Red) {
-                        pose = mirrorPose(pose);
-                    }
-                    return pose;
-                };
-
                 Supplier<Pose2d> preTrench = () -> {
                     Pose2d pose = FieldConstants.redTrenchHighMid;
                     if (!Alliance.get()) {
@@ -212,21 +200,17 @@ public class Autos {
                     return pose;
                 };
 
-                pathCommands = pathCommands.andThen(intakeDrive(
-                        PathPlanCommands.returnUnderTrenchAuto(robotContainer, endPoseSupplier, () -> 0.0, preTrench)));
-            } else if (paths.get(i).equals(RETURN_UNDER_TRENCH_LOW)
-                    || paths.get(i).equals(RETURN_UNDER_TRENCH_STATION)) {
-                Supplier<Pose2d> endPoseSupplier = () -> {
-                    Pose2d pose = FieldConstants.blueTrenchLowReturn;
-                    var alliance = DriverStation.Alliance.Red;
-                    if (DriverStation.getAlliance().isPresent())
-                        alliance = DriverStation.getAlliance().get();
-                    if (alliance == DriverStation.Alliance.Red) {
-                        pose = mirrorPose(pose);
-                    }
-                    return pose;
+                Supplier<String> returnPathSupplier = () -> {
+                    String path = "Trench-High";
+                    if (!SubsystemConstants.hasTurret) path = "Trench-HighScore";
+                    return path;
                 };
 
+                pathCommands = pathCommands.andThen(intakeDrive(
+                        PathPlanCommands.returnUnderTrenchAuto(robotContainer, preTrench, () -> 0.0, () -> true)))
+                        .andThen(intakePath(returnPathSupplier.get()));
+            } else if (paths.get(i).equals(RETURN_UNDER_TRENCH_LOW)
+                    || paths.get(i).equals(RETURN_UNDER_TRENCH_STATION)) {
                 Supplier<Pose2d> preTrench = () -> {
                     Pose2d pose = FieldConstants.redTrenchLowMid;
                     if (!Alliance.get()) {
@@ -236,13 +220,21 @@ public class Autos {
                 };
 
                 boolean station = paths.get(i).equals(RETURN_UNDER_TRENCH_STATION);
+                Supplier<String> returnPathSupplier = () -> {
+                    String path = "Trench-Low";
+                    if (!SubsystemConstants.hasTurret) path = "Trench-LowScore";
+                    if (station) path = "Trench-Station";
+                    return path;
+                };
+
                 Supplier<Double> endVelocity = () -> {
                     if (station)
                         return 2.5;
                     return 0.0;
                 };
                 pathCommands = pathCommands.andThen(intakeDrive(PathPlanCommands.returnUnderTrenchAuto(robotContainer,
-                        endPoseSupplier, endVelocity, preTrench)));
+                        preTrench, endVelocity, () -> true)))
+                        .andThen(intakePath(returnPathSupplier.get()));
             } else {
                 pathCommands = pathCommands.andThen(intakePath(paths.get(i)));
             }
@@ -271,12 +263,8 @@ public class Autos {
     }
 
     public Command LowNeutralStation() {
-        if (SubsystemConstants.hasTurret) {
-            return buildAuto(List.of("Low-NeutralMid (under trench)", RETURN_UNDER_TRENCH_STATION, "Low-Station"),
-                    false);
-        }
-        return buildAuto(List.of("Low-NeutralMid (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT,
-                "LowScore-Station", WAIT_NO_SHOOT, "Station-Score"), false);
+        return buildAuto(List.of("Low-NeutralMid (under trench)", RETURN_UNDER_TRENCH_STATION),
+                false);
     }
 
     public Command LowNeutralLoopAngled() {
@@ -285,27 +273,29 @@ public class Autos {
     }
 
     public Command LowDoubleNeutralStation() {
+        if (!SubsystemConstants.hasTurret) {
+            return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "LowScore-NeutralMid",
+                    RETURN_UNDER_TRENCH_STATION), false);
+        }
         return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid",
-                RETURN_UNDER_TRENCH_STATION, "Low-Station"), false);
+                RETURN_UNDER_TRENCH_STATION), false);
     }
 
     public Command LowDoubleNeutral() {
+        if (!SubsystemConstants.hasTurret) {
+            return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "LowScore-NeutralMid",
+                    RETURN_UNDER_TRENCH_LOW), false);
+        }
         return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid",
-                RETURN_UNDER_TRENCH_LOW), false);
-    }
-
-    public Command LowNeutralClose() {
-        return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-Close",
                 RETURN_UNDER_TRENCH_LOW), false);
     }
 
     public Command LowNeutralLoop() {
+        if (!SubsystemConstants.hasTurret) {
+            return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT_EXTENDED, "LowScore-Loop",
+                    RETURN_UNDER_TRENCH_LOW), false);
+        }
         return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT_EXTENDED, "Low-Loop",
-                RETURN_UNDER_TRENCH_LOW), false);
-    }
-
-    public Command LowDoubleLoop() {
-        return buildAuto(List.of("Low-Loop (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-Loop",
                 RETURN_UNDER_TRENCH_LOW), false);
     }
 
@@ -314,22 +304,20 @@ public class Autos {
     }
 
     public Command HighNeutralLoop() {
+        if (!SubsystemConstants.hasTurret) {
+            return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "HighScore-Loop",
+                    RETURN_UNDER_TRENCH_HIGH), false);
+        }
         return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "High-Loop",
                 RETURN_UNDER_TRENCH_HIGH), false);
     }
 
     public Command HighDoubleNeutral() {
+        if (!SubsystemConstants.hasTurret) {
+            return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "HighScore-NeutralMid",
+                    RETURN_UNDER_TRENCH_HIGH), false);
+        }
         return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "High-NeutralMid",
-                RETURN_UNDER_TRENCH_HIGH), false);
-    }
-
-    public Command HighNeutralClose() {
-        return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "High-Close",
-                RETURN_UNDER_TRENCH_HIGH), false);
-    }
-
-    public Command HighDoubleLoop() {
-        return buildAuto(List.of("High-Loop (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "High-Loop",
                 RETURN_UNDER_TRENCH_HIGH), false);
     }
 

@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.683464393898293,
-        "y": 0.6326930553294994
+        "x": 7.888503355354121,
+        "y": 0.6249838177716287
       },
       "isLocked": false,
       "linkedName": "low flipped"
@@ -20,15 +20,15 @@
         "y": 3.4836244631166813
       },
       "prevControl": {
-        "x": 7.518165417834372,
-        "y": 0.6608876224296543
+        "x": 7.514891458016855,
+        "y": 0.34501693279142254
       },
       "nextControl": {
-        "x": 7.514477291531033,
-        "y": 3.840709785743997
+        "x": 7.514891458016855,
+        "y": 3.8407100259300386
       },
       "isLocked": false,
-      "linkedName": "mid loop low"
+      "linkedName": "low loop 2"
     },
     {
       "anchor": {
@@ -44,7 +44,7 @@
         "y": 2.819109139679589
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "low loop 3"
     },
     {
       "anchor": {

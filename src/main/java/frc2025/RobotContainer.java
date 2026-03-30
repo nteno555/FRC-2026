@@ -144,18 +144,13 @@ public class RobotContainer {
                 autos = new Autos(this);
                 autoChooser.setDefaultOption("No Auto", "No Auto");
 
-                if (SubsystemConstants.hasTurret) {
-                        autoChooser.addOption(Autos.LOW_NEUTRAL_LOOP_ANGLED, Autos.LOW_NEUTRAL_LOOP_ANGLED);
-                        autoChooser.addOption(Autos.LOW_X2_NEUTRAL_STATION, Autos.LOW_X2_NEUTRAL_STATION);
-                        autoChooser.addOption(Autos.LOW_X2_NEUTRAL, Autos.LOW_X2_NEUTRAL);
-                        autoChooser.addOption(Autos.LOW_NEUTRAL_LOOP, Autos.LOW_NEUTRAL_LOOP);
-                        autoChooser.addOption(Autos.MID_STATION_DEPOT, Autos.MID_STATION_DEPOT);
-                        autoChooser.addOption(Autos.HIGH_X2_NEUTRAL, Autos.HIGH_X2_NEUTRAL);
-                        autoChooser.addOption(Autos.HIGH_NEUTRAL_LOOP, Autos.HIGH_NEUTRAL_LOOP);
-                } else {
-                        autoChooser.addOption(Autos.LOW_NEUTRAL_STATION, Autos.LOW_NEUTRAL_STATION);
-                        autoChooser.addOption(Autos.MID_STATION_DEPOT, Autos.MID_STATION_DEPOT);
-                }
+                autoChooser.addOption(Autos.LOW_NEUTRAL_LOOP_ANGLED, Autos.LOW_NEUTRAL_LOOP_ANGLED);
+                autoChooser.addOption(Autos.LOW_X2_NEUTRAL_STATION, Autos.LOW_X2_NEUTRAL_STATION);
+                autoChooser.addOption(Autos.LOW_X2_NEUTRAL, Autos.LOW_X2_NEUTRAL);
+                autoChooser.addOption(Autos.LOW_NEUTRAL_LOOP, Autos.LOW_NEUTRAL_LOOP);
+                autoChooser.addOption(Autos.MID_STATION_DEPOT, Autos.MID_STATION_DEPOT);
+                autoChooser.addOption(Autos.HIGH_X2_NEUTRAL, Autos.HIGH_X2_NEUTRAL);
+                autoChooser.addOption(Autos.HIGH_NEUTRAL_LOOP, Autos.HIGH_NEUTRAL_LOOP);
 
                 SmartDashboard.putData("Auto Chooser", autoChooser);
         }

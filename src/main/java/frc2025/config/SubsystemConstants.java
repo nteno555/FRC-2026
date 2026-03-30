@@ -154,8 +154,8 @@ public class SubsystemConstants {
 
     public static Transform2d robotToShooter = new Transform2d(0.0885, -0.1372, Rotation2d.kZero); // should be x = forward, y = side
     public static Transform2d shooterToCamera = new Transform2d(0.1671, 0.0, Rotation2d.kZero);
-    public static double robotToTurretCameraForward = 0.0;
-    public static double robotToTurretCameraRight = 0.0;
+    public static double robotToTurretCameraForward = 0.2556;
+    public static double robotToTurretCameraRight = -0.1372;
     public static double robotToTurretCameraUp = 0.5062;
     public static double robotToTurretCameraYaw = 0.0;
     public static double robotToTurretCameraPitch = 30.0;
@@ -210,10 +210,4 @@ public class SubsystemConstants {
     public static int turretID = 21;
     public static int turretTb1ID = 5;
     public static int turretTb2ID = 6;
-
-
-    /*
-
-    ```
-     */
 }
