@@ -223,7 +223,7 @@ public class LimelightFiducialCamera {
             } else {
                 Vector<N3> distStdDevs;
                 if (!turretMounted) {
-                    distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 1.0, Math.pow(meanDistance, 2) / 1.0,
+                    distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0,
                             0.0000001);
                 } else {
                     distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0,
@@ -295,7 +295,7 @@ public class LimelightFiducialCamera {
 
         if (!reject) {
             Vector<N3> distStdDevs;
-            distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 2.0, Math.pow(leastDistance, 2) / 2.0,
+            distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 4.0, Math.pow(leastDistance, 2) / 4.0,
                     999999999);
             RobotState.TimestampedVisionUpdate update = new RobotState.TimestampedVisionUpdate(
                     poseEstimate.timestampSeconds, pose, distStdDevs);

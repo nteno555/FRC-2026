@@ -85,6 +85,7 @@ public class RobotContainer {
         private AimMode aimMode;
         private ManualAimState manualAimState;
         private boolean aiming;
+        private boolean autoWarmupActive;
 
         private final Field2d field = new Field2d();
 
@@ -141,15 +142,17 @@ public class RobotContainer {
         }
 
         public void configureAutoCommands() {
+                autoWarmupActive = false;
+
                 autos = new Autos(this);
                 autoChooser.setDefaultOption("No Auto", "No Auto");
 
-                autoChooser.addOption(Autos.LOW_NEUTRAL_LOOP_ANGLED, Autos.LOW_NEUTRAL_LOOP_ANGLED);
-                autoChooser.addOption(Autos.LOW_X2_NEUTRAL_STATION, Autos.LOW_X2_NEUTRAL_STATION);
-                autoChooser.addOption(Autos.LOW_X2_NEUTRAL, Autos.LOW_X2_NEUTRAL);
+//                autoChooser.addOption(Autos.LOW_NEUTRAL_LOOP_ANGLED, Autos.LOW_NEUTRAL_LOOP_ANGLED);
+//                autoChooser.addOption(Autos.LOW_X2_NEUTRAL_STATION, Autos.LOW_X2_NEUTRAL_STATION);
+//                autoChooser.addOption(Autos.LOW_X2_NEUTRAL, Autos.LOW_X2_NEUTRAL);
                 autoChooser.addOption(Autos.LOW_NEUTRAL_LOOP, Autos.LOW_NEUTRAL_LOOP);
-                autoChooser.addOption(Autos.MID_STATION_DEPOT, Autos.MID_STATION_DEPOT);
-                autoChooser.addOption(Autos.HIGH_X2_NEUTRAL, Autos.HIGH_X2_NEUTRAL);
+//                autoChooser.addOption(Autos.MID_STATION_DEPOT, Autos.MID_STATION_DEPOT);
+//                autoChooser.addOption(Autos.HIGH_X2_NEUTRAL, Autos.HIGH_X2_NEUTRAL);
                 autoChooser.addOption(Autos.HIGH_NEUTRAL_LOOP, Autos.HIGH_NEUTRAL_LOOP);
 
                 SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -677,7 +680,9 @@ public class RobotContainer {
                         SmartDashboard.putString("DriverStation/TimeToSwitch", "HUB ACTIVE");
         }
 
-        public void autoInit() { 
+        public void autoInit() {
+                CommandScheduler.getInstance().cancelAll();
+                autoWarmupActive = false;
                 CommandScheduler.getInstance().schedule(autoCommand);
                 matchTime.reset();
                 matchTime.start();
@@ -717,7 +722,9 @@ public class RobotContainer {
 
         public void teleopInit() {
                 // autoCommand.cancel();
+
                 CommandScheduler.getInstance().cancelAll();
+                autoWarmupActive = false;
                 shooterSubsystem.setSpeed(() -> 0.0);
                 indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0);
                 intakeSubsystem.setDeployVoltage(() -> 0.0);
@@ -746,7 +753,9 @@ public class RobotContainer {
 
                 autoCommand = autos.getCommand(selected);
 
-                autoCommand.schedule();
-                autoCommand.cancel();
+                if(!autoWarmupActive) {
+                        autoCommand.schedule();
+                        autoWarmupActive = true;
+                }
         }
 }
