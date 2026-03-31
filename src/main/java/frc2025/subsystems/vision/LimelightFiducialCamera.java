@@ -48,18 +48,19 @@ public class LimelightFiducialCamera {
     }
 
     public void resetOdometry() {
-        LimelightHelpers.SetIMUMode(name, 1);
-        imuMode = 1;
+        LimelightHelpers.SetIMUMode(name, 0);
+        imuMode = 0;
     }
 
     public void writeGyro() {
         String prefix = "Vision/" + name + "_mt2/";
 
-//         LimelightHelpers.SetIMUMode(name, 0);
-//         imuMode = 0;
+        // LimelightHelpers.SetIMUMode(name, 0);
+        // imuMode = 0;
         LimelightHelpers.SetIMUAssistAlpha(name, 0.1);
         LimelightHelpers.SetIMUMode(name, 4);
-         imuMode = 4;
+
+        // imuMode = 4;
 
         Logger.recordOutput(prefix + "IMU", imuMode);
 

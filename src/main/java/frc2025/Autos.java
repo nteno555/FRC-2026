@@ -86,10 +86,11 @@ public class Autos {
                                         robotContainer.getIntake().setIntakingAuto()
                                                 .alongWith(robotContainer.getIndexer().setIndexerVoltageWithTowerSpeed(
                                                         () -> SubsystemConstants.indexerReverseVoltage, () -> 0.0)
-//                                                         .alongWith(robotContainer.getTurret().setPositionSafe(() -> SubsystemConstants.turretDefaultRadians,
-                                                        //         () -> 0.0, () -> true))))
-//                                .alongWith(robotContainer.getTurret().aimAtHub())))
-                )));
+                                                // .alongWith(robotContainer.getTurret().setPositionSafe(() ->
+                                                // SubsystemConstants.turretDefaultRadians,
+                                                // () -> 0.0, () -> true))))
+                                                // .alongWith(robotContainer.getTurret().aimAtHub())))
+                                                )));
     }
 
     private Command intakePathBuiltin(String pathName) {
@@ -102,9 +103,7 @@ public class Autos {
             return null;
         }
 
-
         var followPath = robotContainer.getDrive().followPathBuiltinCommand(pathName);
-
 
         return intakeDrive(followPath);
 
@@ -201,7 +200,8 @@ public class Autos {
 
                 Supplier<String> returnPathSupplier = () -> {
                     String path = "Trench-High";
-                    if (!SubsystemConstants.hasTurret) path = "Trench-HighScore";
+                    if (!SubsystemConstants.hasTurret)
+                        path = "Trench-HighScore";
                     return path;
                 };
 
@@ -221,8 +221,10 @@ public class Autos {
                 boolean station = paths.get(i).equals(RETURN_UNDER_TRENCH_STATION);
                 Supplier<String> returnPathSupplier = () -> {
                     String path = "Trench-Low";
-                    if (!SubsystemConstants.hasTurret) path = "Trench-LowScore";
-                    if (station) path = "Trench-Station";
+                    if (!SubsystemConstants.hasTurret)
+                        path = "Trench-LowScore";
+                    if (station)
+                        path = "Trench-Station";
                     return path;
                 };
 
@@ -256,7 +258,7 @@ public class Autos {
                                             () -> new ChassisSpeeds(0, 0, 0))
                                     .alongWith(robotContainer.getHood().autoAimUnsafe())
                                     .alongWith(AutoAimCommands.autoIndex(robotContainer)
-                                    .alongWith(robotContainer.getIntake().oscillateIntake()))
+                                            .alongWith(robotContainer.getIntake().oscillateIntake()))
                                     .alongWith(robotContainer.getShooter().autoAim()));
         }
     }
@@ -273,8 +275,10 @@ public class Autos {
 
     public Command LowDoubleNeutralStation() {
         if (!SubsystemConstants.hasTurret) {
-            return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "LowScore-NeutralMid",
-                    RETURN_UNDER_TRENCH_STATION), false);
+            return buildAuto(
+                    List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "LowScore-NeutralMid",
+                            RETURN_UNDER_TRENCH_STATION),
+                    false);
         }
         return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid",
                 RETURN_UNDER_TRENCH_STATION), false);
@@ -282,8 +286,10 @@ public class Autos {
 
     public Command LowDoubleNeutral() {
         if (!SubsystemConstants.hasTurret) {
-            return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "LowScore-NeutralMid",
-                    RETURN_UNDER_TRENCH_LOW), false);
+            return buildAuto(
+                    List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "LowScore-NeutralMid",
+                            RETURN_UNDER_TRENCH_LOW),
+                    false);
         }
         return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid",
                 RETURN_UNDER_TRENCH_LOW), false);
@@ -291,8 +297,10 @@ public class Autos {
 
     public Command LowNeutralLoop() {
         if (!SubsystemConstants.hasTurret) {
-            return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT_EXTENDED, "LowScore-Loop",
-                    RETURN_UNDER_TRENCH_LOW), false);
+            return buildAuto(
+                    List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT_EXTENDED, "LowScore-Loop",
+                            RETURN_UNDER_TRENCH_LOW),
+                    false);
         }
         return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT_EXTENDED, "Low-Loop",
                 RETURN_UNDER_TRENCH_LOW), false);
@@ -304,8 +312,10 @@ public class Autos {
 
     public Command HighNeutralLoop() {
         if (!SubsystemConstants.hasTurret) {
-            return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "HighScore-Loop",
-                    RETURN_UNDER_TRENCH_HIGH), false);
+            return buildAuto(
+                    List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "HighScore-Loop",
+                            RETURN_UNDER_TRENCH_HIGH),
+                    false);
         }
         return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "High-Loop",
                 RETURN_UNDER_TRENCH_HIGH), false);
@@ -313,8 +323,10 @@ public class Autos {
 
     public Command HighDoubleNeutral() {
         if (!SubsystemConstants.hasTurret) {
-            return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "HighScore-NeutralMid",
-                    RETURN_UNDER_TRENCH_HIGH), false);
+            return buildAuto(
+                    List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "HighScore-NeutralMid",
+                            RETURN_UNDER_TRENCH_HIGH),
+                    false);
         }
         return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "High-NeutralMid",
                 RETURN_UNDER_TRENCH_HIGH), false);
