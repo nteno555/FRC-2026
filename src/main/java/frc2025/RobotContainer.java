@@ -620,6 +620,7 @@ public class RobotContainer {
     }
 
     public void autoInit() {
+        CommandScheduler.getInstance().cancelAll();
         autoCommand = autoChooser.getSelected();
         CommandScheduler.getInstance().schedule(autoCommand);
         matchTime.reset();
