@@ -8,7 +8,7 @@ public class SubsystemConstants {
     public static double translationkP = 3.0;
     public static double translationkI = 0.0;
     public static double translationkD = 0.0;
-    public static double rotationkP = 3.0;
+    public static double rotationkP = 1.0;
     public static double rotationkI = 0.0;
     public static double rotationkD = 0.0;
 
@@ -154,15 +154,16 @@ public class SubsystemConstants {
     public static double throughBoreRatio1 = 42.0 / 11.0 * 42.0 / 26.0; // 6.17
     public static double throughBoreRatio2 = 42.0 / 11.0; // 3.82
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
-    public static boolean hasTurret = true;
+    public static double turretDefaultRadians = Math.PI/2;
+    public static boolean hasTurret = false;
     public static boolean useTurretThroughBores = true;
     public static double turretShotReadyThreshold = 0.15; // 5.73 degrees
     public static boolean useTurretVisionCorrection = false;
 
     public static Transform2d robotToShooter = new Transform2d(0.0885, -0.1372, Rotation2d.kZero); // should be x = forward, y = side
     public static Transform2d shooterToCamera = new Transform2d(0.1671, 0.0, Rotation2d.kZero);
-    public static double robotToTurretCameraForward = 0.0;
-    public static double robotToTurretCameraRight = 0.0;
+    public static double robotToTurretCameraForward = 0.2556;
+    public static double robotToTurretCameraRight = -0.1372;
     public static double robotToTurretCameraUp = 0.5062;
     public static double robotToTurretCameraYaw = 0.0;
     public static double robotToTurretCameraPitch = 30.0;
@@ -217,10 +218,4 @@ public class SubsystemConstants {
     public static int turretID = 21;
     public static int turretTb1ID = 5;
     public static int turretTb2ID = 6;
-
-
-    /*
-
-    ```
-     */
 }

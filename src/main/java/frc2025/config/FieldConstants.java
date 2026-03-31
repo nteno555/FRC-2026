@@ -23,17 +23,14 @@ public class FieldConstants {
     public static double lowBumpY = 3.0;
 
     public static Pose2d blueTrenchHighZone = new Pose2d(3.422, 7.435, Rotation2d.kCW_90deg);
-    public static Pose2d blueTrenchHighMid = new Pose2d(5.592, 7.435, Rotation2d.kCW_90deg);
+    public static Pose2d blueTrenchHighMid = new Pose2d(6.0, 7.435, Rotation2d.kCW_90deg);
     public static Pose2d blueTrenchLowZone = new Pose2d(3.422, 0.741, Rotation2d.kCCW_90deg);
-    public static Pose2d blueTrenchLowMid = new Pose2d(5.592, 0.741, Rotation2d.kCCW_90deg);
+    public static Pose2d blueTrenchLowMid = new Pose2d(6.0, 0.741, Rotation2d.kCCW_90deg);
     public static Pose2d redTrenchLowZone = new Pose2d(13.041, 7.435, Rotation2d.kCW_90deg);
     public static Pose2d redTrenchLowMid = new Pose2d(10.3, 7.435, Rotation2d.kCW_90deg);
     public static Pose2d redTrenchHighZone = new Pose2d(13.041, 0.741, Rotation2d.kCCW_90deg);
     public static Pose2d redTrenchHighMid = new Pose2d(10.3, 0.741, Rotation2d.kCCW_90deg);
     public static Pose2d[] trenchPoses = {blueTrenchHighZone, blueTrenchHighMid, blueTrenchLowZone, blueTrenchLowMid, redTrenchHighZone, redTrenchHighMid, redTrenchLowZone, redTrenchLowMid};
-
-    public static Pose2d blueTrenchLowReturn = new Pose2d(3.638, 0.6, Rotation2d.kCCW_90deg);
-    public static Pose2d blueTrenchHighReturn = new Pose2d(3.572, 7.4, Rotation2d.kCW_90deg);
 
     public static double blueClimbHighY = 4.162;
     public static double blueClimbLowY = 3.282;

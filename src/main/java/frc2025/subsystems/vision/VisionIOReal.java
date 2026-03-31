@@ -11,7 +11,7 @@ public class VisionIOReal implements VisionIO {
         this.cameras = List.of(
                 new LimelightFiducialCamera(
                         "limelight-turret",
-                        true,
+                        false,
                         SubsystemConstants.robotToTurretCameraForward,
                         SubsystemConstants.robotToTurretCameraRight,
                         SubsystemConstants.robotToTurretCameraUp,

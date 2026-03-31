@@ -78,7 +78,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public Command setIntakingAuto() {
         return this.run(() -> {
-            io.setDeployPosition(SubsystemConstants.intakeDeployPosition, true);
+            if (inputs.deployConnected) {
+                io.setDeployPosition(SubsystemConstants.intakeDeployPosition, true);
+            }
             io.setVoltage(SubsystemConstants.intakeRollerVoltage);
         });
     }
