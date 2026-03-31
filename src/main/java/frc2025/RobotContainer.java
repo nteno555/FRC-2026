@@ -677,11 +677,7 @@ public class RobotContainer {
                         SmartDashboard.putString("DriverStation/TimeToSwitch", "HUB ACTIVE");
         }
 
-        public void autoInit() {
-                String selected = autoChooser.getSelected();
-                if (selected == null)
-                        selected = "No Auto";
-                autoCommand = autos.getCommand(selected);
+        public void autoInit() { 
                 CommandScheduler.getInstance().schedule(autoCommand);
                 matchTime.reset();
                 matchTime.start();
@@ -747,5 +743,10 @@ public class RobotContainer {
                         }
                         lastAutoName = selected;
                 }
+
+                autoCommand = autos.getCommand(selected);
+
+                autoCommand.schedule();
+                autoCommand.cancel();
         }
 }

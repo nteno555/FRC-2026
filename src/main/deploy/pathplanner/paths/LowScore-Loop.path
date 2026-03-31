@@ -78,6 +78,10 @@
   ],
   "rotationTargets": [
     {
+      "waypointRelativePos": 0.36183054070723686,
+      "rotationDegrees": 90.0
+    },
+    {
       "waypointRelativePos": 1.2163818359375003,
       "rotationDegrees": 90.0
     },
@@ -98,7 +102,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
+    "maxVelocity": 3.0,
     "maxAcceleration": 4.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1080.0,
@@ -106,7 +110,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
+    "velocity": 1.5,
     "rotation": 180.0
   },
   "reversed": false,

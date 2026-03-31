@@ -42,7 +42,7 @@ public class Robot extends LoggedRobot {
 	public void robotInit() {
 		RobotController.setBrownoutVoltage(5.5);
         System.out.println("Yay you deployed");
-		FollowPathCommand.warmupCommand().schedule();
+//		FollowPathCommand.warmupCommand().schedule();
 
         SignalLogger.setPath("/home/lvuser/logs/");
         SignalLogger.start();
@@ -66,6 +66,7 @@ public class Robot extends LoggedRobot {
 
 	@Override
 	public void disabledPeriodic() {
+		CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
 		robotContainer.disabledPeriodic();
 	}
 }

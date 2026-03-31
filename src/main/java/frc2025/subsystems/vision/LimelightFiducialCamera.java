@@ -67,11 +67,11 @@ public class LimelightFiducialCamera {
     public void writeGyro() {
         String prefix = "Vision/" + name + "_mt2/";
 
-        if(imuMode != 4) {
-            LimelightHelpers.SetIMUAssistAlpha(name, 0.01);
-            LimelightHelpers.SetIMUMode(name, 4);
-            imuMode = 4;
-        }
+//        if(imuMode != 4) {
+//            LimelightHelpers.SetIMUAssistAlpha(name, 0.01);
+//            LimelightHelpers.SetIMUMode(name, 4);
+//            imuMode = 4;
+//        }
 
         Logger.recordOutput(prefix + "IMU", imuMode);
 
