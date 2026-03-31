@@ -61,6 +61,7 @@ public class RobotContainer {
         private final SendableChooser<String> autoChooser = new SendableChooser<>();
         private String lastAutoName = "";
         private final Timer matchTime = new Timer();
+        private boolean autoWarmupDone = false;
 
         DriveSubsystem driveSubsystem;
         VisionSubsystem visionSubsystem;
@@ -740,22 +741,31 @@ public class RobotContainer {
                 if (selected == null)
                         selected = "No Auto";
 
-                if (!selected.equals(lastAutoName)) {
-                        String firstPath = autos.getFirstPath(selected);
-                        if (!firstPath.isEmpty()) {
-                                Autos.getStartPose(firstPath).ifPresent(pose -> {
-                                        driveSubsystem.resetOdometry(pose);
-                                        visionSubsystem.resetOdometry();
-                                });
-                        }
-                        lastAutoName = selected;
-                }
+//                if (!selected.equals(lastAutoName)) {
+//                        String firstPath = autos.getFirstPath(selected);
+//                        if (!firstPath.isEmpty()) {
+//                                Autos.getStartPose(firstPath).ifPresent(pose -> {
+//                                        driveSubsystem.resetOdometry(pose);
+//                                        visionSubsystem.resetOdometry();
+//                                });
+//                        }
+//                        lastAutoName = selected;
+//                }
 
                 autoCommand = autos.getCommand(selected);
 
-                if(!autoWarmupActive) {
-                        autoCommand.schedule();
-                        autoWarmupActive = true;
+//                if(!autoWarmupActive) {
+//                        autoCommand.schedule();
+//                        autoWarmupActive = true;
+//                }
+        }
+
+        public void disabledInit() {
+                if(!autoWarmupDone) {
+                        Command autoWarmup = autos.LowNeutralLoop();
+                        autoWarmup = autoWarmup.ignoringDisable(true);
+                        autoWarmup.schedule();
+                        autoWarmupDone = true;
                 }
         }
 }

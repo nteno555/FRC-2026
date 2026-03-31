@@ -5,10 +5,10 @@ import edu.wpi.first.math.geometry.Transform2d;
 
 
 public class SubsystemConstants {
-    public static double translationkP = 3.0;
+    public static double translationkP = 2.0;
     public static double translationkI = 0.0;
     public static double translationkD = 0.0;
-    public static double rotationkP = 2.5;
+    public static double rotationkP = 1.0;
     public static double rotationkI = 0.0;
     public static double rotationkD = 0.0;
 

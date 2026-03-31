@@ -11,7 +11,7 @@ public class VisionIOReal implements VisionIO {
         this.cameras = List.of(
                 new LimelightFiducialCamera(
                         "limelight-turret",
-                        false,
+                        true,
                         SubsystemConstants.robotToTurretCameraForward,
                         SubsystemConstants.robotToTurretCameraRight,
                         SubsystemConstants.robotToTurretCameraUp,
@@ -38,17 +38,17 @@ public class VisionIOReal implements VisionIO {
                         SubsystemConstants.robotToRightCameraYaw,
                         SubsystemConstants.robotToRightCameraPitch,
                         SubsystemConstants.robotToRightCameraRoll
-                ),
-               new LimelightFiducialCamera(
-                       "limelight-front",
-                       false,
-                       SubsystemConstants.robotToFrontCameraForward,
-                       SubsystemConstants.robotToFrontCameraRight,
-                       SubsystemConstants.robotToFrontCameraUp,
-                       SubsystemConstants.robotToFrontCameraYaw,
-                       SubsystemConstants.robotToFrontCameraPitch,
-                       SubsystemConstants.robotToFrontCameraRoll
-               )
+                )
+//               new LimelightFiducialCamera(
+//                       "limelight-front",
+//                       false,
+//                       SubsystemConstants.robotToFrontCameraForward,
+//                       SubsystemConstants.robotToFrontCameraRight,
+//                       SubsystemConstants.robotToFrontCameraUp,
+//                       SubsystemConstants.robotToFrontCameraYaw,
+//                       SubsystemConstants.robotToFrontCameraPitch,
+//                       SubsystemConstants.robotToFrontCameraRoll
+//               )
         );
     }
 

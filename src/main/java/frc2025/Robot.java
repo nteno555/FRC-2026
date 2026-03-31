@@ -44,6 +44,7 @@ public class Robot extends LoggedRobot {
         System.out.println("Yay you deployed");
 //		FollowPathCommand.warmupCommand().schedule();
 
+
         SignalLogger.setPath("/home/lvuser/logs/");
         SignalLogger.start();
 	}
@@ -66,7 +67,13 @@ public class Robot extends LoggedRobot {
 
 	@Override
 	public void disabledPeriodic() {
-		CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
 		robotContainer.disabledPeriodic();
 	}
+
+	@Override
+	public void disabledInit() {
+//		CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
+		robotContainer.disabledInit();
+	}
+
 }
