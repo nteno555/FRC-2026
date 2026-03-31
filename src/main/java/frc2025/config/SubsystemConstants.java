@@ -5,6 +5,13 @@ import edu.wpi.first.math.geometry.Transform2d;
 
 
 public class SubsystemConstants {
+    public static double translationkP = 3.0;
+    public static double translationkI = 0.0;
+    public static double translationkD = 0.0;
+    public static double rotationkP = 3.0;
+    public static double rotationkI = 0.0;
+    public static double rotationkD = 0.0;
+
     public static double climberFF = 1.0;
     public static double climberkS = 0.0;
     public static double climberkV = 0.12;
@@ -35,9 +42,9 @@ public class SubsystemConstants {
     public static double flywheelkVAmps = 0.0;
     public static double flywheelkAAmps = 0.218;
     // Two Flywheels
-//    public static double flywheelkPAmps = 5.0;
+   public static double flywheelkPAmps = 5.0;
     // One Flywheel
-    public static double flywheelkPAmps = 10.0;
+    // public static double flywheelkPAmps = 10.0;
     public static double flywheelkIAmps = 0.0;
     public static double flywheelkDAmps = 0.0;
 
@@ -140,10 +147,10 @@ public class SubsystemConstants {
     public static double turretPeakReverseTorqueCurrent = -120;
     public static double turretZeroOffsetRadians = 0.0;
     public static double turretRotationsPerRadian = 42.0/11.0 * 42.0/26.0 * 110/10.0 / (2*Math.PI); //10.80
-    public static double turretMinAngleRadians = -3.89;
-    public static double turretMaxAngleRadians = 5.5;
-    public static double throughBoreZero1 = 0.831;
-    public static double throughBoreZero2 = 0.457;
+    public static double turretMinAngleRadians = -3.2;
+    public static double turretMaxAngleRadians = 4.0;
+    public static double throughBoreZero1 = 0.0540;
+    public static double throughBoreZero2 = 0.6452;
     public static double throughBoreRatio1 = 42.0 / 11.0 * 42.0 / 26.0; // 6.17
     public static double throughBoreRatio2 = 42.0 / 11.0; // 3.82
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
@@ -162,13 +169,13 @@ public class SubsystemConstants {
     public static double robotToTurretCameraRoll = 0.0;
     public static boolean ignoreTurretLimelight = false;
 
-    public static Transform2d robotToFrontCamera = new Transform2d(0.326, -0.1015, Rotation2d.kZero);
+    public static Transform2d robotToFrontCamera = new Transform2d(0.326, 0.326, Rotation2d.kZero);
     public static double robotToFrontCameraForward = robotToFrontCamera.getX();
     public static double robotToFrontCameraRight = robotToFrontCamera.getY();
-    public static double robotToFrontCameraUp = 0.14641;
+    public static double robotToFrontCameraUp = 0.225;
     public static double robotToFrontCameraYaw = 0.0;
     public static double robotToFrontCameraPitch = 28.0;
-    public static double robotToFrontCameraRoll = 180.0;
+    public static double robotToFrontCameraRoll = 270.0;
 
     public static Transform2d robotToBackCamera = new Transform2d(-0.3429, 0.064, Rotation2d.kZero);
     public static double robotToBackCameraForward = robotToBackCamera.getX();

@@ -31,8 +31,9 @@ public class LimelightFiducialCamera {
 
     private int imuMode;
 
-    public LimelightFiducialCamera(String name, boolean turretMounted, double robotToCameraForward, double robotToCameraRight, double robotToCameraUp,
-                                  double robotToCameraYaw, double robotToCameraPitch, double robotToCameraRoll) {
+    public LimelightFiducialCamera(String name, boolean turretMounted, double robotToCameraForward,
+            double robotToCameraRight, double robotToCameraUp,
+            double robotToCameraYaw, double robotToCameraPitch, double robotToCameraRoll) {
         this.name = name;
         this.turretMounted = turretMounted;
 
@@ -54,31 +55,34 @@ public class LimelightFiducialCamera {
     public void writeGyro() {
         String prefix = "Vision/" + name + "_mt2/";
 
-//        LimelightHelpers.SetIMUMode(name, 0);
-//        imuMode = 0;
+        // LimelightHelpers.SetIMUMode(name, 0);
+        // imuMode = 0;
         LimelightHelpers.SetIMUAssistAlpha(name, 0.1);
         LimelightHelpers.SetIMUMode(name, 4);
 
-//        imuMode = 4;
+        // imuMode = 4;
 
         Logger.recordOutput(prefix + "IMU", imuMode);
 
-        if(turretMounted){// && robotToCameraPose != null) {
-//            Transform2d robotToShooterReal = new Transform2d(
-//                    SubsystemConstants.robotToShooter.getTranslation(),
-//                    SubsystemConstants.robotToShooter.getRotation().plus(Rotation2d.fromRadians(RobotState.getInstance().getTurretAngle()))
-//            );
-//
-//            Transform2d cameraToRobotTransform = SubsystemConstants.shooterToCamera.inverse().plus(robotToShooterReal.inverse());
-//            Transform2d robotToCameraTransform = cameraToRobotTransform.inverse();
+        if (turretMounted) {// && robotToCameraPose != null) {
+            // Transform2d robotToShooterReal = new Transform2d(
+            // SubsystemConstants.robotToShooter.getTranslation(),
+            // SubsystemConstants.robotToShooter.getRotation().plus(Rotation2d.fromRadians(RobotState.getInstance().getTurretAngle()))
+            // );
+            //
+            // Transform2d cameraToRobotTransform =
+            // SubsystemConstants.shooterToCamera.inverse().plus(robotToShooterReal.inverse());
+            // Transform2d robotToCameraTransform = cameraToRobotTransform.inverse();
 
             LimelightHelpers.setCameraPose_RobotSpace(name, 0.0, 0.0, this.robotToCameraUp,
                     this.robotToCameraRoll, this.robotToCameraPitch, 0.0);
 
-            double orientation = RobotState.getInstance().getVisionPose().getRotation().getDegrees() - Units.radiansToDegrees(RobotState.getInstance().getTurretAngle());
+            double orientation = RobotState.getInstance().getVisionPose().getRotation().getDegrees()
+                    - Units.radiansToDegrees(RobotState.getInstance().getTurretAngle());
 
             // this might be wrong
-            double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond - RobotState.getInstance().getTurretVelocity();
+            double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond
+                    - RobotState.getInstance().getTurretVelocity();
             omega = Units.radiansToDegrees(omega);
 
             LimelightHelpers.SetRobotOrientation(name, orientation, omega, 0, 0, 0, 0);
@@ -86,60 +90,61 @@ public class LimelightFiducialCamera {
             Logger.recordOutput(prefix + "mt2RobotOrientation", orientation);
             Logger.recordOutput(prefix + "mt2UpdateGyroHeartbeat", Math.random());
         } else {
-            LimelightHelpers.setCameraPose_RobotSpace(name, this.robotToCameraForward, this.robotToCameraRight, this.robotToCameraUp,
+            LimelightHelpers.setCameraPose_RobotSpace(name, this.robotToCameraForward, this.robotToCameraRight,
+                    this.robotToCameraUp,
                     this.robotToCameraRoll, this.robotToCameraPitch, this.robotToCameraYaw);
 
             double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
             omega = Units.radiansToDegrees(omega);
 
-            LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getVisionPose().getRotation().getDegrees(), omega, 0, 0, 0, 0);
+            LimelightHelpers.SetRobotOrientation(name,
+                    RobotState.getInstance().getVisionPose().getRotation().getDegrees(), omega, 0, 0, 0, 0);
             Logger.recordOutput(prefix + "mt2UpdateGyroHeartbeat", Math.random());
         }
     }
 
     public void updateSide() {
-        if(Alliance.get()) {
-            LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{2, 3, 4, 5, 8, 9, 10, 11, 25, 26});
+        if (Alliance.get()) {
+            LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[] { 2, 3, 4, 5, 8, 9, 10, 11, 25, 26 });
         } else {
-            LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{9, 10, 18, 19, 20, 21, 24, 25, 26, 27});
+            LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[] { 9, 10, 18, 19, 20, 21, 24, 25, 26, 27 });
         }
     }
 
     public void toggleClimbTags(boolean climbing) {
         if (climbing) {
             if (Alliance.get()) {
-                LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{15, 16});
-            }
-            else {
-                LimelightHelpers.SetFiducialIDFiltersOverride(name,  new int[]{31, 32});
-            }
-        }
-        else {
-            if(Alliance.get()) {
-                LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{2, 3, 4, 5, 8, 9, 10, 11, 25, 26});
+                LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[] { 15, 16 });
             } else {
-                LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[]{9, 10, 18, 19, 20, 21, 24, 25, 26, 27});
+                LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[] { 31, 32 });
+            }
+        } else {
+            if (Alliance.get()) {
+                LimelightHelpers.SetFiducialIDFiltersOverride(name, new int[] { 2, 3, 4, 5, 8, 9, 10, 11, 25, 26 });
+            } else {
+                LimelightHelpers.SetFiducialIDFiltersOverride(name,
+                        new int[] { 9, 10, 18, 19, 20, 21, 24, 25, 26, 27 });
             }
         }
     }
 
     private Pose2d transformTurretPose(Pose2d pose) {
-        if(SubsystemConstants.hasTurret) {
+        if (SubsystemConstants.hasTurret) {
 
             Transform2d robotToShooterReal = new Transform2d(
                     SubsystemConstants.robotToShooter.getTranslation(),
-                    SubsystemConstants.robotToShooter.getRotation().plus(Rotation2d.fromRadians(-RobotState.getInstance().getTurretAngle()))
-            );
+                    SubsystemConstants.robotToShooter.getRotation()
+                            .plus(Rotation2d.fromRadians(-RobotState.getInstance().getTurretAngle())));
 
-            //        Transform2d cameraToRobotTransform = SubsystemConstants.shooterToCamera.inverse().plus(robotToShooterReal.inverse());
             Transform2d cameraToRobotTransform = robotToShooterReal.plus(SubsystemConstants.shooterToCamera).inverse();
 
-//            Logger.recordOutput("Vision/" + name + "_mt2/cameraPose", RobotState.getInstance().getVisionPose().transformBy(cameraToRobotTransform.inverse()));
-            Logger.recordOutput("Vision/" + name + "_mt2/turretTransform", cameraToRobotTransform.getRotation().getDegrees());
+            Logger.recordOutput("Vision/" + name + "_mt2/turretTransform",
+                    cameraToRobotTransform.getRotation().getDegrees());
 
             return pose.transformBy(cameraToRobotTransform);
         } else {
-            Transform2d cameraToRobotTransform = SubsystemConstants.robotToShooter.plus(SubsystemConstants.shooterToCamera).inverse();
+            Transform2d cameraToRobotTransform = SubsystemConstants.robotToShooter
+                    .plus(SubsystemConstants.shooterToCamera).inverse();
             return pose.transformBy(cameraToRobotTransform);
         }
     }
@@ -154,21 +159,22 @@ public class LimelightFiducialCamera {
 
         Logger.recordOutput(prefix + "heartbeat1", Math.random());
 
-        if(poseEstimate == null) return;
+        if (poseEstimate == null)
+            return;
 
         Logger.recordOutput(prefix + "heartbeat2", Math.random());
         Logger.recordOutput(prefix + "tagCount", poseEstimate.tagCount);
 
         boolean reject = false;
 
-        if(poseEstimate.tagCount < 2) {
+        if (poseEstimate.tagCount < 2) {
             reject = true;
         }
 
         Pose2d untransformedPose = poseEstimate.pose;
         Pose2d pose = poseEstimate.pose;
 
-        if(turretMounted && SubsystemConstants.hasTurret) {
+        if (turretMounted && SubsystemConstants.hasTurret) {
             Logger.recordOutput(prefix + "untransformedPose", pose);
             pose = transformTurretPose(pose);
         }
@@ -176,37 +182,38 @@ public class LimelightFiducialCamera {
         double meanDistance = 0;
         double meanAmbiguity = 0;
         double meanArea = 0;
-        for(var f: poseEstimate.rawFiducials) {
+        for (var f : poseEstimate.rawFiducials) {
             meanDistance += f.distToCamera;
             meanAmbiguity += f.ambiguity;
             meanArea += f.ta;
 
-            if(f.ambiguity > 0.9) reject = true;
+            if (f.ambiguity > 0.9)
+                reject = true;
         }
         meanDistance /= poseEstimate.tagCount;
         meanAmbiguity /= poseEstimate.tagCount;
         meanArea /= poseEstimate.tagCount;
 
-
-        if(meanAmbiguity > maxMeanAmbiguity || meanDistance > maxMeanDistance || meanArea < minMeanArea) {
+        if (meanAmbiguity > maxMeanAmbiguity || meanDistance > maxMeanDistance || meanArea < minMeanArea) {
             reject = true;
         }
-        if ((Math.abs(pose.getRotation().minus(RobotState.getInstance().getVisionPose().getRotation()).getRadians()) > 0.5) && !turretMounted) {
+        if ((Math.abs(
+                pose.getRotation().minus(RobotState.getInstance().getVisionPose().getRotation()).getRadians()) > 0.5)
+                && !turretMounted) {
             reject = true;
         }
 
         double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
-        if(turretMounted && SubsystemConstants.hasTurret) {
+        if (turretMounted && SubsystemConstants.hasTurret) {
             // this might be wrong
             omega -= RobotState.getInstance().getTurretVelocity();
         }
-        if(Math.abs(omega) > maxYawRate) {
+        if (Math.abs(omega) > maxYawRate) {
             reject = true;
         }
 
-
-        if(turretMounted && RobotState.getInstance().getTurretVelocity() > 0.1)
-            reject = true;
+        // if(turretMounted && RobotState.getInstance().getTurretVelocity() > 0.1)
+        // reject = true;
 
         Logger.recordOutput(prefix + "meanDistance", meanDistance);
         Logger.recordOutput(prefix + "meanAmbiguity", meanAmbiguity);
@@ -214,29 +221,23 @@ public class LimelightFiducialCamera {
         Logger.recordOutput(prefix + "rejected", reject);
         Logger.recordOutput(prefix + "rawPose", pose);
 
-
-        if(!reject) {
-            if(SubsystemConstants.ignoreTurretLimelight && turretMounted && SubsystemConstants.useTurretVisionCorrection) {
+        if (!reject) {
+            if (SubsystemConstants.ignoreTurretLimelight && turretMounted
+                    && SubsystemConstants.useTurretVisionCorrection) {
                 RobotState.getInstance().setTurretMt1AngleRadians(untransformedPose.getRotation().getRadians());
                 RobotState.getInstance().setTurretMt1Valid(true);
             } else {
-//                Vector<N3> distStdDevs;
-//                distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 4.0, Math.pow(meanDistance, 2) / 4.0, 0.0000001);
-//                VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
-//                        poseEstimate.timestampSeconds, pose, distStdDevs
-//                );
-
-//                RobotState.getInstance().addVisionData(List.of(update));
                 Vector<N3> distStdDevs;
-//                if (!turretMounted) {
-                    distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 0.0000001);
-//                } else {
-//                    distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0, Math.pow(meanDistance, 2) / 2.0, 99999999999.0);
-//                }
+                if (!turretMounted) {
+                    distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 1.0, Math.pow(meanDistance, 2) / 1.0,
+                            0.0000001);
+                } else {
+                    distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 2.0,
+                            Math.pow(meanDistance, 2) / 2.0, 99999999999.0);
+                }
 
-                VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
-                        poseEstimate.timestampSeconds, pose, distStdDevs
-                );
+                RobotState.TimestampedVisionUpdate update = new RobotState.TimestampedVisionUpdate(
+                        poseEstimate.timestampSeconds, pose, distStdDevs);
 
                 RobotState.getInstance().addVisionData(List.of(update));
             }
@@ -249,14 +250,15 @@ public class LimelightFiducialCamera {
 
         Logger.recordOutput(prefix + "heartbeat1", Math.random());
 
-        if(poseEstimate == null || poseEstimate.tagCount < 1) return;
+        if (poseEstimate == null || poseEstimate.tagCount < 1)
+            return;
 
         Logger.recordOutput(prefix + "heartbeat2", Math.random());
         Logger.recordOutput(prefix + "tagCount", poseEstimate.tagCount);
 
         Pose2d pose = poseEstimate.pose;
 
-        if(turretMounted && SubsystemConstants.hasTurret) {
+        if (turretMounted && SubsystemConstants.hasTurret) {
             Logger.recordOutput(prefix + "untransformedPose", pose);
             pose = transformTurretPose(pose);
         }
@@ -264,24 +266,24 @@ public class LimelightFiducialCamera {
         boolean reject = false;
         double meanDistance = 0;
         double leastDistance = 999999999;
-        for(var f: poseEstimate.rawFiducials) {
+        for (var f : poseEstimate.rawFiducials) {
             meanDistance += f.distToCamera;
             leastDistance = Math.min(leastDistance, f.distToCamera);
         }
         meanDistance /= poseEstimate.tagCount;
 
-
-        if (Math.abs(pose.getRotation().minus(RobotState.getInstance().getVisionPose().getRotation()).getRadians()) > 0.5) {
+        if (Math.abs(
+                pose.getRotation().minus(RobotState.getInstance().getVisionPose().getRotation()).getRadians()) > 0.5) {
             reject = true;
         }
 
         double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
-        if(turretMounted && SubsystemConstants.hasTurret) {
+        if (turretMounted && SubsystemConstants.hasTurret) {
             // this might be wrong
             omega -= RobotState.getInstance().getTurretVelocity();
         }
 
-        if(Math.abs(omega) > maxYawRate) {
+        if (Math.abs(omega) > maxYawRate) {
             reject = true;
         }
 
@@ -291,18 +293,18 @@ public class LimelightFiducialCamera {
         Logger.recordOutput(prefix + "rejected", reject);
         Logger.recordOutput(prefix + "rawPose", pose);
 
-        if(SubsystemConstants.ignoreTurretLimelight && turretMounted)
+        if (SubsystemConstants.ignoreTurretLimelight && turretMounted)
             reject = true;
 
-        if(turretMounted && RobotState.getInstance().getTurretVelocity() > 0.1)
-            reject = true;
+        // if(turretMounted && RobotState.getInstance().getTurretVelocity() > 0.1)
+        // reject = true;
 
-        if(!reject) {
+        if (!reject) {
             Vector<N3> distStdDevs;
-            distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 4.0, Math.pow(leastDistance, 2) / 4.0, 999999999);
-            VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
-                    poseEstimate.timestampSeconds, pose, distStdDevs
-            );
+            distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 2.0, Math.pow(leastDistance, 2) / 2.0,
+                    999999999);
+            RobotState.TimestampedVisionUpdate update = new RobotState.TimestampedVisionUpdate(
+                    poseEstimate.timestampSeconds, pose, distStdDevs);
 
             RobotState.getInstance().addVisionData(List.of(update));
         }

@@ -103,9 +103,8 @@ public class Autos {
             return null;
         }
 
-        PathPlannerPath finalPath = path;
 
-        var followPath = AutoBuilder.followPath(finalPath);
+        var followPath = robotContainer.getDrive().followPathBuiltinCommand(pathName);
 
 
         return intakeDrive(followPath);
@@ -144,7 +143,7 @@ public class Autos {
                 finalPath.getIdealStartingState().rotation());
 
         return SuperstructureCommands.resetOdometry(robotContainer, startPoseSupplier(startPose))
-                .andThen(intakePath(pathName));
+                .andThen(intakePathBuiltin(pathName));
     }
 
     private Pose2d mirrorPose(Pose2d pose) {
@@ -244,7 +243,7 @@ public class Autos {
                 pathCommands = pathCommands.andThen(intakeDrive(PathPlanCommands.returnUnderTrenchAuto(robotContainer,
                         endPoseSupplier, endVelocity, preTrench)));
             } else {
-                pathCommands = pathCommands.andThen(intakePath(paths.get(i)));
+                pathCommands = pathCommands.andThen(intakePathBuiltin(paths.get(i)));
             }
         }
 

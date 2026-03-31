@@ -32,13 +32,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc2025.RobotState;
 import frc2025.subsystems.vision.VisionIO;
-import frc2025.subsystems.vision.VisionPoseEstimator;
 import org.littletonrobotics.junction.Logger;
 
 
 import java.util.List;
 
-public class DriveIOReal extends SwerveDrivetrain implements DriveIO{
+public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> implements DriveIO{
     private double[] lastModulePositionsMeters = new double[] { 0.0, 0.0, 0.0, 0.0 };
     private Rotation2d lastGyroYaw = null;
     private Pose2d lastOdometryPose = null;
@@ -53,7 +52,7 @@ public class DriveIOReal extends SwerveDrivetrain implements DriveIO{
     public void updateInputs(DriveIOInputs inputs) {
         var state = getState();
         inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
-        //inputs.swervePoseMeters = (Pose2d) samplePoseAt(Utils.getCurrentTimeSeconds()).get();
+        inputs.swervePoseMeters = state.Pose;
 
         SwerveModulePosition[] wheelDeltas = new SwerveModulePosition[4];
         for (int i = 0; i < 4; i++) {
@@ -89,7 +88,7 @@ public class DriveIOReal extends SwerveDrivetrain implements DriveIO{
     }
 
     @Override
-    public void addVisionMeasurement(List<VisionPoseEstimator.TimestampedVisionUpdate> updates) {
+    public void addVisionMeasurement(List<RobotState.TimestampedVisionUpdate> updates) {
         for (var update: updates) {
             Logger.recordOutput("Drive/addVisionMeasurementHeartbeat2", Math.random());
             Logger.recordOutput("Drive/visionUpdatePose", update.pose());

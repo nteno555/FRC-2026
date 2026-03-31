@@ -153,8 +153,8 @@ public class RobotContainer {
                         autoChooser.addOption(Autos.HIGH_X2_NEUTRAL, Autos.HIGH_X2_NEUTRAL);
                         autoChooser.addOption(Autos.HIGH_NEUTRAL_LOOP, Autos.HIGH_NEUTRAL_LOOP);
                 } else {
-                        autoChooser.addOption(Autos.LOW_NEUTRAL_STATION, Autos.LOW_NEUTRAL_STATION);
-                        autoChooser.addOption(Autos.MID_STATION_DEPOT, Autos.MID_STATION_DEPOT);
+                        autoChooser.addOption(Autos.LOW_NEUTRAL_LOOP, Autos.LOW_NEUTRAL_LOOP);
+                        autoChooser.addOption(Autos.HIGH_NEUTRAL_LOOP, Autos.HIGH_NEUTRAL_LOOP);
                 }
 
                 SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -736,6 +736,8 @@ public class RobotContainer {
         }
 
         public void disabledPeriodic() {
+                Logger.recordOutput("Robot/disabledHeartbeat", Math.random());
+
                 String selected = autoChooser.getSelected();
                 if (selected == null)
                         selected = "No Auto";

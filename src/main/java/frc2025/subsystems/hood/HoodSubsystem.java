@@ -103,8 +103,8 @@ public class HoodSubsystem extends SubsystemBase {
 
             return ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist);
         }, () -> {
-            return 0.0;
-//            return RobotState.getInstance().getWantedHoodVelocity();
+            // return 0.0;
+           return RobotState.getInstance().getWantedHoodVelocity();
         });
     }
 

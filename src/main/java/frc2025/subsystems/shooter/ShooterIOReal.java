@@ -56,8 +56,8 @@ public class ShooterIOReal implements ShooterIO {
 		flywheelConfig.CurrentLimits.StatorCurrentLimit = SubsystemConstants.flywheelStatorCurrentLimit;
 		flywheelConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
-//        flywheelConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-        flywheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+       flywheelConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        // flywheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
 //        var towerConfigs = new TalonFXConfiguration();
 //

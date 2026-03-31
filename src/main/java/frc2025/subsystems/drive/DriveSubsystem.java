@@ -4,12 +4,14 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import com.pathplanner.lib.util.DriveFeedforwards;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -57,12 +59,13 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        io.addVisionMeasurement(RobotState.getInstance().getVisionUpdates());
         io.updateInputs(inputs);
         if (!sysIdActive) {
             io.setControl(request.withSpeeds(wantedSpeeds));
         }
-        RobotState.getInstance().addDriveData(inputs.odometryTimestamp, inputs.odometryTwist);
 
+        RobotState.getInstance().setPose(inputs.swervePoseMeters);
         RobotState.getInstance().setRobotRelativeSpeeds(inputs.currentChassisSpeeds);
         RobotState.getInstance().updateShootingWhileMovingVirtualPose();
         RobotState.getInstance().setPigeonAcceleration(inputs.pigeonAcceleration);
@@ -106,6 +109,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     public Command driveRobotRelative(Supplier<ChassisSpeeds> chassisSpeedsSupplier) {
         return this.applyChassisSpeedsCommand(() -> chassisSpeedsSupplier.get());
+    }
+
+    public void drive(ChassisSpeeds speeds, DriveFeedforwards feedforwards) {
+        applyChassisSpeeds(speeds);
     }
 
     public Command resetOdometryCommand(Supplier<Pose2d> position) {
@@ -175,41 +182,40 @@ public class DriveSubsystem extends SubsystemBase {
         return ready;
     }
 
-//    public Command followPathBuiltinCommand(String pathName) {
-//        try {
-//            PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-//
-//            return new FollowPathCommand(
-//                    path,
-//                    RobotState.getInstance().getVisionPose(), // Robot pose supplier
-//                    this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-//                    this::drive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds, AND
-//                                 // feedforwards
-//                    new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller
-//                                                    // for holonomic drive trains
-//                            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-//                            new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-//                    ),
-//                    Constants.robotConfig, // The robot configuration
-//                    () -> {
-//                        // Boolean supplier that controls when the path will be mirrored for the red
-//                        // alliance
-//                        // This will flip the path being followed to the red side of the field.
-//                        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-//
-//                        var alliance = DriverStation.getAlliance();
-//                        if (alliance.isPresent()) {
-//                            return alliance.get() == DriverStation.Alliance.Red;
-//                        }
-//                        return false;
-//                    },
-//                    this // Reference to this subsystem to set requirements
-//            );
-//        } catch (Exception e) {
-//            DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-//            return Commands.none();
-//        }
-//    }
+   public Command followPathBuiltinCommand(String pathName) {
+       try {
+           PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+
+           return new FollowPathCommand(
+                   path,
+                   () -> RobotState.getInstance().getVisionPose(), // Robot pose supplier
+                   this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                   this::drive,
+                   new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller
+                                                   // for holonomic drive trains
+                           new PIDConstants(SubsystemConstants.translationkP, SubsystemConstants.translationkI, SubsystemConstants.translationkD), // Translation PID constants
+                           new PIDConstants(SubsystemConstants.rotationkP, SubsystemConstants.rotationkI, SubsystemConstants.rotationkD) // Translation PID constants
+                   ),
+                   getPPConfig(), // The robot configuration
+                   () -> {
+                       // Boolean supplier that controls when the path will be mirrored for the red
+                       // alliance
+                       // This will flip the path being followed to the red side of the field.
+                       // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+                       var alliance = DriverStation.getAlliance();
+                       if (alliance.isPresent()) {
+                           return alliance.get() == DriverStation.Alliance.Red;
+                       }
+                       return false;
+                   },
+                   this // Reference to this subsystem to set requirements
+           );
+       } catch (Exception e) {
+           DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+           return Commands.none();
+       }
+   }
 
     // characterization
 

@@ -15,7 +15,7 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import frc2025.subsystems.vision.VisionPoseEstimator;
+import frc2025.RobotState;
 import org.littletonrobotics.junction.AutoLog;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public interface DriveIO{
     @AutoLog
     public class DriveIOInputs {
         public ChassisSpeeds currentChassisSpeeds = new ChassisSpeeds(0, 0, 0);
-        public Pose2d swervePoseMeters = new Pose2d(); // odometry only
+        public Pose2d swervePoseMeters = new Pose2d(); // vision integrated pose
         public double odometryTimestamp;
         public Twist2d odometryTwist;
         public double pigeonAcceleration;
@@ -34,7 +34,7 @@ public interface DriveIO{
     public void updateInputs(DriveIOInputs inputs);
     public void resetOdometry(Pose2d pose);
     public void setControl(SwerveRequest request);
-    public void addVisionMeasurement(List<VisionPoseEstimator.TimestampedVisionUpdate> update);
+    public void addVisionMeasurement(List<RobotState.TimestampedVisionUpdate> update);
     public Translation2d[] getModulePositions();
     public SwerveModule[] getModules();
     public Optional<Pose2d> samplePoseAt(double timestamp);

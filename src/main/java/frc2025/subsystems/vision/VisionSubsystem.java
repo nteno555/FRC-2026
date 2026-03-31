@@ -29,7 +29,6 @@ public class VisionSubsystem extends SubsystemBase {
         double distance = Math.hypot(pose.getX() - target.getX(), pose.getY() - target.getY());
         Logger.recordOutput("Vision/targetDistance", distance);
 
-        RobotState.getInstance().updateVisionPose();
 
 //        LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-front");
 //        Logger.recordOutput("Vision/testtesttest", poseEstimate.tagCount);

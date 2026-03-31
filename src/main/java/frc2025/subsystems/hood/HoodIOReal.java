@@ -26,7 +26,7 @@ public class HoodIOReal implements HoodIO {
         slot0Configs.kP = SubsystemConstants.hoodkP;
         slot0Configs.kI = SubsystemConstants.hoodkI;
         slot0Configs.kD = SubsystemConstants.hoodkD;
-        slot0Configs.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
+        slot0Configs.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
         talonFXConfigs.CurrentLimits.SupplyCurrentLimit = SubsystemConstants.hoodSupplyCurrentLimit;
         talonFXConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;

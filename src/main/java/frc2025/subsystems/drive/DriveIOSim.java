@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
-import frc2025.subsystems.vision.VisionPoseEstimator;
 
 import java.util.List;
 
