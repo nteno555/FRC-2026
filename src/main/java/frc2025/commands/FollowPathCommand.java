@@ -6,6 +6,7 @@ import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
@@ -130,7 +131,8 @@ public class FollowPathCommand extends Command {
         ChassisSpeeds desiredSpeeds = new ChassisSpeeds(
                 desiredState.fieldSpeeds.vxMetersPerSecond,
                 desiredState.fieldSpeeds.vyMetersPerSecond,
-                desiredState.fieldSpeeds.omegaRadiansPerSecond
+0.0
+//                desiredState.fieldSpeeds.omegaRadiansPerSecond
             //    omegaFeedback * -1
         );
 
@@ -146,6 +148,34 @@ public class FollowPathCommand extends Command {
         );
 
         driveSubsystem.applyChassisSpeeds(chassisSpeeds);
+
+        /* copied from 2910 path follower */
+//        double currentTime = this.timer.get();
+//        // Determine desired state based on where the robot should be at the current time in the path
+//        PathPlannerTrajectoryState desiredState = trajectory.sample(currentTime);
+//        var currentPose = RobotState.getInstance().getVisionPose();
+//
+//        Rotation2d heading = desiredState.heading;
+//
+//        // Calculate our target velocity based on current pose and desired state
+//        var vx = desiredState.linearVelocity * Math.cos(heading.getRadians());
+//        var vy = desiredState.linearVelocity * Math.sin(heading.getRadians());
+//        var desiredThetaSpeeds = rotationPID.calculate(
+//                currentPose.getRotation().getRadians(), desiredState.pose.getRotation().getRadians());
+//
+//        double xFeedback = translationPID.calculate(
+//                currentPose.getX(), desiredState.pose.getX());
+//        double yFeedback = translationPID.calculate(
+//                currentPose.getY(), desiredState.pose.getY());
+//
+//        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+//                vx + xFeedback, vy + yFeedback, desiredThetaSpeeds, currentPose.getRotation());
+//
+////        swerveSubsystem.setTargetSpeed(chassisSpeeds);
+//        driveSubsystem.applyChassisSpeeds(chassisSpeeds);
+//
+//        Logger.recordOutput("PathFollowing/DesiredStatePose", desiredState.pose);
+//        Logger.recordOutput("PathFollowing/DesiredChassisSpeeds", chassisSpeeds);
     }
 
     @Override
