@@ -89,6 +89,7 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
 
     @Override
     public void addVisionMeasurement(List<RobotState.TimestampedVisionUpdate> updates) {
+        double avgTimestamp = 0;
         for (var update: updates) {
             Logger.recordOutput("Drive/addVisionMeasurementHeartbeat2", Math.random());
             Logger.recordOutput("Drive/visionUpdatePose", update.pose());
@@ -96,8 +97,12 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
             Logger.recordOutput("Drive/currentTimestamp", Utils.getCurrentTimeSeconds());
 
             double timestamp = Utils.fpgaToCurrentTime(update.timestamp());
+            avgTimestamp += timestamp;
             addVisionMeasurement(update.pose(), timestamp, update.stdDevs());
         }
+        avgTimestamp /= updates.size();
+
+        Logger.recordOutput("Drive/visionLatency", Utils.getCurrentTimeSeconds() - avgTimestamp);
     }
 
     @Override
