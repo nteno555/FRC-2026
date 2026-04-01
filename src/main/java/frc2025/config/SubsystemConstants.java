@@ -6,11 +6,11 @@ import edu.wpi.first.math.geometry.Transform2d;
 
 public class SubsystemConstants {
 //    public static double translationkP = 5.0;
-    public static double translationkP = 2.0;
+    public static double translationkP = 1.5;
     public static double translationkI = 0.0;
     public static double translationkD = 0.0;
 //    public static double rotationkP = 8.0;
-    public static double rotationkP = 1.0;
+    public static double rotationkP = 3.0;
     public static double rotationkI = 0.0;
     public static double rotationkD = 0.0;
 
@@ -151,13 +151,13 @@ public class SubsystemConstants {
     public static double turretRotationsPerRadian = 42.0/11.0 * 42.0/26.0 * 110/10.0 / (2*Math.PI); //10.80
     public static double turretMinAngleRadians = -3.2;
     public static double turretMaxAngleRadians = 4.0;
-    public static double throughBoreZero1 = 0.0540;
-    public static double throughBoreZero2 = 0.6452;
+    public static double throughBoreZero1 = 0.437;
+    public static double throughBoreZero2 = 0.893;
     public static double throughBoreRatio1 = 42.0 / 11.0 * 42.0 / 26.0; // 6.17
     public static double throughBoreRatio2 = 42.0 / 11.0; // 3.82
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
     public static double turretDefaultRadians = Math.PI/2;
-    public static boolean hasTurret = false;
+    public static boolean hasTurret = true;
     public static boolean useTurretThroughBores = true;
     public static double turretShotReadyThreshold = 0.15; // 5.73 degrees
     public static boolean useTurretVisionCorrection = false;
@@ -169,7 +169,7 @@ public class SubsystemConstants {
     public static double robotToTurretCameraUp = 0.5062;
     public static double robotToTurretCameraYaw = 0.0;
     public static double robotToTurretCameraPitch = 30.0;
-    public static double robotToTurretCameraRoll = 0.0;
+    public static double robotToTurretCameraRoll = 180.0;
     public static boolean ignoreTurretLimelight = false;
 
     public static Transform2d robotToFrontCamera = new Transform2d(0.326, 0.326, Rotation2d.kZero);

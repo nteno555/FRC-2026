@@ -27,12 +27,12 @@ public class ShooterSubsystem extends SubsystemBase {
     public void periodic() {
         Logger.processInputs("RealOutputs/Shooter", inputs);
         Logger.recordOutput("Superstructure/ShooterSpeed", inputs.masterVelocityRPS);
+        Logger.recordOutput("Shooter/wantedSpeed", wantedVelocity);
         io.updateInputs(this.inputs);
     }
 
     public Command setVoltage(Supplier<Double> voltage) {
         return this.run(() -> {
-            Logger.recordOutput("Shooter/wantedVoltage", voltage.get());
             usingVoltage = true;
             wantedVoltage = voltage.get();
             io.setVoltage(voltage.get());
@@ -41,7 +41,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public Command setSpeed(Supplier<Double> speed) {
         return this.runEnd(() -> {
-            Logger.recordOutput("Shooter/wantedSpeed", speed.get());
             usingVoltage = false;
             wantedVelocity = speed.get();
             io.setSpeed(speed.get(), 0.0);
@@ -53,7 +52,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public Command setSpeed(Supplier<Double> speed, Supplier<Double> acceleration) {
         return this.runEnd(() -> {
-            Logger.recordOutput("Shooter/wantedSpeed", speed.get());
             usingVoltage = false;
             wantedVelocity = speed.get();
             io.setSpeed(speed.get(), acceleration.get());

@@ -47,8 +47,8 @@ public class DriveCommands {
             endTrench = FieldConstants.trenchPoses[trenchID - 1];
         }
 
-        Logger.recordOutput("Drive/autoTrenchStart", closestStartTrench);
-        Logger.recordOutput("Drive/autoTrenchEnd", endTrench);
+//        Logger.recordOutput("Drive/autoTrenchStart", closestStartTrench);
+//        Logger.recordOutput("Drive/autoTrenchEnd", endTrench);
 
         List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPose, closestStartTrench, endTrench);
         PathConstraints constraints = new PathConstraints(2.0, 2.0, 2*Math.PI, 2*Math.PI);
@@ -98,8 +98,8 @@ public class DriveCommands {
         }
 
 
-        Logger.recordOutput("Drive/isHigh", isHigh);
-        Logger.recordOutput("Drive/autoTrenchPre", preTrenchPose);
+//        Logger.recordOutput("Drive/isHigh", isHigh);
+//        Logger.recordOutput("Drive/autoTrenchPre", preTrenchPose);
 
         Pose2d finalPreTrenchPose = preTrenchPose;
         PathPlannerPath finalP = p;

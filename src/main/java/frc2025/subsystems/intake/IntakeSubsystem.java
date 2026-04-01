@@ -19,8 +19,6 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic(){
         Logger.processInputs("RealOutputs/Intake", inputs);
-        Logger.recordOutput("Superstructure/IntakeDeployPosition", inputs.position);
-        Logger.recordOutput("Superstructure/IntakeRollerVoltage", inputs.voltage);
         io.updateInputs(inputs);
     }
 

@@ -255,10 +255,10 @@ public class RobotState {
 
         Logger.recordOutput("Drive/speed", Math.hypot(vx, vy));
         Logger.recordOutput("Vision/shootingWhileMovingVirtualPose", shootingWhileMovingVirtualPose);
-        Logger.recordOutput("Vision/angleToVirtualTarget", angleToVirtualTarget);
-        Logger.recordOutput("Vision/virtualTargetAngularVelocity", virtualTargetAngularVelocity);
-        Logger.recordOutput("Vision/wantedShooterAcceleration", wantedShooterAcceleration);
-        Logger.recordOutput("Vision/wantedHoodVelocity", wantedHoodVelocity);
+//        Logger.recordOutput("Vision/angleToVirtualTarget", angleToVirtualTarget);
+//        Logger.recordOutput("Vision/virtualTargetAngularVelocity", virtualTargetAngularVelocity);
+//        Logger.recordOutput("Vision/wantedShooterAcceleration", wantedShooterAcceleration);
+//        Logger.recordOutput("Vision/wantedHoodVelocity", wantedHoodVelocity);
     }
 
     public double getAngleToRealHub() {

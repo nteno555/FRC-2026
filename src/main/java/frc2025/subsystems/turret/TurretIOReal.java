@@ -111,8 +111,6 @@ public class TurretIOReal implements TurretIO{
 
         Logger.recordOutput("Turret/voltage", turretMotor.getMotorVoltage().getValue().in(Units.Volts));
         Logger.recordOutput("Turret/current", turretMotor.getSupplyCurrent().getValue().in(Units.Amp));
-//        Logger.recordOutput("Turret/tb1RelativePosition", throughBore1.getPosition().getValue().in(Units.Rotations));
-//        Logger.recordOutput("Turret/tb2RelativePosition", throughBore2.getPosition().getValue().in(Units.Rotations));
         Logger.recordOutput("Turret/RPS", turretMotor.getVelocity().getValueAsDouble());
     }
 
@@ -121,7 +119,6 @@ public class TurretIOReal implements TurretIO{
         turretMotor.setControl(new PositionVoltage(position)
                 .withSlot(0)
                 .withEnableFOC(true));
-        Logger.recordOutput("Turret/setPosPosition", position);
     }
 
     @Override
@@ -130,7 +127,6 @@ public class TurretIOReal implements TurretIO{
                 new PositionVoltage(position)
                         .withVelocity(velocity)
                         .withSlot(0)
-                        //.withEnableFOC(true)
         );
     }
 
@@ -144,13 +140,11 @@ public class TurretIOReal implements TurretIO{
 
     @Override
     public void setVoltage(double voltage){
-        Logger.recordOutput("Turret/softwareVoltage", voltage);
         turretMotor.setControl(new VoltageOut(voltage));
     }
 
     @Override
     public void rezero() {
-//        rezeroCRT();
         turretMotor.setPosition(0.0);
     }
 
@@ -169,10 +163,6 @@ public class TurretIOReal implements TurretIO{
 
                 double pos1 = ((tb1Pos - SubsystemConstants.throughBoreZero1 + 1) % 1) * SubsystemConstants.throughBoreRatio1;
                 double pos2 = ((tb2Pos - SubsystemConstants.throughBoreZero2 + 1) % 1) * SubsystemConstants.throughBoreRatio2;
-//                Logger.recordOutput("Turret/tb1WithOffset", tb1Pos - SubsystemConstants.throughBoreZero1);
-//                Logger.recordOutput("Turret/tb2WithOffset", tb2Pos - SubsystemConstants.throughBoreZero2);
-//                Logger.recordOutput("Turret/initialPos1", pos1);
-//                Logger.recordOutput("Turret/initialPos2", pos2);
                 double epsilon = 0.2;
 
                 int r1Multiplier = 0;
@@ -204,8 +194,6 @@ public class TurretIOReal implements TurretIO{
 
                 Logger.recordOutput("Turret/finalPos1", pos1);
                 Logger.recordOutput("Turret/finalPos2", pos2);
-//                Logger.recordOutput("Turret/r1Multiplier", r1Multiplier);
-//                Logger.recordOutput("Turret/r2Multiplier", r2Multiplier);
             } else if (throughBore1.isConnected()) {
                 double pos1 = ((throughBore1.getAbsolutePosition().getValueAsDouble() - SubsystemConstants.throughBoreZero1 + 1) % 1) * SubsystemConstants.throughBoreRatio1;
                 turretMotor.setPosition((pos1 - toRotations(SubsystemConstants.turretZeroOffsetRadians)));
@@ -220,20 +208,4 @@ public class TurretIOReal implements TurretIO{
     public void addVisionUpdate(double robotRelativeAngleRadians) {
 
     }
-
-//    @Override
-//    public void rezero() {
-//        double tb1RotToRad = (Math.PI*2) / SubsystemConstants.throughBoreRatio1;
-//        double tb2RotToRad = (Math.PI*2) / SubsystemConstants.throughBoreRatio2;
-//        double smallestPos1 = ((throughBore1.get() - SubsystemConstants.throughBoreZero1 + 1) % 1) * tb1RotToRad;
-//        double smallestPos2 = ((1 - throughBore2.get() - SubsystemConstants.throughBoreZero2 + 1) % 1) * tb2RotToRad;
-//        double epsilon = 5;
-//
-//        while(Math.abs(smallestPos1 - smallestPos2) > epsilon) {
-//            if(smallestPos1 < smallestPos2) smallestPos1 += tb1RotToRad;
-//            else smallestPos2 += tb2RotToRad;
-//        }
-//
-//        turretMotor.setPosition(- 1 * smallestPos1 * SubsystemConstants.turretRotationsPerRadian);
-//    }
 }

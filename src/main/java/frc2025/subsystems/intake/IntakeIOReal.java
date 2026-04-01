@@ -77,10 +77,10 @@ public class IntakeIOReal implements IntakeIO {
         inputs.voltage = intakeRoller.getMotorVoltage().getValue().in(Units.Volts);
         inputs.position = intakeDeployMaster.getPosition().getValueAsDouble();
         inputs.deployConnected = intakeDeployMaster.isConnected() && intakeDeploySlave.isConnected();
-        Logger.recordOutput("Intake/deployVoltage", intakeDeployMaster.getMotorVoltage().getValue().in(Units.Volts));
-        Logger.recordOutput("Intake/deployRPS", intakeDeployMaster.getVelocity().getValueAsDouble());
-        Logger.recordOutput("Intake/masterPosition", intakeDeployMaster.getPosition().getValueAsDouble());
-        Logger.recordOutput("Intake/slavePosition", intakeDeploySlave.getPosition().getValueAsDouble());
+//        Logger.recordOutput("Intake/deployVoltage", intakeDeployMaster.getMotorVoltage().getValue().in(Units.Volts));
+//        Logger.recordOutput("Intake/deployRPS", intakeDeployMaster.getVelocity().getValueAsDouble());
+//        Logger.recordOutput("Intake/masterPosition", intakeDeployMaster.getPosition().getValueAsDouble());
+//        Logger.recordOutput("Intake/slavePosition", intakeDeploySlave.getPosition().getValueAsDouble());
     }
 
     @Override
@@ -90,7 +90,6 @@ public class IntakeIOReal implements IntakeIO {
 
     @Override
     public void setDeployPosition(double position, boolean fast) {
-        Logger.recordOutput("Intake/wantedPositionRotations", position);
         if (fast) {
             intakeDeployMaster.setControl(
                     new PositionVoltage(position)
@@ -98,7 +97,6 @@ public class IntakeIOReal implements IntakeIO {
                             .withSlot(0)
             );
         } else {
-            Logger.recordOutput("Intake/slowHeartbeat", Math.random());
             intakeDeployMaster.setControl(
                 new PositionVoltage(position)
                         .withEnableFOC(true)
@@ -109,7 +107,6 @@ public class IntakeIOReal implements IntakeIO {
 
     @Override
     public void setVoltage(double voltage) {
-        Logger.recordOutput("Intake/wantedVoltage", voltage);
         intakeRoller.setControl(new VoltageOut(voltage));
     }
 

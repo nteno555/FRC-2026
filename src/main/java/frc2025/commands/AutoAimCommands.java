@@ -40,9 +40,9 @@ public class AutoAimCommands {
                     double angularVelocity = angleController.calculate(modAngle(shooterPose.getRotation().getRadians()),
                             modAngle(angleToTarget));
 
-                    Logger.recordOutput("Drive/hubTargetPose", targetPose);
-                    Logger.recordOutput("Drive/robotRotation", modAngle(shooterPose.getRotation().getRadians()));
-                    Logger.recordOutput("Drive/robotRotationUnmodded", shooterPose.getRotation().getRadians());
+//                    Logger.recordOutput("Drive/hubTargetPose", targetPose);
+//                    Logger.recordOutput("Drive/robotRotation", modAngle(shooterPose.getRotation().getRadians()));
+//                    Logger.recordOutput("Drive/robotRotationUnmodded", shooterPose.getRotation().getRadians());
 
                     return new ChassisSpeeds(
                             unlockedSpeeds.get().vxMetersPerSecond,
@@ -70,10 +70,10 @@ public class AutoAimCommands {
 
             // boolean debouncedGood = debouncer.calculate(good);
 
-            Logger.recordOutput("Indexer/autoIndex/shooterReady", robotContainer.getShooter().getShotReady());
-            Logger.recordOutput("Indexer/autoIndex/turretReady", robotContainer.getTurret().getShotReady());
-            Logger.recordOutput("Indexer/autoIndex/hoodReady", robotContainer.getHood().getShotReady());
-            Logger.recordOutput("Indexer/autoIndex/speed", RobotState.getInstance().getSpeed());
+//            Logger.recordOutput("Indexer/autoIndex/shooterReady", robotContainer.getShooter().getShotReady());
+//            Logger.recordOutput("Indexer/autoIndex/turretReady", robotContainer.getTurret().getShotReady());
+//            Logger.recordOutput("Indexer/autoIndex/hoodReady", robotContainer.getHood().getShotReady());
+//            Logger.recordOutput("Indexer/autoIndex/speed", RobotState.getInstance().getSpeed());
             Logger.recordOutput("Indexer/autoIndexReady", good);
 
             return good;
@@ -163,18 +163,18 @@ public class AutoAimCommands {
 
             // boolean debouncedGood = debouncer.calculate(good);
 
-            Logger.recordOutput("Indexer/autoIndex/notNearTrenchBump",
-                    !((nearBlueTrench || nearRedTrench) && onBumpTrench));
-            Logger.recordOutput("Indexer/autoIndex/inZone", inZone);
-            Logger.recordOutput("Indexer/autoIndex/notInClimb", !inClimb);
-            Logger.recordOutput("Indexer/autoIndex/hoodReady", robotContainer.getHood().getShotReady());
-            // Logger.recordOutput("Indexer/autoIndex/accelReady", (a <
-            // SubsystemConstants.autoAimMaxAccel));
-            Logger.recordOutput("Indexer/autoIndex/shooterReady", robotContainer.getShooter().getShotReady());
-            Logger.recordOutput("Indexer/autoIndex/turretReady", robotContainer.getTurret().getShotReady());
-            Logger.recordOutput("Indexer/autoIndex/speedReady",
-                    (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed));
-            Logger.recordOutput("Indexer/autoIndex/speed", RobotState.getInstance().getSpeed());
+//            Logger.recordOutput("Indexer/autoIndex/notNearTrenchBump",
+//                    !((nearBlueTrench || nearRedTrench) && onBumpTrench));
+//            Logger.recordOutput("Indexer/autoIndex/inZone", inZone);
+//            Logger.recordOutput("Indexer/autoIndex/notInClimb", !inClimb);
+//            Logger.recordOutput("Indexer/autoIndex/hoodReady", robotContainer.getHood().getShotReady());
+//            // Logger.recordOutput("Indexer/autoIndex/accelReady", (a <
+//            // SubsystemConstants.autoAimMaxAccel));
+//            Logger.recordOutput("Indexer/autoIndex/shooterReady", robotContainer.getShooter().getShotReady());
+//            Logger.recordOutput("Indexer/autoIndex/turretReady", robotContainer.getTurret().getShotReady());
+//            Logger.recordOutput("Indexer/autoIndex/speedReady",
+//                    (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed));
+//            Logger.recordOutput("Indexer/autoIndex/speed", RobotState.getInstance().getSpeed());
             // Logger.recordOutput("Indexer/autoIndex/accel", a);
             // Logger.recordOutput("Indexer/autoIndexReady", debouncedGood);
             Logger.recordOutput("Indexer/autoIndexReady", good);

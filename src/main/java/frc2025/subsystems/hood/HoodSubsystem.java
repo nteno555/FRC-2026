@@ -82,8 +82,8 @@ public class HoodSubsystem extends SubsystemBase {
             boolean currentRedTrench = (robotXpose - FieldConstants.redTrenchX) < 0.0;
             boolean futureRedTrench = (futureRobotPose.getX() - FieldConstants.redTrenchX) < 0.0;
 
-            Logger.recordOutput("Hood/nearBlueTrench", nearBlueTrench);
-            Logger.recordOutput("Hood/nearRedTrench", nearRedTrench);
+//            Logger.recordOutput("Hood/nearBlueTrench", nearBlueTrench);
+//            Logger.recordOutput("Hood/nearRedTrench", nearRedTrench);
 
             if ((nearRedTrench || nearBlueTrench) && nearTrenchY) {
                 return 0.0;

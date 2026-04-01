@@ -28,11 +28,6 @@ public class VisionSubsystem extends SubsystemBase {
         Pose2d target = RobotState.getInstance().getTargetPose();
         double distance = Math.hypot(pose.getX() - target.getX(), pose.getY() - target.getY());
         Logger.recordOutput("Vision/targetDistance", distance);
-
-
-//        LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-front");
-//        Logger.recordOutput("Vision/testtesttest", poseEstimate.tagCount);
-
     }
 
     public Command resetOdometryCommand() {

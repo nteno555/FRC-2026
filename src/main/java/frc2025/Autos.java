@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc2025.commands.AutoAimCommands;
 import frc2025.commands.FollowPathCommand;
 import frc2025.commands.PathPlanCommands;
@@ -36,9 +37,11 @@ public class Autos {
     public static final String HIGH_X2_NEUTRAL = "High x2 Neutral";
     public static final String HIGH_NEUTRAL_LOOP = "High Neutral Loop";
     public static final String LOW_NEUTRAL_STATION = "Low Neutral Station";
+    public static final String ONE_METER = "One Meter";
 
     public static Command lowNeutralLoop;
     public static Command highNeutralLoop;
+    public static Command oneMeter;
 
     private final String WAIT_SHOOT = "wait_shoot";
     private final String WAIT_SHOOT_EXTENDED = "wait_shoot_extended";
@@ -76,6 +79,7 @@ public class Autos {
 
         lowNeutralLoop = LowNeutralLoop();
         highNeutralLoop = HighNeutralLoop();
+        oneMeter = OneMeterAuto();
     }
 
     /* Path Commands */
@@ -248,15 +252,18 @@ public class Autos {
         }
 
         if (SubsystemConstants.hasTurret) {
-            return pathCommands
-                    .andThen(
-                            AutoAimCommands.autoIndex(robotContainer)
-                                    .alongWith(robotContainer.getTurret().autoAim())
-                                    .alongWith(robotContainer.getHood().autoAimUnsafe())
-                                    .alongWith(robotContainer.getIntake().retractSlow())
-                                    .alongWith(robotContainer.getShooter().autoAim()));
+            return (new WaitCommand(0.1)).andThen(
+                        pathCommands
+                        .andThen(
+                                AutoAimCommands.autoIndex(robotContainer)
+                                        .alongWith(robotContainer.getTurret().autoAim())
+                                        .alongWith(robotContainer.getHood().autoAimUnsafe())
+                                        .alongWith(robotContainer.getIntake().retractSlow())
+                                        .alongWith(robotContainer.getShooter().autoAim()))
+            );
         } else {
-            return pathCommands
+            return (new WaitCommand(0.1)).andThen(
+                    pathCommands
                     .andThen(
                             AutoAimCommands
                                     .driveAutoAim(robotContainer,
@@ -265,7 +272,7 @@ public class Autos {
                                     .alongWith(robotContainer.getHood().autoAimUnsafe())
                                     .alongWith(AutoAimCommands.autoIndex(robotContainer)
                                             .alongWith(robotContainer.getIntake().oscillateIntake()))
-                                    .alongWith(robotContainer.getShooter().autoAim()));
+                                    .alongWith(robotContainer.getShooter().autoAim())));
         }
     }
 
@@ -327,6 +334,14 @@ public class Autos {
                 RETURN_UNDER_TRENCH_HIGH), false);
     }
 
+    public Command OneMeterAuto() {
+        return (new WaitCommand(0.1)).andThen(intakePathResetOdometry("three meter"));
+    }
+
+    public Command getOneMeter() {
+        return oneMeter;
+    }
+
 //    public Command HighDoubleNeutral() {
 //        if (!SubsystemConstants.hasTurret) {
 //            return buildAuto(
@@ -351,6 +366,7 @@ public class Autos {
 //            case MID_STATION_DEPOT -> MidStationDepotClimb();
 //            case HIGH_X2_NEUTRAL -> HighDoubleNeutral();
             case HIGH_NEUTRAL_LOOP -> highNeutralLoop;
+            case ONE_METER -> oneMeter;
 //            case LOW_NEUTRAL_STATION -> LowNeutralStation();
             default -> Commands.none();
         };

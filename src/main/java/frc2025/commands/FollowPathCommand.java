@@ -77,7 +77,7 @@ public class FollowPathCommand extends Command {
         this.lastPose = trajectory.sample(0).pose;
         this.firedMarkers.clear();
 
-        Logger.recordOutput("Drive/followPathEnd", new Pose2d(path.getPathPoses().get(path.getPathPoses().size()-1).getTranslation(), path.getGoalEndState().rotation()));
+//        Logger.recordOutput("Drive/followPathEnd", new Pose2d(path.getPathPoses().get(path.getPathPoses().size()-1).getTranslation(), path.getGoalEndState().rotation()));
     }
 
     private double modAngle(double angle) {
@@ -102,22 +102,23 @@ public class FollowPathCommand extends Command {
 
         double pathProgress = (currentTime/trajectory.getTotalTimeSeconds()) * (path.getWaypoints().size() - 1);
         pathProgress = Math.min(pathProgress, path.getWaypoints().size()-1);
-        Logger.recordOutput("Drive/pathProgress", pathProgress);
+//        Logger.recordOutput("Drive/pathProgress", pathProgress);
 
         for(EventMarker marker : eventMarkers) {
-            Logger.recordOutput("Drive/markerStart", marker.position());
-            Logger.recordOutput("Drive/markerEnd", marker.endPosition());
+//            Logger.recordOutput("Drive/markerStart", marker.position());
+//            Logger.recordOutput("Drive/markerEnd", marker.endPosition());
             if (pathProgress >= marker.position() && pathProgress <= marker.endPosition()) {
                 autoAimOverride = !marker.triggerName().equals("stop auto aim");
             } else {
                 autoAimOverride = true;
             }
-            Logger.recordOutput("Drive/autoAutoAimOverride", autoAimOverride);
+//            Logger.recordOutput("Drive/autoAutoAimOverride", autoAimOverride);
         }
 
         autoAimOverride = (SubsystemConstants.hasTurret);
 
-        Logger.recordOutput("Drive/pathProgress", pathProgress);
+//        Logger.recordOutput("Drive/pathProgress", pathProgress);
+        Logger.recordOutput("Drive/FollowPath/desiredPose", desiredState.pose);
         Logger.recordOutput("Drive/FollowPath/wantedVelocity", desiredState.linearVelocity);
         Logger.recordOutput("Drive/FollowPath/currentVelocity", RobotState.getInstance().getSpeed());
 
@@ -131,7 +132,7 @@ public class FollowPathCommand extends Command {
         ChassisSpeeds desiredSpeeds = new ChassisSpeeds(
                 desiredState.fieldSpeeds.vxMetersPerSecond,
                 desiredState.fieldSpeeds.vyMetersPerSecond,
-0.0
+                0.0
 //                desiredState.fieldSpeeds.omegaRadiansPerSecond
             //    omegaFeedback * -1
         );
@@ -140,7 +141,7 @@ public class FollowPathCommand extends Command {
             desiredSpeeds.omegaRadiansPerSecond = 0.0;
         }
 
-        Logger.recordOutput("Drive/PathFollowingError", dist);
+//        Logger.recordOutput("Drive/PathFollowingError", dist);
 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                 desiredSpeeds.plus(new ChassisSpeeds(xFeedback, yFeedback, omegaFeedback)),
@@ -192,8 +193,8 @@ public class FollowPathCommand extends Command {
         if(!useTimeout) {
             Translation2d translation = currentPose.getTranslation().minus(endPose.getTranslation());
             double rotationDistance = Math.abs(currentPose.getRotation().minus(endPose.getRotation()).getDegrees());
-            Logger.recordOutput("Vision/alignDistance", translation.getNorm());
-            Logger.recordOutput("Drive/targetPose", endPose);
+//            Logger.recordOutput("Vision/alignDistance", translation.getNorm());
+//            Logger.recordOutput("Drive/targetPose", endPose);
 
             return (translation.getNorm() < 0.3 && rotationDistance < 20) && RobotState.getInstance().getSpeed() < 1.0;// && velocity < 0.02 && angularVelocity < 0.1;
         }

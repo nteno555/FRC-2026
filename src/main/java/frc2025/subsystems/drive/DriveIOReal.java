@@ -54,32 +54,30 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
         inputs.swervePoseMeters = state.Pose;
 
-        SwerveModulePosition[] wheelDeltas = new SwerveModulePosition[4];
-        for (int i = 0; i < 4; i++) {
-            wheelDeltas[i] = new SwerveModulePosition(
-                    (state.ModulePositions[i].distanceMeters - lastModulePositionsMeters[i]),
-                    state.ModulePositions[i].angle);
-            lastModulePositionsMeters[i] = state.ModulePositions[i].distanceMeters;
-        }
-        var twist = getKinematics().toTwist2d(wheelDeltas);
-        Rotation2d gyroYaw = Rotation2d.fromRadians(getPigeon2().getYaw().getValue().in(Units.Radians));
-        if (lastGyroYaw != null) {
-            twist = new Twist2d(twist.dx, twist.dy, gyroYaw.minus(lastGyroYaw).getRadians());
-        }
-        lastGyroYaw = gyroYaw;
-        inputs.odometryTwist = twist;
-        inputs.odometryTimestamp = Timer.getFPGATimestamp();
+//        SwerveModulePosition[] wheelDeltas = new SwerveModulePosition[4];
+//        for (int i = 0; i < 4; i++) {
+//            wheelDeltas[i] = new SwerveModulePosition(
+//                    (state.ModulePositions[i].distanceMeters - lastModulePositionsMeters[i]),
+//                    state.ModulePositions[i].angle);
+//            lastModulePositionsMeters[i] = state.ModulePositions[i].distanceMeters;
+//        }
+//        var twist = getKinematics().toTwist2d(wheelDeltas);
+//        Rotation2d gyroYaw = Rotation2d.fromRadians(getPigeon2().getYaw().getValue().in(Units.Radians));
+//        if (lastGyroYaw != null) {
+//            twist = new Twist2d(twist.dx, twist.dy, gyroYaw.minus(lastGyroYaw).getRadians());
+//        }
+//        lastGyroYaw = gyroYaw;
+//        inputs.odometryTwist = twist;
+//        inputs.odometryTimestamp = Timer.getFPGATimestamp();
+//
+//        double xAccel = getPigeon2().getAccelerationX().getValue().in(Units.MetersPerSecondPerSecond);
+//        double yAccel = getPigeon2().getAccelerationY().getValue().in(Units.MetersPerSecondPerSecond);
+//        inputs.pigeonAcceleration = Math.hypot(xAccel, yAccel);
 
-        double xAccel = getPigeon2().getAccelerationX().getValue().in(Units.MetersPerSecondPerSecond);
-        double yAccel = getPigeon2().getAccelerationY().getValue().in(Units.MetersPerSecondPerSecond);
-        inputs.pigeonAcceleration = Math.hypot(xAccel, yAccel);
-
-        Logger.recordOutput("Drive/pigeonRotation", getPigeon2().getRotation2d());
-        Logger.recordOutput("Drive/pigeonConnected", getPigeon2().isConnected());
-        Logger.recordOutput("Drive/SwerveModuleStates", getState().ModuleStates);
-        Logger.recordOutput("Drive/SwerveModuleStatesWanted", getState().ModuleTargets);
-
-//        Logger.recordOutput("Drive/")
+//        Logger.recordOutput("Drive/pigeonRotation", getPigeon2().getRotation2d());
+//        Logger.recordOutput("Drive/pigeonConnected", getPigeon2().isConnected());
+//        Logger.recordOutput("Drive/SwerveModuleStates", getState().ModuleStates);
+//        Logger.recordOutput("Drive/SwerveModuleStatesWanted", getState().ModuleTargets);
     }
 
     @Override
@@ -91,10 +89,10 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
     public void addVisionMeasurement(List<RobotState.TimestampedVisionUpdate> updates) {
         double avgTimestamp = 0;
         for (var update: updates) {
-            Logger.recordOutput("Drive/addVisionMeasurementHeartbeat2", Math.random());
-            Logger.recordOutput("Drive/visionUpdatePose", update.pose());
-            Logger.recordOutput("Drive/visionUpdateTimestamp", update.timestamp());
-            Logger.recordOutput("Drive/currentTimestamp", Utils.getCurrentTimeSeconds());
+//            Logger.recordOutput("Drive/addVisionMeasurementHeartbeat2", Math.random());
+//            Logger.recordOutput("Drive/visionUpdatePose", update.pose());
+//            Logger.recordOutput("Drive/visionUpdateTimestamp", update.timestamp());
+//            Logger.recordOutput("Drive/currentTimestamp", Utils.getCurrentTimeSeconds());
 
             double timestamp = Utils.fpgaToCurrentTime(update.timestamp());
             avgTimestamp += timestamp;

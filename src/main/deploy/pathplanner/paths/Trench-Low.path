@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.0,
-        "y": 0.741
+        "x": 5.643020405522099,
+        "y": 0.6556690436469181
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.025656563087746,
-        "y": 0.7126251367639612
+        "x": 4.182521240234376,
+        "y": 0.6538842321325228
       },
       "isLocked": false,
-      "linkedName": "trench low mid"
+      "linkedName": "low trench return"
     },
     {
       "anchor": {
-        "x": 3.6379164027461304,
-        "y": 0.6249838177716287
+        "x": 3.6745342559814453,
+        "y": 0.6556690436469181
       },
       "prevControl": {
-        "x": 4.635323103162977,
-        "y": 0.6950445895724828
+        "x": 4.818669173064055,
+        "y": 0.6532168499981912
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "low flipped"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -34,9 +34,9 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 4.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 1080.0,
+    "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
@@ -45,9 +45,9 @@
     "rotation": 90.0
   },
   "reversed": false,
-  "folder": "trench returns",
+  "folder": "low start",
   "idealStartingState": {
-    "velocity": 0.0,
+    "velocity": 0,
     "rotation": 90.0
   },
   "useDefaultConstraints": true

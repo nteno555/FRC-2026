@@ -34,8 +34,8 @@ public class LimelightFiducialCamera {
     private boolean gyroInitialized = false;
 
     public LimelightFiducialCamera(String name, boolean turretMounted, double robotToCameraForward,
-            double robotToCameraRight, double robotToCameraUp,
-            double robotToCameraYaw, double robotToCameraPitch, double robotToCameraRoll) {
+                                   double robotToCameraRight, double robotToCameraUp,
+                                   double robotToCameraYaw, double robotToCameraPitch, double robotToCameraRoll) {
         this.name = name;
         this.turretMounted = turretMounted;
 
@@ -73,7 +73,7 @@ public class LimelightFiducialCamera {
 //            imuMode = 4;
 //        }
 
-        Logger.recordOutput(prefix + "IMU", imuMode);
+//        Logger.recordOutput(prefix + "IMU", imuMode);
 
         if (turretMounted) {
             double orientation = RobotState.getInstance().getVisionPose().getRotation().getDegrees()
@@ -83,17 +83,17 @@ public class LimelightFiducialCamera {
                     - RobotState.getInstance().getTurretVelocity();
             omega = Units.radiansToDegrees(omega);
 
-            LimelightHelpers.SetRobotOrientation(name, orientation, omega, 0, 0, 0, 0);
+            LimelightHelpers.SetRobotOrientation_NoFlush(name, orientation, omega, 0, 0, 0, 0);
 
-            Logger.recordOutput(prefix + "mt2RobotOrientation", orientation);
-            Logger.recordOutput(prefix + "mt2UpdateGyroHeartbeat", Math.random());
+//            Logger.recordOutput(prefix + "mt2RobotOrientation", orientation);
+//            Logger.recordOutput(prefix + "mt2UpdateGyroHeartbeat", Math.random());
         } else {
             double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
             omega = Units.radiansToDegrees(omega);
 
-            LimelightHelpers.SetRobotOrientation(name,
+            LimelightHelpers.SetRobotOrientation_NoFlush(name,
                     RobotState.getInstance().getVisionPose().getRotation().getDegrees(), omega, 0, 0, 0, 0);
-            Logger.recordOutput(prefix + "mt2UpdateGyroHeartbeat", Math.random());
+//            Logger.recordOutput(prefix + "mt2UpdateGyroHeartbeat", Math.random());
         }
     }
 
@@ -132,8 +132,8 @@ public class LimelightFiducialCamera {
 
             Transform2d cameraToRobotTransform = robotToShooterReal.plus(SubsystemConstants.shooterToCamera).inverse();
 
-            Logger.recordOutput("Vision/" + name + "_mt2/turretTransform",
-                    cameraToRobotTransform.getRotation().getDegrees());
+//            Logger.recordOutput("Vision/" + name + "_mt2/turretTransform",
+//                    cameraToRobotTransform.getRotation().getDegrees());
 
             return pose.transformBy(cameraToRobotTransform);
         } else {
@@ -151,12 +151,12 @@ public class LimelightFiducialCamera {
         double minMeanArea = 0.0;
         double maxYawRate = Math.PI * 2;
 
-        Logger.recordOutput(prefix + "heartbeat1", Math.random());
+//        Logger.recordOutput(prefix + "heartbeat1", Math.random());
 
         if (poseEstimate == null)
             return;
 
-        Logger.recordOutput(prefix + "heartbeat2", Math.random());
+//        Logger.recordOutput(prefix + "heartbeat2", Math.random());
         Logger.recordOutput(prefix + "tagCount", poseEstimate.tagCount);
 
         boolean reject = false;
@@ -209,9 +209,9 @@ public class LimelightFiducialCamera {
         // if(turretMounted && RobotState.getInstance().getTurretVelocity() > 0.1)
         // reject = true;
 
-        Logger.recordOutput(prefix + "meanDistance", meanDistance);
-        Logger.recordOutput(prefix + "meanAmbiguity", meanAmbiguity);
-        Logger.recordOutput(prefix + "meanArea", meanArea);
+//        Logger.recordOutput(prefix + "meanDistance", meanDistance);
+//        Logger.recordOutput(prefix + "meanAmbiguity", meanAmbiguity);
+//        Logger.recordOutput(prefix + "meanArea", meanArea);
         Logger.recordOutput(prefix + "rejected", reject);
         Logger.recordOutput(prefix + "rawPose", pose);
 
@@ -242,13 +242,13 @@ public class LimelightFiducialCamera {
         String prefix = "Vision/" + name + "_mt2/";
         double maxYawRate = Math.PI * 2;
 
-        Logger.recordOutput(prefix + "heartbeat1", Math.random());
+//        Logger.recordOutput(prefix + "heartbeat1", Math.random());
 
         if (poseEstimate == null || poseEstimate.tagCount < 1)
             return;
 
-        Logger.recordOutput(prefix + "heartbeat2", Math.random());
-        Logger.recordOutput(prefix + "tagCount", poseEstimate.tagCount);
+//        Logger.recordOutput(prefix + "heartbeat2", Math.random());
+//        Logger.recordOutput(prefix + "tagCount", poseEstimate.tagCount);
 
         Pose2d pose = poseEstimate.pose;
 
@@ -281,9 +281,9 @@ public class LimelightFiducialCamera {
             reject = true;
         }
 
-        Logger.recordOutput(prefix + "meanDistance", meanDistance);
-        Logger.recordOutput(prefix + "leastDistance", leastDistance);
-        Logger.recordOutput(prefix + "omega", omega);
+//        Logger.recordOutput(prefix + "meanDistance", meanDistance);
+//        Logger.recordOutput(prefix + "leastDistance", leastDistance);
+//        Logger.recordOutput(prefix + "omega", omega);
         Logger.recordOutput(prefix + "rejected", reject);
         Logger.recordOutput(prefix + "rawPose", pose);
 

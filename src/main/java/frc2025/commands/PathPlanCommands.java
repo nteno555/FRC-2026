@@ -109,7 +109,7 @@ public class PathPlanCommands {
 //        };
 
 
-        Logger.recordOutput("Drive/preTrenchPose", preTrenchPose.get());
+//        Logger.recordOutput("Drive/preTrenchPose", preTrenchPose.get());
 
         Supplier<PathPlannerPath> preTrenchPathSupplier = () -> {
             var robotPose = RobotState.getInstance().getVisionPose();

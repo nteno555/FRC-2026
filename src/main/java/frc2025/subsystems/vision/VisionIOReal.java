@@ -38,27 +38,38 @@ public class VisionIOReal implements VisionIO {
                         SubsystemConstants.robotToRightCameraYaw,
                         SubsystemConstants.robotToRightCameraPitch,
                         SubsystemConstants.robotToRightCameraRoll
-                )
-//               new LimelightFiducialCamera(
-//                       "limelight-front",
-//                       false,
-//                       SubsystemConstants.robotToFrontCameraForward,
-//                       SubsystemConstants.robotToFrontCameraRight,
-//                       SubsystemConstants.robotToFrontCameraUp,
-//                       SubsystemConstants.robotToFrontCameraYaw,
-//                       SubsystemConstants.robotToFrontCameraPitch,
-//                       SubsystemConstants.robotToFrontCameraRoll
-//               )
+                ),
+               new LimelightFiducialCamera(
+                       "limelight-front",
+                       false,
+                       SubsystemConstants.robotToFrontCameraForward,
+                       SubsystemConstants.robotToFrontCameraRight,
+                       SubsystemConstants.robotToFrontCameraUp,
+                       SubsystemConstants.robotToFrontCameraYaw,
+                       SubsystemConstants.robotToFrontCameraPitch,
+                       SubsystemConstants.robotToFrontCameraRoll
+               )
         );
     }
 
-    @Override
-    public void updateInputs(VisionIOInputs inputs) {
-        for(var cam: cameras) {
-            cam.writeGyro();
-            cam.updatePose();
-        }
-    }
+    private int cameraIndex = 0;
+ 
+     @Override
+     public void updateInputs(VisionIOInputs inputs) {
+         if (cameras.isEmpty()) return;
+ 
+         // Update gyro orientation for all cameras (fast NT write, no flush)
+         for (var cam : cameras) {
+             cam.writeGyro();
+         }
+ 
+         // Process pose for only one camera per frame (round-robin)
+         cameras.get(cameraIndex).updatePose();
+         cameraIndex = (cameraIndex + 1) % cameras.size();
+ 
+         // Flush all orientation/gyro updates to NetworkTables once per loop
+         LimelightHelpers.Flush();
+     }
 
     @Override
     public void resetOdometry() {

@@ -25,13 +25,12 @@ public class TurretSubsystem extends SubsystemBase {
     public void periodic() {
         Logger.processInputs("RealOutputs/Turret", inputs);
         Logger.recordOutput("Turret/setpoint", setpoint);
+
         io.updateInputs(inputs);
 
         double fieldRelativeAngleRad = -inputs.positionRadians
                 + RobotState.getInstance().getVisionPose().getRotation().getRadians();
         Logger.recordOutput("Turret/fieldRelativeAngleRadians", fieldRelativeAngleRad);
-        Logger.recordOutput("Vision/aimAngleDiff",
-                RobotState.getInstance().getAngleToVirtualTarget() - fieldRelativeAngleRad);
 
         RobotState.getInstance().setTurretAngle(inputs.positionRadians);
         RobotState.getInstance().setTurretVelocity(inputs.velocity);
@@ -47,20 +46,19 @@ public class TurretSubsystem extends SubsystemBase {
                 zeroed = true;
             }
         }
-
-        Logger.recordOutput("Superstructure/TurretAngleRadians", inputs.positionRadians);
-
-        Pose2d turretPose = new Pose2d(
-                RobotState.getInstance().getVisionShooterPose().getTranslation(),
-                Rotation2d.fromRadians(fieldRelativeAngleRad));
-        Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
-        Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
-        double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
-        Transform2d aimingPoseTransform = new Transform2d(dist, 0.0, Rotation2d.kZero);
-        Pose2d aimingPose = turretPose.transformBy(aimingPoseTransform);
-
-        Logger.recordOutput("Turret/turretPose", turretPose);
-        Logger.recordOutput("Turret/turretAimingPose", new Pose2d(aimingPose.getTranslation(), Rotation2d.kZero));
+//
+//
+//        Pose2d turretPose = new Pose2d(
+//                RobotState.getInstance().getVisionShooterPose().getTranslation(),
+//                Rotation2d.fromRadians(fieldRelativeAngleRad));
+//        Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
+//        Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
+//        double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
+//        Transform2d aimingPoseTransform = new Transform2d(dist, 0.0, Rotation2d.kZero);
+//        Pose2d aimingPose = turretPose.transformBy(aimingPoseTransform);
+//
+//        Logger.recordOutput("Turret/turretPose", turretPose);
+//        Logger.recordOutput("Turret/turretAimingPose", new Pose2d(aimingPose.getTranslation(), Rotation2d.kZero));
     }
 
     public Command autoAim() {
@@ -165,16 +163,9 @@ public class TurretSubsystem extends SubsystemBase {
                 io.setPositionFast(setpoint);
             }
 
-            // if(io.toRadians(Math.abs(setpoint - inputs.positionTicks)) < 0.5) {
-            // Logger.recordOutput("Turret/slot0heartbeat", Math.random());
-            // io.setPosition(setpoint, velocityFF);
-            // } else {
-            // Logger.recordOutput("Turret/slot1heartbeat", Math.random());
-            // io.setPositionFast(setpoint);
-            // }
-            Logger.recordOutput("Turret/turretWantedPositionRadians", positionRadians.get());
-            Logger.recordOutput("Turret/turretClampedPositionRadians", bestAngle);
-            Logger.recordOutput("Turret/turretClampedPositionRotations", setpoint);
+//            Logger.recordOutput("Turret/turretWantedPositionRadians", positionRadians.get());
+//            Logger.recordOutput("Turret/turretClampedPositionRadians", bestAngle);
+//            Logger.recordOutput("Turret/turretClampedPositionRotations", setpoint);
         });
     }
 

@@ -71,7 +71,6 @@ public class DriveSubsystem extends SubsystemBase {
         RobotState.getInstance().setPigeonAcceleration(inputs.pigeonAcceleration);
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);
         Logger.processInputs("RealOutputs/Drive", inputs);
-        Logger.recordOutput("Shooter/shuttling", RobotState.getInstance().getShuttling());
     }
 
     public void applyChassisSpeeds(ChassisSpeeds speeds) {
@@ -103,6 +102,9 @@ public class DriveSubsystem extends SubsystemBase {
             Translation2d translation = new Translation2d(x.getAsDouble(), y.getAsDouble());
             if (!Alliance.get())
                 translation = translation.times(-1);
+
+            Logger.recordOutput("Drive/teleopWantedVelocity", translation.getNorm());
+
             return new ChassisSpeeds(translation.getX(), translation.getY(), omega.getAsDouble());
         });
     }
