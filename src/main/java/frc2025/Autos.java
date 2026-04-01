@@ -85,22 +85,7 @@ public class Autos {
     /* Path Commands */
 
     private Command intakeDrive(Command driveCommand) {
-        return robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
-                .alongWith(robotContainer.getHood().setPosition(() -> 0.0))
-                .until(() -> robotContainer.getIntake().getDeployReady()
-                        && robotContainer.getHood().getPosition() < 0.3)
-                .withTimeout(1.0)
-                .andThen(
-                        driveCommand
-                                .deadlineFor(
-                                        robotContainer.getIntake().setIntakingAuto()
-                                                .alongWith(robotContainer.getIndexer().setIndexerVoltageWithTowerSpeed(
-                                                        () -> SubsystemConstants.indexerReverseVoltage, () -> 0.0)
-                                                // .alongWith(robotContainer.getTurret().setPositionSafe(() ->
-                                                // SubsystemConstants.turretDefaultRadians,
-                                                // () -> 0.0, () -> true))))
-                                                // .alongWith(robotContainer.getTurret().aimAtHub())))
-                                                )));
+        return driveCommand;
     }
 
     private Command intakePathBuiltin(String pathName) {
@@ -168,34 +153,12 @@ public class Autos {
     }
 
     public Command buildAuto(List<String> paths, boolean climb) {
-        Command aim = robotContainer.getShooter().autoAim();
-        // .alongWith(robotContainer.getTurret().aimAtHub());
-
         Command pathCommands = intakePathResetOdometry(paths.get(0));
 
         for (int i = 1; i < paths.size(); i++) {
             if (paths.get(i).equals(WAIT_SHOOT) || paths.get(i).equals(WAIT_SHOOT_EXTENDED)) {
                 double waitTime = (paths.get(i).equals(WAIT_SHOOT)) ? 3.0 : 4.0;
-                if (SubsystemConstants.hasTurret) {
-                    pathCommands = pathCommands.andThen(
-                            (AutoAimCommands.autoIndex(robotContainer)
-                                    .alongWith(robotContainer.getShooter().autoAim())
-                                    .alongWith(robotContainer.getTurret().snapThenTrack())
-                                    .alongWith(robotContainer.getHood().autoAimUnsafe())
-                                    .alongWith(robotContainer.getIntake().retractSlow()))
-                                    .withTimeout(waitTime));
-                } else {
-                    pathCommands = pathCommands.andThen(
-                            AutoAimCommands.driveAutoAim(
-                                    robotContainer,
-                                    () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
-                                    () -> new ChassisSpeeds(0, 0, 0))
-                                    .alongWith(AutoAimCommands.autoIndex(robotContainer)
-                                            .alongWith(robotContainer.getShooter().autoAim())
-                                            .alongWith(robotContainer.getHood().autoAimUnsafe())
-                                            .alongWith(robotContainer.getIntake().retractSlow()))
-                                    .withTimeout(waitTime));
-                }
+                pathCommands = pathCommands.andThen(Commands.waitSeconds(waitTime));
             } else if (paths.get(i).equals(WAIT_NO_SHOOT)) {
                 pathCommands = pathCommands.andThen(
                         Commands.waitSeconds(1.0));
@@ -251,29 +214,7 @@ public class Autos {
             }
         }
 
-        if (SubsystemConstants.hasTurret) {
-            return (new WaitCommand(0.1)).andThen(
-                        pathCommands
-                        .andThen(
-                                AutoAimCommands.autoIndex(robotContainer)
-                                        .alongWith(robotContainer.getTurret().autoAim())
-                                        .alongWith(robotContainer.getHood().autoAimUnsafe())
-                                        .alongWith(robotContainer.getIntake().retractSlow())
-                                        .alongWith(robotContainer.getShooter().autoAim()))
-            );
-        } else {
-            return (new WaitCommand(0.1)).andThen(
-                    pathCommands
-                    .andThen(
-                            AutoAimCommands
-                                    .driveAutoAim(robotContainer,
-                                            () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
-                                            () -> new ChassisSpeeds(0, 0, 0))
-                                    .alongWith(robotContainer.getHood().autoAimUnsafe())
-                                    .alongWith(AutoAimCommands.autoIndex(robotContainer)
-                                            .alongWith(robotContainer.getIntake().oscillateIntake()))
-                                    .alongWith(robotContainer.getShooter().autoAim())));
-        }
+        return pathCommands;
     }
 
 //    public Command LowNeutralStation() {

@@ -8,8 +8,6 @@ import java.util.function.Supplier;
 
 public class SuperstructureCommands {
     public static Command resetOdometry(RobotContainer robotContainer, Supplier<Pose2d> pose) {
-        return robotContainer.getVision().resetOdometryCommand().alongWith(
-                robotContainer.getDrive().resetOdometryCommand(pose)
-        );
+        return robotContainer.getDrive().resetOdometryCommand(pose);
     }
 }

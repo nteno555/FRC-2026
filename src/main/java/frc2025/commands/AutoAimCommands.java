@@ -5,6 +5,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc2025.RobotContainer;
 import frc2025.RobotState;
 import frc2025.config.FieldConstants;
@@ -53,148 +54,10 @@ public class AutoAimCommands {
 
     // For Auto
     public static Command autoIndex(RobotContainer robotContainer) {
-        Debouncer debouncer = new Debouncer(SubsystemConstants.autoIndexDebounceTime);
-        BooleanSupplier readySupplier = () -> {
-            boolean good = robotContainer.getShooter().getShotReady() && robotContainer.getHood().getShotReady();
-            if (!SubsystemConstants.hasTurret) {
-                good = good && robotContainer.getDrive().getShotReady();
-            } else {
-                good = good && robotContainer.getTurret().getShotReady();
-            }
-
-            Pose2d pose = RobotState.getInstance().getVisionPose();
-
-            boolean inBlueZone = pose.getX() < FieldConstants.inBlueZoneX && !Alliance.get();
-            boolean inRedZone = pose.getX() > FieldConstants.inRedZoneX && Alliance.get();
-            good = good && (inBlueZone || inRedZone);
-
-            // boolean debouncedGood = debouncer.calculate(good);
-
-//            Logger.recordOutput("Indexer/autoIndex/shooterReady", robotContainer.getShooter().getShotReady());
-//            Logger.recordOutput("Indexer/autoIndex/turretReady", robotContainer.getTurret().getShotReady());
-//            Logger.recordOutput("Indexer/autoIndex/hoodReady", robotContainer.getHood().getShotReady());
-//            Logger.recordOutput("Indexer/autoIndex/speed", RobotState.getInstance().getSpeed());
-            Logger.recordOutput("Indexer/autoIndexReady", good);
-
-            return good;
-        };
-
-        return robotContainer.getIndexer().setIndexerVoltageWithTowerSpeed(() -> {
-            if (readySupplier.getAsBoolean()) {
-                return SubsystemConstants.indexerShootVoltage;
-            } else {
-                return SubsystemConstants.indexerReverseVoltage;
-            }
-        }, () -> {
-            if (readySupplier.getAsBoolean()) {
-                double indexerSpeed = robotContainer.getShooter().getVelocity() * SubsystemConstants.towerFlywheelRatio;
-                return indexerSpeed;
-            } else {
-                return 0.0;
-            }
-        });
+        return Commands.none();
     }
 
     public static Command autoIndexTeleop(RobotContainer robotContainer, Supplier<Boolean> hasTurret) {
-        Debouncer debouncer = new Debouncer(SubsystemConstants.autoIndexDebounceTime);
-        BooleanSupplier readySupplier = () -> {
-            boolean good = robotContainer.getShooter().getShotReady() && robotContainer.getHood().getShotReady();
-
-            if (!hasTurret.get()) {
-                good = good && robotContainer.getDrive().getShotReady();
-            } else {
-                good = good && robotContainer.getTurret().getShotReady();
-            }
-
-            if (RobotState.getInstance().getShuttling()) {
-                return good;
-                // return true;
-                // return debouncer.calculate(robotContainer.getTurret().getShotReady() &&
-                // robotContainer.getHood().getShotReady());
-            }
-
-            Pose2d pose = RobotState.getInstance().getVisionPose();
-            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
-            double dist = pose.getTranslation().getDistance(targetPose.getTranslation());
-            double xPos = pose.getX();
-            double yPos = pose.getY();
-
-            double xySpeed = RobotState.getInstance().getSpeed();
-            double omegaSpeed = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
-
-            boolean nearBlueTrench = Math.abs(xPos - FieldConstants.blueTrenchX) < FieldConstants.trenchThreshold;
-            boolean nearRedTrench = Math.abs(xPos - FieldConstants.redTrenchX) < FieldConstants.trenchThreshold;
-            boolean onBumpTrench = (yPos > FieldConstants.highBumpY) || (yPos < FieldConstants.lowBumpY);
-
-            boolean inZone;
-            boolean inClimb;
-
-            // Pose Checks
-            good = good && !((nearBlueTrench || nearRedTrench) && onBumpTrench);
-
-            if (Alliance.get()) {
-                inZone = xPos > FieldConstants.inRedZoneX;
-                inClimb = (xPos > FieldConstants.redClimbX) && (yPos > FieldConstants.redClimbLowY)
-                        && (yPos < FieldConstants.redClimbHighY);
-            } else {
-                inZone = xPos < FieldConstants.inBlueZoneX;
-                inClimb = (xPos < FieldConstants.blueClimbX) && (yPos > FieldConstants.blueClimbLowY)
-                        && (yPos < FieldConstants.blueClimbHighY);
-            }
-
-            good = good && (!inClimb);
-
-            if (inZone) {
-                good = good && (dist < ShooterTreeMap.getInstance().getMaxDistance());
-            }
-            // double a = RobotState.getInstance().getPigeonAcceleration();
-
-            // Speed Checks
-            if (dist < ShooterTreeMap.getInstance().getMinDistance()) {
-                good = good && (xySpeed < 0.1) && (omegaSpeed < Math.PI / 6.0);
-            } else if (dist < 3.0) {
-                good = good && (xySpeed < SubsystemConstants.autoAimMaxSpeed)
-                        && (omegaSpeed < SubsystemConstants.autoAimMaxAngularVelocity);
-            } else {
-                good = good && (xySpeed < SubsystemConstants.autoAimMaxSpeedStrict)
-                        && (omegaSpeed < SubsystemConstants.autoAimMaxAngularVelocityStrict);
-
-            }
-
-            // boolean debouncedGood = debouncer.calculate(good);
-
-//            Logger.recordOutput("Indexer/autoIndex/notNearTrenchBump",
-//                    !((nearBlueTrench || nearRedTrench) && onBumpTrench));
-//            Logger.recordOutput("Indexer/autoIndex/inZone", inZone);
-//            Logger.recordOutput("Indexer/autoIndex/notInClimb", !inClimb);
-//            Logger.recordOutput("Indexer/autoIndex/hoodReady", robotContainer.getHood().getShotReady());
-//            // Logger.recordOutput("Indexer/autoIndex/accelReady", (a <
-//            // SubsystemConstants.autoAimMaxAccel));
-//            Logger.recordOutput("Indexer/autoIndex/shooterReady", robotContainer.getShooter().getShotReady());
-//            Logger.recordOutput("Indexer/autoIndex/turretReady", robotContainer.getTurret().getShotReady());
-//            Logger.recordOutput("Indexer/autoIndex/speedReady",
-//                    (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed));
-//            Logger.recordOutput("Indexer/autoIndex/speed", RobotState.getInstance().getSpeed());
-            // Logger.recordOutput("Indexer/autoIndex/accel", a);
-            // Logger.recordOutput("Indexer/autoIndexReady", debouncedGood);
-            Logger.recordOutput("Indexer/autoIndexReady", good);
-
-            return good;
-        };
-
-        return robotContainer.getIndexer().setIndexerVoltageWithTowerSpeed(() -> {
-            if (readySupplier.getAsBoolean()) {
-                return SubsystemConstants.indexerShootVoltage;
-            } else {
-                return 0.0;
-            }
-        }, () -> {
-            if (readySupplier.getAsBoolean()) {
-                double indexerSpeed = robotContainer.getShooter().getVelocity() * SubsystemConstants.towerFlywheelRatio;
-                return indexerSpeed;
-            } else {
-                return 0.0;
-            }
-        });
+        return Commands.none();
     }
 }
