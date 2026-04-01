@@ -29,7 +29,6 @@ public class Autos {
 
     private RobotContainer robotContainer;
     private String firstPath;
-    public static final String LOW_NEUTRAL_LOOP_ANGLED = "Low Neutral Loop Angled";
     public static final String LOW_X2_NEUTRAL_STATION = "Low x2 Neutral Station";
     public static final String LOW_X2_NEUTRAL = "Low x2 Neutral";
     public static final String LOW_NEUTRAL_LOOP = "Low Neutral Loop";
@@ -319,10 +318,6 @@ public class Autos {
                 RETURN_UNDER_TRENCH_LOW), false);
     }
 
-//    public Command MidStationDepotClimb() {
-//        return buildAuto(List.of("Mid-Station", WAIT_SHOOT, "Station-Depot", "Depot-Climb"), true);
-//    }
-
     public Command HighNeutralLoop() {
         if (!SubsystemConstants.hasTurret) {
             return buildAuto(
@@ -374,7 +369,6 @@ public class Autos {
 
     public String getFirstPath(String autoName) {
         return switch (autoName) {
-            case LOW_NEUTRAL_LOOP_ANGLED -> "Low-Neutral-Angled (under trench)";
             case LOW_X2_NEUTRAL_STATION, LOW_X2_NEUTRAL, LOW_NEUTRAL_LOOP -> "Low-Neutral (under trench)";
             case LOW_NEUTRAL_STATION, "Low-NeutralMid (under trench)" -> "Low-NeutralMid (under trench)";
             case MID_STATION_DEPOT -> "Mid-Station";

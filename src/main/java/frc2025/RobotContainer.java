@@ -145,7 +145,6 @@ public class RobotContainer {
                 autos = new Autos(this);
                 autoChooser.setDefaultOption("No Auto", "No Auto");
 
-//                autoChooser.addOption(Autos.LOW_NEUTRAL_LOOP_ANGLED, Autos.LOW_NEUTRAL_LOOP_ANGLED);
 //                autoChooser.addOption(Autos.LOW_X2_NEUTRAL_STATION, Autos.LOW_X2_NEUTRAL_STATION);
 //                autoChooser.addOption(Autos.LOW_X2_NEUTRAL, Autos.LOW_X2_NEUTRAL);
                 autoChooser.addOption(Autos.LOW_NEUTRAL_LOOP, Autos.LOW_NEUTRAL_LOOP);

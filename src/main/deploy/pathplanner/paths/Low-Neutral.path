@@ -8,11 +8,11 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.853572001139331,
-        "y": 0.6123886458785444
+        "x": 8.960659521032262,
+        "y": 0.6616190988046151
       },
       "isLocked": false,
-      "linkedName": "low"
+      "linkedName": "low flipped"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 3.306542661313657
       },
       "prevControl": {
-        "x": 8.253594291404442,
-        "y": 0.9316874276620366
+        "x": 8.238432107430917,
+        "y": 0.13533959056712996
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,20 +30,17 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.24971056486430904,
-      "rotationDegrees": -90.0
+      "waypointRelativePos": 0.1747826827199836,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 0.7371071263363487,
+      "rotationDegrees": 0.0
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "stop auto aim",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": 1.0,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 4.0,
@@ -60,7 +57,7 @@
   "folder": "low start",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }
