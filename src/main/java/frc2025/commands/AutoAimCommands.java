@@ -53,7 +53,7 @@ public class AutoAimCommands {
 
     // For Auto
     public static Command autoIndex(RobotContainer robotContainer) {
-        Debouncer debouncer = new Debouncer(SubsystemConstants.autoIndexDebounceTime);
+//        Debouncer debouncer = new Debouncer(SubsystemConstants.autoIndexDebounceTime);
         BooleanSupplier readySupplier = () -> {
             boolean good = robotContainer.getShooter().getShotReady() && robotContainer.getHood().getShotReady();
             if (!SubsystemConstants.hasTurret) {
@@ -70,9 +70,9 @@ public class AutoAimCommands {
 
             // boolean debouncedGood = debouncer.calculate(good);
 
-//            Logger.recordOutput("Indexer/autoIndex/shooterReady", robotContainer.getShooter().getShotReady());
-//            Logger.recordOutput("Indexer/autoIndex/turretReady", robotContainer.getTurret().getShotReady());
-//            Logger.recordOutput("Indexer/autoIndex/hoodReady", robotContainer.getHood().getShotReady());
+            Logger.recordOutput("Indexer/autoIndex/shooterReady", robotContainer.getShooter().getShotReady());
+            Logger.recordOutput("Indexer/autoIndex/turretReady", robotContainer.getTurret().getShotReady());
+            Logger.recordOutput("Indexer/autoIndex/hoodReady", robotContainer.getHood().getShotReady());
 //            Logger.recordOutput("Indexer/autoIndex/speed", RobotState.getInstance().getSpeed());
             Logger.recordOutput("Indexer/autoIndexReady", good);
 

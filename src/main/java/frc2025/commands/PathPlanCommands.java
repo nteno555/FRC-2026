@@ -41,48 +41,12 @@ public class PathPlanCommands {
                 endWaypoint
         );
 
-        PathConstraints constraints = new PathConstraints(3.5, 3.5, 2*Math.PI, 2*Math.PI);
+        PathConstraints constraints = new PathConstraints(3.5, 4, 2*Math.PI, 2*Math.PI);
         PathPlannerPath path = new PathPlannerPath(
                 waypoints,
                 constraints,
                 null,
                 new GoalEndState(endVelocity, end.getRotation())
-        );
-
-        return path;
-    }
-
-    private static PathPlannerPath straightPathFromPoses(List<Pose2d> poses, double endVelocity) {
-        int len = poses.toArray().length;
-
-        List<Pose2d> posesStraight = new ArrayList<>();
-        Pose2d start = poses.get(0);
-        Pose2d end = poses.get(1);
-        // the rotations do not work
-        posesStraight.add(new Pose2d(
-                start.getTranslation(),
-                Rotation2d.fromRadians(Math.atan2(end.getY() - start.getY(), end.getX() - start.getX())) // direction of velocity
-        ));
-        posesStraight.add(new Pose2d(
-                end.getTranslation(),
-                Rotation2d.fromRadians(Math.atan2(end.getY() - start.getY(), end.getX() - start.getX())) // direction of velocity
-        ));
-
-        if (!SubsystemConstants.hasTurret) {
-            posesStraight.add(new Pose2d(
-                    poses.get(2).getTranslation(),
-                    Rotation2d.fromRadians(Math.atan2(end.getY() - start.getY(), end.getX() - start.getX())) // direction of velocity
-            ));
-        }
-
-        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(posesStraight);
-
-        PathConstraints constraints = new PathConstraints(3.5, 3.5, 2*Math.PI, 2*Math.PI);
-        PathPlannerPath path = new PathPlannerPath(
-                waypoints,
-                constraints,
-                null,
-                new GoalEndState(endVelocity, poses.get(len-1).getRotation())
         );
 
         return path;

@@ -10,7 +10,7 @@ public class SubsystemConstants {
     public static double translationkI = 0.0;
     public static double translationkD = 0.0;
 //    public static double rotationkP = 8.0;
-    public static double rotationkP = 3.0;
+    public static double rotationkP = 4.0;
     public static double rotationkI = 0.0;
     public static double rotationkD = 0.0;
 
