@@ -119,7 +119,7 @@ public class SubsystemConstants {
     public static double intakeRetractPosition = 0.3;
     public static double intakeDeployPosition = 4.1;
     public static double intakeRollerVoltage = 12.0;
-    public static double intakeHalfPosition = 1.5;
+    public static double intakeHalfPosition = 1.7;
     public static double intakeQuarterPosition = 1.0;
 
     public static double indexerSupplyCurrentLimit = 120;
@@ -197,9 +197,9 @@ public class SubsystemConstants {
     public static double robotToRightCameraPitch = 28.0;
     public static double robotToRightCameraRoll = 0.0;
 
-    public static double autoAimMaxSpeed = 10.0;//2.3;
+    public static double autoAimMaxSpeed = 3.0;//2.3;
     public static double shuttlingMaxSpeed = 5.0;
-    public static double autoAimMaxSpeedStrict = 10.0;//1.0;
+    public static double autoAimMaxSpeedStrict = 1.0;//1.0;
     public static double autoAimMaxAccel = 10.0;
     public static double autoAimMaxAngularVelocity = Math.PI;
     public static double autoAimMaxAngularVelocityStrict = Math.PI/2;

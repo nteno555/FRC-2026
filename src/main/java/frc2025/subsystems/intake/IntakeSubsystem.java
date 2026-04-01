@@ -44,7 +44,7 @@ public class IntakeSubsystem extends SubsystemBase {
         return this.run(() -> {
             double time = (Timer.getFPGATimestamp());
 
-            if (time % 1.34 < 0.67) io.setDeployPosition(SubsystemConstants.intakeDeployPosition, true);
+            if (time % 1.67 < 0.835) io.setDeployPosition(SubsystemConstants.intakeDeployPosition, true);
             else io.setDeployPosition(SubsystemConstants.intakeHalfPosition, true);
 
             io.setVoltage(SubsystemConstants.intakeRollerVoltage);

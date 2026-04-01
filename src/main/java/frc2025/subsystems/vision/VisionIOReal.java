@@ -61,11 +61,12 @@ public class VisionIOReal implements VisionIO {
          // Update gyro orientation for all cameras (fast NT write, no flush)
          for (var cam : cameras) {
              cam.writeGyro();
+             cam.updatePose();
          }
  
          // Process pose for only one camera per frame (round-robin)
-         cameras.get(cameraIndex).updatePose();
-         cameraIndex = (cameraIndex + 1) % cameras.size();
+//         cameras.get(cameraIndex).updatePose();
+//         cameraIndex = (cameraIndex + 1) % cameras.size();
  
          // Flush all orientation/gyro updates to NetworkTables once per loop
          LimelightHelpers.Flush();

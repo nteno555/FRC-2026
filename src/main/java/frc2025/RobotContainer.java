@@ -75,11 +75,12 @@ public class RobotContainer {
         Command autoCommand;
 
         private double driveSpeed = 0.8;
-        private double slowmodeDriveSpeed = 0.3;
+        private double slowmodeDriveSpeed = 0.5;
         private double rotationSpeed = 0.7;
-        private double slowmodeRotationSpeed = 0.5;
+        private double slowmodeRotationSpeed = 0.7;
         private boolean slowmode;
         private double manualTurretSpeed = 2.0;
+
         private boolean sysCheck;
         private double rpsOffset;
 
@@ -227,12 +228,9 @@ public class RobotContainer {
                 intakeSubsystem.setDefaultCommand(intakeSubsystem.setDeployVoltage(() -> 0.0));
                 hoodSubsystem.setDefaultCommand(hoodSubsystem.setPosition(() -> 0.1));
                 shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
-                indexerSubsystem.setDefaultCommand(
-                                indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0));
+                indexerSubsystem.setDefaultCommand(indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0));
                 // turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
                 turretSubsystem.setDefaultCommand(turretSubsystem.setPositionSafe(() -> SubsystemConstants.turretDefaultRadians, () -> 0.0, () -> true)); // for
-                                                                                                                      // turret
-                                                                                                                      // ll
 
                 driverXboxController.a().onTrue(
                                 SuperstructureCommands.resetOdometry(
@@ -269,7 +267,7 @@ public class RobotContainer {
                                                                                 .getInterpolated(3))
                                                                 .alongWith(hoodSubsystem.setPosition(
                                                                                 () -> SubsystemConstants.hoodMaxAngleRotations))
-                                // .alongWith(intakeSubsystem.oscillateIntake())
+                                 .alongWith(intakeSubsystem.oscillateIntake())
                                 );
 
                 new Trigger(() -> aiming)
@@ -305,7 +303,7 @@ public class RobotContainer {
                                                                                                 * Math.PI * 2))
                                                                 .alongWith(shooterSubsystem.autoAim())
                                                                 .alongWith(hoodSubsystem.autoAim())
-                                // .alongWith(intakeSubsystem.oscillateIntake())
+                                 .alongWith(intakeSubsystem.oscillateIntake())
                                 );
 
                 new Trigger(() -> aiming)
@@ -372,6 +370,9 @@ public class RobotContainer {
                 operatorXboxController.rightTrigger()
                                 .onTrue(Commands.runOnce(() -> aimMode = AimMode.FIXED));
 
+                operatorXboxController.leftTrigger()
+                                .whileTrue(intakeSubsystem.setRollerVoltage(() -> -0.5 * SubsystemConstants.intakeRollerVoltage));
+
                 operatorXboxController.povUp()
                                 .onTrue(Commands.runOnce(() -> {
                                         rpsOffset += 1.0;
@@ -401,20 +402,11 @@ public class RobotContainer {
                                 .whileTrue(turretSubsystem.setVoltage(
                                                 () -> manualTurretSpeed * operatorXboxController.getRightX()));
 
-                // new Trigger(() -> slowmode).whileTrue(
-                // driveSubsystem.driveTeleop(
-                // () -> (slowmodeDriveSpeed) * handleDeadBand(driverXboxController.getLeftY() +
-                // tuningController.getLeftY(), DEAD_BAND_DRIVER, true) *
-                // kSpeedAt12Volts.in(MetersPerSecond),
-                // () -> (slowmodeDriveSpeed) * handleDeadBand(driverXboxController.getLeftX() +
-                // tuningController.getLeftX(), DEAD_BAND_DRIVER, true) *
-                // kSpeedAt12Volts.in(MetersPerSecond),
-                // () -> (-slowmodeRotationSpeed) *
-                // handleDeadBand(driverXboxController.getRightX() +
-                // tuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
-                // )
-                // .alongWith(intakeSubsystem.oscillateIntake())
-                // );
+                 new Trigger(() -> slowmode).whileTrue(
+                     driveSubsystem.driveTeleop(() -> (slowmodeDriveSpeed) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                            () -> (slowmodeDriveSpeed) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                            () -> (-rotationSpeed) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2)
+                 );
 
                 testSystemsController.x().onTrue(
                                 hoodSubsystem.setPosition(() -> 1.5));
@@ -701,6 +693,8 @@ public class RobotContainer {
 
                 Logger.recordOutput("Superstructure/aimMode", aimMode);
                 Logger.recordOutput("Superstructure/manualAimState", manualAimState);
+                Logger.recordOutput("Superstructure/slowmode", slowmode);
+                Logger.recordOutput("Superstructure/RPS Offset", rpsOffset);
 
         }
 

@@ -27,7 +27,7 @@ public class ShooterTreeMap {
         // 20/0.4 = 50 rps/s^2 @ 20A
         // kA = (50-4.167)/10 =
 
-        lowerWheelTreeMap.put(5.24, 56.0); // 47.41
+//        lowerWheelTreeMap.put(5.24, 56.0); // 47.41
        lowerWheelTreeMap.put(5.24, 61.0); // 47.41
        lowerWheelTreeMap.put(4.04, 51.0); // 43.13
        lowerWheelTreeMap.put(3.07, 46.0); // 41.05
@@ -122,7 +122,7 @@ public class ShooterTreeMap {
         shuttlingRPSTreeMap.put(5.0, 50.0);
         shuttlingRPSTreeMap.put(7.0, 65.0);
         shuttlingRPSTreeMap.put(9.0, 70.0);
-        shuttlingRPSTreeMap.put(16.0, 75.0);
+        shuttlingRPSTreeMap.put(16.0, 90.0);
 
         updateDashboardMap();
         SmartDashboard.putString("Tuning/lowerWheelTree Map", lowerWheelTreeMap.toString());
