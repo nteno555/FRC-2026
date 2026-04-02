@@ -98,8 +98,8 @@ public class Autos {
                                                 // .alongWith(robotContainer.getTurret().setPositionSafe(() ->
                                                 // SubsystemConstants.turretDefaultRadians,
                                                 // () -> 0.0, () -> true))))
-                                                // .alongWith(robotContainer.getTurret().aimAtHub())))
-                                                )));
+                                                 .alongWith(robotContainer.getTurret().aimAtHub())))
+                                                );
     }
 
     private Command intakePathBuiltin(String pathName) {

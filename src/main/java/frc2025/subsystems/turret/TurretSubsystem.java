@@ -192,15 +192,13 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     public Command aimAtHub() {
-    return setPositionFieldRelative(() -> {
-            double wantedAngle = RobotState.getInstance().getAngleToRealHub();
-            return wantedAngle;
-        }, () -> 0.0, () -> true).until(this::getShotReady)
-        .andThen(setPositionFieldRelative(() ->
-            RobotState.getInstance().getAngleToRealHub(),
-        () -> RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond - RobotState.getInstance().getVirtualTargetAngularVelocity(),
-        () -> false 
-    ));
+        return setPositionFieldRelative(() -> RobotState.getInstance().getAngleToRealHub(),
+                () -> 0.0, () -> true).until(this::getShotReady)
+            .andThen(setPositionFieldRelative(() ->
+                RobotState.getInstance().getAngleToRealHub(),
+            () -> RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond - RobotState.getInstance().getVirtualTargetAngularVelocity(),
+            () -> false
+        ));
     }
 
     public double getPosition() {
