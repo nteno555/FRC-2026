@@ -75,9 +75,9 @@ public class RobotContainer {
         Command autoCommand;
 
         private double driveSpeed = 0.8;
-        private double slowmodeDriveSpeed = 0.5;
+        private double slowmodeDriveSpeed = 0.3;
         private double rotationSpeed = 0.7;
-        private double slowmodeRotationSpeed = 0.7;
+        private double slowmodeRotationSpeed = 0.5;
         private boolean slowmode;
         private double manualTurretSpeed = 2.0;
 
@@ -341,7 +341,7 @@ public class RobotContainer {
                 driverXboxController
                                 .y()
                                 .and(driverXboxController.back())
-                                .whileTrue(turretSubsystem.rezero());
+                                .whileTrue(turretSubsystem.rezeroCRT());
 
                 driverXboxController.povLeft() // left bottom paddle
                                 .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));
@@ -405,7 +405,7 @@ public class RobotContainer {
                  new Trigger(() -> slowmode).whileTrue(
                      driveSubsystem.driveTeleop(() -> (slowmodeDriveSpeed) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
                             () -> (slowmodeDriveSpeed) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                            () -> (-rotationSpeed) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2)
+                            () -> (-slowmodeRotationSpeed) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2)
                  );
 
                 testSystemsController.x().onTrue(

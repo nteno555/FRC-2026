@@ -28,7 +28,7 @@ public class ShooterTreeMap {
         // kA = (50-4.167)/10 =
 
 //        lowerWheelTreeMap.put(5.24, 56.0); // 47.41
-       lowerWheelTreeMap.put(5.24, 61.0); // 47.41
+       lowerWheelTreeMap.put(5.24, 59.0); // 47.41
        lowerWheelTreeMap.put(4.04, 51.0); // 43.13
        lowerWheelTreeMap.put(3.07, 46.0); // 41.05
        lowerWheelTreeMap.put(2.47, 44.0); // 39.71

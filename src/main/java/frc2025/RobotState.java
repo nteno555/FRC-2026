@@ -149,7 +149,7 @@ public class RobotState {
     }
 
     public Pose2d getDelayedPose() {
-        double phaseDelay = 0.03;
+        double phaseDelay = 0.02;
         Pose2d currentPose = getVisionPose();
         ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(
                 robotRelativeSpeeds,

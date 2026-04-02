@@ -174,14 +174,14 @@ public class Autos {
 
         for (int i = 1; i < paths.size(); i++) {
             if (paths.get(i).equals(WAIT_SHOOT) || paths.get(i).equals(WAIT_SHOOT_EXTENDED)) {
-                double waitTime = (paths.get(i).equals(WAIT_SHOOT)) ? 3.0 : 4.0;
+                double waitTime = (paths.get(i).equals(WAIT_SHOOT)) ? 2.5 : 4.0;
                 if (SubsystemConstants.hasTurret) {
                     pathCommands = pathCommands.andThen(
                             (AutoAimCommands.autoIndex(robotContainer)
                                     .alongWith(robotContainer.getShooter().autoAim())
                                     .alongWith(robotContainer.getTurret().snapThenTrack())
                                     .alongWith(robotContainer.getHood().autoAimUnsafe())
-                                    .alongWith(robotContainer.getIntake().retractSlow()))
+                                    .alongWith(robotContainer.getIntake().oscillateIntake()))
                                     .withTimeout(waitTime));
                 } else {
                     pathCommands = pathCommands.andThen(
@@ -192,7 +192,7 @@ public class Autos {
                                     .alongWith(AutoAimCommands.autoIndex(robotContainer)
                                             .alongWith(robotContainer.getShooter().autoAim())
                                             .alongWith(robotContainer.getHood().autoAimUnsafe())
-                                            .alongWith(robotContainer.getIntake().retractSlow()))
+                                            .alongWith(robotContainer.getIntake().oscillateIntake()))
                                     .withTimeout(waitTime));
                 }
             } else if (paths.get(i).equals(WAIT_NO_SHOOT)) {
@@ -257,7 +257,7 @@ public class Autos {
                                 AutoAimCommands.autoIndex(robotContainer)
                                         .alongWith(robotContainer.getTurret().autoAim())
                                         .alongWith(robotContainer.getHood().autoAimUnsafe())
-                                        .alongWith(robotContainer.getIntake().retractSlow())
+                                        .alongWith(robotContainer.getIntake().oscillateIntake())
                                         .alongWith(robotContainer.getShooter().autoAim()))
             );
         } else {

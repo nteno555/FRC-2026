@@ -79,7 +79,7 @@ public class SubsystemConstants {
     public static double towerkPAmps = 5.0;
     public static double towerkIAmps = 0.0;
     public static double towerkDAmps = 0.0;
-    public static double towerFlywheelRatio = 1.0;
+    public static double towerFlywheelRatio = 1.5;
 
     public static double hoodkS = 0.29;
     public static double hoodkV = 0.12;
@@ -119,7 +119,7 @@ public class SubsystemConstants {
     public static double intakeRetractPosition = 0.3;
     public static double intakeDeployPosition = 4.1;
     public static double intakeRollerVoltage = 12.0;
-    public static double intakeHalfPosition = 1.7;
+    public static double intakeHalfPosition = 2.0;
     public static double intakeQuarterPosition = 1.0;
 
     public static double indexerSupplyCurrentLimit = 120;
@@ -151,8 +151,8 @@ public class SubsystemConstants {
     public static double turretRotationsPerRadian = 42.0/11.0 * 42.0/26.0 * 110/10.0 / (2*Math.PI); //10.80
     public static double turretMinAngleRadians = -3.2;
     public static double turretMaxAngleRadians = 4.0;
-    public static double throughBoreZero1 = 0.437;
-    public static double throughBoreZero2 = 0.893;
+    public static double throughBoreZero1 = 0.455;
+    public static double throughBoreZero2 = 0.677;
     public static double throughBoreRatio1 = 42.0 / 11.0 * 42.0 / 26.0; // 6.17
     public static double throughBoreRatio2 = 42.0 / 11.0; // 3.82
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
@@ -178,7 +178,7 @@ public class SubsystemConstants {
     public static double robotToFrontCameraUp = 0.225;
     public static double robotToFrontCameraYaw = 0.0;
     public static double robotToFrontCameraPitch = 28.0;
-    public static double robotToFrontCameraRoll = 270.0;
+    public static double robotToFrontCameraRoll = 90.0;
 
     public static Transform2d robotToBackCamera = new Transform2d(-0.3429, 0.064, Rotation2d.kZero);
     public static double robotToBackCameraForward = robotToBackCamera.getX();
@@ -197,7 +197,7 @@ public class SubsystemConstants {
     public static double robotToRightCameraPitch = 28.0;
     public static double robotToRightCameraRoll = 0.0;
 
-    public static double autoAimMaxSpeed = 3.0;//2.3;
+    public static double autoAimMaxSpeed = 2.5;//2.3;
     public static double shuttlingMaxSpeed = 5.0;
     public static double autoAimMaxSpeedStrict = 1.0;//1.0;
     public static double autoAimMaxAccel = 10.0;
