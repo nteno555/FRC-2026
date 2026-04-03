@@ -415,7 +415,7 @@ public class RobotContainer {
                 testSystemsController.a().whileTrue(
                                 shooterSubsystem.setSpeed(() -> 15.0));
                 testSystemsController.b().whileTrue(
-                                indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> -2.0, () -> 0.0));
+                                indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 2.0, () -> 15.0));
                 testSystemsController.leftTrigger().whileTrue(
                                 intakeSubsystem.homeThenRezero());
                 testSystemsController.rightTrigger().onTrue(
