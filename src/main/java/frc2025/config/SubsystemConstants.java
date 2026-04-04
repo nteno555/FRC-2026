@@ -81,7 +81,7 @@ public class SubsystemConstants {
     public static double towerkDAmps = 0.0;
     public static double towerFlywheelRatio = 1.5;
 
-    public static double hoodkS = 0.29;
+    public static double hoodkS = 0.4;
     public static double hoodkV = 0.12;
     public static double hoodkP = 6.0;
     public static double hoodkI = 0.0;
@@ -95,7 +95,7 @@ public class SubsystemConstants {
     public static double hoodReverseSoftLimit = -0.1;
     public static double hoodRezeroVoltage = -3.5;
     public static double hoodMinAngleRotations = 0;
-    public static double hoodMaxAngleRotations = 3.0;
+    public static double hoodMaxAngleRotations = 2.8;
     public static double hoodMinAngleRadians = 1.48;
     public static double hoodMaxAngleRadians = 0.87;
 
@@ -199,7 +199,7 @@ public class SubsystemConstants {
 
     public static double autoAimMaxSpeed = 2.5;//2.3;
     public static double shuttlingMaxSpeed = 5.0;
-    public static double autoAimMaxSpeedStrict = 1.0;//1.0;
+    public static double autoAimMaxSpeedStrict = 1.5;//1.0;
     public static double autoAimMaxAccel = 10.0;
     public static double autoAimMaxAngularVelocity = Math.PI;
     public static double autoAimMaxAngularVelocityStrict = Math.PI/2;

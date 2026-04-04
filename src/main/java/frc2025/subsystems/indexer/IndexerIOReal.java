@@ -75,7 +75,7 @@ public class IndexerIOReal implements IndexerIO {
     @Override
     public void updateInputs(IndexerIOInputs inputs) {
         inputs.indexerVoltage = indexer.getMotorVoltage().getValueAsDouble();
-        inputs.indexerCurrent = indexer.getTorqueCurrent().getValueAsDouble();
+        inputs.indexerCurrent = indexer.getStatorCurrent().getValueAsDouble();
         inputs.connected = indexer.isConnected();
     }
 

@@ -98,7 +98,7 @@ public class HoodSubsystem extends SubsystemBase {
             double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
 
             if (RobotState.getInstance().getShuttling()) {
-                return SubsystemConstants.hoodMaxAngleRotations;
+                return SubsystemConstants.hoodMaxAngleRotations - 0.1;
             }
 
             return ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist);
@@ -137,7 +137,7 @@ public class HoodSubsystem extends SubsystemBase {
     }
 
     public boolean getShotReady() {
-        return (inputs.positionRotations > 0.15) && (Math.abs(inputs.positionRotations - setpoint) < 0.1);
+        return (inputs.positionRotations > 0.15) && (Math.abs(inputs.positionRotations - setpoint) < 0.15);
     }
 
     public static double toRadians(double rotations) {

@@ -94,7 +94,7 @@ public class Autos {
                                 .deadlineFor(
                                         robotContainer.getIntake().setIntakingAuto()
                                                 .alongWith(robotContainer.getIndexer().setIndexerVoltageWithTowerSpeed(
-                                                        () -> SubsystemConstants.indexerReverseVoltage, () -> 0.0)
+                                                        () -> 0.0, () -> 0.0)
                                                 // .alongWith(robotContainer.getTurret().setPositionSafe(() ->
                                                 // SubsystemConstants.turretDefaultRadians,
                                                 // () -> 0.0, () -> true))))

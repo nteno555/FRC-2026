@@ -221,4 +221,9 @@ public class TurretSubsystem extends SubsystemBase {
                         || equals(setpoint, io.toRotations(SubsystemConstants.turretMaxAngleRadians)));
     }
 
+    public boolean getShotReadyLenient() {
+        return Math.abs(inputs.positionRadians - io.toRadians(setpoint)) < 0.35
+                && !(equals(setpoint, io.toRotations(SubsystemConstants.turretMinAngleRadians))
+                || equals(setpoint, io.toRotations(SubsystemConstants.turretMaxAngleRadians)));
+    }
 }

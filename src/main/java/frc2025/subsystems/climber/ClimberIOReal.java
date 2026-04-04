@@ -1,6 +1,7 @@
 package frc2025.subsystems.climber;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -14,7 +15,7 @@ import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class ClimberIOReal implements ClimberIO{
-    private final TalonFX climber = new TalonFX(SubsystemConstants.climberID, "rio");
+    private final TalonFX climber = new TalonFX(SubsystemConstants.climberID, CANBus.roboRIO());
 
     public ClimberIOReal() {
         var climberConfig = new TalonFXConfiguration();

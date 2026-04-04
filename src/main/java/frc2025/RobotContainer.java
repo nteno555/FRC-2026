@@ -76,7 +76,7 @@ public class RobotContainer {
 
         private double driveSpeed = 0.8;
         private double slowmodeDriveSpeed = 0.3;
-        private double rotationSpeed = 0.7;
+        private double rotationSpeed = 1.0;
         private double slowmodeRotationSpeed = 0.5;
         private boolean slowmode;
         private double manualTurretSpeed = 2.0;

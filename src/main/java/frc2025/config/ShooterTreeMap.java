@@ -28,11 +28,11 @@ public class ShooterTreeMap {
         // kA = (50-4.167)/10 =
 
 //        lowerWheelTreeMap.put(5.24, 56.0); // 47.41
-       lowerWheelTreeMap.put(5.24, 59.0); // 47.41
-       lowerWheelTreeMap.put(4.04, 51.0); // 43.13
-       lowerWheelTreeMap.put(3.07, 46.0); // 41.05
-       lowerWheelTreeMap.put(2.47, 44.0); // 39.71
-       lowerWheelTreeMap.put(1.29, 41.0); // 39.67
+       lowerWheelTreeMap.put(5.24, 58.0); // 47.41
+       lowerWheelTreeMap.put(4.04, 50.0); // 43.13
+       lowerWheelTreeMap.put(3.07, 45.0); // 41.05
+       lowerWheelTreeMap.put(2.47, 43.0); // 39.71
+       lowerWheelTreeMap.put(1.29, 40.0); // 39.67
 
 
         tofTreeMap.put(4.97, 1.32); // 1.32 1.33
@@ -110,11 +110,11 @@ public class ShooterTreeMap {
     public void resetRPS() {
         lowerWheelTreeMap.clear();
 
-        lowerWheelTreeMap.put(5.24, 59.0); // 47.41
-        lowerWheelTreeMap.put(4.04, 51.0); // 43.13
-        lowerWheelTreeMap.put(3.07, 46.0); // 41.05
-        lowerWheelTreeMap.put(2.47, 44.0); // 39.71
-        lowerWheelTreeMap.put(1.29, 41.0); // 39.67
+        lowerWheelTreeMap.put(5.24, 58.0); // 47.41
+        lowerWheelTreeMap.put(4.04, 50.0); // 43.13
+        lowerWheelTreeMap.put(3.07, 45.0); // 41.05
+        lowerWheelTreeMap.put(2.47, 43.0); // 39.71
+        lowerWheelTreeMap.put(1.29, 40.0); // 39.67
     }
 
     public double getMinDistance() {
