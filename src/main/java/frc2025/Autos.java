@@ -84,11 +84,10 @@ public class Autos {
     /* Path Commands */
 
     private Command intakeDrive(Command driveCommand) {
-        return robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
-                .alongWith(robotContainer.getHood().setPosition(() -> 0.0))
+        return (robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
+                .alongWith(robotContainer.getHood().setPosition(() -> 0.0)))
                 .until(() -> robotContainer.getIntake().getDeployReady()
                         && robotContainer.getHood().getPosition() < 0.3)
-                .withTimeout(1.0)
                 .andThen(
                         driveCommand
                                 .deadlineFor(

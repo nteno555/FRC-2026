@@ -53,7 +53,11 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         var state = getState();
         inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
         inputs.swervePoseMeters = state.Pose;
-
+        SwerveModule[] modules = getModules();
+        for (int i = 0; i < modules.length; i++) {
+            Logger.recordOutput("Current/Drive Motor "+i, modules[i].getDriveMotor().getStatorCurrent().getValueAsDouble());
+            Logger.recordOutput("Current/Steer Motor "+i, modules[i].getSteerMotor().getStatorCurrent().getValueAsDouble());
+        }
 //        SwerveModulePosition[] wheelDeltas = new SwerveModulePosition[4];
 //        for (int i = 0; i < 4; i++) {
 //            wheelDeltas[i] = new SwerveModulePosition(

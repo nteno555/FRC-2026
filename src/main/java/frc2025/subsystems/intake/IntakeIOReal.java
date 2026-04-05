@@ -19,9 +19,9 @@ public class IntakeIOReal implements IntakeIO {
     public IntakeIOReal() {
         var rollerConfigs = new TalonFXConfiguration();
 
-        rollerConfigs.CurrentLimits.SupplyCurrentLimit = SubsystemConstants.intakeSupplyCurrentLimit;
+        rollerConfigs.CurrentLimits.SupplyCurrentLimit = 80;
         rollerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
-        rollerConfigs.CurrentLimits.StatorCurrentLimit = SubsystemConstants.intakeStatorCurrentLimit;
+        rollerConfigs.CurrentLimits.StatorCurrentLimit = 80;
         rollerConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
 
         rollerConfigs.TorqueCurrent.PeakForwardTorqueCurrent = SubsystemConstants.intakePeakForwardTorqueCurrent;
@@ -29,7 +29,10 @@ public class IntakeIOReal implements IntakeIO {
         rollerConfigs.TorqueCurrent.TorqueNeutralDeadband = SubsystemConstants.intakeTorqueNeutralDeadband;
 
         var deployConfigs = new TalonFXConfiguration();
-        deployConfigs.CurrentLimits = rollerConfigs.CurrentLimits;
+        deployConfigs.CurrentLimits.SupplyCurrentLimit = 120;
+        deployConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
+        deployConfigs.CurrentLimits.StatorCurrentLimit = 120;
+        deployConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
         deployConfigs.TorqueCurrent = rollerConfigs.TorqueCurrent;
         deployConfigs.Voltage.PeakReverseVoltage = SubsystemConstants.intakePeakReverseVoltage;
         deployConfigs.Voltage.PeakForwardVoltage = SubsystemConstants.intakePeakForwardVoltage;
@@ -77,6 +80,9 @@ public class IntakeIOReal implements IntakeIO {
         inputs.voltage = intakeRoller.getMotorVoltage().getValue().in(Units.Volts);
         inputs.position = intakeDeployMaster.getPosition().getValueAsDouble();
         inputs.deployConnected = intakeDeployMaster.isConnected() && intakeDeploySlave.isConnected();
+        Logger.recordOutput("Current/intakeRoller", intakeRoller.getStatorCurrent().getValueAsDouble());
+        Logger.recordOutput("Current/intakeDeployMaster", intakeDeployMaster.getStatorCurrent().getValueAsDouble());
+        Logger.recordOutput("Current/intakeDeploySlave", intakeDeploySlave.getStatorCurrent().getValueAsDouble());
 //        Logger.recordOutput("Intake/deployVoltage", intakeDeployMaster.getMotorVoltage().getValue().in(Units.Volts));
 //        Logger.recordOutput("Intake/deployRPS", intakeDeployMaster.getVelocity().getValueAsDouble());
 //        Logger.recordOutput("Intake/masterPosition", intakeDeployMaster.getPosition().getValueAsDouble());

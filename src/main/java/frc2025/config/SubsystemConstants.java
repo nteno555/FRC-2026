@@ -62,8 +62,8 @@ public class SubsystemConstants {
     public static double topFlywheelDiameter = 0.05; // 2 inches in meters
     public static double bottomFlywheelDiameter = 0.1; // 4 inches in meters
     public static double flywheelEfficiency = 0.80;
-    public static double flywheelSupplyCurrentLimit = 200;
-    public static double flywheelStatorCurrentLimit = 200;
+    public static double flywheelSupplyCurrentLimit = 100;
+    public static double flywheelStatorCurrentLimit = 100;
     // to do check
     public static double towerkS = 0.37;
     public static double towerkV = 0.095;
@@ -87,7 +87,7 @@ public class SubsystemConstants {
     public static double hoodkI = 0.0;
     public static double hoodkD = 0.00;
     public static double hoodSupplyCurrentLimit = 40;
-    public static double hoodStatorCurrentLimit = 40;
+    public static double hoodStatorCurrentLimit = 30;
     public static double hoodPeakForwardTorqueCurrent = 40;
     public static double hoodPeakReverseTorqueCurrent = 40;
     public static double hoodTorqueNeutralDeadband = 1;
@@ -114,18 +114,18 @@ public class SubsystemConstants {
     public static double intakePeakForwardTorqueCurrent = 100;
     public static double intakePeakReverseTorqueCurrent = 100;
     public static double intakeTorqueNeutralDeadband = 1;
-    public static double intakePeakForwardVoltage = 4.0;
-    public static double intakePeakReverseVoltage = -4.0;
+    public static double intakePeakForwardVoltage = 6.7;
+    public static double intakePeakReverseVoltage = -6.7;
     public static double intakeRetractPosition = 0.3;
     public static double intakeDeployPosition = 4.1;
     public static double intakeRollerVoltage = 12.0;
     public static double intakeHalfPosition = 2.0;
     public static double intakeQuarterPosition = 1.0;
 
-    public static double indexerSupplyCurrentLimit = 120;
-    public static double indexerStatorCurrentLimit = 120;
-    public static double indexerPeakForwardTorqueCurrent = 120;
-    public static double indexerPeakReverseTorqueCurrent = 120;
+    public static double indexerSupplyCurrentLimit = 80;
+    public static double indexerStatorCurrentLimit = 80;
+    public static double indexerPeakForwardTorqueCurrent = 80;
+    public static double indexerPeakReverseTorqueCurrent = 80;
     public static double indexerTorqueNeutralDeadband = 1;
     public static double indexerShootVoltage = 12.0;
     public static double indexerReverseVoltage = -2.0;
@@ -143,10 +143,10 @@ public class SubsystemConstants {
     public static double turretCruiseVelocity = 60;
     public static double turretAcceleration = 150;
     public static double turretJerk = 700;
-    public static double turretSupplyCurrentLimit = 120;
-    public static double turretStatorCurrentLimit = 120;
-    public static double turretPeakForwardTorqueCurrent = 120;
-    public static double turretPeakReverseTorqueCurrent = -120;
+    public static double turretSupplyCurrentLimit = 60;
+    public static double turretStatorCurrentLimit = 60;
+    public static double turretPeakForwardTorqueCurrent = 60;
+    public static double turretPeakReverseTorqueCurrent = -60;
     public static double turretZeroOffsetRadians = 0.0;
     public static double turretRotationsPerRadian = 42.0/11.0 * 42.0/26.0 * 110/10.0 / (2*Math.PI); //10.80
     public static double turretMinAngleRadians = -3.2;

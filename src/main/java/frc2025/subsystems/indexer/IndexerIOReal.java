@@ -11,6 +11,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc2025.config.SubsystemConstants;
+import org.littletonrobotics.junction.Logger;
 
 public class IndexerIOReal implements IndexerIO {
     private final TalonFX indexer = new TalonFX(SubsystemConstants.indexerID, CANBus.roboRIO());
@@ -58,14 +59,14 @@ public class IndexerIOReal implements IndexerIO {
 
         towerConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-        towerConfigs.CurrentLimits.SupplyCurrentLimit = 200;
+        towerConfigs.CurrentLimits.SupplyCurrentLimit = 100;
         towerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
-        towerConfigs.CurrentLimits.StatorCurrentLimit = 200;
+        towerConfigs.CurrentLimits.StatorCurrentLimit = 100;
         towerConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
 
         TorqueCurrentConfigs towerConfigTorque =  new TorqueCurrentConfigs();
-        towerConfigTorque.PeakForwardTorqueCurrent = 200;
-        towerConfigTorque.PeakReverseTorqueCurrent = 200;
+        towerConfigTorque.PeakForwardTorqueCurrent = 100;
+        towerConfigTorque.PeakReverseTorqueCurrent = 100;
         towerConfigTorque.TorqueNeutralDeadband = 1;
 
         tower.getConfigurator().apply(towerConfigs, 0.050);
@@ -77,6 +78,8 @@ public class IndexerIOReal implements IndexerIO {
         inputs.indexerVoltage = indexer.getMotorVoltage().getValueAsDouble();
         inputs.indexerCurrent = indexer.getStatorCurrent().getValueAsDouble();
         inputs.connected = indexer.isConnected();
+        Logger.recordOutput("Current/Indexer", indexer.getStatorCurrent().getValueAsDouble());
+        Logger.recordOutput("Current/Tower", tower.getStatorCurrent().getValueAsDouble());
     }
 
     @Override
