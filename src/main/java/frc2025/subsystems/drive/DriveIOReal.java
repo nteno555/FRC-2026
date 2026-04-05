@@ -22,8 +22,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -42,7 +44,7 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
     private Rotation2d lastGyroYaw = null;
     private Pose2d lastOdometryPose = null;
     private double lastOdometryPoseTimestamp = 0;
-
+    private ChassisSpeeds lastGoodChassisSpeeds = null;
     public DriveIOReal(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(TalonFX::new, TalonFX::new, CANcoder::new, driveTrainConstants, modules);
     }
@@ -51,8 +53,18 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
     @Override
     public void updateInputs(DriveIOInputs inputs) {
         var state = getState();
-        inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
-        inputs.swervePoseMeters = state.Pose;
+        
+        if (!isSlipping()) {
+            inputs.swervePoseMeters = state.Pose;
+            lastOdometryPose = inputs.swervePoseMeters;
+            inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
+            lastGoodChassisSpeeds = inputs.currentChassisSpeeds;
+        } else {
+            inputs.swervePoseMeters = lastOdometryPose;
+            inputs.currentChassisSpeeds = lastGoodChassisSpeeds;
+        }
+
+
 
 //        SwerveModulePosition[] wheelDeltas = new SwerveModulePosition[4];
 //        for (int i = 0; i < 4; i++) {
@@ -108,6 +120,41 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         return getModuleLocations();
     }
 
+    private boolean isSlipping() {
+        var state = getState();
+        SwerveModuleState[] moduleStates = state.ModuleStates;
+        Translation2d[] moduleLocation = getModuleLocations();
+
+        double omega = getPigeon2().getAngularVelocityZWorld().getValue().in(Units.RadiansPerSecond);
+
+        double maxTransVelocity = 0.0;
+        double minTransVelocity = Double.MAX_VALUE;
+        for (int i = 0; i < 4; i++) {
+            double velocity = moduleStates[i].speedMetersPerSecond;
+            double angle = moduleStates[i].angle.getRadians();
+
+
+            double vx = velocity * Math.cos(angle);
+            double vy = velocity * Math.sin(angle);
+
+            double rotationalX = omega * moduleLocation[i].getX();
+            double rotationalY = omega * moduleLocation[i].getY();
+
+            double translationalX = vx - rotationalX;
+            double translationalY = vy - rotationalY;
+
+            double transVelocity = Math.hypot(translationalX, translationalY);
+
+            maxTransVelocity = Math.max(maxTransVelocity, transVelocity);
+            minTransVelocity = Math.min(minTransVelocity, transVelocity);
+        }
+
+        if (maxTransVelocity == 0) {
+            return false;
+        }
+
+        return ((minTransVelocity / maxTransVelocity) < 1.0); // tune
+    }
 
     /*private void configureDriveCurrentLimits(double limit, double timeout, SwerveModuleConstants[] moduleConstants) {
         SwerveModule[] modules = getModules();
