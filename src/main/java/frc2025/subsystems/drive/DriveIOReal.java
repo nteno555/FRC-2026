@@ -137,8 +137,8 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
             double vx = velocity * Math.cos(angle);
             double vy = velocity * Math.sin(angle);
 
-            double rotationalX = omega * moduleLocation[i].getX();
-            double rotationalY = omega * moduleLocation[i].getY();
+            double rotationalX = -omega * moduleLocation[i].getY();
+            double rotationalY = omega * moduleLocation[i].getX();
 
             double translationalX = vx - rotationalX;
             double translationalY = vy - rotationalY;
