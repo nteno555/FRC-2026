@@ -30,7 +30,7 @@ public class Autos {
     public static final String LOW_X2_NEUTRAL_STATION = "Low x2 Neutral Station";
     public static final String LOW_X2_NEUTRAL = "Low x2 Neutral";
     public static final String LOW_NEUTRAL_LOOP = "Low Neutral Loop";
-    public static final String MID_STATION_DEPOT = "Mid Station Depot";
+    public static final String MID_DEPOT_STATION = "Mid Depot Station";
     public static final String HIGH_X2_NEUTRAL = "High x2 Neutral";
     public static final String HIGH_NEUTRAL_LOOP = "High Neutral Loop";
     public static final String LOW_NEUTRAL_STATION = "Low Neutral Station";
@@ -38,6 +38,7 @@ public class Autos {
 
     public static Command lowNeutralLoop;
     public static Command highNeutralLoop;
+    public static Command midDepotStation;
     public static Command oneMeter;
 
     private final String WAIT_SHOOT = "wait_shoot";
@@ -76,6 +77,7 @@ public class Autos {
 
         lowNeutralLoop = LowNeutralLoop();
         highNeutralLoop = HighNeutralLoop();
+        midDepotStation = MidStationDepot();
         oneMeter = OneMeterAuto();
     }
 
@@ -328,6 +330,11 @@ public class Autos {
                 RETURN_UNDER_TRENCH_LOW), false);
     }
 
+    public Command MidStationDepot() {
+        return buildAuto(List.of("Mid-Depot", "Depot-Station"),
+                false);
+    }
+
     public Command HighNeutralLoop() {
         if (!SubsystemConstants.hasTurret) {
             return buildAuto(
@@ -368,7 +375,7 @@ public class Autos {
 //            case LOW_X2_NEUTRAL_STATION -> LowDoubleNeutralStation();
 //            case LOW_X2_NEUTRAL -> LowDoubleNeutral();
             case LOW_NEUTRAL_LOOP -> lowNeutralLoop;
-//            case MID_STATION_DEPOT -> MidStationDepotClimb();
+            case MID_DEPOT_STATION -> midDepotStation;
 //            case HIGH_X2_NEUTRAL -> HighDoubleNeutral();
             case HIGH_NEUTRAL_LOOP -> highNeutralLoop;
             case ONE_METER -> oneMeter;
@@ -381,7 +388,7 @@ public class Autos {
         return switch (autoName) {
             case LOW_X2_NEUTRAL_STATION, LOW_X2_NEUTRAL, LOW_NEUTRAL_LOOP -> "Low-Neutral (under trench)";
             case LOW_NEUTRAL_STATION, "Low-NeutralMid (under trench)" -> "Low-NeutralMid (under trench)";
-            case MID_STATION_DEPOT -> "Mid-Station";
+            case MID_DEPOT_STATION -> "Mid-Depot";
             case HIGH_X2_NEUTRAL, HIGH_NEUTRAL_LOOP -> "High-Neutral (under trench)";
             default -> "";
         };

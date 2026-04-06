@@ -149,7 +149,7 @@ public class RobotContainer {
 //                autoChooser.addOption(Autos.LOW_X2_NEUTRAL_STATION, Autos.LOW_X2_NEUTRAL_STATION);
 //                autoChooser.addOption(Autos.LOW_X2_NEUTRAL, Autos.LOW_X2_NEUTRAL);
                 autoChooser.addOption(Autos.LOW_NEUTRAL_LOOP, Autos.LOW_NEUTRAL_LOOP);
-//                autoChooser.addOption(Autos.MID_STATION_DEPOT, Autos.MID_STATION_DEPOT);
+                autoChooser.addOption(Autos.MID_DEPOT_STATION, Autos.MID_DEPOT_STATION);
 //                autoChooser.addOption(Autos.HIGH_X2_NEUTRAL, Autos.HIGH_X2_NEUTRAL);
                 autoChooser.addOption(Autos.HIGH_NEUTRAL_LOOP, Autos.HIGH_NEUTRAL_LOOP);
                 autoChooser.addOption(Autos.ONE_METER, Autos.ONE_METER);

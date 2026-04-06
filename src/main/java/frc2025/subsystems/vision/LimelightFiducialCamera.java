@@ -157,7 +157,7 @@ public class LimelightFiducialCamera {
         double maxMeanDistance = 2.5;
         double maxMeanAmbiguity = 0.2;
         double minMeanArea = 0.0;
-        double maxYawRate = Math.PI * 2;
+        double maxYawRate = Math.PI * 1.67; // 300 deg/s
 
 //        Logger.recordOutput(prefix + "heartbeat1", Math.random());
 
@@ -207,7 +207,6 @@ public class LimelightFiducialCamera {
 
         double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
         if (turretMounted && SubsystemConstants.hasTurret) {
-            // this might be wrong
             omega -= RobotState.getInstance().getTurretVelocity();
         }
         if (Math.abs(omega) > maxYawRate) {
@@ -248,7 +247,7 @@ public class LimelightFiducialCamera {
 
     public void addVisionUpdateMt2(LimelightHelpers.PoseEstimate poseEstimate) {
         String prefix = "Vision/" + name + "_mt2/";
-        double maxYawRate = Math.PI * 2;
+        double maxYawRate = Math.PI * 1.67; // 300 deg/s
 
 //        Logger.recordOutput(prefix + "heartbeat1", Math.random());
 
@@ -281,7 +280,6 @@ public class LimelightFiducialCamera {
 
         double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
         if (turretMounted && SubsystemConstants.hasTurret) {
-            // this might be wrong
             omega -= RobotState.getInstance().getTurretVelocity();
         }
 
