@@ -1,6 +1,5 @@
 package frc2025;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -19,7 +18,6 @@ import frc2025.util.Alliance;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -207,6 +205,12 @@ public class Autos {
                     return pose;
                 };
 
+                Supplier<Pose2d> endPose = () -> {
+                    Pose2d pose = FieldConstants.blueTrenchHighZone;
+                    if (Alliance.get()) pose = mirrorPose(pose);
+                    return pose;
+                };
+
                 Supplier<String> returnPathSupplier = () -> {
                     String path = "Trench-High";
                     if (!SubsystemConstants.hasTurret)
@@ -215,8 +219,8 @@ public class Autos {
                 };
 
                 pathCommands = pathCommands.andThen(intakeDrive(
-                        PathPlanCommands.returnUnderTrenchAuto(robotContainer, preTrench, () -> 0.0, () -> true)))
-                        .andThen(intakePath(returnPathSupplier.get()));
+                        PathPlanCommands.returnUnderTrenchAuto(robotContainer, preTrench, endPose, () -> 0.0)));
+//                        .andThen(intakePath(returnPathSupplier.get()));
             } else if (paths.get(i).equals(RETURN_UNDER_TRENCH_LOW)
                     || paths.get(i).equals(RETURN_UNDER_TRENCH_STATION)) {
                 Supplier<Pose2d> preTrench = () -> {
@@ -237,14 +241,20 @@ public class Autos {
                     return path;
                 };
 
+                Supplier<Pose2d> endPose = () -> {
+                    Pose2d pose = FieldConstants.blueTrenchLowZone;
+                    if (Alliance.get()) pose = mirrorPose(pose);
+                    return pose;
+                };
+
                 Supplier<Double> endVelocity = () -> {
                     if (station)
                         return 2.5;
                     return 0.0;
                 };
                 pathCommands = pathCommands.andThen(intakeDrive(PathPlanCommands.returnUnderTrenchAuto(robotContainer,
-                        preTrench, endVelocity, () -> true)))
-                        .andThen(intakePath(returnPathSupplier.get()));
+                        preTrench, endPose, endVelocity)));
+//                        .andThen(intakePath(returnPathSupplier.get()));
             } else {
                 pathCommands = pathCommands.andThen(intakePath(paths.get(i)));
             }
@@ -270,7 +280,7 @@ public class Autos {
                                             () -> new ChassisSpeeds(0, 0, 0))
                                     .alongWith(robotContainer.getHood().autoAimUnsafe())
                                     .alongWith(AutoAimCommands.autoIndex(robotContainer)
-                                            .alongWith(robotContainer.getIntake().oscillateIntake()))
+                                    .alongWith(robotContainer.getIntake().oscillateIntake()))
                                     .alongWith(robotContainer.getShooter().autoAim())));
         }
     }

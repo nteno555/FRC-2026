@@ -22,9 +22,9 @@ public class FieldConstants {
     public static double highBumpY = 5.10;
     public static double lowBumpY = 3.0;
 
-    public static Pose2d blueTrenchHighZone = new Pose2d(3.422, 7.435, Rotation2d.kCW_90deg);
+    public static Pose2d blueTrenchHighZone = new Pose2d(3.572, 7.442, Rotation2d.kCW_90deg);
     public static Pose2d blueTrenchHighMid = new Pose2d(6.0, 7.435, Rotation2d.kCW_90deg);
-    public static Pose2d blueTrenchLowZone = new Pose2d(3.422, 0.625, Rotation2d.kCCW_90deg);
+    public static Pose2d blueTrenchLowZone = new Pose2d(3.638, 0.625, Rotation2d.kCCW_90deg);
     public static Pose2d blueTrenchLowMid = new Pose2d(6.0, 0.625, Rotation2d.kCCW_90deg);
     public static Pose2d redTrenchLowZone = new Pose2d(13.041, 7.435, Rotation2d.kCW_90deg);
     public static Pose2d redTrenchLowMid = new Pose2d(10.3, 7.5, Rotation2d.kCW_90deg);
