@@ -4,6 +4,7 @@ import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -53,6 +54,7 @@ public class RobotState {
     private double turretAngle;
     private double turretVelocity;
     private double prevTurretTimestamp;
+    private TimeInterpolatableBuffer<Double> timestampedTurretAngles;
 
     private double turretMt1AngleRadians;
     private boolean turretMt1Valid;
@@ -61,6 +63,7 @@ public class RobotState {
         latestPose = new Pose2d();
         turretMt1Valid = false;
         turretMt1AngleRadians = 0;
+        timestampedTurretAngles = TimeInterpolatableBuffer.createDoubleBuffer(0.5);
     }
 
     public static RobotState getInstance() {
@@ -398,5 +401,14 @@ public class RobotState {
 
     public boolean getTurretMt1Valid() {
         return turretMt1Valid;
+    }
+
+    public void addTimestampedTurretAngleRadians(double angle, double time) {
+        timestampedTurretAngles.addSample(time, angle);
+    }
+
+    public double getTurretAngleAtTime(double time) {
+        if (timestampedTurretAngles.getSample(time).isEmpty()) return 0.0;
+        return timestampedTurretAngles.getSample(time).get();
     }
 }

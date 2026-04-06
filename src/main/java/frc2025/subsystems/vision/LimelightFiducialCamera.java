@@ -1,6 +1,7 @@
 
 package frc2025.subsystems.vision;
 
+import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -50,8 +51,9 @@ public class LimelightFiducialCamera {
     }
 
     public void resetOdometry() {
-        LimelightHelpers.SetIMUMode(name, 0);
-        imuMode = 0;
+        LimelightHelpers.SetIMUMode(name, 1);
+        imuMode = 1;
+        Logger.recordOutput("Vision/" + name + "_mt2/IMU", imuMode);
     }
 
     public void initializeGyro() {
@@ -67,13 +69,13 @@ public class LimelightFiducialCamera {
     public void writeGyro() {
         String prefix = "Vision/" + name + "_mt2/";
 
-//        if(imuMode != 4) {
-//            LimelightHelpers.SetIMUAssistAlpha(name, 0.01);
-//            LimelightHelpers.SetIMUMode(name, 4);
-//            imuMode = 4;
-//        }
+        if(imuMode != 4) {
+            LimelightHelpers.SetIMUAssistAlpha(name, 0.01);
+            LimelightHelpers.SetIMUMode(name, 4);
+            imuMode = 4;
+        }
 
-//        Logger.recordOutput(prefix + "IMU", imuMode);
+        Logger.recordOutput(prefix + "IMU", imuMode);
 
         if (turretMounted) {
             double orientation = RobotState.getInstance().getVisionPose().getRotation().getDegrees()
@@ -122,7 +124,7 @@ public class LimelightFiducialCamera {
         }
     }
 
-    private Pose2d transformTurretPose(Pose2d pose) {
+    private Pose2d transformTurretPose(Pose2d pose, double time) {
         if (SubsystemConstants.hasTurret) {
 
             Transform2d robotToShooterReal = new Transform2d(
@@ -170,7 +172,7 @@ public class LimelightFiducialCamera {
 
         if (turretMounted && SubsystemConstants.hasTurret) {
             Logger.recordOutput(prefix + "untransformedPose", pose);
-            pose = transformTurretPose(pose);
+            pose = transformTurretPose(pose, poseEstimate.timestampSeconds);
         }
 
         double meanDistance = 0;
@@ -254,7 +256,7 @@ public class LimelightFiducialCamera {
 
         if (turretMounted && SubsystemConstants.hasTurret) {
             Logger.recordOutput(prefix + "untransformedPose", pose);
-            pose = transformTurretPose(pose);
+            pose = transformTurretPose(pose, poseEstimate.timestampSeconds);
         }
 
         boolean reject = false;

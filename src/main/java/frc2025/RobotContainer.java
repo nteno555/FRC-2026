@@ -503,8 +503,9 @@ public class RobotContainer {
                 // );
                 //
                 tuningController.leftBumper().whileTrue(
-                                // turretSubsystem.autoAim()
-                                turretSubsystem.rezeroCRT());
+                                 turretSubsystem.autoAim()
+//                                turretSubsystem.rezeroCRT()
+                );
 
                 tuningController.a().onTrue(
                                 SuperstructureCommands.resetOdometry(

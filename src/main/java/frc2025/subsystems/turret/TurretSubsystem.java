@@ -1,5 +1,6 @@
 package frc2025.subsystems.turret;
 
+import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,6 +35,8 @@ public class TurretSubsystem extends SubsystemBase {
 
         RobotState.getInstance().setTurretAngle(inputs.positionRadians);
         RobotState.getInstance().setTurretVelocity(inputs.velocity);
+
+//        RobotState.getInstance().addTimestampedTurretAngleRadians(inputs.positionRadians, Utils.getCurrentTimeSeconds());
 
         if (SubsystemConstants.hasTurret) {
             if (!zeroed && inputs.throughboresConnected) {

@@ -124,15 +124,14 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         var state = getState();
         SwerveModuleState[] moduleStates = state.ModuleStates;
         Translation2d[] moduleLocation = getModuleLocations();
-
         double omega = getPigeon2().getAngularVelocityZWorld().getValue().in(Units.RadiansPerSecond);
 
         double maxTransVelocity = 0.0;
         double minTransVelocity = Double.MAX_VALUE;
+
         for (int i = 0; i < 4; i++) {
             double velocity = moduleStates[i].speedMetersPerSecond;
             double angle = moduleStates[i].angle.getRadians();
-
 
             double vx = velocity * Math.cos(angle);
             double vy = velocity * Math.sin(angle);
@@ -143,19 +142,31 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
             double translationalX = vx - rotationalX;
             double translationalY = vy - rotationalY;
 
-            double transVelocity = Math.hypot(translationalX, translationalY);
+            double transVelMagnitude = Math.hypot(translationalX, translationalY);
 
-            maxTransVelocity = Math.max(maxTransVelocity, transVelocity);
-            minTransVelocity = Math.min(minTransVelocity, transVelocity);
+            maxTransVelocity = Math.max(maxTransVelocity, transVelMagnitude);
+            minTransVelocity = Math.min(minTransVelocity, transVelMagnitude);
         }
 
-        if (maxTransVelocity == 0) {
+        if (maxTransVelocity <= 0.2) {
+            Logger.recordOutput("Drive/Slip/maxTransVelocity", maxTransVelocity);
+            Logger.recordOutput("Drive/Slip/minTransVelocity", minTransVelocity);
+            Logger.recordOutput("Drive/Slip/transVelocityRatio", 1.0);
+            Logger.recordOutput("Drive/slipping", false);
             return false;
         }
 
-        return ((minTransVelocity / maxTransVelocity) < 1.0); // tune
-    }
+        double ratio = minTransVelocity / maxTransVelocity;
 
+        Logger.recordOutput("Drive/Slip/maxTransVelocity", maxTransVelocity);
+        Logger.recordOutput("Drive/Slip/minTransVelocity", minTransVelocity);
+        Logger.recordOutput("Drive/Slip/transVelocityRatio", ratio);
+
+        boolean slipping = ratio < 0.8;
+        Logger.recordOutput("Drive/slipping", slipping);
+
+        return slipping;
+    }
     /*private void configureDriveCurrentLimits(double limit, double timeout, SwerveModuleConstants[] moduleConstants) {
         SwerveModule[] modules = getModules();
         for (int i = 0; modules.length > i; i++) {
