@@ -82,4 +82,8 @@ public class IntakeSubsystem extends SubsystemBase {
             io.setVoltage(SubsystemConstants.intakeRollerVoltage);
         });
     }
+
+    public double getDeployPosition() {
+        return inputs.position;
+    }
 }

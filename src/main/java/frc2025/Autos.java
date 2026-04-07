@@ -47,6 +47,7 @@ public class Autos {
     private final String RETURN_UNDER_TRENCH_HIGH = "return_under_trench_high";
     private final String RETURN_UNDER_TRENCH_LOW = "return_under_trench_low";
     private final String RETURN_UNDER_TRENCH_STATION = "return_under_trench_station";
+    private final String INTAKE_RETRACT_PATH = "intake retract path";
 
     /**
      * Returns the alliance-corrected starting pose of the first path in an auto
@@ -257,7 +258,23 @@ public class Autos {
                 pathCommands = pathCommands.andThen(intakeDrive(PathPlanCommands.returnUnderTrenchAuto(robotContainer,
                         preTrench, endPose, endVelocity)));
 //                        .andThen(intakePath(returnPathSupplier.get()));
-            } else {
+            }
+//            else if (paths.get(i).equals(INTAKE_RETRACT_PATH)) {
+//                pathCommands = pathCommands.andThen(
+//                        robotContainer.getTurret().setPositionSafe(() -> SubsystemConstants.turretDefaultRadians, () -> 0.0, () -> true).alongWith(
+//                                robotContainer.getIntake().setDeployPosition(() -> 2.5)
+//                        ).until(() -> (Math.abs(robotContainer.getTurret().getPositionRadians()-SubsystemConstants.turretDefaultRadians) < 0.1
+//                                && (robotContainer.getIntake().getDeployPosition() < 3.1)))
+//                        .andThen(
+//                                intakePath(paths.get(i+1))
+//                                        .alongWith(
+//                                                robotContainer.getIntake().setIntakingAuto()
+//                                        )
+//                        )
+//                );
+//                i++;
+//            }
+            else {
                 pathCommands = pathCommands.andThen(intakePath(paths.get(i)));
             }
         }

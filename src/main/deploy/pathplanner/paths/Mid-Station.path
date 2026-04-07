@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 0.8293007128680199,
-        "y": 0.7223334452311201
+        "x": 0.5518132680257166,
+        "y": 0.7530412247269249
       },
       "prevControl": {
-        "x": 2.7766951977765126,
-        "y": 0.7266286722819014
+        "x": 2.4992077529342094,
+        "y": 0.7573364517777063
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "station 904 wrong"
+      "linkedName": "station"
     }
   ],
   "rotationTargets": [],

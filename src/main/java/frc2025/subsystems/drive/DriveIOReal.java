@@ -53,16 +53,21 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
     @Override
     public void updateInputs(DriveIOInputs inputs) {
         var state = getState();
-        
-        if (!isSlipping()) {
-            inputs.swervePoseMeters = state.Pose;
-            lastOdometryPose = inputs.swervePoseMeters;
-            inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
-            lastGoodChassisSpeeds = inputs.currentChassisSpeeds;
-        } else {
-            inputs.swervePoseMeters = lastOdometryPose;
-            inputs.currentChassisSpeeds = lastGoodChassisSpeeds;
-        }
+        inputs.swervePoseMeters = state.Pose;
+        lastOdometryPose = inputs.swervePoseMeters;
+        inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
+        lastGoodChassisSpeeds = inputs.currentChassisSpeeds;
+
+
+//        if (!isSlipping()) {
+//            inputs.swervePoseMeters = state.Pose;
+//            lastOdometryPose = inputs.swervePoseMeters;
+//            inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
+//            lastGoodChassisSpeeds = inputs.currentChassisSpeeds;
+//        } else {
+//            inputs.swervePoseMeters = lastOdometryPose;
+//            inputs.currentChassisSpeeds = lastGoodChassisSpeeds;
+//        }
 
 
 

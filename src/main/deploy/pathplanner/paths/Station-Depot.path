@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.8293007128680199,
-        "y": 0.7223334452311201
+        "x": 0.5518132680257166,
+        "y": 0.7530412247269249
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5527458015724473,
-        "y": 3.117262213812933
+        "x": 3.275258356730144,
+        "y": 3.1479699933087377
       },
       "isLocked": false,
-      "linkedName": "station 904 wrong"
+      "linkedName": "station"
     },
     {
       "anchor": {
