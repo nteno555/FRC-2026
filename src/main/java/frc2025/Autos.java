@@ -331,7 +331,7 @@ public class Autos {
     }
 
     public Command MidStationDepot() {
-        return buildAuto(List.of("Mid-Depot", "Depot-Station"),
+        return buildAuto(List.of("Mid-Station", WAIT_SHOOT, "Station-Depot", "Depot-Sweep"),
                 false);
     }
 

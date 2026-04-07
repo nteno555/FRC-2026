@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.9300646509241179,
-        "y": 0.48073086095739315
+        "x": 0.8293007128680199,
+        "y": 0.7223334452311201
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.3815004820647068,
-        "y": 1.1274497782389323
+        "x": 1.2807365440086087,
+        "y": 1.3690523625126594
       },
       "isLocked": false,
       "linkedName": "station 904 wrong"
@@ -48,7 +48,7 @@
   "folder": "low start",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

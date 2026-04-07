@@ -140,6 +140,10 @@ public class HoodSubsystem extends SubsystemBase {
         return (inputs.positionRotations > 0.15) && (Math.abs(inputs.positionRotations - setpoint) < 0.15);
     }
 
+    public boolean getShotReadyLenient() {
+        return (inputs.positionRotations > 0.15);
+    }
+
     public static double toRadians(double rotations) {
         double m = (SubsystemConstants.hoodMaxAngleRadians - SubsystemConstants.hoodMinAngleRadians)
                 / (SubsystemConstants.hoodMaxAngleRotations - SubsystemConstants.hoodMinAngleRotations);

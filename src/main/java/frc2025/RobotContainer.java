@@ -81,8 +81,8 @@ public class RobotContainer {
         private boolean slowmode;
         private double manualTurretSpeed = 2.0;
 
-        private boolean sysCheck;
         private double rpsOffset;
+        private double devicesConnected;
 
         private AimMode aimMode;
         private ManualAimState manualAimState;
@@ -229,7 +229,7 @@ public class RobotContainer {
                 hoodSubsystem.setDefaultCommand(hoodSubsystem.setPosition(() -> 0.1));
                 shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
                 indexerSubsystem.setDefaultCommand(indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0));
-                // turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
+//                 turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
                 turretSubsystem.setDefaultCommand(turretSubsystem.setPositionSafe(() -> SubsystemConstants.turretDefaultRadians, () -> 0.0, () -> true)); // for
 
                 driverXboxController.a().onTrue(
@@ -243,12 +243,18 @@ public class RobotContainer {
                 driverXboxController
                                 .b()
                                 .and(driverXboxController.back().negate())
-                                .onTrue(Commands.runOnce(() -> aiming = false));
+                                .onTrue(Commands.runOnce(() -> {
+                                    aiming = false;
+                                    slowmode = false;
+                                }));
 
                 driverXboxController
                                 .x()
                                 .and(driverXboxController.back().negate())
-                                .onTrue(Commands.runOnce(() -> aiming = true));
+                                .onTrue(Commands.runOnce(() -> {
+                                    aiming = true;
+                                    if (!RobotState.getInstance().getShuttling()) slowmode = true;
+                                }));
 
                 new Trigger(() -> aiming)
                                 .and(() -> aimMode == AimMode.MANUAL)
@@ -328,7 +334,7 @@ public class RobotContainer {
                                 .y()
                                 .and(driverXboxController.back().negate())
                                 .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(
-                                                () -> SubsystemConstants.indexerReverseVoltage, () -> 0.0));
+                                                () -> SubsystemConstants.indexerReverseVoltage, () -> -20.0));
 
                 driverXboxController
                                 .b()
@@ -548,7 +554,7 @@ public class RobotContainer {
 
                 tuningController.rightTrigger().whileTrue(
                                 indexerSubsystem.setIndexerVoltageWithTowerSpeed(
-                                                () -> SubsystemConstants.indexerShootVoltage, () -> 0.0));
+                                                () -> SubsystemConstants.indexerShootVoltage, () -> SubsystemConstants.towerFlywheelRatio * SmartDashboard.getNumber("Tuning/RPM", 0.0)));
         }
 
         public static double handleDeadBand(double value, double deadBand, boolean scale) {
@@ -566,7 +572,7 @@ public class RobotContainer {
                 }
         }
 
-        public void updateMatchTime() {
+        private void updateMatchTime() {
                 /*
                  * 0:00 - 0:20 Auto
                  * 0:20 - 0:30 Transition
@@ -683,7 +689,7 @@ public class RobotContainer {
                 SmartDashboard.putData("Field", field);
         }
 
-        public void loggerPeriodic() {
+        private void loggerPeriodic() {
                 field.setRobotPose(RobotState.getInstance().getVisionPose());
 
                 updateHubMessage();

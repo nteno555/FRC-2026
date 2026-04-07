@@ -3,45 +3,43 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.61,
-        "y": 0.648
+        "x": 0.8293007128680199,
+        "y": 0.7223334452311201
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4559181320755572,
-        "y": 0.6566390618165819
+        "x": 3.5527458015724473,
+        "y": 3.117262213812933
       },
       "isLocked": false,
-      "linkedName": "station"
+      "linkedName": "station 904 wrong"
     },
     {
       "anchor": {
-        "x": 1.2422441773591222,
-        "y": 5.979450141059028
+        "x": 0.4320340649640123,
+        "y": 4.816249213324653
       },
       "prevControl": {
-        "x": 3.9937828047010644,
-        "y": 6.225336888066044
+        "x": 3.973893074318215,
+        "y": 5.098365788777669
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "depot"
+      "linkedName": "depot climbside"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9448184364720391,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "stop auto aim",
-      "waypointRelativePos": 0.8481842750726746,
-      "endWaypointRelativePos": 1.0,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1080.0,
     "nominalVoltage": 12.0,
@@ -49,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 90.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "mid start",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 0.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

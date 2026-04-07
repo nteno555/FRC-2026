@@ -108,7 +108,8 @@ public class AutoAimCommands {
 
             if (RobotState.getInstance().getShuttling()) {
                 Logger.recordOutput("Indexer/autoIndex/turretReady", robotContainer.getTurret().getShotReadyLenient());
-                return robotContainer.getTurret().getShotReadyLenient();
+                Logger.recordOutput("Indexer/autoIndex/hoodReady", robotContainer.getHood().getShotReadyLenient());
+                return robotContainer.getTurret().getShotReadyLenient() && robotContainer.getHood().getShotReadyLenient();
                 // return true;
                 // return debouncer.calculate(robotContainer.getTurret().getShotReady() &&
                 // robotContainer.getHood().getShotReady());

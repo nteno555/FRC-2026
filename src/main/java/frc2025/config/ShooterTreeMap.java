@@ -17,6 +17,7 @@ public class ShooterTreeMap {
 
         // 2 MOTORS
         // hoodTreeMap.put(5.24, 2.5);
+        hoodTreeMap.put(6.07, 2.5);
         hoodTreeMap.put(5.24, 2.4);
         hoodTreeMap.put(4.04, 2.4);
         hoodTreeMap.put(3.07, 2.0);
@@ -28,11 +29,12 @@ public class ShooterTreeMap {
         // kA = (50-4.167)/10 =
 
 //        lowerWheelTreeMap.put(5.24, 56.0); // 47.41
-       lowerWheelTreeMap.put(5.24, 58.0); // 47.41
-       lowerWheelTreeMap.put(4.04, 50.0); // 43.13
-       lowerWheelTreeMap.put(3.07, 45.0); // 41.05
-       lowerWheelTreeMap.put(2.47, 43.0); // 39.71
-       lowerWheelTreeMap.put(1.29, 40.0); // 39.67
+        lowerWheelTreeMap.put(6.07, 69.0);
+        lowerWheelTreeMap.put(5.24, 58.0); // 47.41
+        lowerWheelTreeMap.put(4.04, 50.0); // 43.13
+        lowerWheelTreeMap.put(3.07, 45.0); // 41.05
+        lowerWheelTreeMap.put(2.47, 43.0); // 39.71
+        lowerWheelTreeMap.put(1.29, 40.0); // 39.67
 
 
         tofTreeMap.put(4.97, 1.32); // 1.32 1.33
@@ -67,9 +69,9 @@ public class ShooterTreeMap {
         shuttlingRPSTreeMap.put(3.0, 40.0);
         shuttlingRPSTreeMap.put(4.999, 45.0);
         shuttlingRPSTreeMap.put(5.0, 50.0);
-        shuttlingRPSTreeMap.put(7.0, 65.0);
-        shuttlingRPSTreeMap.put(9.0, 70.0);
-        shuttlingRPSTreeMap.put(16.0, 90.0);
+        shuttlingRPSTreeMap.put(7.0, 75.0);
+        shuttlingRPSTreeMap.put(9.0, 90.0);
+        shuttlingRPSTreeMap.put(16.0, 105.0);
 
         updateDashboardMap();
         SmartDashboard.putString("Tuning/lowerWheelTree Map", lowerWheelTreeMap.toString());

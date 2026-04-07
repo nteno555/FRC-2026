@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.4320340649640123,
+        "y": 4.816249213324653
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 0.4320340649640123,
+        "y": 5.816249213324653
+      },
+      "isLocked": false,
+      "linkedName": "depot climbside"
+    },
+    {
+      "anchor": {
+        "x": 0.4320340649640123,
+        "y": 6.951998138427735
+      },
+      "prevControl": {
+        "x": 0.43203406496401225,
+        "y": 5.951998138427735
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.5,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1080.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "mid start",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": false
+}
