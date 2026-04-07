@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc2025.RobotContainer;
 import frc2025.RobotState;
+import frc2025.config.FieldConstants;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -77,7 +78,12 @@ public class PathPlanCommands {
 
         return new FollowPathCommand(robotContainer.getDrive(), preTrenchPathSupplier, () -> false, false).until(() -> {
             var robotPose = RobotState.getInstance().getVisionPose();
-            return (Math.abs(robotPose.getY() - preTrenchPose.get().getY()) < 0.15) && (Math.abs(robotPose.getRotation().getDegrees() - preTrenchPose.get().getRotation().getDegrees()) < 10);
+            
+            boolean rotationReady = (Math.abs(robotPose.getRotation().getDegrees() - preTrenchPose.get().getRotation().getDegrees()) < 20);
+            boolean pastTrench = robotPose.getY() > FieldConstants.highTrenchCutoff || robotPose.getY() < FieldConstants.lowTrenchCutoff;
+            
+            return rotationReady && pastTrench;
+            // return (Math.abs(robotPose.getY() - preTrenchPose.get().getY()) < 0.15) && (Math.abs(robotPose.getRotation().getDegrees() - preTrenchPose.get().getRotation().getDegrees()) < 10);
         }).andThen(
                 new FollowPathCommand(robotContainer.getDrive(), trenchEndPathSupplier, () -> false, false)
         );

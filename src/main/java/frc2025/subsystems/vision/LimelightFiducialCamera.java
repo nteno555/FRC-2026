@@ -13,6 +13,8 @@ import frc2025.config.SubsystemConstants;
 import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.Utils;
+
 import java.util.List;
 
 public class LimelightFiducialCamera {
@@ -81,16 +83,12 @@ public class LimelightFiducialCamera {
             omega = Units.radiansToDegrees(omega);
 
             LimelightHelpers.SetRobotOrientation_NoFlush(name, orientation, omega, 0, 0, 0, 0);
-
-//            Logger.recordOutput(prefix + "mt2RobotOrientation", orientation);
-//            Logger.recordOutput(prefix + "mt2UpdateGyroHeartbeat", Math.random());
         } else {
             double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
             omega = Units.radiansToDegrees(omega);
 
             LimelightHelpers.SetRobotOrientation_NoFlush(name,
                     RobotState.getInstance().getVisionPose().getRotation().getDegrees(), omega, 0, 0, 0, 0);
-//            Logger.recordOutput(prefix + "mt2UpdateGyroHeartbeat", Math.random());
         }
     }
 
@@ -131,12 +129,20 @@ public class LimelightFiducialCamera {
     }
 
     private Pose2d transformTurretPose(Pose2d pose, double time) {
+        String prefix = "Vision/" + name + "_mt1/";
+
         if (SubsystemConstants.hasTurret) {
+            double latency = Utils.getCurrentTimeSeconds() - Utils.fpgaToCurrentTime(time);
+
+            Logger.recordOutput(prefix + "latency", latency);
+
+            double compensatedTurretAngle = RobotState.getInstance().getTurretAngle() 
+                    + RobotState.getInstance().getTurretVelocity() * latency;
 
             Transform2d robotToShooterReal = new Transform2d(
                     SubsystemConstants.robotToShooter.getTranslation(),
                     SubsystemConstants.robotToShooter.getRotation()
-                            .plus(Rotation2d.fromRadians(-RobotState.getInstance().getTurretAngle())));
+                            .plus(Rotation2d.fromRadians(-compensatedTurretAngle)));
 
             Transform2d cameraToRobotTransform = robotToShooterReal.plus(SubsystemConstants.shooterToCamera).inverse();
 

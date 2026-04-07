@@ -48,7 +48,7 @@ public class TurretIOReal implements TurretIO{
         slot1Configs.kS = 0;
         slot1Configs.kV = 0;
         slot1Configs.kA = 0;
-        slot1Configs.kP = 10.0;
+        slot1Configs.kP = 6.0;
         slot1Configs.kI = 0;
         slot1Configs.kD = 0.1;
 

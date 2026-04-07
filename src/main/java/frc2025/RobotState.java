@@ -201,8 +201,13 @@ public class RobotState {
             double dx = virtualPose.getX() - delayedPose.getX();
             double dy = virtualPose.getY() - delayedPose.getY();
             double distance = Math.hypot(dx, dy);
-
-            double flightTime = ShooterTreeMap.getInstance().getRealTof(distance);
+           
+            double flightTime;
+            if(getShuttling()) {
+                flightTime = ShooterTreeMap.getInstance().getRealTof(distance);
+            } else {
+                flightTime = ShooterTreeMap.getInstance().getRealTofShuttling(distance);
+            }
 
             virtualPose = new Pose2d(
                     realTargetPose.getX() - vx * flightTime,
