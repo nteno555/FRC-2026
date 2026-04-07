@@ -253,7 +253,7 @@ public class RobotContainer {
                                 .and(driverXboxController.back().negate())
                                 .onTrue(Commands.runOnce(() -> {
                                     aiming = true;
-                                    if (!RobotState.getInstance().getShuttling()) slowmode = true;
+//                                    if (!RobotState.getInstance().getShuttling()) slowmode = true;
                                 }));
 
                 new Trigger(() -> aiming)
