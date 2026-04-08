@@ -157,12 +157,12 @@ public class RobotState {
         ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(
                 robotRelativeSpeeds,
                 currentPose.getRotation());
-        return currentPose;
-//        return currentPose.exp(
-//                new Twist2d(
-//                        speeds.vxMetersPerSecond * phaseDelay,
-//                        speeds.vyMetersPerSecond * phaseDelay,
-//                        speeds.omegaRadiansPerSecond * phaseDelay));
+//        return currentPose;
+        return currentPose.exp(
+                new Twist2d(
+                        speeds.vxMetersPerSecond * phaseDelay,
+                        speeds.vyMetersPerSecond * phaseDelay,
+                        speeds.omegaRadiansPerSecond * phaseDelay));
     }
 
     public Pose2d getTargetPose() {
