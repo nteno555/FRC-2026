@@ -36,12 +36,14 @@ public class Autos {
     public static final String HIGH_X2_NEUTRAL = "High x2 Neutral";
     public static final String HIGH_NEUTRAL_LOOP = "High Neutral Loop";
     public static final String LOW_NEUTRAL_STATION = "Low Neutral Station";
+    public static final String MID_BUMP_NOSTATION = "Mid Bump No Station";
     public static final String ONE_METER = "One Meter";
 
     public static Command lowNeutralLoop;
     public static Command highNeutralLoop;
     public static Command midDepotStation;
     public static Command midBumpStation;
+    public static Command midBumpNoStation;
     public static Command oneMeter;
 
     private final String WAIT_SHOOT = "wait_shoot";
@@ -83,6 +85,7 @@ public class Autos {
         highNeutralLoop = HighNeutralLoop();
         midDepotStation = MidStationDepot();
         midBumpStation = MidBumpStation();
+        midBumpNoStation = MidBump();
         oneMeter = OneMeterAuto();
     }
 
@@ -391,8 +394,11 @@ public class Autos {
     }
 
     public Command MidBumpStation() {
-//        return buildAuto(List.of("Mid-Preload", BUMP_WAIT, "Preload-Bump", "Bump-Loop", "Bump-Mid", "Bump-Station"), false);
-        return buildAuto(List.of(BUMP_WAIT, "Mid-Bump", "Bump-Loop", "Bump-Mid", "Bump-Station"), false);
+        return buildAuto(List.of(BUMP_WAIT, "Mid-Bump", "Bump-Loop", "Bump-Mid", "Bump-Station", WAIT_NO_SHOOT, "Station-Score"), false);
+    }
+
+    public Command MidBump() {
+        return buildAuto(List.of(BUMP_WAIT, "Mid-Bump", "Bump-Loop", "Bump-Mid"), false);
     }
 
     public Command OneMeterAuto() {
@@ -429,6 +435,7 @@ public class Autos {
             case HIGH_NEUTRAL_LOOP -> highNeutralLoop;
             case ONE_METER -> oneMeter;
             case MID_BUMP_STATION -> midBumpStation;
+            case MID_BUMP_NOSTATION -> midBumpNoStation;
 //            case LOW_NEUTRAL_STATION -> LowNeutralStation();
             default -> Commands.none();
         };
@@ -441,6 +448,7 @@ public class Autos {
             case MID_DEPOT_STATION -> "Mid-Depot";
             case HIGH_X2_NEUTRAL, HIGH_NEUTRAL_LOOP -> "High-Neutral (under trench)";
             case MID_BUMP_STATION -> "Mid-Bump";
+            case MID_BUMP_NOSTATION -> "Mid-Bump";
             default -> "";
         };
     }

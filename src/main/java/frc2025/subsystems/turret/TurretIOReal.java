@@ -117,6 +117,7 @@ public class TurretIOReal implements TurretIO{
     @Override
     public void setPosition(double position) {
         turretMotor.setControl(new PositionVoltage(position)
+                .withFeedForward(SubsystemConstants.turretFF)
                 .withSlot(0)
                 .withEnableFOC(true));
     }
@@ -126,6 +127,7 @@ public class TurretIOReal implements TurretIO{
         turretMotor.setControl(
                 new PositionVoltage(position)
                         .withVelocity(velocity)
+                        .withFeedForward(SubsystemConstants.turretFF)
                         .withSlot(0)
         );
     }

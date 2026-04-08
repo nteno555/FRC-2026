@@ -73,7 +73,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
             return ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist);
         }, () -> {
-            return RobotState.getInstance().getWantedShooterAcceleration();
+            return 0.0;
+            // return RobotState.getInstance().getWantedShooterAcceleration();
         });
     }
 

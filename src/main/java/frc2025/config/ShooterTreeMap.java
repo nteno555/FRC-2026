@@ -19,8 +19,8 @@ public class ShooterTreeMap {
 
         // 2 MOTORS
         // hoodTreeMap.put(5.24, 2.5);
-        hoodTreeMap.put(6.07, 2.5);
-        hoodTreeMap.put(5.24, 2.4);
+        hoodTreeMap.put(6.07, 2.7);
+        hoodTreeMap.put(5.24, 2.6);
         hoodTreeMap.put(4.04, 2.4);
         hoodTreeMap.put(3.07, 2.0);
         hoodTreeMap.put(2.47, 1.7);
@@ -33,7 +33,7 @@ public class ShooterTreeMap {
         // lowerWheelTreeMap.put(5.24, 56.0); // 47.41
         lowerWheelTreeMap.put(6.07, 69.0);
         lowerWheelTreeMap.put(5.24, 59.0); // 47.41
-        lowerWheelTreeMap.put(4.04, 51.0); // 43.13
+        lowerWheelTreeMap.put(4.04, 52.0); // 43.13
         lowerWheelTreeMap.put(3.07, 46.0); // 41.05
         lowerWheelTreeMap.put(2.47, 44.0); // 39.71
         lowerWheelTreeMap.put(1.29, 41.0); // 39.67
@@ -66,15 +66,15 @@ public class ShooterTreeMap {
         // tofTreeMap.put(2.18, 1.09); //1.05 1.06 1.12 1.10 1.09
         // tofTreeMap.put(1.39, 1.03); // 1.02 1.02 1.06 1.04
 
-        shuttlingRPSTreeMap.put(1.0, 20.0);
-        shuttlingRPSTreeMap.put(3.0, 40.0);
-        shuttlingRPSTreeMap.put(5.0, 55.0);
-        shuttlingRPSTreeMap.put(7.0, 80.0);
-        shuttlingRPSTreeMap.put(9.0, 90.0);
+        shuttlingRPSTreeMap.put(3.0, 20.0);
+        shuttlingRPSTreeMap.put(5.0, 40.0);
+        shuttlingRPSTreeMap.put(7.0, 55.0);
+        shuttlingRPSTreeMap.put(9.0, 80.0);
+        shuttlingRPSTreeMap.put(11.0, 90.0);
         shuttlingRPSTreeMap.put(16.0, 105.0);
 
-        shuttlingTofTreeMap.put(1.0, 2.0);
-        shuttlingTofTreeMap.put(16.0, 4.0);
+        shuttlingTofTreeMap.put(1.0, 0.5);
+        shuttlingTofTreeMap.put(16.0, 2.5);
 
         updateDashboardMap();
         SmartDashboard.putString("Tuning/lowerWheelTree Map", lowerWheelTreeMap.toString());
@@ -94,7 +94,7 @@ public class ShooterTreeMap {
         return tofTreeMap.getInterpolated(dist);
     }
 
-    public double getRealTofShuttling(double dist) { 
+    public double getRealTofShuttling(double dist) {
         return shuttlingTofTreeMap.getInterpolated(dist);
     }
 
@@ -131,7 +131,7 @@ public class ShooterTreeMap {
     }
 
     public double getMaxDistance() {
-        return 5.24;
+        return 5.0;
     }
 
     private void updateDashboardMap() {

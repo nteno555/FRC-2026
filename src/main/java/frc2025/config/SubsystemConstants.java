@@ -3,13 +3,12 @@ package frc2025.config;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 
-
 public class SubsystemConstants {
-//    public static double translationkP = 5.0;
+    // public static double translationkP = 5.0;
     public static double translationkP = 1.5;
     public static double translationkI = 0.0;
     public static double translationkD = 0.0;
-//    public static double rotationkP = 8.0;
+    // public static double rotationkP = 8.0;
     public static double rotationkP = 4.0;
     public static double rotationkI = 0.0;
     public static double rotationkD = 0.0;
@@ -35,7 +34,6 @@ public class SubsystemConstants {
     public static double flywheelkI = 0.0;
     public static double flywheelkD = 0.0;
 
-
     // 20/4.8 = 4.167 rps/s^2 @ 10A
     // 20/0.4 = 50 rps/s^2 @ 20A
     // kA = (20A - 10A) / (50.0 - 4.167) = 10 / 45.833 = 0.218 A/(rps/s^2)
@@ -44,7 +42,7 @@ public class SubsystemConstants {
     public static double flywheelkVAmps = 0.0;
     public static double flywheelkAAmps = 0.218;
     // Two Flywheels
-   public static double flywheelkPAmps = 5.0;
+    public static double flywheelkPAmps = 5.0;
     // One Flywheel
     // public static double flywheelkPAmps = 10.0;
     public static double flywheelkIAmps = 0.0;
@@ -132,10 +130,11 @@ public class SubsystemConstants {
     public static double autoIndexDebounceTime = 0.1;
 
     // Turret Gear Ratio: 12:24 & 44:54 & 36:125
-    public static double turretkS = 0.27;
+    public static double turretFF = -0.05;
+    public static double turretkS = 0.35;
     public static double turretkV = 0.114;
     public static double turretkA = 0.001 * 12.0;
-    public static double turretkP = 2.5;
+    public static double turretkP = 6;
     // public static double turretkP = 1.0;
     public static double turretkI = 0.0;
     public static double turretkD = 0.10;
@@ -149,21 +148,24 @@ public class SubsystemConstants {
     public static double turretPeakReverseTorqueCurrent = -120;
     public static double turretZeroOffsetRadians = 0.0;
     // 8 (44-42) 26 10 110
-    public static double turretRotationsPerRadian = 44.0/8.0 * 26.0/42.0 * 110.0/10.0 / (2*Math.PI);
+    public static double turretRotationsPerRadian = 44.0 / 8.0 * 26.0 / 42.0 * 110.0 / 10.0 / (2 * Math.PI);
     public static double turretMinAngleRadians = -3.2;
     public static double turretMaxAngleRadians = 4.0;
     public static double throughBoreZero1 = 0.702;
     public static double throughBoreZero2 = 0.258;
     public static double throughBoreRatio1 = 44.0 / 8.0 * 26.0 / 42.0; // 6.17
     public static double throughBoreRatio2 = 44.0 / 8.0; // 3.82
-    public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop position in motor rotations
-    public static double turretDefaultRadians = Math.PI/2;
+    public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop
+                                                                                                      // position in
+                                                                                                      // motor rotations
+    public static double turretDefaultRadians = Math.PI / 2;
     public static boolean hasTurret = true;
     public static boolean useTurretThroughBores = true;
-    public static double turretShotReadyThreshold = 0.15; // 5.73 degrees
+    public static double turretShotReadyThreshold = 0.07; // 5.73 degrees
     public static boolean useTurretVisionCorrection = false;
 
-    public static Transform2d robotToShooter = new Transform2d(0.0885, -0.1372, Rotation2d.kZero); // should be x = forward, y = side
+    public static Transform2d robotToShooter = new Transform2d(0.0885, -0.1372, Rotation2d.kZero); // should be x =
+                                                                                                   // forward, y = side
     public static Transform2d shooterToCamera = new Transform2d(0.1671, 0.0, Rotation2d.kZero);
     public static double robotToTurretCameraForward = 0.2556;
     public static double robotToTurretCameraRight = -0.1372;
@@ -190,7 +192,8 @@ public class SubsystemConstants {
     public static double robotToBackCameraRoll = 180.0;
 
     public static Transform2d robotToRightCamera = new Transform2d(-0.2766, 0.3429, Rotation2d.kZero);
-//    public static Transform2d robotToRightCamera = new Transform2d(0.1015, 0.3274, Rotation2d.kZero);
+    // public static Transform2d robotToRightCamera = new Transform2d(0.1015,
+    // 0.3274, Rotation2d.kZero);
     public static double robotToRightCameraForward = robotToRightCamera.getX();
     public static double robotToRightCameraRight = robotToRightCamera.getY();
     public static double robotToRightCameraUp = 0.2222;
@@ -198,12 +201,12 @@ public class SubsystemConstants {
     public static double robotToRightCameraPitch = 28.0;
     public static double robotToRightCameraRoll = 0.0;
 
-    public static double autoAimMaxSpeed = 2.5;//2.3;
+    public static double autoAimMaxSpeed = 2.5;// 2.3;
     public static double shuttlingMaxSpeed = 5.0;
-    public static double autoAimMaxSpeedStrict = 1.5;//1.0;
+    public static double autoAimMaxSpeedStrict = 1.5;// 1.0;
     public static double autoAimMaxAccel = 10.0;
     public static double autoAimMaxAngularVelocity = Math.PI;
-    public static double autoAimMaxAngularVelocityStrict = Math.PI/2;
+    public static double autoAimMaxAngularVelocityStrict = Math.PI / 2;
     public static double shuttlingMaxAngularVelocity = Math.PI * 4;
 
     public static double flushFlywheelRps = 42.0;
