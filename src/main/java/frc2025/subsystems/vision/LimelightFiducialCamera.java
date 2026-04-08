@@ -30,6 +30,8 @@ public class LimelightFiducialCamera {
     private int imuMode;
 
     private boolean gyroInitialized = false;
+    private double resetOdometryTime = 0.0;
+    private boolean flushNextOrientation = false;
 
     public LimelightFiducialCamera(String name, boolean turretMounted, double robotToCameraForward,
                                    double robotToCameraRight, double robotToCameraUp,
@@ -48,9 +50,8 @@ public class LimelightFiducialCamera {
     }
 
     public void resetOdometry() {
-        LimelightHelpers.SetIMUMode(name, 1);
-        imuMode = 1;
-        Logger.recordOutput("Vision/" + name + "_mt2/IMU", imuMode);
+        resetOdometryTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+        flushNextOrientation = true;
     }
 
     public void initializeGyro() {
@@ -82,14 +83,25 @@ public class LimelightFiducialCamera {
                     - RobotState.getInstance().getTurretVelocity();
             omega = Units.radiansToDegrees(omega);
 
-            LimelightHelpers.SetRobotOrientation_NoFlush(name, orientation, omega, 0, 0, 0, 0);
+            if (flushNextOrientation) {
+                LimelightHelpers.SetRobotOrientation(name, orientation, omega, 0, 0, 0, 0);
+            } else {
+                LimelightHelpers.SetRobotOrientation_NoFlush(name, orientation, omega, 0, 0, 0, 0);
+            }
         } else {
             double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
             omega = Units.radiansToDegrees(omega);
 
-            LimelightHelpers.SetRobotOrientation_NoFlush(name,
-                    RobotState.getInstance().getVisionPose().getRotation().getDegrees(), omega, 0, 0, 0, 0);
+            if (flushNextOrientation) {
+                LimelightHelpers.SetRobotOrientation(name,
+                        RobotState.getInstance().getVisionPose().getRotation().getDegrees(), omega, 0, 0, 0, 0);
+            } else {
+                LimelightHelpers.SetRobotOrientation_NoFlush(name,
+                        RobotState.getInstance().getVisionPose().getRotation().getDegrees(), omega, 0, 0, 0, 0);
+            }
         }
+        
+        flushNextOrientation = false;
     }
 
     private Boolean lastAllianceState = null;
@@ -176,7 +188,7 @@ public class LimelightFiducialCamera {
 
         boolean reject = false;
 
-        if (poseEstimate.tagCount < 2) {
+        if (poseEstimate.tagCount < 2 || poseEstimate.timestampSeconds < resetOdometryTime + 0.5) {
             reject = true;
         }
 
@@ -283,6 +295,10 @@ public class LimelightFiducialCamera {
 
         if (Math.abs(
                 pose.getRotation().minus(RobotState.getInstance().getVisionPose().getRotation()).getRadians()) > 0.5) {
+            reject = true;
+        }
+
+        if (poseEstimate.timestampSeconds < resetOdometryTime + 0.5) {
             reject = true;
         }
 
