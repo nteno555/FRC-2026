@@ -1,7 +1,15 @@
 package frc2025;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
+
+import org.json.simple.parser.ParseException;
+
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.FlippingUtil;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,12 +23,6 @@ import frc2025.config.FieldConstants;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveSubsystem;
 import frc2025.util.Alliance;
-import org.json.simple.parser.ParseException;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Supplier;
 
 public class Autos {
     private DriveSubsystem drive;
@@ -151,6 +153,26 @@ public class Autos {
 
         return SuperstructureCommands.resetOdometry(robotContainer, startPoseSupplier(startPose))
                 .andThen(intakePath(pathName));
+    }
+
+    public Command pathResetOdometry(String pathName) {
+        PathPlannerPath path;
+        try {
+            path = PathPlannerPath.fromPathFile(pathName);
+        } catch (IOException | ParseException e) {
+            System.out.println("BAD PATH BAD PATH BAD PATH");
+            return null;
+        }
+
+        PathPlannerPath finalPath = path;        
+        
+        Pose2d startPose = new Pose2d(
+                finalPath.getStartingDifferentialPose().getTranslation(),
+                finalPath.getIdealStartingState().rotation());
+
+        return SuperstructureCommands.resetOdometry(robotContainer, startPoseSupplier(startPose))
+                .andThen(new FollowPathCommand(drive, ()-> finalPath, () -> Alliance.get(), false));
+
     }
 
     private Pose2d mirrorPose(Pose2d pose) {
@@ -344,6 +366,23 @@ public class Autos {
         }
         return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT_EXTENDED, "High-Loop",
                 RETURN_UNDER_TRENCH_HIGH), false);
+    }
+
+    public Command LowBump(){
+        PathPlannerPath path;
+        try {
+            path = PathPlannerPath.fromPathFile("PostBump-Mid");
+        } catch (IOException | ParseException e) {
+            System.out.println("BAD PATH BAD PATH BAD PATH");
+            return null;
+        }
+
+        PathPlannerPath finalPath = path;    
+
+        return(pathResetOdometry("Mid-PostBump")
+                .andThen(intakePath("PostBump-Loop"))
+                .andThen(new FollowPathCommand(drive, ()-> finalPath, () -> Alliance.get(), false))
+            );
     }
 
     public Command OneMeterAuto() {
