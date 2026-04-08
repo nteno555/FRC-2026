@@ -1,0 +1,99 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.827,
+        "y": 2.42413694721826
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.139608412000869,
+        "y": 2.2566993057816114
+      },
+      "isLocked": false,
+      "linkedName": "mid bump end"
+    },
+    {
+      "anchor": {
+        "x": 8.035446447301794,
+        "y": 3.76903335458261
+      },
+      "prevControl": {
+        "x": 8.035446447301794,
+        "y": 2.16156542871194
+      },
+      "nextControl": {
+        "x": 8.035446447301794,
+        "y": 5.18676068566178
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.827,
+        "y": 4.351187407316985
+      },
+      "prevControl": {
+        "x": 5.834640092758472,
+        "y": 4.985952667646979
+      },
+      "nextControl": {
+        "x": 5.819641368724682,
+        "y": 3.739806937888817
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.827,
+        "y": 2.42413694721826
+      },
+      "prevControl": {
+        "x": 5.8451690187807435,
+        "y": 3.4370645638925055
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "bump return start"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6658016807154604,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.1892517089843755,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 2.218675472861841,
+      "rotationDegrees": 180.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 1080.0,
+    "maxAngularAcceleration": 1080.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -135.0
+  },
+  "reversed": false,
+  "folder": "mid start",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 45.0
+  },
+  "useDefaultConstraints": false
+}

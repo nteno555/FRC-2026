@@ -16,6 +16,7 @@ import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveSubsystem;
 import frc2025.util.Alliance;
 import org.json.simple.parser.ParseException;
+import org.littletonrobotics.junction.Logger;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,6 +32,7 @@ public class Autos {
     public static final String LOW_X2_NEUTRAL = "Low x2 Neutral";
     public static final String LOW_NEUTRAL_LOOP = "Low Neutral Loop";
     public static final String MID_DEPOT_STATION = "Mid Depot Station";
+    public static final String MID_BUMP_STATION = "Mid Bump Station";
     public static final String HIGH_X2_NEUTRAL = "High x2 Neutral";
     public static final String HIGH_NEUTRAL_LOOP = "High Neutral Loop";
     public static final String LOW_NEUTRAL_STATION = "Low Neutral Station";
@@ -39,6 +41,7 @@ public class Autos {
     public static Command lowNeutralLoop;
     public static Command highNeutralLoop;
     public static Command midDepotStation;
+    public static Command midBumpStation;
     public static Command oneMeter;
 
     private final String WAIT_SHOOT = "wait_shoot";
@@ -47,7 +50,7 @@ public class Autos {
     private final String RETURN_UNDER_TRENCH_HIGH = "return_under_trench_high";
     private final String RETURN_UNDER_TRENCH_LOW = "return_under_trench_low";
     private final String RETURN_UNDER_TRENCH_STATION = "return_under_trench_station";
-    private final String INTAKE_RETRACT_PATH = "intake retract path";
+    private final String BUMP_WAIT = "bump wait";
 
     /**
      * Returns the alliance-corrected starting pose of the first path in an auto
@@ -79,6 +82,7 @@ public class Autos {
         lowNeutralLoop = LowNeutralLoop();
         highNeutralLoop = HighNeutralLoop();
         midDepotStation = MidStationDepot();
+        midBumpStation = MidBumpStation();
         oneMeter = OneMeterAuto();
     }
 
@@ -167,11 +171,47 @@ public class Autos {
         };
     }
 
-    public Command buildAuto(List<String> paths, boolean climb) {
-        Command aim = robotContainer.getShooter().autoAim();
-        // .alongWith(robotContainer.getTurret().aimAtHub());
+    private Command bumpWaitCommand() {
+        Supplier<Double> waitTime = () -> robotContainer.getBumpWaitTime();
 
-        Command pathCommands = intakePathResetOdometry(paths.get(0));
+        Supplier<Command> scoreCommandSupplier = () -> {
+            if (SubsystemConstants.hasTurret) {
+                return (AutoAimCommands.autoIndex(robotContainer)
+                        .alongWith(robotContainer.getShooter().autoAim())
+                        .alongWith(robotContainer.getTurret().snapThenTrack())
+                        .alongWith(robotContainer.getHood().autoAimUnsafe())
+                        .alongWith(robotContainer.getIntake().oscillateIntake()));
+            } else {
+                return (AutoAimCommands.driveAutoAim(
+                                robotContainer,
+                                () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
+                                () -> new ChassisSpeeds(0, 0, 0))
+                        .alongWith(AutoAimCommands.autoIndex(robotContainer)
+                                .alongWith(robotContainer.getShooter().autoAim())
+                                .alongWith(robotContainer.getHood().autoAimUnsafe())
+                                .alongWith(robotContainer.getIntake().oscillateIntake())));
+            }
+        };
+
+        Command deferredScoreCommand = Commands.defer(() -> {
+            Logger.recordOutput("Drive/waitTime", waitTime.get());
+            return scoreCommandSupplier.get().withTimeout(waitTime.get());
+        }, scoreCommandSupplier.get().getRequirements());
+
+        return deferredScoreCommand;
+    }
+
+
+    public Command buildAuto(List<String> paths, boolean climb) {
+        Command pathCommands;
+
+        if (paths.get(0).equals(BUMP_WAIT)) {
+            pathCommands = SuperstructureCommands.resetOdometry(robotContainer, () -> getStartPose("Mid-Bump").get())
+                    .andThen(
+                            bumpWaitCommand()
+                    );
+        }
+        else pathCommands = intakePathResetOdometry(paths.get(0));
 
         for (int i = 1; i < paths.size(); i++) {
             if (paths.get(i).equals(WAIT_SHOOT) || paths.get(i).equals(WAIT_SHOOT_EXTENDED)) {
@@ -197,8 +237,7 @@ public class Autos {
                                     .withTimeout(waitTime));
                 }
             } else if (paths.get(i).equals(WAIT_NO_SHOOT)) {
-                pathCommands = pathCommands.andThen(
-                        Commands.waitSeconds(1.0));
+                pathCommands = pathCommands.andThen(Commands.waitSeconds(1.0));
             } else if (paths.get(i).equals(RETURN_UNDER_TRENCH_HIGH)) {
                 Supplier<Pose2d> preTrench = () -> {
                     Pose2d pose = FieldConstants.redTrenchHighMid;
@@ -259,21 +298,9 @@ public class Autos {
                         preTrench, endPose, endVelocity)));
 //                        .andThen(intakePath(returnPathSupplier.get()));
             }
-//            else if (paths.get(i).equals(INTAKE_RETRACT_PATH)) {
-//                pathCommands = pathCommands.andThen(
-//                        robotContainer.getTurret().setPositionSafe(() -> SubsystemConstants.turretDefaultRadians, () -> 0.0, () -> true).alongWith(
-//                                robotContainer.getIntake().setDeployPosition(() -> 2.5)
-//                        ).until(() -> (Math.abs(robotContainer.getTurret().getPositionRadians()-SubsystemConstants.turretDefaultRadians) < 0.1
-//                                && (robotContainer.getIntake().getDeployPosition() < 3.1)))
-//                        .andThen(
-//                                intakePath(paths.get(i+1))
-//                                        .alongWith(
-//                                                robotContainer.getIntake().setIntakingAuto()
-//                                        )
-//                        )
-//                );
-//                i++;
-//            }
+            else if (paths.get(i).equals(BUMP_WAIT)) {
+                bumpWaitCommand();
+            }
             else {
                 pathCommands = pathCommands.andThen(intakePath(paths.get(i)));
             }
@@ -363,6 +390,11 @@ public class Autos {
                 RETURN_UNDER_TRENCH_HIGH), false);
     }
 
+    public Command MidBumpStation() {
+//        return buildAuto(List.of("Mid-Preload", BUMP_WAIT, "Preload-Bump", "Bump-Loop", "Bump-Mid", "Bump-Station"), false);
+        return buildAuto(List.of(BUMP_WAIT, "Mid-Bump", "Bump-Loop", "Bump-Mid", "Bump-Station"), false);
+    }
+
     public Command OneMeterAuto() {
         return (new WaitCommand(0.1)).andThen(intakePathResetOdometry("three meter"));
     }
@@ -396,6 +428,7 @@ public class Autos {
 //            case HIGH_X2_NEUTRAL -> HighDoubleNeutral();
             case HIGH_NEUTRAL_LOOP -> highNeutralLoop;
             case ONE_METER -> oneMeter;
+            case MID_BUMP_STATION -> midBumpStation;
 //            case LOW_NEUTRAL_STATION -> LowNeutralStation();
             default -> Commands.none();
         };
@@ -407,6 +440,7 @@ public class Autos {
             case LOW_NEUTRAL_STATION, "Low-NeutralMid (under trench)" -> "Low-NeutralMid (under trench)";
             case MID_DEPOT_STATION -> "Mid-Depot";
             case HIGH_X2_NEUTRAL, HIGH_NEUTRAL_LOOP -> "High-Neutral (under trench)";
+            case MID_BUMP_STATION -> "Mid-Bump";
             default -> "";
         };
     }

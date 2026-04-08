@@ -168,6 +168,7 @@ public class LimelightFiducialCamera {
 //        Logger.recordOutput(prefix + "heartbeat1", Math.random());
 
         if (poseEstimate == null)
+//        if (poseEstimate == null)
             return;
 
 //        Logger.recordOutput(prefix + "heartbeat2", Math.random());
@@ -257,8 +258,9 @@ public class LimelightFiducialCamera {
 
 //        Logger.recordOutput(prefix + "heartbeat1", Math.random());
 
-        if (poseEstimate == null || poseEstimate.tagCount < 1)
+        if (poseEstimate == null || poseEstimate.tagCount < 1) {
             return;
+        }
 
 //        Logger.recordOutput(prefix + "heartbeat2", Math.random());
 //        Logger.recordOutput(prefix + "tagCount", poseEstimate.tagCount);

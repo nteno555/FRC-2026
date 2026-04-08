@@ -62,6 +62,7 @@ public class RobotContainer {
         private String lastAutoName = "";
         private final Timer matchTime = new Timer();
         private boolean autoWarmupDone = false;
+        private double bumpWaitTime;
 
         DriveSubsystem driveSubsystem;
         VisionSubsystem visionSubsystem;
@@ -150,11 +151,13 @@ public class RobotContainer {
 //                autoChooser.addOption(Autos.LOW_X2_NEUTRAL, Autos.LOW_X2_NEUTRAL);
                 autoChooser.addOption(Autos.LOW_NEUTRAL_LOOP, Autos.LOW_NEUTRAL_LOOP);
                 autoChooser.addOption(Autos.MID_DEPOT_STATION, Autos.MID_DEPOT_STATION);
+                autoChooser.addOption(Autos.MID_BUMP_STATION, Autos.MID_BUMP_STATION);
 //                autoChooser.addOption(Autos.HIGH_X2_NEUTRAL, Autos.HIGH_X2_NEUTRAL);
                 autoChooser.addOption(Autos.HIGH_NEUTRAL_LOOP, Autos.HIGH_NEUTRAL_LOOP);
                 autoChooser.addOption(Autos.ONE_METER, Autos.ONE_METER);
 
                 SmartDashboard.putData("Auto Chooser", autoChooser);
+                SmartDashboard.putNumber("Bump Wait Time", 2.0);
         }
 
         public DriveSubsystem getDrive() {
@@ -739,16 +742,15 @@ public class RobotContainer {
                 if (selected == null)
                         selected = "No Auto";
 
-//                if (!selected.equals(lastAutoName)) {
-//                        String firstPath = autos.getFirstPath(selected);
-//                        if (!firstPath.isEmpty()) {
-//                                Autos.getStartPose(firstPath).ifPresent(pose -> {
-//                                        driveSubsystem.resetOdometry(pose);
-//                                        visionSubsystem.resetOdometry();
-//                                });
-//                        }
-//                        lastAutoName = selected;
-//                }
+                if (!selected.equals(lastAutoName)) {
+                        String firstPath = autos.getFirstPath(selected);
+                        if (!firstPath.isEmpty()) {
+                                Autos.getStartPose(firstPath).ifPresent(pose -> {
+                                        SuperstructureCommands.resetOdometry(this, () -> pose);
+                                });
+                        }
+                        lastAutoName = selected;
+                }
 
                 autoCommand = autos.getCommand(selected);
 
@@ -765,5 +767,10 @@ public class RobotContainer {
                         autoWarmup.schedule();
                         autoWarmupDone = true;
                 }
+        }
+
+        public double getBumpWaitTime() {
+            Logger.recordOutput("Drive/bumpWaitTimeSmartdashboard", SmartDashboard.getNumber("Bump Wait Time", 2.0));
+            return SmartDashboard.getNumber("Bump Wait Time", 2.0);
         }
 }
