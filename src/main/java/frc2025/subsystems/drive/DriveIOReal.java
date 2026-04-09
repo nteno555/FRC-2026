@@ -18,6 +18,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -27,6 +28,7 @@ import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.units.Units;
@@ -53,21 +55,30 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
     @Override
     public void updateInputs(DriveIOInputs inputs) {
         var state = getState();
-        inputs.swervePoseMeters = state.Pose;
-        lastOdometryPose = inputs.swervePoseMeters;
-        inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
-        lastGoodChassisSpeeds = inputs.currentChassisSpeeds;
+        // inputs.swervePoseMeters = state.Pose;
+        // lastOdometryPose = inputs.swervePoseMeters;
+        // inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
+        // lastGoodChassisSpeeds = inputs.currentChassisSpeeds;
+        Matrix<N3, N1> regStdDevs = new Matrix<>(Nat.N3(), Nat.N1(), new double[] {1.0, 1.0, 0.0000001});
+        Matrix<N3, N1> slippingStdDevs = new Matrix<>(Nat.N3(), Nat.N1(), new double[] {99999, 99999, 0.0000001});
 
+       if (!isSlipping()) {
+            this.setStateStdDevs(regStdDevs);
+        
+           inputs.swervePoseMeters = state.Pose;
+           lastOdometryPose = inputs.swervePoseMeters;
+           inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
+           lastGoodChassisSpeeds = inputs.currentChassisSpeeds;
+       } 
+       else {
+            this.setStateStdDevs(slippingStdDevs);
 
-//        if (!isSlipping()) {
-//            inputs.swervePoseMeters = state.Pose;
-//            lastOdometryPose = inputs.swervePoseMeters;
-//            inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
-//            lastGoodChassisSpeeds = inputs.currentChassisSpeeds;
-//        } else {
-//            inputs.swervePoseMeters = lastOdometryPose;
-//            inputs.currentChassisSpeeds = lastGoodChassisSpeeds;
-//        }
+            inputs.swervePoseMeters = state.Pose;
+           lastOdometryPose = inputs.swervePoseMeters;
+           inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
+           lastGoodChassisSpeeds = inputs.currentChassisSpeeds;
+        
+       }
 
 
 
@@ -161,13 +172,13 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
             return false;
         }
 
-        double ratio = minTransVelocity / maxTransVelocity;
+        double difference = maxTransVelocity - minTransVelocity;
 
         Logger.recordOutput("Drive/Slip/maxTransVelocity", maxTransVelocity);
         Logger.recordOutput("Drive/Slip/minTransVelocity", minTransVelocity);
-        Logger.recordOutput("Drive/Slip/transVelocityRatio", ratio);
+        Logger.recordOutput("Drive/Slip/difference", difference);
 
-        boolean slipping = ratio < 0.8;
+        boolean slipping = difference > 0.6;
         Logger.recordOutput("Drive/slipping", slipping);
 
         return slipping;
