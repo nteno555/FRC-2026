@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Drive Coach">
+    <title>Drive Coach — REBUILT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+          --bg: #0a0a0a;
+          --fg: #ffffff;
+          --dim: rgba(255,255,255,0.35);
+          --c-auto:       #4a9eff;
+          --c-transition: #f5a623;
+          --c-active:     #22c55e;
+          --c-wait:       #ef4444;
+          --c-endgame:    #facc15;
+          --c-done:       #888888;
+          --c-unknown:    #888888;
+          --accent: #4a9eff;
+        }
+
+        html, body {
+          width: 100%; height: 100%;
+          background: var(--bg);
+          color: var(--fg);
+          font-family: 'Barlow Condensed', sans-serif;
+          overflow: hidden;
+          -webkit-tap-highlight-color: transparent;
+          user-select: none;
+        }
+
+        .app {
+          width: 100vw;
+          height: 100vh;
+          height: 100dvh;
+          display: grid;
+          grid-template-rows: 1fr 1fr 1.2fr 0.7fr 0.65fr;
+          padding: env(safe-area-inset-top, 8px) env(safe-area-inset-right, 16px) env(safe-area-inset-bottom, 8px) env(safe-area-inset-left, 16px);
+          padding-top: max(env(safe-area-inset-top, 8px), 8px);
+          padding-bottom: max(env(safe-area-inset-bottom, 8px), 8px);
+          gap: 0;
+        }
+
+        /* ── ROW 1: MATCH CLOCK ── */
+        .row-clock {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.4em;
+          border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        #matchTimer {
+          font-size: clamp(3.5rem, 13vw, 8rem);
+          font-weight: 900;
+          letter-spacing: -0.02em;
+          line-height: 1;
+          color: var(--accent);
+          font-variant-numeric: tabular-nums;
+          transition: color 0.3s;
+        }
+
+        .clock-label {
+          font-size: clamp(1rem, 2.5vw, 1.8rem);
+          font-weight: 700;
+          color: var(--dim);
+          letter-spacing: 0.12em;
+          align-self: flex-end;
+          padding-bottom: 0.5em;
+        }
+
+        /* ── ROW 2: PHASE ── */
+        .row-phase {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        #phaseLabel {
+          font-size: clamp(2rem, 7vw, 5rem);
+          font-weight: 800;
+          letter-spacing: 0.08em;
+          color: var(--accent);
+          transition: color 0.3s;
+          line-height: 1;
+        }
+
+        #phaseRemaining {
+          font-size: clamp(1rem, 2.8vw, 2rem);
+          font-weight: 600;
+          color: var(--dim);
+          letter-spacing: 0.06em;
+          margin-top: 0.2em;
+          font-family: 'Share Tech Mono', monospace;
+        }
+
+        /* ── ROW 3: STATUS BANNER ── */
+        .row-banner {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .banner-bg {
+          position: absolute;
+          inset: 6px;
+          border-radius: 12px;
+          background: var(--accent);
+          opacity: 0.12;
+          transition: background 0.3s, opacity 0.3s;
+        }
+
+        #statusBanner {
+          font-size: clamp(2.8rem, 10vw, 7rem);
+          font-weight: 900;
+          letter-spacing: 0.1em;
+          color: var(--accent);
+          transition: color 0.3s;
+          position: relative;
+          z-index: 1;
+          line-height: 1;
+          text-shadow: 0 0 40px rgba(var(--accent-rgb, 74,158,255), 0.4);
+        }
+
+        /* flash animation */
+        @keyframes flash {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.25; }
+        }
+        .flashing #statusBanner,
+        .flashing #phaseRemaining {
+          animation: flash 0.5s ease-in-out infinite;
+        }
+
+        /* ── ROW 4: NEXT PHASE ── */
+        .row-next {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        #nextPhase {
+          font-size: clamp(1rem, 2.8vw, 2rem);
+          font-weight: 600;
+          color: var(--dim);
+          letter-spacing: 0.06em;
+        }
+
+        #nextPhase span.next-name {
+          color: rgba(255,255,255,0.7);
+          font-weight: 700;
+        }
+
+        /* ── ROW 5: CONTROLS ── */
+        .row-controls {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: clamp(8px, 1.5vw, 20px);
+          padding: 4px 0;
+        }
+
+        .btn {
+          font-family: 'Barlow Condensed', sans-serif;
+          font-weight: 800;
+          font-size: clamp(1rem, 2.2vw, 1.6rem);
+          letter-spacing: 0.08em;
+          border: none;
+          border-radius: 10px;
+          cursor: pointer;
+          padding: clamp(10px, 1.2vh, 18px) clamp(18px, 2.5vw, 40px);
+          min-height: 52px;
+          min-width: 80px;
+          transition: all 0.15s;
+          -webkit-tap-highlight-color: transparent;
+          touch-action: manipulation;
+        }
+
+        .btn:active { transform: scale(0.95); }
+
+        #startBtn  { background: #22c55e; color: #000; }
+        #pauseBtn  { background: #f5a623; color: #000; }
+        #resetBtn  { background: #374151; color: #fff; }
+
+        #autoToggleBtn {
+          background: #1e293b;
+          color: var(--dim);
+          border: 2px solid rgba(255,255,255,0.15);
+          min-width: 120px;
+        }
+        #autoToggleBtn.state-won  { background: #14532d; color: #22c55e; border-color: #22c55e; }
+        #autoToggleBtn.state-lost { background: #450a0a; color: #ef4444; border-color: #ef4444; }
+        #autoToggleBtn.locked     { opacity: 0.4; pointer-events: none; }
+
+        /* ── STATE-DRIVEN ACCENT COLORS ── */
+        .state-auto       { --accent: #4a9eff; --accent-rgb: 74,158,255; }
+        .state-transition { --accent: #f5a623; --accent-rgb: 245,166,35; }
+        .state-active     { --accent: #22c55e; --accent-rgb: 34,197,94; }
+        .state-wait       { --accent: #ef4444; --accent-rgb: 239,68,68; }
+        .state-endgame    { --accent: #facc15; --accent-rgb: 250,204,21; }
+        .state-unknown    { --accent: #9ca3af; --accent-rgb: 156,163,175; }
+        .state-done       { --accent: #6b7280; --accent-rgb: 107,114,128; }
+
+        /* tick line at bottom of phase row when near end */
+        .phase-critical #phaseLabel { text-shadow: 0 0 20px currentColor; }
+    </style>
+</head>
+<body class="state-auto">
+<main class="app">
+
+    <!-- ROW 1: Match clock -->
+    <div class="row-clock">
+        <div id="matchTimer">2:40</div>
+        <div class="clock-label">LEFT</div>
+    </div>
+
+    <!-- ROW 2: Current phase -->
+    <div class="row-phase">
+        <div id="phaseLabel">AUTO</div>
+        <div id="phaseRemaining">20s remaining</div>
+    </div>
+
+    <!-- ROW 3: Status banner -->
+    <div class="row-banner">
+        <div class="banner-bg" id="bannerBg"></div>
+        <div id="statusBanner">AUTO</div>
+    </div>
+
+    <!-- ROW 4: Next phase -->
+    <div class="row-next">
+        <div id="nextPhase">Next: <span class="next-name">TRANSITION</span> in 20s</div>
+    </div>
+
+    <!-- ROW 5: Controls -->
+    <div class="row-controls">
+        <button class="btn" id="autoToggleBtn" onclick="cycleAutoResult()">Auto: ?</button>
+        <button class="btn" id="startBtn"  onclick="handleStartPause()">START</button>
+        <button class="btn" id="resetBtn"  onclick="resetMatch()">RESET</button>
+    </div>
+
+</main>
+
+<script>
+    // ── PHASE DEFINITIONS ──────────────────────────────────────────────
+    const PHASES = [
+      { key: "AUTO",       label: "AUTO",       duration: 20 },
+      { key: "TRANSITION", label: "TRANSITION", duration: 10 },
+      { key: "SHIFT_1",    label: "SHIFT 1",    duration: 25 },
+      { key: "SHIFT_2",    label: "SHIFT 2",    duration: 25 },
+      { key: "SHIFT_3",    label: "SHIFT 3",    duration: 25 },
+      { key: "SHIFT_4",    label: "SHIFT 4",    duration: 25 },
+      { key: "ENDGAME",    label: "ENDGAME",    duration: 30 },
+    ];
+    const TOTAL_SEC = 160;
+
+    // ── STATE ──────────────────────────────────────────────────────────
+    let state = {
+      isRunning:    false,
+      isPaused:     false,
+      startedAt:    null,
+      pausedAt:     null,
+      pauseAccumMs: 0,
+      autoResult:   "unknown", // "unknown" | "won" | "lost"
+    };
+
+    let tickInterval = null;
+    let lastRenderedSec = -1;
+
+    // ── HELPERS ────────────────────────────────────────────────────────
+    function getElapsedSec() {
+      if (!state.isRunning) return 0;
+      const now = state.isPaused ? state.pausedAt : Date.now();
+      const elapsed = (now - state.startedAt - state.pauseAccumMs) / 1000;
+      return Math.min(Math.max(elapsed, 0), TOTAL_SEC);
+    }
+
+    function getPhaseInfo(elapsedSec) {
+      let cursor = 0;
+      for (let i = 0; i < PHASES.length; i++) {
+        const p = PHASES[i];
+        const end = cursor + p.duration;
+        if (elapsedSec >= cursor && elapsedSec < end) {
+          return {
+            phaseKey:        p.key,
+            phaseLabel:      p.label,
+            phaseRemSec:     Math.ceil(end - elapsedSec),
+            nextLabel:       PHASES[i + 1]?.label ?? null,
+            nextRemSec:      Math.ceil(end - elapsedSec), // same as phaseRemSec = time until next
+          };
+        }
+        cursor = end;
+      }
+      return { phaseKey: "DONE", phaseLabel: "MATCH OVER", phaseRemSec: 0, nextLabel: null };
+    }
+
+    function getOurState(phaseKey, autoResult) {
+      if (phaseKey === "AUTO")       return "auto";
+      if (phaseKey === "TRANSITION") return "transition";
+      if (phaseKey === "ENDGAME")    return "endgame";
+      if (phaseKey === "DONE")       return "done";
+      if (!phaseKey.startsWith("SHIFT_")) return "done";
+      const n = Number(phaseKey.split("_")[1]);
+      if (autoResult === "won")  return n % 2 === 0 ? "active" : "wait";
+      if (autoResult === "lost") return n % 2 === 1 ? "active" : "wait";
+      return "unknown";
+    }
+
+    function formatClock(sec) {
+      const s = Math.max(0, Math.ceil(sec));
+      const m = Math.floor(s / 60);
+      const r = s % 60;
+      return `${m}:${String(r).padStart(2, "0")}`;
+    }
+
+    function bannerText(ourState, phaseKey) {
+      if (ourState === "active")     return "ACTIVE";
+      if (ourState === "wait")       return "WAIT";
+      if (ourState === "auto")       return "AUTO";
+      if (ourState === "transition") return "SET AUTO";
+      if (ourState === "endgame")    return "ENDGAME";
+      if (ourState === "done")       return "DONE";
+      return "?";
+    }
+
+    // ── RENDER ─────────────────────────────────────────────────────────
+    function render() {
+      const elapsed  = getElapsedSec();
+      const info     = getPhaseInfo(elapsed);
+      const ourState = getOurState(info.phaseKey, state.autoResult);
+      const remTotal = Math.max(0, TOTAL_SEC - elapsed);
+      const critical = info.phaseRemSec <= 5 && state.isRunning && !state.isPaused && info.phaseKey !== "DONE";
+
+      // Match clock
+      document.getElementById("matchTimer").textContent = formatClock(remTotal);
+
+      // Phase row
+      document.getElementById("phaseLabel").textContent = info.phaseLabel;
+      document.getElementById("phaseRemaining").textContent =
+        info.phaseKey === "DONE" ? "" : `${info.phaseRemSec}s remaining`;
+
+      // Status banner
+      document.getElementById("statusBanner").textContent = bannerText(ourState, info.phaseKey);
+
+      // Next phase
+      const np = document.getElementById("nextPhase");
+      if (info.nextLabel) {
+        np.innerHTML = `Next: <span class="next-name">${info.nextLabel}</span> in ${info.phaseRemSec}s`;
+      } else {
+        np.textContent = "";
+      }
+
+      // Body state class
+      const body = document.body;
+      body.className = `state-${ourState}`;
+      if (critical) body.classList.add("flashing");
+
+      // Banner bg sync
+      document.getElementById("bannerBg").style.background = "var(--accent)";
+
+      // Auto toggle button
+      const autoBtn = document.getElementById("autoToggleBtn");
+      const editable = info.phaseKey === "AUTO" || info.phaseKey === "TRANSITION";
+      const locked   = state.isRunning && !editable;
+      autoBtn.className = "btn";
+      if (state.autoResult === "won")  autoBtn.classList.add("state-won");
+      if (state.autoResult === "lost") autoBtn.classList.add("state-lost");
+      if (locked) autoBtn.classList.add("locked");
+      const label = state.autoResult === "won" ? "WON" : state.autoResult === "lost" ? "LOST" : "AUTO: ?";
+      autoBtn.textContent = label;
+
+      // Start/Pause button
+      const startBtn = document.getElementById("startBtn");
+      if (!state.isRunning) {
+        startBtn.textContent = "START";
+        startBtn.style.background = "#22c55e";
+      } else if (state.isPaused) {
+        startBtn.textContent = "RESUME";
+        startBtn.style.background = "#22c55e";
+      } else {
+        startBtn.textContent = "PAUSE";
+        startBtn.style.background = "#f5a623";
+      }
+      if (info.phaseKey === "DONE") {
+        startBtn.disabled = true;
+        startBtn.style.opacity = "0.4";
+      } else {
+        startBtn.disabled = false;
+        startBtn.style.opacity = "1";
+      }
+    }
+
+    // ── TICK ───────────────────────────────────────────────────────────
+    function tick() {
+      const elapsed = getElapsedSec();
+      const sec = Math.floor(elapsed);
+      if (sec !== lastRenderedSec) {
+        lastRenderedSec = sec;
+        // Vibrate on phase change
+        const prev = lastRenderedSec > 0 ? getPhaseInfo(lastRenderedSec - 1) : null;
+        const curr = getPhaseInfo(elapsed);
+        if (prev && prev.phaseKey !== curr.phaseKey && navigator.vibrate) {
+          navigator.vibrate(curr.phaseKey === "ENDGAME" ? [100, 50, 100] : [60]);
+        }
+      }
+      render();
+
+      // Auto-stop at end
+      if (elapsed >= TOTAL_SEC) {
+        clearInterval(tickInterval);
+        tickInterval = null;
+        state.isRunning = false;
+        state.isPaused  = false;
+        if (navigator.vibrate) navigator.vibrate([150, 80, 150, 80, 250]);
+        render();
+      }
+    }
+
+    // ── CONTROLS ───────────────────────────────────────────────────────
+    function handleStartPause() {
+      if (!state.isRunning) {
+        // Start
+        state.isRunning    = true;
+        state.isPaused     = false;
+        state.startedAt    = Date.now();
+        state.pauseAccumMs = 0;
+        lastRenderedSec    = -1;
+        tickInterval = setInterval(tick, 80);
+      } else if (!state.isPaused) {
+        // Pause
+        state.isPaused = true;
+        state.pausedAt = Date.now();
+      } else {
+        // Resume
+        state.pauseAccumMs += Date.now() - state.pausedAt;
+        state.isPaused = false;
+        state.pausedAt = null;
+      }
+      render();
+    }
+
+    function resetMatch() {
+      clearInterval(tickInterval);
+      tickInterval = null;
+      state.isRunning    = false;
+      state.isPaused     = false;
+      state.startedAt    = null;
+      state.pausedAt     = null;
+      state.pauseAccumMs = 0;
+      state.autoResult   = "unknown";
+      lastRenderedSec    = -1;
+      render();
+    }
+
+    function cycleAutoResult() {
+      const elapsed  = getElapsedSec();
+      const info     = getPhaseInfo(elapsed);
+      const editable = !state.isRunning || info.phaseKey === "AUTO" || info.phaseKey === "TRANSITION";
+      if (!editable) return;
+      const cycle = { unknown: "won", won: "lost", lost: "unknown" };
+      state.autoResult = cycle[state.autoResult];
+      render();
+    }
+
+    // ── INIT ───────────────────────────────────────────────────────────
+    render();
+</script>
+</body>
+</html>

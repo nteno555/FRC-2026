@@ -218,6 +218,11 @@ public class LimelightFiducialCamera {
         if (meanAmbiguity > maxMeanAmbiguity || meanDistance > maxMeanDistance || meanArea < minMeanArea) {
             reject = true;
         }
+
+        if (turretMounted && RobotState.getInstance().getSpeed() > 1.0) {
+            reject = true;
+        }
+
         if ((Math.abs(
                 pose.getRotation().minus(RobotState.getInstance().getVisionPose().getRotation()).getRadians()) > 0.5)
                 && !turretMounted) {
@@ -305,6 +310,10 @@ public class LimelightFiducialCamera {
         double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
         if (turretMounted && SubsystemConstants.hasTurret) {
             omega -= RobotState.getInstance().getTurretVelocity();
+        }
+
+        if (turretMounted && RobotState.getInstance().getSpeed() > 1.0) {
+            reject = true;
         }
 
         if (Math.abs(omega) > maxYawRate) {

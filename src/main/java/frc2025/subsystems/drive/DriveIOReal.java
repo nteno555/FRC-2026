@@ -58,15 +58,25 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
         lastGoodChassisSpeeds = inputs.currentChassisSpeeds;
 
-
+//        Matrix<N3, N1> regStdDevs = new Matrix<>(Nat.N3(), Nat.N1(), new double[] {0.1, 0.1, 0.1});
+//        Matrix<N3, N1> slippingStdDevs = new Matrix<>(Nat.N3(), Nat.N1(), new double[] {99999, 99999, 0.1});
+//
 //        if (!isSlipping()) {
+//            this.setStateStdDevs(regStdDevs);
+//
 //            inputs.swervePoseMeters = state.Pose;
 //            lastOdometryPose = inputs.swervePoseMeters;
 //            inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
 //            lastGoodChassisSpeeds = inputs.currentChassisSpeeds;
-//        } else {
-//            inputs.swervePoseMeters = lastOdometryPose;
-//            inputs.currentChassisSpeeds = lastGoodChassisSpeeds;
+//        }
+//        else {
+//            this.setStateStdDevs(slippingStdDevs);
+//
+//            inputs.swervePoseMeters = state.Pose;
+//            lastOdometryPose = inputs.swervePoseMeters;
+//            inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
+//            lastGoodChassisSpeeds = inputs.currentChassisSpeeds;
+//
 //        }
 
 
@@ -161,13 +171,13 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
             return false;
         }
 
-        double ratio = minTransVelocity / maxTransVelocity;
+        double difference = maxTransVelocity - minTransVelocity;
 
         Logger.recordOutput("Drive/Slip/maxTransVelocity", maxTransVelocity);
         Logger.recordOutput("Drive/Slip/minTransVelocity", minTransVelocity);
-        Logger.recordOutput("Drive/Slip/transVelocityRatio", ratio);
+        Logger.recordOutput("Drive/Slip/difference", difference);
 
-        boolean slipping = ratio < 0.8;
+        boolean slipping = difference > 0.6;
         Logger.recordOutput("Drive/slipping", slipping);
 
         return slipping;

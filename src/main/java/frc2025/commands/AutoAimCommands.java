@@ -136,15 +136,15 @@ public class AutoAimCommands {
 
             if (Alliance.get()) {
                 inZone = xPos > FieldConstants.inRedZoneX;
-                inClimb = (xPos > FieldConstants.redClimbX) && (yPos > FieldConstants.redClimbLowY)
-                        && (yPos < FieldConstants.redClimbHighY);
+//                inClimb = (xPos > FieldConstants.redClimbX) && (yPos > FieldConstants.redClimbLowY)
+//                        && (yPos < FieldConstants.redClimbHighY);
             } else {
                 inZone = xPos < FieldConstants.inBlueZoneX;
-                inClimb = (xPos < FieldConstants.blueClimbX) && (yPos > FieldConstants.blueClimbLowY)
-                        && (yPos < FieldConstants.blueClimbHighY);
+//                inClimb = (xPos < FieldConstants.blueClimbX) && (yPos > FieldConstants.blueClimbLowY)
+//                        && (yPos < FieldConstants.blueClimbHighY);
             }
 
-            good = good && (!inClimb);
+//            good = good && (!inClimb);
 
             if (inZone) {
                 good = good && (dist < ShooterTreeMap.getInstance().getMaxDistance());

@@ -10,8 +10,8 @@
     "mid start"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 4.5,
-  "defaultMaxAccel": 5.0,
+  "defaultMaxVel": 4.0,
+  "defaultMaxAccel": 4.0,
   "defaultMaxAngVel": 1080.0,
   "defaultMaxAngAccel": 1080.0,
   "defaultNominalVoltage": 12.0,
