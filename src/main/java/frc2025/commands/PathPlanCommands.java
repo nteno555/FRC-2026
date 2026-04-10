@@ -79,7 +79,7 @@ public class PathPlanCommands {
         return new FollowPathCommand(robotContainer.getDrive(), preTrenchPathSupplier, () -> false, false).until(() -> {
             var robotPose = RobotState.getInstance().getVisionPose();
             
-            boolean rotationReady = (Math.abs(robotPose.getRotation().getDegrees() - preTrenchPose.get().getRotation().getDegrees()) < 20);
+            boolean rotationReady = (Math.abs(robotPose.getRotation().getDegrees() - preTrenchPose.get().getRotation().getDegrees()) < 10);
             boolean pastTrench = robotPose.getY() > FieldConstants.highTrenchCutoff || robotPose.getY() < FieldConstants.lowTrenchCutoff;
             
             return rotationReady && pastTrench;

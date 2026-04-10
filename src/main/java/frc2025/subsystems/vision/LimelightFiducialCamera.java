@@ -50,8 +50,9 @@ public class LimelightFiducialCamera {
     }
 
     public void resetOdometry() {
-        resetOdometryTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
-        flushNextOrientation = true;
+//        resetOdometryTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+//        flushNextOrientation = true;
+        LimelightHelpers.SetIMUMode(name, 0);
     }
 
     public void initializeGyro() {
@@ -67,13 +68,13 @@ public class LimelightFiducialCamera {
     public void writeGyro() {
         String prefix = "Vision/" + name + "_mt2/";
 
-        if(imuMode != 4) {
-            LimelightHelpers.SetIMUAssistAlpha(name, 0.01);
-            LimelightHelpers.SetIMUMode(name, 4);
-            imuMode = 4;
-        }
+//        if(imuMode != 4) {
+//            LimelightHelpers.SetIMUAssistAlpha(name, 0.01);
+//            LimelightHelpers.SetIMUMode(name, 4);
+//            imuMode = 4;
+//        }
 
-        Logger.recordOutput(prefix + "IMU", imuMode);
+//        Logger.recordOutput(prefix + "IMU", imuMode);
 
         if (turretMounted) {
             double orientation = RobotState.getInstance().getVisionPose().getRotation().getDegrees()
@@ -83,22 +84,26 @@ public class LimelightFiducialCamera {
                     - RobotState.getInstance().getTurretVelocity();
             omega = Units.radiansToDegrees(omega);
 
-            if (flushNextOrientation) {
-                LimelightHelpers.SetRobotOrientation(name, orientation, omega, 0, 0, 0, 0);
-            } else {
-                LimelightHelpers.SetRobotOrientation_NoFlush(name, orientation, omega, 0, 0, 0, 0);
-            }
+            LimelightHelpers.SetRobotOrientation_NoFlush(name, orientation, omega, 0, 0, 0, 0);
+//            if (flushNextOrientation) {
+//                LimelightHelpers.SetRobotOrientation(name, orientation, omega, 0, 0, 0, 0);
+//            } else {
+//                LimelightHelpers.SetRobotOrientation_NoFlush(name, orientation, omega, 0, 0, 0, 0);
+//            }
         } else {
             double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
             omega = Units.radiansToDegrees(omega);
 
-            if (flushNextOrientation) {
-                LimelightHelpers.SetRobotOrientation(name,
-                        RobotState.getInstance().getVisionPose().getRotation().getDegrees(), omega, 0, 0, 0, 0);
-            } else {
-                LimelightHelpers.SetRobotOrientation_NoFlush(name,
-                        RobotState.getInstance().getVisionPose().getRotation().getDegrees(), omega, 0, 0, 0, 0);
-            }
+            LimelightHelpers.SetRobotOrientation_NoFlush(name,
+                    RobotState.getInstance().getVisionPose().getRotation().getDegrees(), omega, 0, 0, 0, 0);
+
+//            if (flushNextOrientation) {
+//                LimelightHelpers.SetRobotOrientation(name,
+//                        RobotState.getInstance().getVisionPose().getRotation().getDegrees(), omega, 0, 0, 0, 0);
+//            } else {
+//                LimelightHelpers.SetRobotOrientation_NoFlush(name,
+//                        RobotState.getInstance().getVisionPose().getRotation().getDegrees(), omega, 0, 0, 0, 0);
+//            }
         }
         
         flushNextOrientation = false;
@@ -188,7 +193,8 @@ public class LimelightFiducialCamera {
 
         boolean reject = false;
 
-        if (poseEstimate.tagCount < 2 || poseEstimate.timestampSeconds < resetOdometryTime + 0.5) {
+        if (poseEstimate.tagCount < 2) {
+//        if (poseEstimate.tagCount < 2 || poseEstimate.timestampSeconds < resetOdometryTime + 0.5) {
             reject = true;
         }
 
@@ -303,9 +309,9 @@ public class LimelightFiducialCamera {
             reject = true;
         }
 
-        if (poseEstimate.timestampSeconds < resetOdometryTime + 0.5) {
-            reject = true;
-        }
+//        if (poseEstimate.timestampSeconds < resetOdometryTime + 0.5) {
+//            reject = true;
+//        }
 
         double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
         if (turretMounted && SubsystemConstants.hasTurret) {
