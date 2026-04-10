@@ -96,7 +96,7 @@ public class Autos {
                 .alongWith(robotContainer.getHood().setPosition(() -> 0.0))
                 .until(() -> robotContainer.getIntake().getDeployReady()
                         && robotContainer.getHood().getPosition() < 0.3)
-                .withTimeout(1.0)
+//                .withTimeout(1.0)
                 .andThen(
                         driveCommand
                                 .deadlineFor(
