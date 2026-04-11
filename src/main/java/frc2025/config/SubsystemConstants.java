@@ -60,8 +60,8 @@ public class SubsystemConstants {
     public static double topFlywheelDiameter = 0.05; // 2 inches in meters
     public static double bottomFlywheelDiameter = 0.1; // 4 inches in meters
     public static double flywheelEfficiency = 0.80;
-    public static double flywheelSupplyCurrentLimit = 200;
-    public static double flywheelStatorCurrentLimit = 200;
+    public static double flywheelSupplyCurrentLimit = 100;
+    public static double flywheelStatorCurrentLimit = 100;
     // to do check
     public static double towerkS = 0.37;
     public static double towerkV = 0.095;
@@ -105,7 +105,7 @@ public class SubsystemConstants {
     public static double intakekI = 0.0;
     public static double intakekD = 0.0;
     public static double intakeSupplyCurrentLimit = 100;
-    public static double intakeStatorCurrentLimit = 200;
+    public static double intakeStatorCurrentLimit = 100;
     public static double intakeMotionMagicCruiseVelocity = 120;
     public static double intakeMotionMagicAcceleration = 300;
     public static double intakeMotionMagicJerk = 1400;
@@ -120,8 +120,8 @@ public class SubsystemConstants {
     public static double intakeHalfPosition = 2.0;
     public static double intakeQuarterPosition = 1.0;
 
-    public static double indexerSupplyCurrentLimit = 120;
-    public static double indexerStatorCurrentLimit = 120;
+    public static double indexerSupplyCurrentLimit = 100;
+    public static double indexerStatorCurrentLimit = 100;
     public static double indexerPeakForwardTorqueCurrent = 120;
     public static double indexerPeakReverseTorqueCurrent = 120;
     public static double indexerTorqueNeutralDeadband = 1;
@@ -142,17 +142,17 @@ public class SubsystemConstants {
     public static double turretCruiseVelocity = 60;
     public static double turretAcceleration = 150;
     public static double turretJerk = 700;
-    public static double turretSupplyCurrentLimit = 120;
-    public static double turretStatorCurrentLimit = 120;
-    public static double turretPeakForwardTorqueCurrent = 120;
-    public static double turretPeakReverseTorqueCurrent = -120;
+    public static double turretSupplyCurrentLimit = 60;
+    public static double turretStatorCurrentLimit = 60;
+    public static double turretPeakForwardTorqueCurrent = 60;
+    public static double turretPeakReverseTorqueCurrent = -60;
     public static double turretZeroOffsetRadians = 0.0;
     // 8 (44-42) 26 10 110
     public static double turretRotationsPerRadian = 44.0 / 8.0 * 26.0 / 42.0 * 110.0 / 10.0 / (2 * Math.PI);
     public static double turretMinAngleRadians = -3.2;
     public static double turretMaxAngleRadians = 4.0;
-    public static double throughBoreZero1 = 0.702;
-    public static double throughBoreZero2 = 0.258;
+    public static double throughBoreZero1 = 0.325;
+    public static double throughBoreZero2 = 0.861;
     public static double throughBoreRatio1 = 44.0 / 8.0 * 26.0 / 42.0; // 6.17
     public static double throughBoreRatio2 = 44.0 / 8.0; // 3.82
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop
@@ -161,7 +161,7 @@ public class SubsystemConstants {
     public static double turretDefaultRadians = Math.PI / 2;
     public static boolean hasTurret = true;
     public static boolean useTurretThroughBores = true;
-    public static double turretShotReadyThreshold = 0.07; // 5.73 degrees
+    public static double turretShotReadyThreshold = 0.12; // 5.73 degrees
     public static boolean useTurretVisionCorrection = false;
 
     public static Transform2d robotToShooter = new Transform2d(0.0885, -0.1372, Rotation2d.kZero); // should be x =

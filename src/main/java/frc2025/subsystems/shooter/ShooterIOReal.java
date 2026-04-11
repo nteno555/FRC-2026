@@ -107,6 +107,9 @@ public class ShooterIOReal implements ShooterIO {
 
 //        inputs.towerVoltage = tower.getMotorVoltage().getValueAsDouble();
 //        inputs.towerRPS = tower.getVelocity().getValueAsDouble();
+
+        Logger.recordOutput("Shooter Master", flywheelMaster.getStatorCurrent().getValueAsDouble());
+        Logger.recordOutput("Shooter Slave", flywheelSlave.getStatorCurrent().getValueAsDouble());
     }
 
     @Override

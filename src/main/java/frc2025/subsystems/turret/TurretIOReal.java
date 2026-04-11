@@ -112,6 +112,7 @@ public class TurretIOReal implements TurretIO{
         Logger.recordOutput("Turret/voltage", turretMotor.getMotorVoltage().getValue().in(Units.Volts));
         Logger.recordOutput("Turret/current", turretMotor.getSupplyCurrent().getValue().in(Units.Amp));
         Logger.recordOutput("Turret/RPS", turretMotor.getVelocity().getValueAsDouble());
+        Logger.recordOutput("Current/Turret", turretMotor.getStatorCurrent().getValueAsDouble());
     }
 
     @Override

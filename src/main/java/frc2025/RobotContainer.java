@@ -62,7 +62,7 @@ public class RobotContainer {
         private String lastAutoName = "";
         private final Timer matchTime = new Timer();
         private boolean autoWarmupDone = false;
-        private double bumpWaitTime;
+        private boolean autoWon = false;
 
         DriveSubsystem driveSubsystem;
         VisionSubsystem visionSubsystem;
@@ -147,12 +147,9 @@ public class RobotContainer {
                 autos = new Autos(this);
                 autoChooser.setDefaultOption("No Auto", "No Auto");
 
-//                autoChooser.addOption(Autos.LOW_X2_NEUTRAL_STATION, Autos.LOW_X2_NEUTRAL_STATION);
-//                autoChooser.addOption(Autos.LOW_X2_NEUTRAL, Autos.LOW_X2_NEUTRAL);
                 autoChooser.addOption(Autos.LOW_NEUTRAL_LOOP, Autos.LOW_NEUTRAL_LOOP);
-                // autoChooser.addOption(Autos.MID_DEPOT_STATION, Autos.MID_DEPOT_STATION);
                 autoChooser.addOption(Autos.MID_BUMP_STATION, Autos.MID_BUMP_STATION);
-//                autoChooser.addOption(Autos.HIGH_X2_NEUTRAL, Autos.HIGH_X2_NEUTRAL);
+                autoChooser.addOption(Autos.MID_BUMP_NOSTATION, Autos.MID_BUMP_NOSTATION);
                 autoChooser.addOption(Autos.HIGH_NEUTRAL_LOOP, Autos.HIGH_NEUTRAL_LOOP);
                 autoChooser.addOption(Autos.ONE_METER, Autos.ONE_METER);
 
@@ -641,6 +638,8 @@ public class RobotContainer {
                         case Blue -> redInactiveFirst;
                 };
 
+                autoWon = redInactiveFirst && Alliance.get() || !redInactiveFirst && !Alliance.get();
+
                 int matchTimeInt = (int) (Math.round(matchTime));
 
                 if (matchTime > 130) {
@@ -705,6 +704,12 @@ public class RobotContainer {
                 Logger.recordOutput("Superstructure/manualAimState", manualAimState);
                 Logger.recordOutput("Superstructure/slowmode", slowmode);
                 Logger.recordOutput("Superstructure/RPS Offset", rpsOffset);
+                if (autoWon) {
+                    Logger.recordOutput("Superstructure/Won Auto", "WON");
+                }
+                else {
+                    Logger.recordOutput("Superstructure/Won Auto", "LOST");
+                }
 
         }
 

@@ -94,9 +94,10 @@ public class Autos {
     private Command intakeDrive(Command driveCommand) {
         return robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
                 .alongWith(robotContainer.getHood().setPosition(() -> 0.0))
-                .until(() -> robotContainer.getIntake().getDeployReady()
-                        && robotContainer.getHood().getPosition() < 0.3)
-//                .withTimeout(1.0)
+                .until(() -> robotContainer.getHood().getPosition() < 0.3)
+//                .until(() -> robotContainer.getIntake().getDeployReady()
+//                        && robotContainer.getHood().getPosition() < 0.3)
+//                .withTimeout(0.1)
                 .andThen(
                         driveCommand
                                 .deadlineFor(
@@ -106,7 +107,8 @@ public class Autos {
                                                 // .alongWith(robotContainer.getTurret().setPositionSafe(() ->
                                                 // SubsystemConstants.turretDefaultRadians,
                                                 // () -> 0.0, () -> true))))
-                                                 .alongWith(robotContainer.getTurret().aimAtHub())))
+                                                 .alongWith(robotContainer.getTurret().aimAtHub())
+                                                .alongWith(robotContainer.getHood().setPosition(() -> 0.0))))
                                                 );
     }
 
@@ -394,7 +396,7 @@ public class Autos {
     }
 
     public Command MidBumpStation() {
-        return buildAuto(List.of(BUMP_WAIT, "Mid-Bump", "Bump-Loop", "Bump-Mid", "Bump-Station", WAIT_NO_SHOOT, "Station-Score"), false);
+        return buildAuto(List.of(BUMP_WAIT, "Mid-Bump", "Bump-Loop", "Bump-Mid", WAIT_SHOOT, "Bump-Station", WAIT_NO_SHOOT, "Station-Score"), false);
     }
 
     public Command MidBump() {
