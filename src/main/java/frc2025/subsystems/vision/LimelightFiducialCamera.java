@@ -56,12 +56,16 @@ public class LimelightFiducialCamera {
     }
 
     public void initializeGyro() {
-        LimelightHelpers.setCameraPose_RobotSpace(name, 0.0, 0.0, this.robotToCameraUp,
+        if (this.turretMounted) {
+            LimelightHelpers.setCameraPose_RobotSpace(name, 0.0, 0.0, this.robotToCameraUp,
                 this.robotToCameraRoll, this.robotToCameraPitch, 0.0);
-
-        LimelightHelpers.setCameraPose_RobotSpace(name, this.robotToCameraForward, this.robotToCameraRight,
+        } else {
+            LimelightHelpers.setCameraPose_RobotSpace(name, this.robotToCameraForward, this.robotToCameraRight,
                 this.robotToCameraUp,
                 this.robotToCameraRoll, this.robotToCameraPitch, this.robotToCameraYaw);
+        }
+
+        this.gyroInitialized = true;
 
     }
 
