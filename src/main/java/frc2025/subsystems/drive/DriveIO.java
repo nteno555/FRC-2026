@@ -29,6 +29,7 @@ public interface DriveIO{
         public double odometryTimestamp;
         public Twist2d odometryTwist;
         public double pigeonAcceleration;
+        public double totalDriveCurrent;
     }
 
     public void updateInputs(DriveIOInputs inputs);

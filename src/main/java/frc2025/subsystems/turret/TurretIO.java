@@ -14,6 +14,7 @@ public interface TurretIO {
         boolean throughboresConnected;
         boolean tb1Connected;
         boolean tb2Connected;
+        double totalCurrent;
     }
 
     public void updateInputs(TurretIOInputs inputs);

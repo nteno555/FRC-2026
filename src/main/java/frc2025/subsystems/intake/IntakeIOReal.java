@@ -29,9 +29,9 @@ public class IntakeIOReal implements IntakeIO {
         rollerConfigs.TorqueCurrent.TorqueNeutralDeadband = SubsystemConstants.intakeTorqueNeutralDeadband;
 
         var deployConfigs = new TalonFXConfiguration();
-        deployConfigs.CurrentLimits.SupplyCurrentLimit = 120;
+        deployConfigs.CurrentLimits.SupplyCurrentLimit = 100;
         deployConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
-        deployConfigs.CurrentLimits.StatorCurrentLimit = 120;
+        deployConfigs.CurrentLimits.StatorCurrentLimit = 100;
         deployConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
         deployConfigs.TorqueCurrent = rollerConfigs.TorqueCurrent;
         deployConfigs.Voltage.PeakReverseVoltage = SubsystemConstants.intakePeakReverseVoltage;
@@ -84,6 +84,10 @@ public class IntakeIOReal implements IntakeIO {
 //        Logger.recordOutput("Intake/deployRPS", intakeDeployMaster.getVelocity().getValueAsDouble());
 //        Logger.recordOutput("Intake/masterPosition", intakeDeployMaster.getPosition().getValueAsDouble());
 //        Logger.recordOutput("Intake/slavePosition", intakeDeploySlave.getPosition().getValueAsDouble());
+
+        inputs.totalCurrent = intakeDeployMaster.getStatorCurrent().getValueAsDouble() +
+                intakeDeploySlave.getStatorCurrent().getValueAsDouble() +
+                intakeRoller.getStatorCurrent().getValueAsDouble();
 
         Logger.recordOutput("Current/Intake Deploy Master", intakeDeployMaster.getStatorCurrent().getValueAsDouble());
         Logger.recordOutput("Current/Intake Deploy Slave", intakeDeploySlave.getStatorCurrent().getValueAsDouble());

@@ -12,6 +12,7 @@ public interface ShooterIO {
         double percentOutput;
         double towerVoltage;
         double towerRPS;
+        double totalCurrent;
     }
     
     public void setSpeed(double speed, double acceleration);

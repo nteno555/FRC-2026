@@ -9,6 +9,7 @@ public interface IntakeIO {
         double current;
         double position;
         boolean deployConnected;
+        double totalCurrent;
     }
     public void updateInputs(IntakeIOInputs inputs);
     public void setSpeed(double speed);

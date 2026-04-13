@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -75,7 +76,7 @@ public class RobotContainer {
         Autos autos;
         Command autoCommand;
 
-        private double driveSpeed = 1.0;
+        private double driveSpeed = 1.3;
         private double slowmodeDriveSpeed = 0.3;
         private double rotationSpeed = 1.2;
         private double slowmodeRotationSpeed = 0.5;
@@ -228,7 +229,9 @@ public class RobotContainer {
                 intakeSubsystem.setDefaultCommand(intakeSubsystem.setDeployVoltage(() -> 0.0));
                 hoodSubsystem.setDefaultCommand(hoodSubsystem.setPosition(() -> 0.1));
                 shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
+//            shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
                 indexerSubsystem.setDefaultCommand(indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0));
+//            indexerSubsystem.setDefaultCommand(AutoAimCommands.);
 //                 turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
                 turretSubsystem.setDefaultCommand(turretSubsystem.setPositionSafe(() -> SubsystemConstants.turretDefaultRadians, () -> 0.0, () -> true)); // for
 
@@ -711,6 +714,12 @@ public class RobotContainer {
                     Logger.recordOutput("Superstructure/Won Auto", "LOST");
                 }
 
+                double totalCurrent = driveSubsystem.getCurrent() + hoodSubsystem.getCurrent() + indexerSubsystem.getCurrent()
+                        + indexerSubsystem.getCurrent() + intakeSubsystem.getCurrent() + shooterSubsystem.getCurrent() +
+                        turretSubsystem.getCurrent();
+
+                Logger.recordOutput("Current/Total Current", totalCurrent);
+                Logger.recordOutput("Current/Battery Voltage", RobotController.getBatteryVoltage());
         }
 
         public double getDriverLeftX() {
@@ -736,6 +745,9 @@ public class RobotContainer {
                 indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0);
                 intakeSubsystem.setDeployVoltage(() -> 0.0);
                 intakeSubsystem.setRollerVoltage(() -> 0.0);
+
+//                AutoAimCommands.autoIndexTeleop(this, () -> true).schedule();
+
                 matchTime.reset();
                 matchTime.start();
         }

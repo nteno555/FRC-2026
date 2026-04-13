@@ -8,6 +8,7 @@ public interface HoodIO {
         public double positionRotations;
         public double positionRadians;
         public double positionDegreesReal;
+        public double totalCurrent;
     }
 
     public void updateInputs(HoodIOInputs inputs);

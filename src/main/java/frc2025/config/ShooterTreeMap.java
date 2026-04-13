@@ -69,7 +69,7 @@ public class ShooterTreeMap {
 //        shuttlingRPSTreeMap.put(7.0, 75.0);
 //        shuttlingRPSTreeMap.put(9.0, 100.0);
 //        shuttlingRPSTreeMap.put(11.0, 110.0);
-        shuttlingRPSTreeMap.put(20.0, 125.0);
+        shuttlingRPSTreeMap.put(20.0, 100.0);
 
         shuttlingTofTreeMap.put(1.0, 0.5);
         shuttlingTofTreeMap.put(16.0, 4.0);

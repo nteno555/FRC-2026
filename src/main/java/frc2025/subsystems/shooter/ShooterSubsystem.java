@@ -82,6 +82,10 @@ public class ShooterSubsystem extends SubsystemBase {
         return Math.abs(wantedVelocity - inputs.masterVelocityRPS) < 10.0 && inputs.masterVelocityRPS > 1.0;
     }
 
+    public double getCurrent() {
+        return inputs.totalCurrent;
+    }
+
     public double getVelocity() {
         return inputs.masterVelocityRPS;
     }

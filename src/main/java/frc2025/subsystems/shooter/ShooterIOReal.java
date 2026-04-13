@@ -108,8 +108,10 @@ public class ShooterIOReal implements ShooterIO {
 //        inputs.towerVoltage = tower.getMotorVoltage().getValueAsDouble();
 //        inputs.towerRPS = tower.getVelocity().getValueAsDouble();
 
-        Logger.recordOutput("Shooter Master", flywheelMaster.getStatorCurrent().getValueAsDouble());
-        Logger.recordOutput("Shooter Slave", flywheelSlave.getStatorCurrent().getValueAsDouble());
+        inputs.totalCurrent = flywheelMaster.getStatorCurrent().getValueAsDouble() + flywheelSlave.getStatorCurrent().getValueAsDouble();
+
+        Logger.recordOutput("Current/Shooter Master", flywheelMaster.getStatorCurrent().getValueAsDouble());
+        Logger.recordOutput("Current/Shooter Slave", flywheelSlave.getStatorCurrent().getValueAsDouble());
     }
 
     @Override
@@ -123,9 +125,18 @@ public class ShooterIOReal implements ShooterIO {
         double currentFF = speed < flywheelMaster.getVelocity().getValueAsDouble() ? -SubsystemConstants.flywheelkSAmps : SubsystemConstants.flywheelkSAmps;
         Logger.recordOutput("Shooter/currentFF", currentFF);
 
-        flywheelMaster.setControl(
-                speedRequest.withVelocity(speed).withAcceleration(acceleration)
-        );
+        if (speed < 70.0) {
+            Logger.recordOutput("Shooter/usingVoltage", false);
+            flywheelMaster.setControl(
+                    speedRequest.withVelocity(speed).withAcceleration(acceleration)
+            );
+        }
+        else {
+            Logger.recordOutput("Shooter/usingVoltage", true);
+            flywheelMaster.setControl(
+                    voltageRequest.withOutput(speed*0.127)
+            );
+        }
 //        tower.setControl(new VelocityVoltage(speed * SubsystemConstants.towerFlywheelRatio)
 //                .withEnableFOC(true));
     }

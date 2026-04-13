@@ -86,4 +86,8 @@ public class IntakeSubsystem extends SubsystemBase {
     public double getDeployPosition() {
         return inputs.position;
     }
+
+    public double getCurrent() {
+        return inputs.totalCurrent;
+    }
 }

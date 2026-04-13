@@ -10,6 +10,7 @@ public interface IndexerIO {
         double indexerCurrent;
         double towerVoltage;
         double towerCurrent;
+        double totalCurrent;
     }
 
     public void updateInputs(IndexerIOInputs inputs);

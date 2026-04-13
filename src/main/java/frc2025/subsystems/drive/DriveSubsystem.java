@@ -304,4 +304,8 @@ public class DriveSubsystem extends SubsystemBase {
         return m_slipSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
     }
 
+    public double getCurrent() {
+        return inputs.totalDriveCurrent;
+    }
+
 }

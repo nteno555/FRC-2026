@@ -39,6 +39,10 @@ public class IndexerSubsystem extends SubsystemBase {
         });
     }
 
+    public double getCurrent() {
+        return inputs.totalCurrent;
+    }
+
 //    public Command setIndexerVoltageWithTowerSpeed(Supplier<Double> indexerVoltage, Supplier<Double> towerSpeed) {
 //        return this.runEnd(() -> {
 //            io.setVoltage(indexerVoltage.get());

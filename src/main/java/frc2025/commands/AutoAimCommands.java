@@ -4,6 +4,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc2025.RobotContainer;
 import frc2025.RobotState;
@@ -13,6 +14,7 @@ import frc2025.config.SubsystemConstants;
 import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
 
+import java.sql.Driver;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -108,10 +110,26 @@ public class AutoAimCommands {
 
             if (RobotState.getInstance().getShuttling()) {
                 boolean slowEnough = RobotState.getInstance().getSpeed() < 3.0;
+                boolean xVelocityReady;
+
+                DriverStation.Alliance alliance = DriverStation.Alliance.Red;
+                if(DriverStation.getAlliance().isPresent()) {
+                    alliance = DriverStation.getAlliance().get();
+                }
+
+                if(alliance == DriverStation.Alliance.Red) {
+                    xVelocityReady = RobotState.getInstance().getFieldRelativeSpeeds().vxMetersPerSecond > -1.5;
+                } else {
+                    xVelocityReady = RobotState.getInstance().getFieldRelativeSpeeds().vxMetersPerSecond < 1.5;
+                }
+
                 Logger.recordOutput("Indexer/autoIndex/turretReady", robotContainer.getTurret().getShotReadyLenient());
                 Logger.recordOutput("Indexer/autoIndex/hoodReady", robotContainer.getHood().getShotReadyLenient());
+                Logger.recordOutput("Indexer/autoIndex/xVelocityReady", xVelocityReady);
+                Logger.recordOutput("Indexer/autoIndex/xVelocity", RobotState.getInstance().getFieldRelativeSpeeds().vxMetersPerSecond);
+
                 return robotContainer.getTurret().getShotReadyLenient() && robotContainer.getHood().getShotReadyLenient()
-                        && slowEnough;
+                        && slowEnough && xVelocityReady;
                 // return true;
                 // return debouncer.calculate(robotContainer.getTurret().getShotReady() &&
                 // robotContainer.getHood().getShotReady());

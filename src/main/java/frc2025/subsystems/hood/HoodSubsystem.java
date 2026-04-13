@@ -155,4 +155,8 @@ public class HoodSubsystem extends SubsystemBase {
                 / (SubsystemConstants.hoodMaxAngleRadians - SubsystemConstants.hoodMinAngleRadians);
         return (radians - SubsystemConstants.hoodMinAngleRadians) * m + SubsystemConstants.hoodMinAngleRotations;
     }
+
+    public double getCurrent() {
+        return inputs.totalCurrent;
+    }
 }

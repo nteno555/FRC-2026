@@ -230,4 +230,8 @@ public class TurretSubsystem extends SubsystemBase {
                 && !(equals(setpoint, io.toRotations(SubsystemConstants.turretMinAngleRadians))
                 || equals(setpoint, io.toRotations(SubsystemConstants.turretMaxAngleRadians)));
     }
+
+    public double getCurrent() {
+        return inputs.totalCurrent;
+    }
 }

@@ -79,6 +79,8 @@ public class IndexerIOReal implements IndexerIO {
         inputs.indexerCurrent = indexer.getStatorCurrent().getValueAsDouble();
         inputs.connected = indexer.isConnected();
 
+        inputs.totalCurrent = indexer.getStatorCurrent().getValueAsDouble() + tower.getStatorCurrent().getValueAsDouble();
+
         Logger.recordOutput("Current/Indexer", indexer.getStatorCurrent().getValueAsDouble());
         Logger.recordOutput("Current/Tower", tower.getStatorCurrent().getValueAsDouble());
     }
