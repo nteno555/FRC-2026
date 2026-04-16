@@ -44,7 +44,21 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
     private Rotation2d lastGyroYaw = null;
     private Pose2d lastOdometryPose = null;
     private double lastOdometryPoseTimestamp = 0;
-    private ChassisSpeeds lastGoodChassisSpeeds = null;
+
+    private ChassisSpeeds lastSpeeds = new ChassisSpeeds();
+
+    private boolean slipping = false;
+
+    private int slipCounter = 0;
+
+    private double lastTime = Timer.getFPGATimestamp();
+
+    private final Matrix<N3, N1> normalStdDevs = new Matrix<>(Nat.N3(), Nat.N1(), 
+        new double[]{0.1, 0.1, 0.1});
+
+    private final Matrix<N3, N1> slippingStdDevs = new Matrix<>(Nat.N3(), Nat.N1(), 
+        new double[]{99999, 99999, 0.1});
+
     public DriveIOReal(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(TalonFX::new, TalonFX::new, CANcoder::new, driveTrainConstants, modules);
     }
@@ -52,11 +66,12 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
 
     @Override
     public void updateInputs(DriveIOInputs inputs) {
+        isSlipping();
+
         var state = getState();
         inputs.swervePoseMeters = state.Pose;
         lastOdometryPose = inputs.swervePoseMeters;
         inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
-        lastGoodChassisSpeeds = inputs.currentChassisSpeeds;
 
 //        Matrix<N3, N1> regStdDevs = new Matrix<>(Nat.N3(), Nat.N1(), new double[] {0.1, 0.1, 0.1});
 //        Matrix<N3, N1> slippingStdDevs = new Matrix<>(Nat.N3(), Nat.N1(), new double[] {99999, 99999, 0.1});
@@ -143,53 +158,49 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         return getModuleLocations();
     }
 
+
     private boolean isSlipping() {
-        var state = getState();
-        SwerveModuleState[] moduleStates = state.ModuleStates;
-        Translation2d[] moduleLocation = getModuleLocations();
-        double omega = getPigeon2().getAngularVelocityZWorld().getValue().in(Units.RadiansPerSecond);
+        var speeds = getState().Speeds;
+        double now = Timer.getFPGATimestamp();
+        double dt = now - lastTime;
 
-        double maxTransVelocity = 0.0;
-        double minTransVelocity = Double.MAX_VALUE;
-
-        for (int i = 0; i < 4; i++) {
-            double velocity = moduleStates[i].speedMetersPerSecond;
-            double angle = moduleStates[i].angle.getRadians();
-
-            double vx = velocity * Math.cos(angle);
-            double vy = velocity * Math.sin(angle);
-
-            double rotationalX = -omega * moduleLocation[i].getY();
-            double rotationalY = omega * moduleLocation[i].getX();
-
-            double translationalX = vx - rotationalX;
-            double translationalY = vy - rotationalY;
-
-            double transVelMagnitude = Math.hypot(translationalX, translationalY);
-
-            maxTransVelocity = Math.max(maxTransVelocity, transVelMagnitude);
-            minTransVelocity = Math.min(minTransVelocity, transVelMagnitude);
+        if (dt <= 0) {
+            return slipping;
         }
 
-        if (maxTransVelocity <= 0.2) {
-            Logger.recordOutput("Drive/Slip/maxTransVelocity", maxTransVelocity);
-            Logger.recordOutput("Drive/Slip/minTransVelocity", minTransVelocity);
-            Logger.recordOutput("Drive/Slip/transVelocityRatio", 1.0);
-            Logger.recordOutput("Drive/slipping", false);
-            return false;
+        double robotSpeed = Math.hypot(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
+        double wheelAccel = Math.hypot((speeds.vxMetersPerSecond - lastSpeeds.vxMetersPerSecond) / dt, (speeds.vyMetersPerSecond - lastSpeeds.vyMetersPerSecond) / dt);
+        
+        double imuAccel = Math.hypot(getPigeon2().getAccelerationX().getValue().in(Units.MetersPerSecondPerSecond), getPigeon2().getAccelerationY().getValue().in(Units.MetersPerSecondPerSecond));
+
+        this.lastSpeeds = speeds;
+        this.lastTime = now;
+        
+        boolean slipCondition = (robotSpeed > 0.2) && (wheelAccel > 4.0) && (imuAccel < (wheelAccel * 0.4)); // tune
+        Logger.recordOutput("Drive/wheelAccel", wheelAccel);
+        Logger.recordOutput("Drive/imuAccel", imuAccel);
+        Logger.recordOutput("Drive/robotSpeed", robotSpeed);
+        Logger.recordOutput("Drive/slipCondition", slipCondition);
+
+        if (slipCondition) {
+            this.slipCounter++;
+        } else {
+            if (slipCounter > 0) {slipCounter--;}
         }
-
-        double difference = maxTransVelocity - minTransVelocity;
-
-        Logger.recordOutput("Drive/Slip/maxTransVelocity", maxTransVelocity);
-        Logger.recordOutput("Drive/Slip/minTransVelocity", minTransVelocity);
-        Logger.recordOutput("Drive/Slip/difference", difference);
-
-        boolean slipping = difference > 0.6;
-        Logger.recordOutput("Drive/slipping", slipping);
-
-        return slipping;
+        
+        this.slipping = this.slipCounter >= 3;
+        
+        if (this.slipping) {
+            this.setStateStdDevs(this.slippingStdDevs);
+        } else {
+            this.setStateStdDevs(this.normalStdDevs);
+        }
+        
+        Logger.recordOutput("Drive/Slipping", this.slipping);
+        return this.slipping;
     }
+
+
     /*private void configureDriveCurrentLimits(double limit, double timeout, SwerveModuleConstants[] moduleConstants) {
         SwerveModule[] modules = getModules();
         for (int i = 0; modules.length > i; i++) {
