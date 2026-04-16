@@ -60,12 +60,10 @@ public class DriveSubsystem extends SubsystemBase {
         RobotState.getInstance().addDriveData(inputs.odometryTimestamp, inputs.odometryTwist);
 
         RobotState.getInstance().setRobotRelativeSpeeds(inputs.currentChassisSpeeds);
-        RobotState.getInstance().updateShuttling();
-        RobotState.getInstance().updateShootingWhileMovingVirtualPose();
         RobotState.getInstance().setPigeonAcceleration(inputs.pigeonAcceleration);
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);
         Logger.processInputs("RealOutputs/Drive", inputs);
-        Logger.recordOutput("Shooter/shuttling", RobotState.getInstance().getShuttling());
+
     }
 
     public void applyChassisSpeeds(ChassisSpeeds speeds) {
@@ -154,14 +152,6 @@ public class DriveSubsystem extends SubsystemBase {
         Translation2d translation = new Translation2d(x, y);
         if(!Alliance.get()) translation = translation.times(-1);
         return new ChassisSpeeds(translation.getX(), translation.getY(), omega);
-    }
-
-    public boolean getShotReady() {
-        double angleToVirtualTarget = RobotState.getInstance().getAngleToVirtualTarget();
-        double robotAngle = RobotState.getInstance().getVisionPose().getRotation().getRadians();
-        boolean ready = (Math.abs((angleToVirtualTarget - robotAngle) % (Math.PI * 2))) < Math.toRadians(15.0);
-        ready = ready && (RobotState.getInstance().getSpeed() < SubsystemConstants.autoAimMaxSpeed);
-        return ready;
     }
 
     // characterization

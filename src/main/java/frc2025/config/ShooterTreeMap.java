@@ -13,57 +13,9 @@ public class ShooterTreeMap {
     public InterpolatingTreeMap radialVelocityTreeMap = new InterpolatingTreeMap();
     public InterpolatingTreeMap shuttlingRPSTreeMap = new InterpolatingTreeMap();
     public InterpolatingTreeMap shuttlingHoodTreeMap = new InterpolatingTreeMap();
-    public InterpolatingTreeMap areaToDistanceTreeMap = new InterpolatingTreeMap();
+
     
     public ShooterTreeMap() {
-        hoodTreeMap.put(1.13, 0.5);
-        hoodTreeMap.put(1.45, 0.6);
-        hoodTreeMap.put(1.8499, 1.0);
-        hoodTreeMap.put(1.85, 0.5);
-        hoodTreeMap.put(2.22, 0.7);
-        hoodTreeMap.put(2.96, 1.05);
-        hoodTreeMap.put(3.78, 1.5);
-        hoodTreeMap.put(4.30, 2.2);
-        hoodTreeMap.put(5.0, 2.6);
-
-        lowerWheelTreeMap.put(1.13, 39.0);
-        lowerWheelTreeMap.put(1.8499, 39.0);
-        lowerWheelTreeMap.put(1.85, 46.0);
-        lowerWheelTreeMap.put(5.0, 46.0);
-        lowerWheelTreeMap.put(6.0, 48.0);
-
-
-        tofTreeMap.put(0.93, 1.32);
-        tofTreeMap.put(2.18, 1.50);
-        tofTreeMap.put(3.30, 1.45);
-        tofTreeMap.put(4.03, 1.43);
-        tofTreeMap.put(4.88, 1.27);
-
-        radialVelocityTreeMap.put(-0.10, 0.50);
-        radialVelocityTreeMap.put(-0.5, 1.5);
-        radialVelocityTreeMap.put(0.10, -0.50);
-        radialVelocityTreeMap.put(0.5, -1.5);
-
-        shuttlingRPSTreeMap.put(3.0, 47.0);
-        shuttlingRPSTreeMap.put(4.999, 52.0);
-        shuttlingRPSTreeMap.put(5.0, 55.0);
-        shuttlingRPSTreeMap.put(7.0, 60.0);
-        shuttlingRPSTreeMap.put(9.0, 75.0);
-        shuttlingRPSTreeMap.put(16.0, 80.0);
-
-        shuttlingHoodTreeMap.put(3.0, 2.0);
-        shuttlingHoodTreeMap.put(4.999, 2.0);
-        shuttlingHoodTreeMap.put(5.0, 2.8);
-        shuttlingHoodTreeMap.put(16.0, 2.8);
-
-        areaToDistanceTreeMap.put(2.73, 0.4191);
-        areaToDistanceTreeMap.put(2.43, 0.4953);
-        areaToDistanceTreeMap.put(1.38, 0.71374);
-        areaToDistanceTreeMap.put(0.80, 0.9652);
-        areaToDistanceTreeMap.put(0.52, 1.30048);
-        areaToDistanceTreeMap.put(0.30, 1.40716);
-        areaToDistanceTreeMap.put(0.12, 2.19202);
-        areaToDistanceTreeMap.put(0.08, 2.71018);
 
 
         updateDashboardMap();
@@ -88,10 +40,6 @@ public class ShooterTreeMap {
             instance.lowerWheelTreeMap.remove(dist);
             updateDashboardMap();
         }
-    }
-
-    public double getMaxDistance() {
-        return 6.0;
     }
 
     private void updateDashboardMap() {

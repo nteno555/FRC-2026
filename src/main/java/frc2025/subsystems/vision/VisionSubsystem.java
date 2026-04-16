@@ -20,12 +20,6 @@ public class VisionSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.recordOutput("Vision/visionPose", RobotState.getInstance().getVisionPose());
-        Logger.recordOutput("Vision/shooterVisionPose", RobotState.getInstance().getVisionShooterPose());
-
-        Pose2d pose = RobotState.getInstance().getVisionShooterPose();;
-        Pose2d target = RobotState.getInstance().getTargetPose();
-        double distance = Math.hypot(pose.getX() - target.getX(), pose.getY() - target.getY());
-        Logger.recordOutput("Vision/targetDistance", distance);
 
         RobotState.getInstance().updateVisionPose();
 

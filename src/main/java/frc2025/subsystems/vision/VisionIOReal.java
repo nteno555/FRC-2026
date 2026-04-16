@@ -25,60 +25,13 @@ public class VisionIOReal implements VisionIO {
 
     public VisionIOReal() {
         this.cameras = new LimelightFiducialCamera("limelight", 
-                false, 
                 0.32385, 
                 0, 
                 0.10414, 
                 0,
                 49, 
                 180);
-            /* 
-                new LimelightFiducialCamera(
-                        "limelight-turret",
-                        true,
-                        SubsystemConstants.robotToTurretCameraForward,
-                        SubsystemConstants.robotToTurretCameraRight,
-                        SubsystemConstants.robotToTurretCameraUp,
-                        SubsystemConstants.robotToTurretCameraYaw,
-                        SubsystemConstants.robotToTurretCameraPitch,
-                        SubsystemConstants.robotToTurretCameraRoll
-                ),
-                new LimelightFiducialCamera(
-                        "limelight-back",
-                        false,
-                        SubsystemConstants.robotToBackCameraForward,
-                        SubsystemConstants.robotToBackCameraRight,
-                        SubsystemConstants.robotToBackCameraUp,
-                        SubsystemConstants.robotToBackCameraYaw,
-                        SubsystemConstants.robotToBackCameraPitch,
-                        SubsystemConstants.robotToBackCameraRoll
-                ),
-                new LimelightFiducialCamera(
-                        "limelight-right",
-                        false,
-                        SubsystemConstants.robotToRightCameraForward,
-                        SubsystemConstants.robotToRightCameraRight,
-                        SubsystemConstants.robotToRightCameraUp,
-                        SubsystemConstants.robotToRightCameraYaw,
-                        SubsystemConstants.robotToRightCameraPitch,
-                        SubsystemConstants.robotToRightCameraRoll
-                ),
-                new LimelightFiducialCamera(
-                        "limelight-left",
-                        false,
-                        SubsystemConstants.robotToLeftCameraForward,
-                        SubsystemConstants.robotToLeftCameraRight,
-                        SubsystemConstants.robotToLeftCameraUp,
-                        SubsystemConstants.robotToLeftCameraYaw,
-                        SubsystemConstants.robotToLeftCameraPitch,
-                        SubsystemConstants.robotToLeftCameraRoll
-                )
-                        
-        );*/
-                
-        
 
-        colorCamera = new PhotonCamera("colorCamera");
         
     }
 
@@ -91,7 +44,6 @@ public class VisionIOReal implements VisionIO {
         cameras.writeGyro();
         cameras.updatePose();
         //photonCamera.updatePose();
-        RobotState.getInstance().setBallTargets(colorCamera.getLatestResult().getTargets());
     }
 
     @Override
