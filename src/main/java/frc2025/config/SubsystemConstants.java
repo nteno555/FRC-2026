@@ -13,6 +13,14 @@ public class SubsystemConstants {
     public static double rotationkI = 0.0;
     public static double rotationkD = 0.0;
 
+    public static double alignTranslationkP = 4.0;
+    public static double alignTranslationkI = 0.0;
+    public static double alignTranslationkD = 0.0;
+    // public static double rotationkP = 8.0;
+    public static double alignRotationkP = 4.0;
+    public static double alignRotationkI = 0.0;
+    public static double alignRotationkD = 0.0;
+
     public static double climberFF = 1.0;
     public static double climberkS = 0.0;
     public static double climberkV = 0.12;

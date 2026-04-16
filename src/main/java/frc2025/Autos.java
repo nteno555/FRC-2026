@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc2025.commands.AutoAimCommands;
-import frc2025.commands.FollowPathCommand;
 import frc2025.commands.PathPlanCommands;
 import frc2025.commands.SuperstructureCommands;
 import frc2025.config.FieldConstants;
@@ -112,22 +111,6 @@ public class Autos {
                                                 );
     }
 
-    private Command intakePathBuiltin(String pathName) {
-        PathPlannerPath path;
-
-        try {
-            path = PathPlannerPath.fromPathFile(pathName);
-        } catch (IOException | ParseException e) {
-            System.out.println("BAD PATH BAD PATH BAD PATH");
-            return null;
-        }
-
-        var followPath = robotContainer.getDrive().followPathBuiltinCommand(pathName);
-
-        return intakeDrive(followPath);
-
-    }
-
     private Command intakePath(String pathName) {
         PathPlannerPath path;
         try {
@@ -139,7 +122,7 @@ public class Autos {
 
         PathPlannerPath finalPath = path;
 
-        var followPath = new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true);
+        var followPath = drive.followPathCommand(finalPath);
 
         return intakeDrive(followPath);
     }

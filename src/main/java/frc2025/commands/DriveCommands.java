@@ -3,19 +3,13 @@ package frc2025.commands;
 import com.pathplanner.lib.path.*;
 import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
+import java.util.List;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc2025.RobotContainer;
 import frc2025.RobotState;
 import frc2025.config.FieldConstants;
 import frc2025.util.Alliance;
-import org.littletonrobotics.junction.Logger;
-
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
 
 public class DriveCommands {
     public static Command autoTrench(RobotContainer robotContainer) {
@@ -63,7 +57,8 @@ public class DriveCommands {
                 false
         );
 
-        return new FollowPathCommand(robotContainer.getDrive(), () -> p, () -> false, false);
+        return robotContainer.getDrive().followPathCommand(p)
+                .andThen(new DriveToPoseCommand(robotContainer.getDrive(), () -> endTrench));
 
     }
 
@@ -103,11 +98,13 @@ public class DriveCommands {
 
         Pose2d finalPreTrenchPose = preTrenchPose;
         PathPlannerPath finalP = p;
+        Pose2d finalEndTrench = endTrench;
         return new DriveToPoseCommand(robotContainer.getDrive(), () ->
                 new Pose2d(RobotState.getInstance().getVisionPose().getX(),
                     finalPreTrenchPose.getY(),
                     finalPreTrenchPose.getRotation()))
                 .andThen(new DriveToPoseCommand(robotContainer.getDrive(), () -> finalPreTrenchPose))
-                .andThen(new FollowPathCommand(robotContainer.getDrive(), () -> finalP, () -> false, false));
+                .andThen(robotContainer.getDrive().followPathCommand(finalP))
+                .andThen(new DriveToPoseCommand(robotContainer.getDrive(), () -> finalEndTrench));
     }
 }

@@ -77,7 +77,7 @@ public class PathPlanCommands {
             return straightPathFromPoses(robotPose, trenchEndPose.get(), endVelocity.get());
         };
 
-        return new FollowPathCommand(robotContainer.getDrive(), preTrenchPathSupplier, () -> false, false).until(() -> {
+        return robotContainer.getDrive().followPathCommand(preTrenchPathSupplier.get()).until(() -> {
             var robotPose = RobotState.getInstance().getVisionPose();
             
             boolean rotationReady = (Math.abs(robotPose.getRotation().getDegrees() - preTrenchPose.get().getRotation().getDegrees()) < 10);
@@ -85,9 +85,8 @@ public class PathPlanCommands {
 
             Logger.recordOutput("Drive/trenchCutoff", rotationReady && pastTrench);
             return rotationReady && pastTrench;
-            // return (Math.abs(robotPose.getY() - preTrenchPose.get().getY()) < 0.15) && (Math.abs(robotPose.getRotation().getDegrees() - preTrenchPose.get().getRotation().getDegrees()) < 10);
         }).andThen(
-                new FollowPathCommand(robotContainer.getDrive(), trenchEndPathSupplier, () -> false, false)
-        );
+                robotContainer.getDrive().followPathCommand(trenchEndPathSupplier.get())
+        ).andThen(new DriveToPoseCommand(robotContainer.getDrive(), trenchEndPose));
     }
 }

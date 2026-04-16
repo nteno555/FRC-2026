@@ -5,7 +5,6 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -55,6 +54,30 @@ public class DriveSubsystem extends SubsystemBase {
 
     public DriveSubsystem(DriveIO io) {
         this.io = io;
+
+        AutoBuilder.configure(
+                () -> RobotState.getInstance().getVisionPose(), // Robot pose supplier
+                this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                (speeds, feedforwards) -> drive(speeds, feedforwards), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also outputs individual module feedforwards for things like gearbox friction and motor back-EMF compensation
+                new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                        new PIDConstants(SubsystemConstants.translationkP, SubsystemConstants.translationkI, SubsystemConstants.translationkD), // Translation PID constants
+                        new PIDConstants(SubsystemConstants.rotationkP, SubsystemConstants.rotationkI, SubsystemConstants.rotationkD) // Rotation PID constants
+                ),
+                getPPConfig(), // The robot configuration
+                () -> {
+                    // Boolean supplier that controls when the path will be mirrored for the red alliance
+                    // This will flip the path being followed to the red side of the field.
+                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+                    var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red;
+                    }
+                    return false;
+                },
+                this // Reference to this subsystem to set requirements
+        );
     }
 
     @Override
@@ -184,40 +207,24 @@ public class DriveSubsystem extends SubsystemBase {
         return ready;
     }
 
-   public Command followPathBuiltinCommand(String pathName) {
-       try {
-           PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+    public Command followPathCommand(PathPlannerPath path) {
+        return AutoBuilder.followPath(path);
+    }
 
-           return new FollowPathCommand(
-                   path,
-                   () -> RobotState.getInstance().getVisionPose(), // Robot pose supplier
-                   this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-                   this::drive,
-                   new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller
-                                                   // for holonomic drive trains
-                           new PIDConstants(SubsystemConstants.translationkP, SubsystemConstants.translationkI, SubsystemConstants.translationkD), // Translation PID constants
-                           new PIDConstants(SubsystemConstants.rotationkP, SubsystemConstants.rotationkI, SubsystemConstants.rotationkD) // Translation PID constants
-                   ),
-                   getPPConfig(), // The robot configuration
-                   () -> {
-                       // Boolean supplier that controls when the path will be mirrored for the red
-                       // alliance
-                       // This will flip the path being followed to the red side of the field.
-                       // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    public Command followPathCommand(String pathName) {
+        try {
+            PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+            return followPathCommand(path);
+        } catch (Exception e) {
+            DriverStation.reportError("Could not load path: " + pathName, e.getStackTrace());
+            return Commands.none();
+        }
+    }
 
-                       var alliance = DriverStation.getAlliance();
-                       if (alliance.isPresent()) {
-                           return alliance.get() == DriverStation.Alliance.Red;
-                       }
-                       return false;
-                   },
-                   this // Reference to this subsystem to set requirements
-           );
-       } catch (Exception e) {
-           DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-           return Commands.none();
-       }
-   }
+    public Command followPathBuiltinCommand(String pathName) {
+        return followPathCommand(pathName);
+    }
+
 
     // characterization
 

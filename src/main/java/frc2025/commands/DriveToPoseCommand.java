@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc2025.RobotState;
+import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveSubsystem;
 import org.littletonrobotics.junction.Logger;
 
@@ -24,8 +25,10 @@ public class DriveToPoseCommand extends Command {
         this.driveSubsystem = drive;
         this.poseSupplier = poseSupplier;
 
-        translationPID = new PIDController(5, 0, 0);
-        rotationPID = new PIDController(3, 0, 0);
+        translationPID = new PIDController(SubsystemConstants.translationkP, SubsystemConstants.translationkI,
+                SubsystemConstants.translationkD);
+        rotationPID = new PIDController(SubsystemConstants.rotationkP, SubsystemConstants.rotationkI,
+                SubsystemConstants.rotationkD);
         rotationPID.enableContinuousInput(-Math.PI, Math.PI);
 
         addRequirements(this.driveSubsystem);
@@ -54,28 +57,11 @@ public class DriveToPoseCommand extends Command {
         xFeedback = MathUtil.clamp(Math.pow(Math.abs(xFeedback), 1), 0, 3) * Math.signum(xFeedback);
         yFeedback = MathUtil.clamp(Math.pow(Math.abs(yFeedback), 1), 0, 3) * Math.signum(yFeedback);
 
-        double dist = Math.sqrt(Math.pow(currentPose.getX() - desiredPose.getX(), 2) + Math.pow(currentPose.getY() - desiredPose.getY(), 2));
-        Logger.recordOutput("Drive/PathFollowingError", dist);
-
-        if(dist < 0.05)
-            translationDone = true;
-        if(Math.abs(currentPose.getRotation().getRadians() - desiredPose.getRotation().getRadians()) < 0.1)
-            rotationDone = true;
-
-        if(translationDone) {
-            xFeedback = 0;
-            yFeedback = 0;
-        }
-        if(rotationDone) {
-            omegaFeedback = 0;
-        }
-
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                 xFeedback,
                 yFeedback,
                 omegaFeedback,
-                currentPose.getRotation()
-        );
+                currentPose.getRotation());
 
         driveSubsystem.applyChassisSpeeds(chassisSpeeds);
     }
@@ -87,6 +73,13 @@ public class DriveToPoseCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return translationDone && rotationDone;
+        var currentPose = RobotState.getInstance().getVisionPose();
+        var desiredPose = poseSupplier.get();
+
+        double distance = Math.sqrt(Math.pow(currentPose.getX() - desiredPose.getX(), 2)
+                + Math.pow(currentPose.getY() - desiredPose.getY(), 2));
+        double angle = Math.abs(currentPose.getRotation().getRadians() - desiredPose.getRotation().getRadians());
+
+        return distance < 0.15 && angle < Math.toRadians(15);
     }
 }
