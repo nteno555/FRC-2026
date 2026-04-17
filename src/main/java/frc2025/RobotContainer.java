@@ -321,11 +321,11 @@ public class RobotContainer {
 //                                .and(driverXboxController.y().negate())
 //                                .whileTrue(AutoAimCommands.autoIndexTeleop(this, () -> aimMode == AimMode.TURRET));
 //
-//                new Trigger(() -> aiming)
-//                                .and(() -> (aimMode == AimMode.MANUAL))
-//                                .and(driverXboxController.y().negate())
-//                                .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(
-//                                                () -> SubsystemConstants.indexerShootVoltage, () -> 12.0));
+                new Trigger(() -> aiming)
+                                .and(() -> (aimMode == AimMode.MANUAL))
+                                .and(driverXboxController.y().negate())
+                                .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(
+                                                () -> SubsystemConstants.indexerShootVoltage, () -> 12.0));
 
                 driverXboxController
                                 .y()
