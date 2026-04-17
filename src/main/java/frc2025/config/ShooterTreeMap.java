@@ -16,60 +16,40 @@ public class ShooterTreeMap {
     public double kDrag = 0.001;
 
     public ShooterTreeMap() {
-
-        // 2 MOTORS
-        // hoodTreeMap.put(5.24, 2.5);
-        hoodTreeMap.put(5.24, 2.4);
-        hoodTreeMap.put(4.04, 2.4);
-        hoodTreeMap.put(3.07, 2.0);
-        hoodTreeMap.put(2.47, 1.7);
-        hoodTreeMap.put(1.29, 0.8);
-
-        // 20/4.8 = 4.167 rps/s^2 @ 10A
-        // 20/0.4 = 50 rps/s^2 @ 20A
-        // kA = (50-4.167)/10 =
-
-        // lowerWheelTreeMap.put(5.24, 56.0); // 47.41
-        lowerWheelTreeMap.put(5.24, 58.0); // 47.41
-        lowerWheelTreeMap.put(4.04, 50.0); // 43.13
-        lowerWheelTreeMap.put(3.07, 45.0); // 41.05
-        lowerWheelTreeMap.put(2.47, 43.0); // 39.71
-        lowerWheelTreeMap.put(1.29, 40.0); // 39.67
-
-        tofTreeMap.put(4.97, 1.32); // 1.32 1.33
-        tofTreeMap.put(3.89, 1.20); // 1.19 1.21 1.22 1.15
-        // tofTreeMap.put(4.97, 1.32); // 1.29 1.32 1.33
-        // tofTreeMap.put(3.85, 1.16);
-        tofTreeMap.put(2.78, 1.13); // 0.71 0.96 0.66 1.13 1.13
-        tofTreeMap.put(2.18, 1.09); // 1.05 1.06 1.12 1.10 1.09
-        tofTreeMap.put(2.04, 1.09);
-        tofTreeMap.put(1.39, 1.03); // 1.02 1.02 1.06 1.04
-
-        // // 1 MOTOR
-        // hoodTreeMap.put(5.24, 2.5);
-        // hoodTreeMap.put(4.04, 2.4);
-        // hoodTreeMap.put(3.07, 2.0);
-        // hoodTreeMap.put(2.47, 1.7);
-        // hoodTreeMap.put(1.29, 0.8);
-        //
-        // lowerWheelTreeMap.put(5.24, 66.0); // 47.41
-        // lowerWheelTreeMap.put(4.04, 56.0); //43.13
-        // lowerWheelTreeMap.put(3.07, 49.0); // 41.05
-        // lowerWheelTreeMap.put(2.47, 47.0); // 39.71
-        // lowerWheelTreeMap.put(1.29, 45.0); // 39.607
-        //
-        // tofTreeMap.put(4.97, 1.32); // 1.32 1.33
-        // tofTreeMap.put(3.89, 1.20); //1.19 1.21 1.22 1.15
-        // tofTreeMap.put(2.78, 1.13); //0.71 0.96 0.66 1.13 1.13
-        // tofTreeMap.put(2.18, 1.09); //1.05 1.06 1.12 1.10 1.09
-        // tofTreeMap.put(1.39, 1.03); // 1.02 1.02 1.06 1.04
+        tofTreeMap.put(1.29, 1.272);
+        tofTreeMap.put(2.00, 1.233);
+        tofTreeMap.put(2.47, 1.201);
+        tofTreeMap.put(3.07, 1.146);
+        tofTreeMap.put(4.04, 0.919);
+        tofTreeMap.put(4.50, 0.976);
+        tofTreeMap.put(5.24, 1.071);
+        tofTreeMap.put(6.00, 1.162);
+        // lowerWheelTreeMap
+        lowerWheelTreeMap.put(1.29, 25.2 * 1.0);
+        lowerWheelTreeMap.put(2.00, 25.1 * 1.0);
+        lowerWheelTreeMap.put(2.47, 25.0 * 1.0);
+        lowerWheelTreeMap.put(3.07, 25.0 * 1.0);
+        lowerWheelTreeMap.put(4.04, 25.5 * 1.1);
+        lowerWheelTreeMap.put(4.50, 26.8 * 1.1);
+        lowerWheelTreeMap.put(5.24, 28.7 * 1.1);
+        lowerWheelTreeMap.put(6.00, 30.7 * 1.1);
+        // hoodTreeMap
+        hoodTreeMap.put(1.29, 0.283);
+        hoodTreeMap.put(2.00, 0.707);
+        hoodTreeMap.put(2.47, 1.018);
+        hoodTreeMap.put(3.07, 1.471);
+        hoodTreeMap.put(4.04, 2.772);
+        hoodTreeMap.put(4.50, 2.800);
+        hoodTreeMap.put(5.24, 2.800);
+        hoodTreeMap.put(6.00, 2.800);
 
         shuttlingRPSTreeMap.put(3.0, 20.0);
-        shuttlingRPSTreeMap.put(5.0, 100.0);
-//        shuttlingRPSTreeMap.put(7.0, 75.0);
-//        shuttlingRPSTreeMap.put(9.0, 100.0);
-//        shuttlingRPSTreeMap.put(11.0, 110.0);
-        shuttlingRPSTreeMap.put(20.0, 100.0);
+        shuttlingRPSTreeMap.put(6.0, 30.0);
+        shuttlingRPSTreeMap.put(10.0, 40.0);
+        // shuttlingRPSTreeMap.put(7.0, 75.0);
+        // shuttlingRPSTreeMap.put(9.0, 100.0);
+        // shuttlingRPSTreeMap.put(11.0, 110.0);
+        shuttlingRPSTreeMap.put(20.0, 70.0);
 
         shuttlingTofTreeMap.put(1.0, 0.5);
         shuttlingTofTreeMap.put(16.0, 4.0);
@@ -129,7 +109,7 @@ public class ShooterTreeMap {
     }
 
     public double getMaxDistance() {
-        return 5.24;
+        return 6.0;
     }
 
     private void updateDashboardMap() {

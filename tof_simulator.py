@@ -18,7 +18,7 @@ DRAG_COEFFICIENT  = 0.47
 SHOOTER_HEIGHT_M   = 0.56    # Height of shooter exit from floor
 HUB_HEIGHT_M       = 1.44    # Height of target center from floor
 FLYWHEEL_DIAMETER_M = 0.1016 # 4-inch wheels
-GEARING_RATIO      = 0.5     # Flywheel motor shaft to wheel surface ratio
+GEARING_RATIO      = 1.0     # Flywheel motor shaft to wheel surface ratio
 SLIP_AT_40_RPS     = 0.90    # Ball slip multiplier at 40 RPS
 SLIP_AT_60_RPS     = 0.90    # Ball slip multiplier at 60 RPS
 
@@ -41,11 +41,11 @@ FLYWHEEL_RPS_RAW   = [40.0, 43.0, 45.0, 50.0, 58.0]
 # =============================================================================
 
 # Target distances to solve for
-SOLVER_DISTANCES_M = [1.29, 2.00, 2.47, 3.07, 4.04, 4.50, 5.24]
+SOLVER_DISTANCES_M = [1.29, 2.00, 2.47, 3.07, 4.04, 4.50, 5.24, 6.00]
 
 # Hood angle search range (in raw rotation units, same as hoodTreeMap)
-HOOD_SWEEP_MIN   = 0.3
-HOOD_SWEEP_MAX   = 3.0
+HOOD_SWEEP_MIN   = 0.0
+HOOD_SWEEP_MAX   = 2.8
 HOOD_SWEEP_STEPS = 100   # Number of candidate hood angles to evaluate
 
 # Flywheel RPS bracket for brentq root-find (Stage 1)

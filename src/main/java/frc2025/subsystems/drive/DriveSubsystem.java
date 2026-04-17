@@ -221,6 +221,16 @@ public class DriveSubsystem extends SubsystemBase {
         }
     }
 
+    public Command followChoreoPathCommand(String pathName) {
+        try {
+            PathPlannerPath path = PathPlannerPath.fromChoreoTrajectory(pathName);
+            return followPathCommand(path);
+        } catch (Exception e) {
+            DriverStation.reportError("Could not load choreo path: " + pathName, e.getStackTrace());
+            return Commands.none();
+        }
+    }
+
     public Command followPathBuiltinCommand(String pathName) {
         return followPathCommand(pathName);
     }

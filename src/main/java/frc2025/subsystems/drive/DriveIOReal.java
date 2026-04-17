@@ -32,87 +32,102 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.math.filter.Debouncer;
 import frc2025.RobotState;
 import frc2025.subsystems.vision.VisionIO;
 import org.littletonrobotics.junction.Logger;
 
-
 import java.util.List;
 
-public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> implements DriveIO{
+public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> implements DriveIO {
     private double[] lastModulePositionsMeters = new double[] { 0.0, 0.0, 0.0, 0.0 };
     private Rotation2d lastGyroYaw = null;
     private Pose2d lastOdometryPose = null;
     private double lastOdometryPoseTimestamp = 0;
     private ChassisSpeeds lastGoodChassisSpeeds = null;
+    private final Debouncer slipDebouncer = new Debouncer(0.1, Debouncer.DebounceType.kBoth);
+
     public DriveIOReal(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(TalonFX::new, TalonFX::new, CANcoder::new, driveTrainConstants, modules);
     }
-
 
     @Override
     public void updateInputs(DriveIOInputs inputs) {
         var state = getState();
         inputs.swervePoseMeters = state.Pose;
-        lastOdometryPose = inputs.swervePoseMeters;
-        inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
-        lastGoodChassisSpeeds = inputs.currentChassisSpeeds;
+        // lastOdometryPose = inputs.swervePoseMeters;
+        // inputs.currentChassisSpeeds =
+        // getKinematics().toChassisSpeeds(state.ModuleStates);
+        // lastGoodChassisSpeeds = inputs.currentChassisSpeeds;
 
-//        Matrix<N3, N1> regStdDevs = new Matrix<>(Nat.N3(), Nat.N1(), new double[] {0.1, 0.1, 0.1});
-//        Matrix<N3, N1> slippingStdDevs = new Matrix<>(Nat.N3(), Nat.N1(), new double[] {99999, 99999, 0.1});
-//
-//        if (!isSlipping()) {
-//            this.setStateStdDevs(regStdDevs);
-//
-//            inputs.swervePoseMeters = state.Pose;
-//            lastOdometryPose = inputs.swervePoseMeters;
-//            inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
-//            lastGoodChassisSpeeds = inputs.currentChassisSpeeds;
-//        }
-//        else {
-//            this.setStateStdDevs(slippingStdDevs);
-//
-//            inputs.swervePoseMeters = state.Pose;
-//            lastOdometryPose = inputs.swervePoseMeters;
-//            inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
-//            lastGoodChassisSpeeds = inputs.currentChassisSpeeds;
-//
-//        }
+        Matrix<N3, N1> regStdDevs = new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 0.1, 0.1, 0.1 });
+        Matrix<N3, N1> slippingStdDevs = new Matrix<>(Nat.N3(), Nat.N1(),
+                new double[] { 9999999999.0, 9999999999.0, 0.1 });
+
+        boolean isSlipping = slipDebouncer.calculate(isSlipping());
+        Logger.recordOutput("Drive/slipping", isSlipping);
+
+        if (!isSlipping) {
+            this.setStateStdDevs(regStdDevs);
+            // this.odometry
+
+            // inputs.swervePoseMeters = state.Pose;
+            // lastOdometryPose = inputs.swervePoseMeters;
+            inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
+            lastGoodChassisSpeeds = inputs.currentChassisSpeeds;
+            lastOdometryPose = state.Pose;
+        } else {
+            this.setStateStdDevs(slippingStdDevs);
+
+            // inputs.swervePoseMeters = state.Pose;
+            // lastOdometryPose = inputs.swervePoseMeters;
+            // inputs.currentChassisSpeeds =
+            // getKinematics().toChassisSpeeds(state.ModuleStates);
+            inputs.currentChassisSpeeds = lastGoodChassisSpeeds;
+            // this.resetPose(lastOdometryPose);
+        }
 
         SwerveModule[] modules = getModules();
         double driveCurrent = 0;
         for (int i = 0; i < modules.length; i++) {
-            Logger.recordOutput("Current/Drive Motor "+(i+1), modules[i].getDriveMotor().getStatorCurrent().getValueAsDouble());
-            Logger.recordOutput("Current/Steer Motor "+(i+1), modules[i].getSteerMotor().getStatorCurrent().getValueAsDouble());
+            Logger.recordOutput("Current/Drive Motor " + (i + 1),
+                    modules[i].getDriveMotor().getStatorCurrent().getValueAsDouble());
+            Logger.recordOutput("Current/Steer Motor " + (i + 1),
+                    modules[i].getSteerMotor().getStatorCurrent().getValueAsDouble());
             driveCurrent += modules[i].getDriveMotor().getStatorCurrent().getValueAsDouble();
             driveCurrent += modules[i].getSteerMotor().getStatorCurrent().getValueAsDouble();
         }
         inputs.totalDriveCurrent = driveCurrent;
 
-//        SwerveModulePosition[] wheelDeltas = new SwerveModulePosition[4];
-//        for (int i = 0; i < 4; i++) {
-//            wheelDeltas[i] = new SwerveModulePosition(
-//                    (state.ModulePositions[i].distanceMeters - lastModulePositionsMeters[i]),
-//                    state.ModulePositions[i].angle);
-//            lastModulePositionsMeters[i] = state.ModulePositions[i].distanceMeters;
-//        }
-//        var twist = getKinematics().toTwist2d(wheelDeltas);
-//        Rotation2d gyroYaw = Rotation2d.fromRadians(getPigeon2().getYaw().getValue().in(Units.Radians));
-//        if (lastGyroYaw != null) {
-//            twist = new Twist2d(twist.dx, twist.dy, gyroYaw.minus(lastGyroYaw).getRadians());
-//        }
-//        lastGyroYaw = gyroYaw;
-//        inputs.odometryTwist = twist;
-//        inputs.odometryTimestamp = Timer.getFPGATimestamp();
-//
-//        double xAccel = getPigeon2().getAccelerationX().getValue().in(Units.MetersPerSecondPerSecond);
-//        double yAccel = getPigeon2().getAccelerationY().getValue().in(Units.MetersPerSecondPerSecond);
-//        inputs.pigeonAcceleration = Math.hypot(xAccel, yAccel);
+        // SwerveModulePosition[] wheelDeltas = new SwerveModulePosition[4];
+        // for (int i = 0; i < 4; i++) {
+        // wheelDeltas[i] = new SwerveModulePosition(
+        // (state.ModulePositions[i].distanceMeters - lastModulePositionsMeters[i]),
+        // state.ModulePositions[i].angle);
+        // lastModulePositionsMeters[i] = state.ModulePositions[i].distanceMeters;
+        // }
+        // var twist = getKinematics().toTwist2d(wheelDeltas);
+        // Rotation2d gyroYaw =
+        // Rotation2d.fromRadians(getPigeon2().getYaw().getValue().in(Units.Radians));
+        // if (lastGyroYaw != null) {
+        // twist = new Twist2d(twist.dx, twist.dy,
+        // gyroYaw.minus(lastGyroYaw).getRadians());
+        // }
+        // lastGyroYaw = gyroYaw;
+        // inputs.odometryTwist = twist;
+        // inputs.odometryTimestamp = Timer.getFPGATimestamp();
+        //
+        // double xAccel =
+        // getPigeon2().getAccelerationX().getValue().in(Units.MetersPerSecondPerSecond);
+        // double yAccel =
+        // getPigeon2().getAccelerationY().getValue().in(Units.MetersPerSecondPerSecond);
+        // inputs.pigeonAcceleration = Math.hypot(xAccel, yAccel);
 
-//        Logger.recordOutput("Drive/pigeonRotation", getPigeon2().getRotation2d());
-//        Logger.recordOutput("Drive/pigeonConnected", getPigeon2().isConnected());
-//        Logger.recordOutput("Drive/SwerveModuleStates", getState().ModuleStates);
-//        Logger.recordOutput("Drive/SwerveModuleStatesWanted", getState().ModuleTargets);
+        // Logger.recordOutput("Drive/pigeonRotation", getPigeon2().getRotation2d());
+        // Logger.recordOutput("Drive/pigeonConnected", getPigeon2().isConnected());
+        // Logger.recordOutput("Drive/SwerveModuleStates", getState().ModuleStates);
+        // Logger.recordOutput("Drive/SwerveModuleStatesWanted",
+        // getState().ModuleTargets);
     }
 
     @Override
@@ -123,11 +138,11 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
     @Override
     public void addVisionMeasurement(List<RobotState.TimestampedVisionUpdate> updates) {
         double avgTimestamp = 0;
-        for (var update: updates) {
-//            Logger.recordOutput("Drive/addVisionMeasurementHeartbeat2", Math.random());
-//            Logger.recordOutput("Drive/visionUpdatePose", update.pose());
-//            Logger.recordOutput("Drive/visionUpdateTimestamp", update.timestamp());
-//            Logger.recordOutput("Drive/currentTimestamp", Utils.getCurrentTimeSeconds());
+        for (var update : updates) {
+            // Logger.recordOutput("Drive/addVisionMeasurementHeartbeat2", Math.random());
+            // Logger.recordOutput("Drive/visionUpdatePose", update.pose());
+            // Logger.recordOutput("Drive/visionUpdateTimestamp", update.timestamp());
+            // Logger.recordOutput("Drive/currentTimestamp", Utils.getCurrentTimeSeconds());
 
             double timestamp = Utils.fpgaToCurrentTime(update.timestamp());
             avgTimestamp += timestamp;
@@ -179,55 +194,59 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
             return false;
         }
 
-        double difference = maxTransVelocity - minTransVelocity;
+        double ratio = maxTransVelocity / minTransVelocity;
 
         Logger.recordOutput("Drive/Slip/maxTransVelocity", maxTransVelocity);
         Logger.recordOutput("Drive/Slip/minTransVelocity", minTransVelocity);
-        Logger.recordOutput("Drive/Slip/difference", difference);
+        Logger.recordOutput("Drive/Slip/ratio", ratio);
 
-        boolean slipping = difference > 0.6;
+        boolean slipping = ratio > 10;
         Logger.recordOutput("Drive/slipping", slipping);
 
         return slipping;
     }
-    /*private void configureDriveCurrentLimits(double limit, double timeout, SwerveModuleConstants[] moduleConstants) {
-        SwerveModule[] modules = getModules();
-        for (int i = 0; modules.length > i; i++) {
-            TalonFX driveMotor = (TalonFX) modules[i].getDriveMotor();
-            TorqueCurrentConfigs torqueConfig = new TorqueCurrentConfigs();
-            torqueConfig.PeakForwardTorqueCurrent = moduleConstants[i].SlipCurrent;
-            torqueConfig.PeakReverseTorqueCurrent = moduleConstants[i].SlipCurrent;
-            torqueConfig.TorqueNeutralDeadband = 1;
-            driveMotor.getConfigurator().apply(torqueConfig);
-
-            CurrentLimitsConfigs limits = new CurrentLimitsConfigs();
-            limits.SupplyCurrentLimitEnable = true;
-            limits.SupplyCurrentLimit = limit;
-            limits.StatorCurrentLimitEnable = true;
-            limits.StatorCurrentLimit = moduleConstants[i].SlipCurrent;
-            driveMotor.getConfigurator().apply(limits);
-        }
-
-    }
-
-    private void configureTurnCurrentLimits(double limit, double timeout, SwerveModuleConstants[] moduleConstants) {
-        SwerveModule[] modules = getModules();
-        for (int i = 0; i < modules.length; i++) {
-            TalonFXConfigurator config = modules[i].getSteerMotor().getConfigurator();
-
-            TorqueCurrentConfigs configTorque =  new TorqueCurrentConfigs();
-            configTorque.PeakForwardTorqueCurrent = moduleConstants[i].SlipCurrent;
-            configTorque.PeakReverseTorqueCurrent = -moduleConstants[i].SlipCurrent;
-            configTorque.TorqueNeutralDeadband = 1;
-
-            CurrentLimitsConfigs limiterConfigs = new CurrentLimitsConfigs();
-            limiterConfigs.SupplyCurrentLimitEnable = true;
-            limiterConfigs.SupplyCurrentLimit = limit;
-            limiterConfigs.StatorCurrentLimit = moduleConstants[i].SlipCurrent;
-            limiterConfigs.StatorCurrentLimitEnable = true;
-
-            config.apply(limiterConfigs);
-            config.apply(configTorque);
-        }
-    }*/
+    /*
+     * private void configureDriveCurrentLimits(double limit, double timeout,
+     * SwerveModuleConstants[] moduleConstants) {
+     * SwerveModule[] modules = getModules();
+     * for (int i = 0; modules.length > i; i++) {
+     * TalonFX driveMotor = (TalonFX) modules[i].getDriveMotor();
+     * TorqueCurrentConfigs torqueConfig = new TorqueCurrentConfigs();
+     * torqueConfig.PeakForwardTorqueCurrent = moduleConstants[i].SlipCurrent;
+     * torqueConfig.PeakReverseTorqueCurrent = moduleConstants[i].SlipCurrent;
+     * torqueConfig.TorqueNeutralDeadband = 1;
+     * driveMotor.getConfigurator().apply(torqueConfig);
+     * 
+     * CurrentLimitsConfigs limits = new CurrentLimitsConfigs();
+     * limits.SupplyCurrentLimitEnable = true;
+     * limits.SupplyCurrentLimit = limit;
+     * limits.StatorCurrentLimitEnable = true;
+     * limits.StatorCurrentLimit = moduleConstants[i].SlipCurrent;
+     * driveMotor.getConfigurator().apply(limits);
+     * }
+     * 
+     * }
+     * 
+     * private void configureTurnCurrentLimits(double limit, double timeout,
+     * SwerveModuleConstants[] moduleConstants) {
+     * SwerveModule[] modules = getModules();
+     * for (int i = 0; i < modules.length; i++) {
+     * TalonFXConfigurator config = modules[i].getSteerMotor().getConfigurator();
+     * 
+     * TorqueCurrentConfigs configTorque = new TorqueCurrentConfigs();
+     * configTorque.PeakForwardTorqueCurrent = moduleConstants[i].SlipCurrent;
+     * configTorque.PeakReverseTorqueCurrent = -moduleConstants[i].SlipCurrent;
+     * configTorque.TorqueNeutralDeadband = 1;
+     * 
+     * CurrentLimitsConfigs limiterConfigs = new CurrentLimitsConfigs();
+     * limiterConfigs.SupplyCurrentLimitEnable = true;
+     * limiterConfigs.SupplyCurrentLimit = limit;
+     * limiterConfigs.StatorCurrentLimit = moduleConstants[i].SlipCurrent;
+     * limiterConfigs.StatorCurrentLimitEnable = true;
+     * 
+     * config.apply(limiterConfigs);
+     * config.apply(configTorque);
+     * }
+     * }
+     */
 }
