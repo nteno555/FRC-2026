@@ -94,12 +94,10 @@ public class Autos {
         
         lowNeutralLoop = LowNeutralLoop();
         highNeutralLoop = HighNeutralLoop();
-        midDepotStation = MidStationDepot();
         midBumpStation = MidBumpStation();
         midBumpNoStation = MidBump();
         oneMeter = OneMeterAuto();
         highLoopTest = HighLoopTest();
-        highLoop = HighLoop();
     }
 
     /* Path Commands */
@@ -375,54 +373,50 @@ public class Autos {
 //        return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid",
 //                RETURN_UNDER_TRENCH_LOW), false);
 //    }
+
+    // public Command MidStationDepot() {
+    //     choreo = false;
+    //     return buildAuto(List.of("MidStation", WAIT_SHOOT, "StationDepot", "DepotSweep"),
+    //             false);
+    // }
+
     public Command HighLoopTest() {
         choreo = true; 
         return buildAuto(List.of("HighLoop"),false);
-    }
-
-    public Command HighLoop() {
-        choreo = false;
-        return buildAuto(List.of("HighLoop"), false);
     }
 
     public Command LowNeutralLoop() {
         choreo = false;
         if (!SubsystemConstants.hasTurret) {
             return buildAuto(
-                    List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "LowScore-Loop",
+                    List.of("LowNeutral_under_trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "LowScoreLoop",
                             RETURN_UNDER_TRENCH_LOW),
                     false);
         }
-        return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT_EXTENDED, "Low-Loop",
+        return buildAuto(List.of("LowNeutral_under_trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT_EXTENDED, "LowLoop",
                 RETURN_UNDER_TRENCH_LOW), false);
-    }
-
-    public Command MidStationDepot() {
-        choreo = false;
-        return buildAuto(List.of("Mid-Station", WAIT_SHOOT, "Station-Depot", "Depot-Sweep"),
-                false);
     }
 
     public Command HighNeutralLoop() {
         choreo = false;
         if (!SubsystemConstants.hasTurret) {
             return buildAuto(
-                    List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "HighScore-Loop",
+                    List.of("HighNeutral_under_trench", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "HighScoreLoop",
                             RETURN_UNDER_TRENCH_HIGH),
                     false);
         }
-        return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT_EXTENDED, "HighLoop",
+        return buildAuto(List.of("HighNeutral_under_trench", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT_EXTENDED, "HighLoop",
                 RETURN_UNDER_TRENCH_HIGH), false);
     }
 
     public Command MidBumpStation() {
         choreo = false;
-        return buildAuto(List.of(BUMP_WAIT, "Mid-Bump", "Bump-Loop", "Bump-Mid", WAIT_SHOOT, "Bump-Station", WAIT_NO_SHOOT, "Station-Score"), false);
+        return buildAuto(List.of(BUMP_WAIT, "MidBump", "BumpLoop", "BumpMid", WAIT_SHOOT, "BumpStation", WAIT_NO_SHOOT, "StationScore"), false);
     }
 
     public Command MidBump() {
         choreo = false;
-        return buildAuto(List.of(BUMP_WAIT, "Mid-Bump", "Bump-Loop", "Bump-Mid"), false);
+        return buildAuto(List.of(BUMP_WAIT, "MidBump", "BumpLoop", "BumpMid"), false);
     }
 
     public Command OneMeterAuto() {
