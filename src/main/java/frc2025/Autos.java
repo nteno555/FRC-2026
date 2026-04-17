@@ -27,6 +27,7 @@ public class Autos {
 
     private RobotContainer robotContainer;
     private String firstPath;
+    private static boolean choreo; 
     public static final String LOW_X2_NEUTRAL_STATION = "Low x2 Neutral Station";
     public static final String LOW_X2_NEUTRAL = "Low x2 Neutral";
     public static final String LOW_NEUTRAL_LOOP = "Low Neutral Loop";
@@ -37,6 +38,8 @@ public class Autos {
     public static final String LOW_NEUTRAL_STATION = "Low Neutral Station";
     public static final String MID_BUMP_NOSTATION = "Mid Bump No Station";
     public static final String ONE_METER = "One Meter";
+    public static final String HIGH_LOOP_TEST = "High Loop Test";
+    public static final String HIGH_LOOP = "High Loop";
 
     public static Command lowNeutralLoop;
     public static Command highNeutralLoop;
@@ -44,6 +47,8 @@ public class Autos {
     public static Command midBumpStation;
     public static Command midBumpNoStation;
     public static Command oneMeter;
+    public static Command highLoopTest;
+    public static Command highLoop;
 
     private final String WAIT_SHOOT = "wait_shoot";
     private final String WAIT_SHOOT_EXTENDED = "wait_shoot_extended";
@@ -61,8 +66,14 @@ public class Autos {
      * @return the starting Pose2d, or empty if the path cannot be loaded
      */
     public static Optional<Pose2d> getStartPose(String firstPathName) {
+        PathPlannerPath path;
         try {
-            PathPlannerPath path = PathPlannerPath.fromPathFile(firstPathName);
+            if (!choreo) {
+                path = PathPlannerPath.fromPathFile(firstPathName);
+            }
+            else {
+                path = PathPlannerPath.fromChoreoTrajectory(firstPathName);
+            }
             Pose2d pose = new Pose2d(
                     path.getStartingDifferentialPose().getTranslation(),
                     path.getIdealStartingState().rotation());
@@ -76,16 +87,19 @@ public class Autos {
     }
 
     public Autos(RobotContainer robotContainer) {
+        choreo = true; 
         this.robotContainer = robotContainer;
         this.drive = robotContainer.getDrive();
         System.out.println(this.robotContainer);
-
+        
         lowNeutralLoop = LowNeutralLoop();
         highNeutralLoop = HighNeutralLoop();
         midDepotStation = MidStationDepot();
         midBumpStation = MidBumpStation();
         midBumpNoStation = MidBump();
         oneMeter = OneMeterAuto();
+        highLoopTest = HighLoopTest();
+        highLoop = HighLoop();
     }
 
     /* Path Commands */
@@ -114,7 +128,13 @@ public class Autos {
     private Command intakePath(String pathName) {
         PathPlannerPath path;
         try {
-            path = PathPlannerPath.fromPathFile(pathName);
+            if (!choreo) {
+                path = PathPlannerPath.fromPathFile(pathName);
+            }
+            else {
+                path = PathPlannerPath.fromChoreoTrajectory(pathName);
+            }
+            
         } catch (IOException | ParseException e) {
             System.out.println("BAD PATH BAD PATH BAD PATH");
             return null;
@@ -130,7 +150,12 @@ public class Autos {
     private Command intakePathResetOdometry(String pathName) {
         PathPlannerPath path;
         try {
-            path = PathPlannerPath.fromPathFile(pathName);
+            if (!choreo) {
+                path = PathPlannerPath.fromPathFile(pathName);
+            }
+            else {
+                path = PathPlannerPath.fromChoreoTrajectory(pathName);
+            }
         } catch (IOException | ParseException e) {
             System.out.println("BAD PATH BAD PATH BAD PATH");
             return null;
@@ -350,8 +375,18 @@ public class Autos {
 //        return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid",
 //                RETURN_UNDER_TRENCH_LOW), false);
 //    }
+    public Command HighLoopTest() {
+        choreo = true; 
+        return buildAuto(List.of("HighLoop"),false);
+    }
+
+    public Command HighLoop() {
+        choreo = false;
+        return buildAuto(List.of("HighLoop"), false);
+    }
 
     public Command LowNeutralLoop() {
+        choreo = false;
         if (!SubsystemConstants.hasTurret) {
             return buildAuto(
                     List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "LowScore-Loop",
@@ -363,30 +398,35 @@ public class Autos {
     }
 
     public Command MidStationDepot() {
+        choreo = false;
         return buildAuto(List.of("Mid-Station", WAIT_SHOOT, "Station-Depot", "Depot-Sweep"),
                 false);
     }
 
     public Command HighNeutralLoop() {
+        choreo = false;
         if (!SubsystemConstants.hasTurret) {
             return buildAuto(
                     List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "HighScore-Loop",
                             RETURN_UNDER_TRENCH_HIGH),
                     false);
         }
-        return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT_EXTENDED, "High-Loop",
+        return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT_EXTENDED, "HighLoop",
                 RETURN_UNDER_TRENCH_HIGH), false);
     }
 
     public Command MidBumpStation() {
+        choreo = false;
         return buildAuto(List.of(BUMP_WAIT, "Mid-Bump", "Bump-Loop", "Bump-Mid", WAIT_SHOOT, "Bump-Station", WAIT_NO_SHOOT, "Station-Score"), false);
     }
 
     public Command MidBump() {
+        choreo = false;
         return buildAuto(List.of(BUMP_WAIT, "Mid-Bump", "Bump-Loop", "Bump-Mid"), false);
     }
 
     public Command OneMeterAuto() {
+        choreo = false;
         return (new WaitCommand(0.1)).andThen(intakePathResetOdometry("three meter"));
     }
 
@@ -421,6 +461,8 @@ public class Autos {
             case ONE_METER -> oneMeter;
             case MID_BUMP_STATION -> midBumpStation;
             case MID_BUMP_NOSTATION -> midBumpNoStation;
+            case HIGH_LOOP_TEST -> highLoopTest;
+            case HIGH_LOOP -> highLoop; 
 //            case LOW_NEUTRAL_STATION -> LowNeutralStation();
             default -> Commands.none();
         };
