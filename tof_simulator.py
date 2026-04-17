@@ -46,11 +46,11 @@ SOLVER_DISTANCES_M = [1.29, 2.00, 2.47, 3.07, 4.04, 4.50, 5.24, 6.00]
 # Hood angle search range (in raw rotation units, same as hoodTreeMap)
 HOOD_SWEEP_MIN   = 0.0
 HOOD_SWEEP_MAX   = 2.8
-HOOD_SWEEP_STEPS = 100   # Number of candidate hood angles to evaluate
+HOOD_SWEEP_STEPS = 50   # Number of candidate hood angles to evaluate
 
 # Flywheel RPS bracket for brentq root-find (Stage 1)
-RPS_SEARCH_MIN = 25.0
-RPS_SEARCH_MAX = 80.0
+RPS_SEARCH_MIN = 15.0
+RPS_SEARCH_MAX = 50.0
 
 # Finite difference step sizes for sensitivity calculation (Stage 2)
 DELTA_V     = 0.5   # RPS perturbation for ∂y/∂v
@@ -66,7 +66,7 @@ W_THETA = 1.0
 # This ensures the ball is descending into the cone from above, not hitting the rim.
 # Set CONE_HEIGHT_M to None to disable this constraint.
 CONE_RIM_OFFSET_M = 0.4    # meters before the target center (cone rim position)
-CONE_HEIGHT_M     = HUB_HEIGHT_M + 0.20  # ball must clear this height at the rim
+CONE_HEIGHT_M     = HUB_HEIGHT_M + 0.30  # ball must clear this height at the rim
 
 # =============================================================================
 # --- MAPPING FUNCTIONS ---

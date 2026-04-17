@@ -16,39 +16,37 @@ public class ShooterTreeMap {
     public double kDrag = 0.001;
 
     public ShooterTreeMap() {
-        tofTreeMap.put(1.29, 1.272);
-        tofTreeMap.put(2.00, 1.233);
-        tofTreeMap.put(2.47, 1.201);
-        tofTreeMap.put(3.07, 1.146);
-        tofTreeMap.put(4.04, 0.919);
+        // tofTreeMap
+        tofTreeMap.put(1.29, 0.743);
+        tofTreeMap.put(2.00, 0.777);
+        tofTreeMap.put(2.47, 0.813);
+        tofTreeMap.put(3.07, 0.858);
+        tofTreeMap.put(4.04, 0.927);
         tofTreeMap.put(4.50, 0.976);
         tofTreeMap.put(5.24, 1.071);
         tofTreeMap.put(6.00, 1.162);
         // lowerWheelTreeMap
-        lowerWheelTreeMap.put(1.29, 25.2 * 1.0);
-        lowerWheelTreeMap.put(2.00, 25.1 * 1.0);
-        lowerWheelTreeMap.put(2.47, 25.0 * 1.0);
-        lowerWheelTreeMap.put(3.07, 25.0 * 1.0);
-        lowerWheelTreeMap.put(4.04, 25.5 * 1.1);
-        lowerWheelTreeMap.put(4.50, 26.8 * 1.1);
-        lowerWheelTreeMap.put(5.24, 28.7 * 1.1);
-        lowerWheelTreeMap.put(6.00, 30.7 * 1.1);
+        lowerWheelTreeMap.put(1.29, 18.2);
+        lowerWheelTreeMap.put(2.00, 19.9);
+        lowerWheelTreeMap.put(2.47, 21.2);
+        lowerWheelTreeMap.put(3.07, 22.8);
+        lowerWheelTreeMap.put(4.04, 25.5);
+        lowerWheelTreeMap.put(4.50, 26.8);
+        lowerWheelTreeMap.put(5.24, 28.7);
+        lowerWheelTreeMap.put(6.00, 30.7);
         // hoodTreeMap
-        hoodTreeMap.put(1.29, 0.283);
-        hoodTreeMap.put(2.00, 0.707);
-        hoodTreeMap.put(2.47, 1.018);
-        hoodTreeMap.put(3.07, 1.471);
-        hoodTreeMap.put(4.04, 2.772);
+        hoodTreeMap.put(1.29, 1.200);
+        hoodTreeMap.put(2.00, 1.829);
+        hoodTreeMap.put(2.47, 2.114);
+        hoodTreeMap.put(3.07, 2.400);
+        hoodTreeMap.put(4.04, 2.743);
         hoodTreeMap.put(4.50, 2.800);
         hoodTreeMap.put(5.24, 2.800);
-        hoodTreeMap.put(6.00, 2.800);
+        hoodTreeMap.put(6.00, 2.800); 
 
         shuttlingRPSTreeMap.put(3.0, 20.0);
         shuttlingRPSTreeMap.put(6.0, 30.0);
         shuttlingRPSTreeMap.put(10.0, 40.0);
-        // shuttlingRPSTreeMap.put(7.0, 75.0);
-        // shuttlingRPSTreeMap.put(9.0, 100.0);
-        // shuttlingRPSTreeMap.put(11.0, 110.0);
         shuttlingRPSTreeMap.put(20.0, 70.0);
 
         shuttlingTofTreeMap.put(1.0, 0.5);
