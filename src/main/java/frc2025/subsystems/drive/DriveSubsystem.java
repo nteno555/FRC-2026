@@ -38,8 +38,8 @@ import static edu.wpi.first.units.Units.Volts;
 //import static frc2025.subsystems.drive.DriveConstants.kSpeedAt12VoltsMps;
 
 public class DriveSubsystem extends SubsystemBase {
-    public static final double FORWARD_ACCEL_MAX = 30.0; // with all mechs down
-    public static final double SIDE_ACCEL_MAX = 30.0; // with all mechs down
+    public static final double FORWARD_ACCEL_MAX = 10.0; // with all mechs down
+    public static final double SIDE_ACCEL_MAX = 10.0; // with all mechs down
     public static final double SKID_ACCEL_MAX = 5.0;
 
     public static boolean slowmode = false;
