@@ -52,14 +52,19 @@ public class LimelightFiducialCamera {
     public void resetOdometry() {
 //        resetOdometryTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
 //        flushNextOrientation = true;
-        LimelightHelpers.SetIMUMode(name, 0);
+//        LimelightHelpers.SetIMUMode(name, 0);
+        return;
     }
 
     public void initializeGyro() {
         if (this.turretMounted) {
+            LimelightHelpers.SetIMUMode(name, 3);
+            LimelightHelpers.SetIMUAssistAlpha(name, 0.01);
             LimelightHelpers.setCameraPose_RobotSpace(name, 0.0, 0.0, this.robotToCameraUp,
                 this.robotToCameraRoll, this.robotToCameraPitch, 0.0);
         } else {
+            LimelightHelpers.SetIMUMode(name, 4);
+            LimelightHelpers.SetIMUAssistAlpha(name, 0.01);
             LimelightHelpers.setCameraPose_RobotSpace(name, this.robotToCameraForward, this.robotToCameraRight,
                 this.robotToCameraUp,
                 this.robotToCameraRoll, this.robotToCameraPitch, this.robotToCameraYaw);
