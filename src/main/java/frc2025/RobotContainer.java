@@ -189,13 +189,13 @@ public class RobotContainer {
         private void configureBindings() {
                 slowmode = true;
                 aiming = false;
-
-                if (SubsystemConstants.hasTurret) {
-                        aimMode = AimMode.TURRET;
-                } else {
-                        aimMode = AimMode.FIXED;
-                }
-
+//
+//                if (SubsystemConstants.hasTurret) {
+//                        aimMode = AimMode.TURRET;
+//                } else {
+//                        aimMode = AimMode.FIXED;
+//                }
+                aimMode = AimMode.MANUAL;
                 manualAimState = ManualAimState.FLUSH;
 
                 driveSubsystem.setDefaultCommand(
