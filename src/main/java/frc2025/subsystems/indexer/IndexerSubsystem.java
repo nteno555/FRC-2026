@@ -29,16 +29,15 @@ public class IndexerSubsystem extends SubsystemBase {
         });
     }
 
-    /* no need tower */
-    // public Command setIndexerVoltageWithTowerSpeed(Supplier<Double> indexerVoltage, Supplier<Double> towerSpeed) {
-    //     return this.runEnd(() -> {
-    //         io.setVoltage(indexerVoltage.get());
-    //         io.setTowerSpeed(towerSpeed.get());
-    //     }, () -> {
-    //         io.setVoltage(0.0);
-    //         io.setTowerSpeed(0.0);
-    //     });
-    // }
+    public Command setIndexerVoltageWithTowerSpeed(Supplier<Double> indexerVoltage, Supplier<Double> towerSpeed) {
+        return this.runEnd(() -> {
+            io.setVoltage(indexerVoltage.get());
+            io.setTowerSpeed(towerSpeed.get());
+        }, () -> {
+            io.setVoltage(0.0);
+            io.setTowerSpeed(0.0);
+        });
+    }
 
     public double getCurrent() {
         return inputs.totalCurrent;
