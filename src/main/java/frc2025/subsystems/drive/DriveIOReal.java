@@ -1,40 +1,25 @@
 package frc2025.subsystems.drive;
 
-import com.ctre.phoenix.Util;
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
-import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveDrivetrainConstants;
-import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModule;
-import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.Kinematics;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.filter.Debouncer;
 import frc2025.RobotState;
-import frc2025.subsystems.vision.VisionIO;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.List;
@@ -45,6 +30,7 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
     private Pose2d lastOdometryPose = null;
     private double lastOdometryPoseTimestamp = 0;
     private ChassisSpeeds lastGoodChassisSpeeds = null;
+    private double lastVisionUpdateTimestamp = 0;
     private final Debouncer slipDebouncer = new Debouncer(0.1, Debouncer.DebounceType.kBoth);
 
     public DriveIOReal(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
@@ -54,11 +40,6 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
     @Override
     public void updateInputs(DriveIOInputs inputs) {
         var state = getState();
-        inputs.swervePoseMeters = state.Pose;
-        // lastOdometryPose = inputs.swervePoseMeters;
-        // inputs.currentChassisSpeeds =
-        // getKinematics().toChassisSpeeds(state.ModuleStates);
-        // lastGoodChassisSpeeds = inputs.currentChassisSpeeds;
 
         Matrix<N3, N1> regStdDevs = new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 0.1, 0.1, 0.1 });
         Matrix<N3, N1> slippingStdDevs = new Matrix<>(Nat.N3(), Nat.N1(),
@@ -69,22 +50,23 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
 
         if (!isSlipping) {
             this.setStateStdDevs(regStdDevs);
-            // this.odometry
-
-            // inputs.swervePoseMeters = state.Pose;
-            // lastOdometryPose = inputs.swervePoseMeters;
             inputs.currentChassisSpeeds = getKinematics().toChassisSpeeds(state.ModuleStates);
             lastGoodChassisSpeeds = inputs.currentChassisSpeeds;
             lastOdometryPose = state.Pose;
+            inputs.swervePoseMeters = state.Pose;
         } else {
             this.setStateStdDevs(slippingStdDevs);
-
-            // inputs.swervePoseMeters = state.Pose;
-            // lastOdometryPose = inputs.swervePoseMeters;
-            // inputs.currentChassisSpeeds =
-            // getKinematics().toChassisSpeeds(state.ModuleStates);
             inputs.currentChassisSpeeds = lastGoodChassisSpeeds;
-            // this.resetPose(lastOdometryPose);
+
+            if (Timer.getFPGATimestamp() - lastVisionUpdateTimestamp > 0.15) {
+                // Pin the robot translation since we have no vision and are slipping
+                Pose2d pinningPose = new Pose2d(lastOdometryPose.getTranslation(), state.Pose.getRotation());
+                Matrix<N3, N1> pinStdDevs = new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 0.01, 0.01, 99999.0 });
+                this.addVisionMeasurement(pinningPose, Utils.getCurrentTimeSeconds(), pinStdDevs);
+                inputs.swervePoseMeters = pinningPose;
+            } else {
+                inputs.swervePoseMeters = state.Pose;
+            }
         }
 
         SwerveModule[] modules = getModules();
@@ -147,6 +129,9 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
             double timestamp = Utils.fpgaToCurrentTime(update.timestamp());
             avgTimestamp += timestamp;
             addVisionMeasurement(update.pose(), timestamp, update.stdDevs());
+        }
+        if (!updates.isEmpty()) {
+            lastVisionUpdateTimestamp = Timer.getFPGATimestamp();
         }
         avgTimestamp /= updates.size();
 
