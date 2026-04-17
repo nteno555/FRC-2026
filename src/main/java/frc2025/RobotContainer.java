@@ -346,10 +346,10 @@ public class RobotContainer {
                                 .and(driverXboxController.back())
                                 .whileTrue(turretSubsystem.rezeroCRT());
 
-//                driverXboxController.povLeft() // left bottom paddle
-//                                .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));
-//                driverXboxController.povDown() // right bottom paddle
-//                                .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
+                driverXboxController.povLeft() // left bottom paddle
+                                .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));
+                driverXboxController.povDown() // right bottom paddle
+                                .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
 
                 driverXboxController.rightBumper()
                                 .whileTrue(intakeSubsystem.oscillateIntake())
