@@ -86,9 +86,27 @@ public class SubsystemConstants {
     public static double indexerTorqueNeutralDeadband = 1;
     public static double indexerShootVoltage = -12.0;
     public static double indexerReverseVoltage = 2.0;
+    public static final boolean needDoubleIndexer = false;
 
     public static double spindexerShootVoltage = -12.0;
     public static double towerShootVoltage = -12.0;
+
+    public static double towerkS = 0.45;
+    public static double towerkV = 0.095;
+    public static double towerkA = 0.00;
+    public static double towerkP = 0.2;
+    public static double towerkI = 0.0;
+    public static double towerkD = 0.0;
+
+    public static double towerkSAmps = 0.0;
+    public static double towerkVAmps = 0.0;
+    public static double towerkAAmps = 0.00;
+    public static double towerkPAmps = 5.0;
+    public static double towerkIAmps = 0.0;
+    public static double towerkDAmps = 0.0;
+    public static double towerFlywheelRatio = 1.0;
+    public static final boolean hasTower = false;
+    public static final boolean needDoubleTower = false;
 
     // Turret Gear Ratio: 8:60 & 44:54
     public static double turretkS = 0.45;
@@ -169,6 +187,7 @@ public class SubsystemConstants {
     public static int intakeDeploySlaveID = 16;
     public static int intakeRollerID = 42;
     public static int towerID = 25;
+    public static int towerID2 = 25;
     public static int turretID = 23;
     public static int turretTb1ID = 8;
     public static int turretTb2ID = 7;

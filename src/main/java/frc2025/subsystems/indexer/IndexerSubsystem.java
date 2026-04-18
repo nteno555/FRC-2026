@@ -11,7 +11,7 @@
  * compatitive to the planning bot as much as possible. 
  * 
  * Todo:
- * (done) 1. View the code and delete/add new functions/variable to it (at least we don't need tower) 
+ * (done) 1. View the code and delete/add new functions/variable to it
  * (done) 2. Try to make a double motors system to spare.
  * 
  */
@@ -24,6 +24,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.function.Supplier;
+
+import frc2025.config.SubsystemConstants;
 
 
 public class IndexerSubsystem extends SubsystemBase {
@@ -53,27 +55,21 @@ public class IndexerSubsystem extends SubsystemBase {
         });
     }
 
-    // public Command setIndexerVoltageWithTowerSpeed(Supplier<Double> indexerVoltage, Supplier<Double> towerSpeed) {
-    //     return this.runEnd(() -> {
-    //         io.setVoltage(indexerVoltage.get());
-    //         io.setTowerSpeed(towerSpeed.get());
-    //     }, () -> {
-    //         io.setVoltage(0.0);
-    //         io.setTowerSpeed(0.0);
-    //     });
-    // }
+    public Command setIndexerVoltageWithTowerSpeed(Supplier<Double> indexerVoltage, Supplier<Double> towerSpeed) {
+        if (!SubsystemConstants.hasTower) {
+            return this.runEnd(() -> {}, () -> {});
+        }
+
+        return this.runEnd(() -> {
+            io.setVoltage(indexerVoltage.get());
+            io.setTowerSpeed(towerSpeed.get());
+        }, () -> {
+            io.setVoltage(0.0);
+            io.setTowerSpeed(0.0);
+        });
+    }
 
     public double getCurrent() {
         return inputs.totalCurrent;
     }
-
-//    public Command setIndexerVoltageWithTowerSpeed(Supplier<Double> indexerVoltage, Supplier<Double> towerSpeed) {
-//        return this.runEnd(() -> {
-//            io.setVoltage(indexerVoltage.get());
-//            io.setTowerSpeed(towerSpeed.get());
-//        }, () -> {
-//            io.setVoltage(0.0);
-//            io.setTowerSpeed(0.0);
-//        });
-//    }
 }

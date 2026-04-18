@@ -16,5 +16,5 @@ public interface IndexerIO {
     public void updateInputs(IndexerIOInputs inputs);
     public void setSpeed(double indexerSpeed);
     public void setVoltage(double indexerVoltage);
-    // public void setTowerSpeed(double speed);
+    public void setTowerSpeed(double speed);
 }

@@ -1,19 +1,21 @@
 package frc2025.subsystems.indexer;
 
+import frc2025.config.SubsystemConstants;
+
 public class IndexerIOSim implements IndexerIO{
     private double voltage;
 
     @Override
     public void updateInputs(IndexerIOInputs inputs) {
         inputs.indexerCurrent = 0;
-        inputs.towerCurrent = 0;
+        if (SubsystemConstants.hasTower) inputs.towerCurrent = 0;
 
         if(voltage > 0) {
             inputs.indexerCurrent = 9999;
-            inputs.towerCurrent = 9999;
+            if (SubsystemConstants.hasTower) inputs.towerCurrent = 9999;
         }
         inputs.indexerVoltage = voltage;
-        inputs.towerVoltage = voltage;
+        if (SubsystemConstants.hasTower) inputs.towerVoltage = voltage;
     }
 
     @Override
@@ -26,8 +28,8 @@ public class IndexerIOSim implements IndexerIO{
         this.voltage = indexerVoltage;
     }
 
-    // @Override
-    // public void setTowerSpeed(double speed) {
+    @Override
+    public void setTowerSpeed(double speed) {
 
-    // }
+    }
 }
