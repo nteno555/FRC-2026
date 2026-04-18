@@ -8,6 +8,7 @@ import static frc2025.subsystems.drive.DriveConstants.FrontLeft;
 import static frc2025.subsystems.drive.DriveConstants.FrontRight;
 import static frc2025.subsystems.drive.DriveConstants.kSpeedAt12Volts;
 
+import java.security.Key;
 import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -49,6 +50,7 @@ import frc2025.subsystems.vision.VisionIOReal;
 import frc2025.subsystems.vision.VisionIOSim;
 import frc2025.subsystems.vision.VisionSubsystem;
 import frc2025.util.Alliance;
+import frc2025.util.Keyboard;
 import org.littletonrobotics.junction.Logger;
 
 public class RobotContainer {
@@ -76,12 +78,20 @@ public class RobotContainer {
         Autos autos;
         Command autoCommand;
 
-        private double driveSpeed = 1.3;
+//        private double flywheelRps = 42.0;
+//        private double flyhoodAngle = 0.9;
+        private final double[] listFlywheelRps = {10.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 50.0};
+        private final double[] listFlywheelAngle = {0.8, 1.2, 1.6, 2.0, 2.4};
+        private int flywheelRpsIdx = 3;
+        private int flywheelAngleIdx = 1;
+        private final double triggerThreshold = 0.2;
+
+        // private double driveSpeed = 1.3;
         private double slowmodeDriveSpeed = 0.3;
-        private double rotationSpeed = 1.2;
+        // private double rotationSpeed = 1.2;
         private double slowmodeRotationSpeed = 0.5;
         private boolean slowmode;
-        private double manualTurretSpeed = 2.0;
+        // private double manualTurretSpeed = 2.0;
 
         private double rpsOffset;
         private double devicesConnected;
@@ -227,15 +237,21 @@ public class RobotContainer {
                 indexerSubsystem.setDefaultCommand(indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0));
 //            indexerSubsystem.setDefaultCommand(AutoAimCommands.);
 //                 turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
-                turretSubsystem.setDefaultCommand(turretSubsystem.setPositionSafe(() -> SubsystemConstants.turretDefaultRadians, () -> 0.0, () -> true)); // for
+                turretSubsystem.setDefaultCommand(turretSubsystem.setPositionSafe(() -> SubsystemConstants.turretDefaultRadians, () -> 0.0, () -> true)); // fo
 
-                driverXboxController.a().onTrue(
+                // hood position,flyhoodAngle,flywheelRps
+                driverXboxController.a().and(driverXboxController.b().and(driverXboxController.y())).onTrue(
                                 SuperstructureCommands.resetOdometry(
                                                 this,
                                                 () -> !Alliance.get()
                                                                 ? new Pose2d(new Translation2d(),
                                                                                 new Rotation2d(Math.PI))
                                                                 : new Pose2d()));
+
+                driverXboxController.a()
+                        .whileTrue(intakeSubsystem.oscillateIntake())
+                        .onFalse(intakeSubsystem
+                                .setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
 
                 driverXboxController
                                 .b()
@@ -253,14 +269,72 @@ public class RobotContainer {
 //                                    if (!RobotState.getInstance().getShuttling()) slowmode = true;
                                 }));
 
+
                 new Trigger(() -> aiming)
                                 .and(() -> aimMode == AimMode.MANUAL)
                                 .and(() -> manualAimState == ManualAimState.FLUSH)
                                 .whileTrue(
-                                                shooterSubsystem.setSpeed(() -> SubsystemConstants.flushFlywheelRps)
+                                                shooterSubsystem.setSpeed(() -> listFlywheelRps[flywheelRpsIdx])
                                                                 .alongWith(hoodSubsystem.setPosition(
-                                                                                () -> SubsystemConstants.flushHoodAngle))
-                                                                .alongWith(intakeSubsystem.oscillateIntake()));
+                                                                                () -> listFlywheelAngle[flywheelAngleIdx])
+                                                                .alongWith(intakeSubsystem.oscillateIntake())));
+
+                new Trigger(() -> aiming)
+                        .and(() -> (aimMode == AimMode.MANUAL))
+                        .and(driverXboxController.y().negate())
+                        .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(
+                                () -> SubsystemConstants.indexerShootVoltage, () -> 12.0));
+
+                driverXboxController
+                        .y()
+                        .and(driverXboxController.back().negate())
+                        .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(
+                                () -> SubsystemConstants.indexerReverseVoltage, () -> -20.0));
+
+                driverXboxController
+                        .b()
+                        .and(driverXboxController.back())
+                        .whileTrue(hoodSubsystem.homeThenRezero());
+                driverXboxController
+                        .x()
+                        .and(driverXboxController.back())
+                        .whileTrue(intakeSubsystem.homeThenRezero());
+                driverXboxController
+                        .y()
+                        .and(driverXboxController.back())
+                        .whileTrue(turretSubsystem.rezeroCRT());
+
+                driverXboxController.povLeft() // left bottom paddle
+                        .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));
+                driverXboxController.povDown() // right bottom paddle
+                        .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
+
+                driverXboxController.povUp() // left middle paddle
+                        .onTrue(intakeSubsystem
+                                .setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
+                driverXboxController.povRight() // right middle paddle
+                        .onTrue(intakeSubsystem
+                                .setDeployPosition(() -> SubsystemConstants.intakeRetractPosition));
+
+                driverXboxController.rightTrigger(triggerThreshold)
+                        .onTrue(Commands.runOnce(() -> {
+                            flywheelRpsIdx = Math.min(flywheelRpsIdx + 1, listFlywheelRps.length - 1);
+                        }));
+
+                driverXboxController.leftTrigger(triggerThreshold)
+                        .onTrue(Commands.runOnce(() -> {
+                            flywheelRpsIdx = Math.max(flywheelRpsIdx - 1, 0);
+                        }));
+
+                driverXboxController.rightBumper()
+                        .onTrue(Commands.runOnce(() -> {
+                            flywheelAngleIdx = Math.min(flywheelAngleIdx + 1, listFlywheelAngle.length - 1);
+                        }));
+
+                driverXboxController.leftBumper()
+                        .onTrue(Commands.runOnce(() -> {
+                            flywheelAngleIdx = Math.max(flywheelAngleIdx - 1, 0);
+                        }));
 //                new Trigger(() -> aiming)
 //                                .and(() -> aimMode == AimMode.MANUAL)
 //                                .and(() -> manualAimState == ManualAimState.SHUTTLE)
@@ -321,51 +395,6 @@ public class RobotContainer {
 //                                .and(driverXboxController.y().negate())
 //                                .whileTrue(AutoAimCommands.autoIndexTeleop(this, () -> aimMode == AimMode.TURRET));
 //
-                new Trigger(() -> aiming)
-                                .and(() -> (aimMode == AimMode.MANUAL))
-                                .and(driverXboxController.y().negate())
-                                .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(
-                                                () -> SubsystemConstants.indexerShootVoltage, () -> 12.0));
-
-                driverXboxController
-                                .y()
-                                .and(driverXboxController.back().negate())
-                                .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(
-                                                () -> SubsystemConstants.indexerReverseVoltage, () -> -20.0));
-
-                driverXboxController
-                                .b()
-                                .and(driverXboxController.back())
-                                .whileTrue(hoodSubsystem.homeThenRezero());
-                driverXboxController
-                                .x()
-                                .and(driverXboxController.back())
-                                .whileTrue(intakeSubsystem.homeThenRezero());
-                driverXboxController
-                                .y()
-                                .and(driverXboxController.back())
-                                .whileTrue(turretSubsystem.rezeroCRT());
-
-                driverXboxController.povLeft() // left bottom paddle
-                                .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));
-                driverXboxController.povDown() // right bottom paddle
-                                .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
-
-                driverXboxController.rightBumper()
-                                .whileTrue(intakeSubsystem.oscillateIntake())
-                                .onFalse(intakeSubsystem
-                                                .setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
-
-                driverXboxController.rightTrigger()
-                                .onTrue(Commands.runOnce(() -> slowmode = !slowmode));
-
-                driverXboxController.povUp() // left middle paddle
-                                .onTrue(intakeSubsystem
-                                                .setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
-                driverXboxController.povRight() // right middle paddle
-                                .onTrue(intakeSubsystem
-                                                .setDeployPosition(() -> SubsystemConstants.intakeRetractPosition));
-
 //                operatorXboxController.leftBumper()
 //                                .onTrue(Commands.runOnce(() -> aimMode = AimMode.TURRET));
 //                operatorXboxController.rightBumper()
@@ -775,7 +804,8 @@ public class RobotContainer {
                 if(!autoWarmupDone) {
                         Command autoWarmup = autos.LowNeutralLoop();
                         autoWarmup = autoWarmup.ignoringDisable(true);
-                        autoWarmup.schedule();
+                        CommandScheduler.getInstance().schedule(autoWarmup);
+                        // autoWarmup.schedule();
                         autoWarmupDone = true;
                 }
         }
