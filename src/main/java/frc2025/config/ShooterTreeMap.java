@@ -26,22 +26,30 @@ public class ShooterTreeMap {
         tofTreeMap.put(5.24, 1.071);
         tofTreeMap.put(6.00, 1.162);
         // lowerWheelTreeMap
-        lowerWheelTreeMap.put(1.29, 18.2 * 1.15);
-        lowerWheelTreeMap.put(2.00, 19.9 * 1.12);
-        lowerWheelTreeMap.put(2.47, 21.2 * 1.10);
-        lowerWheelTreeMap.put(3.07, 22.8 * 1.10);
-        lowerWheelTreeMap.put(4.04, 25.5 * 1.10);
-        lowerWheelTreeMap.put(4.50, 26.8 * 1.10);
-        lowerWheelTreeMap.put(5.24, 28.7 * 1.07);
-        lowerWheelTreeMap.put(6.00, 30.7 * 1.07);
+        // lowerWheelTreeMap.put(1.29, 18.2 * 1.15);
+        // lowerWheelTreeMap.put(2.00, 19.9 * 1.12);
+        // lowerWheelTreeMap.put(2.47, 21.2 * 1.10);
+        // lowerWheelTreeMap.put(3.07, 22.8 * 1.10);
+        // lowerWheelTreeMap.put(4.04, 25.5 * 1.10);
+        // lowerWheelTreeMap.put(4.50, 26.8 * 1.10);
+        // lowerWheelTreeMap.put(5.24, 28.7 * 1.07);
+        // lowerWheelTreeMap.put(6.00, 30.7 * 1.07);
+        lowerWheelTreeMap.put(1.318, 21.6); // 20.5717493
+        lowerWheelTreeMap.put(2.00, 23.0); // 20.737
+        lowerWheelTreeMap.put(2.55, 24.5); // 21.9733822
+        lowerWheelTreeMap.put(3.252, 25.5); // 22.0836478
+        lowerWheelTreeMap.put(4.006, 27.75); // 22.9037381
+        lowerWheelTreeMap.put(4.353, 28.7); // 23.1449601
+        lowerWheelTreeMap.put(5.212, 30.5); // 23.3643555
+        lowerWheelTreeMap.put(6.00, 30.7);
         // hoodTreeMap
-        hoodTreeMap.put(1.29, 1.200);
-        hoodTreeMap.put(2.00, 1.829);
-        hoodTreeMap.put(2.47, 2.114);
-        hoodTreeMap.put(3.07, 2.400);
-        hoodTreeMap.put(4.04, 2.743);
-        hoodTreeMap.put(4.50, 2.800);
-        hoodTreeMap.put(5.24, 2.800);
+        hoodTreeMap.put(1.318, 1.02);
+        hoodTreeMap.put(2.00, 1.65);
+        hoodTreeMap.put(2.55, 1.70);
+        hoodTreeMap.put(3.252, 2.000);
+        hoodTreeMap.put(4.006, 2.35);
+        hoodTreeMap.put(4.353, 2.5);
+        hoodTreeMap.put(5.212, 2.800);
         hoodTreeMap.put(6.00, 2.800);
 
         // rps * sin(85 - 12.5*hood) 
