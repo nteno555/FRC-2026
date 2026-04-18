@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc2025.commands.AutoAimCommands;
+import frc2025.commands.FollowPathCommand;
 import frc2025.commands.PathPlanCommands;
 import frc2025.commands.SuperstructureCommands;
 import frc2025.config.FieldConstants;
@@ -122,7 +123,8 @@ public class Autos {
 
         PathPlannerPath finalPath = path;
 
-        var followPath = drive.followPathCommand(finalPath);
+        //var followPath = drive.followPathCommand(finalPath);
+        var followPath = new FollowPathCommand(drive, ()-> finalPath, ()-> Alliance.get(),true);
 
         return intakeDrive(followPath);
     }

@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc2025.RobotState;
+import frc2025.commands.FollowPathCommand;
 import frc2025.config.SubsystemConstants;
 import frc2025.util.Alliance;
 import frc2025.util.SwerveSysidVoltageRequest;
@@ -208,7 +209,8 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public Command followPathCommand(PathPlannerPath path) {
-        return AutoBuilder.followPath(path);
+        //return AutoBuilder.followPath(path);
+        return new FollowPathCommand(this, ()-> path, ()-> Alliance.get(), false);
     }
 
     public Command followPathCommand(String pathName) {
