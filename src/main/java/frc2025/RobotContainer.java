@@ -8,8 +8,6 @@ import static frc2025.subsystems.drive.DriveConstants.FrontLeft;
 import static frc2025.subsystems.drive.DriveConstants.FrontRight;
 import static frc2025.subsystems.drive.DriveConstants.kSpeedAt12Volts;
 
-import java.security.Key;
-import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,9 +22,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc2025.commands.AutoAimCommands;
+// import frc2025.commands.AutoAimCommands;
 import frc2025.commands.SuperstructureCommands;
-import frc2025.config.ShooterTreeMap;
+// import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveIOReal;
 import frc2025.subsystems.drive.DriveIOSim;
@@ -50,7 +48,6 @@ import frc2025.subsystems.vision.VisionIOReal;
 import frc2025.subsystems.vision.VisionIOSim;
 import frc2025.subsystems.vision.VisionSubsystem;
 import frc2025.util.Alliance;
-import frc2025.util.Keyboard;
 import org.littletonrobotics.junction.Logger;
 
 public class RobotContainer {
@@ -233,13 +230,10 @@ public class RobotContainer {
                 intakeSubsystem.setDefaultCommand(intakeSubsystem.setDeployVoltage(() -> 0.0));
                 hoodSubsystem.setDefaultCommand(hoodSubsystem.setPosition(() -> 0.1));
                 shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
-//            shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
                 indexerSubsystem.setDefaultCommand(indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0));
-//            indexerSubsystem.setDefaultCommand(AutoAimCommands.);
-//                 turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
                 turretSubsystem.setDefaultCommand(turretSubsystem.setPositionSafe(() -> SubsystemConstants.turretDefaultRadians, () -> 0.0, () -> true)); // fo
 
-                // hood position,flyhoodAngle,flywheelRps
+
                 driverXboxController.a().and(driverXboxController.b().and(driverXboxController.y())).onTrue(
                                 SuperstructureCommands.resetOdometry(
                                                 this,
