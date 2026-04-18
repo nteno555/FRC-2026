@@ -11,8 +11,8 @@
  * compatitive to the planning bot as much as possible. 
  * 
  * Todo:
- * 1. View the code and delete/add new functions/variable to it (at least we don't need tower)
- * 2. Try to make a double motors system to spare.
+ * (done) 1. View the code and delete/add new functions/variable to it (at least we don't need tower) 
+ * (done) 2. Try to make a double motors system to spare.
  * 
  */
 
@@ -47,15 +47,15 @@ public class IndexerSubsystem extends SubsystemBase {
         });
     }
 
-    public Command setIndexerVoltageWithTowerSpeed(Supplier<Double> indexerVoltage, Supplier<Double> towerSpeed) {
-        return this.runEnd(() -> {
-            io.setVoltage(indexerVoltage.get());
-            io.setTowerSpeed(towerSpeed.get());
-        }, () -> {
-            io.setVoltage(0.0);
-            io.setTowerSpeed(0.0);
-        });
-    }
+    // public Command setIndexerVoltageWithTowerSpeed(Supplier<Double> indexerVoltage, Supplier<Double> towerSpeed) {
+    //     return this.runEnd(() -> {
+    //         io.setVoltage(indexerVoltage.get());
+    //         io.setTowerSpeed(towerSpeed.get());
+    //     }, () -> {
+    //         io.setVoltage(0.0);
+    //         io.setTowerSpeed(0.0);
+    //     });
+    // }
 
     public double getCurrent() {
         return inputs.totalCurrent;

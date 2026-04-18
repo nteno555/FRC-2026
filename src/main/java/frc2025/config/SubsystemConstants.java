@@ -79,6 +79,14 @@ public class SubsystemConstants {
     public static double intakeDeployPosition = -3.9;
     public static double intakeRollerVoltage = 8.0;
 
+    public static double indexerSupplyCurrentLimit = 120;
+    public static double indexerStatorCurrentLimit = 120;
+    public static double indexerPeakForwardTorqueCurrent = 120;
+    public static double indexerPeakReverseTorqueCurrent = 120;
+    public static double indexerTorqueNeutralDeadband = 1;
+    public static double indexerShootVoltage = -12.0;
+    public static double indexerReverseVoltage = 2.0;
+
     public static double spindexerShootVoltage = -12.0;
     public static double towerShootVoltage = -12.0;
 
@@ -156,6 +164,7 @@ public class SubsystemConstants {
     public static int flywheelSlaveID = 17;
     public static int hoodID = 27;
     public static int indexerID = 21;
+    public static int indexerID2 = 21;
     public static int intakeDeployMasterID = 15;
     public static int intakeDeploySlaveID = 16;
     public static int intakeRollerID = 42;
