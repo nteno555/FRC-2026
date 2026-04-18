@@ -15,11 +15,12 @@ import org.littletonrobotics.junction.Logger;
 public class ShooterIOReal implements ShooterIO {
     private TalonFX flywheelMaster = new TalonFX(SubsystemConstants.flywheelMasterID, CANBus.roboRIO());
     private TalonFX flywheelSlave = new TalonFX(SubsystemConstants.flywheelSlaveID, CANBus.roboRIO());
-    // private TalonFX tower = new TalonFX(SubsystemConstants.towerID,
-    // CANBus.roboRIO());
+    private TalonFX tower = new TalonFX(SubsystemConstants.towerID,
+    CANBus.roboRIO());
 
     private final VoltageOut voltageRequest = new VoltageOut(0);
     private final VelocityTorqueCurrentFOC speedRequest = new VelocityTorqueCurrentFOC(0).withSlot(1);
+    private final VelocityVoltage speedVoltageRequest = new VelocityVoltage(0).withSlot(0).withEnableFOC(true);
 
     public ShooterIOReal() {
         flywheelMaster.getConfigurator().apply(new TalonFXConfiguration());
@@ -125,9 +126,12 @@ public class ShooterIOReal implements ShooterIO {
 
     @Override
     public void setSpeed(double speed, double acceleration) {
-        double currentFF = speed < flywheelMaster.getVelocity().getValueAsDouble() ? -SubsystemConstants.flywheelkSAmps
-                : SubsystemConstants.flywheelkSAmps;
-        Logger.recordOutput("Shooter/currentFF", currentFF);
+        // double currentFF = speed < flywheelMaster.getVelocity().getValueAsDouble() ?
+        // -SubsystemConstants.flywheelkSAmps
+        // : SubsystemConstants.flywheelkSAmps;
+        // Logger.recordOutput("Shooter/currentFF", currentFF);
+
+        // flywheelMaster.setControl(speedVoltageRequest.withVelocity(speed).withAcceleration(0.0));
 
         if (speed < 1000.0) {
             Logger.recordOutput("Shooter/usingVoltage", false);
@@ -136,10 +140,10 @@ public class ShooterIOReal implements ShooterIO {
         } else {
             Logger.recordOutput("Shooter/usingVoltage", true);
             flywheelMaster.setControl(
-                    voltageRequest.withOutput(speed * 0.127));
+                    speedVoltageRequest.withVelocity(speed));
         }
-        // tower.setControl(new VelocityVoltage(speed *
-        // SubsystemConstants.towerFlywheelRatio)
-        // .withEnableFOC(true));
+        tower.setControl(new VelocityVoltage(speed *
+                SubsystemConstants.towerFlywheelRatio)
+                .withEnableFOC(true));
     }
 }

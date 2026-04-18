@@ -36,9 +36,9 @@ public class SubsystemConstants {
     public static double climberMotionMagicJerk = 700;
 
     public static double flywheelkS = 0.3;
-    public static double flywheelkV = 0.127;
+    public static double flywheelkV = 0.1237;
     public static double flywheelkA = 0.00;
-    public static double flywheelkP = 0.2;
+    public static double flywheelkP = 0.3;
     public static double flywheelkI = 0.0;
     public static double flywheelkD = 0.0;
 
