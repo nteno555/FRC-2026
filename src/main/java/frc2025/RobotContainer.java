@@ -233,8 +233,15 @@ public class RobotContainer {
                 indexerSubsystem.setDefaultCommand(indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0));
                 turretSubsystem.setDefaultCommand(turretSubsystem.setPositionSafe(() -> SubsystemConstants.turretDefaultRadians, () -> 0.0, () -> true)); // fo
 
-
-                driverXboxController.a().and(driverXboxController.b().and(driverXboxController.y())).onTrue(
+                // start: rezero
+                // A: intake (hold)
+                // X: start shooting
+                // B: stop shooting
+                // Right Trigger: increase flywheel speed
+                // Left Trigger: decrease flywheel speed
+                // Right Trigger: decrease shooting vertical angle
+                // Left Trigger: increase shooting vertical angle
+                driverXboxController.start().onTrue(
                                 SuperstructureCommands.resetOdometry(
                                                 this,
                                                 () -> !Alliance.get()
@@ -243,16 +250,16 @@ public class RobotContainer {
                                                                 : new Pose2d()));
 
                 driverXboxController.a()
-                        .whileTrue(intakeSubsystem.oscillateIntake())
+                        .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition))
+                        .whileTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage))
                         .onFalse(intakeSubsystem
-                                .setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
+                                .setDeployPosition(() -> SubsystemConstants.intakeRetractPosition));
 
                 driverXboxController
                                 .b()
                                 .and(driverXboxController.back().negate())
                                 .onTrue(Commands.runOnce(() -> {
                                     aiming = false;
-                                    slowmode = false;
                                 }));
 
                 driverXboxController
@@ -275,15 +282,14 @@ public class RobotContainer {
 
                 new Trigger(() -> aiming)
                         .and(() -> (aimMode == AimMode.MANUAL))
-                        .and(driverXboxController.y().negate())
                         .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(
                                 () -> SubsystemConstants.indexerShootVoltage, () -> 12.0));
 
-                driverXboxController
-                        .y()
-                        .and(driverXboxController.back().negate())
-                        .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(
-                                () -> SubsystemConstants.indexerReverseVoltage, () -> -20.0));
+//                driverXboxController
+//                        .y()
+//                        .and(driverXboxController.back().negate())
+//                        .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(
+//                                () -> SubsystemConstants.indexerReverseVoltage, () -> -20.0));
 
                 driverXboxController
                         .b()
@@ -298,8 +304,8 @@ public class RobotContainer {
                         .and(driverXboxController.back())
                         .whileTrue(turretSubsystem.rezeroCRT());
 
-                driverXboxController.povLeft() // left bottom paddle
-                        .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));
+//                driverXboxController.povLeft() // left bottom paddle
+//                        .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));
                 driverXboxController.povDown() // right bottom paddle
                         .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
 
@@ -724,6 +730,8 @@ public class RobotContainer {
                 Logger.recordOutput("Superstructure/manualAimState", manualAimState);
                 Logger.recordOutput("Superstructure/slowmode", slowmode);
                 Logger.recordOutput("Superstructure/RPS Offset", rpsOffset);
+                Logger.recordOutput("Superstructure/flywheelRps", flywheelRpsIdx);
+                Logger.recordOutput("Superstructure/flywheelAngle", flywheelAngleIdx);
                 if (autoWon) {
                     Logger.recordOutput("Superstructure/Won Auto", "WON");
                 }
