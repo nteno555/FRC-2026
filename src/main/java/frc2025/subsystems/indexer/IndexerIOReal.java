@@ -98,5 +98,6 @@ public class IndexerIOReal implements IndexerIO {
     @Override
     public void setTowerSpeed(double speed) {
         tower.setControl(towerSpeedRequest.withVelocity(speed * SubsystemConstants.towerFlywheelRatio));
+        Logger.recordOutput("Indexer/Tower RPS", tower.getVelocity().getValueAsDouble());
     }
 }

@@ -153,6 +153,7 @@ public class RobotContainer {
                 autoChooser.addOption(Autos.MID_BUMP_NOSTATION, Autos.MID_BUMP_NOSTATION);
                 autoChooser.addOption(Autos.HIGH_NEUTRAL_LOOP, Autos.HIGH_NEUTRAL_LOOP);
                 autoChooser.addOption(Autos.ONE_METER, Autos.ONE_METER);
+                autoChooser.addOption(Autos.HIGH_WAIT_STEAL, Autos.HIGH_WAIT_STEAL);
 
                 SmartDashboard.putData("Auto Chooser", autoChooser);
                 SmartDashboard.putNumber("Bump Wait Time", 2.0);

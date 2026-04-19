@@ -83,8 +83,10 @@ public class PathPlanCommands {
             
             boolean rotationReady = (Math.abs(robotPose.getRotation().getDegrees() - preTrenchPose.get().getRotation().getDegrees()) < 10);
             boolean pastTrench = robotPose.getY() > FieldConstants.highTrenchCutoff || robotPose.getY() < FieldConstants.lowTrenchCutoff;
+    
 
             Logger.recordOutput("Drive/trenchCutoff", rotationReady && pastTrench);
+            
             return rotationReady && pastTrench;
         }).andThen(
                 new FollowPathCommand(robotContainer.getDrive(), trenchEndPathSupplier, ()-> false, false)

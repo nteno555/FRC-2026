@@ -39,6 +39,7 @@ public class Autos {
     public static final String LOW_NEUTRAL_STATION = "Low Neutral Station";
     public static final String MID_BUMP_NOSTATION = "Mid Bump No Station";
     public static final String ONE_METER = "One Meter";
+    public static final String HIGH_WAIT_STEAL = "High Wait Steal";
 
     public static Command lowNeutralLoop;
     public static Command highNeutralLoop;
@@ -46,6 +47,7 @@ public class Autos {
     public static Command midBumpStation;
     public static Command midBumpNoStation;
     public static Command oneMeter;
+    public static Command highWaitSteal;
 
     private final String WAIT_SHOOT = "wait_shoot";
     private final String WAIT_SHOOT_EXTENDED = "wait_shoot_extended";
@@ -54,6 +56,7 @@ public class Autos {
     private final String RETURN_UNDER_TRENCH_LOW = "return_under_trench_low";
     private final String RETURN_UNDER_TRENCH_STATION = "return_under_trench_station";
     private final String BUMP_WAIT = "bump wait";
+    private final String STEAL_WAIT_SHOOT = "steal_wait_shoot";
 
     /**
      * Returns the alliance-corrected starting pose of the first path in an auto
@@ -90,6 +93,7 @@ public class Autos {
         midBumpStation = MidBumpStation();
         midBumpNoStation = MidBump();
         oneMeter = OneMeterAuto();
+        highWaitSteal = HighWaitSteal();
     }
 
     /* Path Commands */
@@ -201,10 +205,35 @@ public class Autos {
         Command pathCommands;
 
         if (paths.get(0).equals(BUMP_WAIT)) {
-            pathCommands = SuperstructureCommands.resetOdometry(robotContainer, () -> getStartPose("Mid-Bump").get())
+            pathCommands = SuperstructureCommands.resetOdometry(robotContainer, () -> getStartPose("MidBump").get())
                     .andThen(
                             bumpWaitCommand()
                     );
+        }
+        else if(paths.get(0).equals(STEAL_WAIT_SHOOT)) {
+            double waitTime = 5.0;
+            if (SubsystemConstants.hasTurret) {
+                pathCommands = SuperstructureCommands.resetOdometry(robotContainer, () -> getStartPose(paths.get(1)).get())
+                .andThen(
+                     AutoAimCommands.autoIndex(robotContainer)
+                    .alongWith(robotContainer.getShooter().autoAim())
+                    .alongWith(robotContainer.getTurret().snapThenTrack())
+                    .alongWith(robotContainer.getHood().autoAimUnsafe())
+                    .alongWith(robotContainer.getIntake().oscillateIntake()))
+                    .withTimeout(waitTime);
+            } else {
+                pathCommands = SuperstructureCommands.resetOdometry(robotContainer, () -> getStartPose(paths.get(1)).get())
+                .andThen(
+                    AutoAimCommands.driveAutoAim(
+                    robotContainer,
+                    () -> RobotState.getInstance().getShootingWhileMovingVirtualPose(),
+                    () -> new ChassisSpeeds(0, 0, 0))
+                    .alongWith(AutoAimCommands.autoIndex(robotContainer)
+                            .alongWith(robotContainer.getShooter().autoAim())
+                            .alongWith(robotContainer.getHood().autoAimUnsafe())
+                            .alongWith(robotContainer.getIntake().oscillateIntake()))
+                    .withTimeout(waitTime));      
+            }
         }
         else pathCommands = intakePathResetOdometry(paths.get(0));
 
@@ -391,12 +420,17 @@ public class Autos {
 
     public Command MidBumpStation() {
         choreo = false;
-        return buildAuto(List.of(BUMP_WAIT, "Mid-Bump", "Bump-Loop", "Bump-Mid", WAIT_SHOOT, "Bump-Station", WAIT_NO_SHOOT, "Station-Score"), false);
+        return buildAuto(List.of(BUMP_WAIT, "MidBump", "BumpLoop", "BumpMid", WAIT_SHOOT, "BumpStation", WAIT_NO_SHOOT, "StationScore"), false);
     }
 
     public Command MidBump() {
         choreo = false;
-        return buildAuto(List.of(BUMP_WAIT, "Mid-Bump", "Bump-Loop", "Bump-Mid"), false);
+        return buildAuto(List.of(BUMP_WAIT, "MidBump", "BumpLoop", "BumpMid"), false);
+    }
+
+    public Command HighWaitSteal() {
+        choreo = true;
+        return buildAuto(List.of(STEAL_WAIT_SHOOT, "HighStealLoop_under_trench", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT_EXTENDED),false);
     }
 
     public Command OneMeterAuto() {
@@ -435,6 +469,7 @@ public class Autos {
             case ONE_METER -> oneMeter;
             case MID_BUMP_STATION -> midBumpStation;
             case MID_BUMP_NOSTATION -> midBumpNoStation;
+            case HIGH_WAIT_STEAL -> highWaitSteal;
 //            case LOW_NEUTRAL_STATION -> LowNeutralStation();
             default -> Commands.none();
         };
@@ -442,12 +477,12 @@ public class Autos {
 
     public String getFirstPath(String autoName) {
         return switch (autoName) {
-            case LOW_X2_NEUTRAL_STATION, LOW_X2_NEUTRAL, LOW_NEUTRAL_LOOP -> "Low-Neutral (under trench)";
+            case LOW_X2_NEUTRAL_STATION, LOW_X2_NEUTRAL, LOW_NEUTRAL_LOOP -> "Low_Neutral_under_trench";
             case LOW_NEUTRAL_STATION, "Low-NeutralMid (under trench)" -> "Low-NeutralMid (under trench)";
             case MID_DEPOT_STATION -> "Mid-Depot";
-            case HIGH_X2_NEUTRAL, HIGH_NEUTRAL_LOOP -> "High-Neutral (under trench)";
-            case MID_BUMP_STATION -> "Mid-Bump";
-            case MID_BUMP_NOSTATION -> "Mid-Bump";
+            case HIGH_X2_NEUTRAL, HIGH_NEUTRAL_LOOP -> "High_Neutral_under_trench";
+            case MID_BUMP_STATION -> "Mid_Bump";
+            case MID_BUMP_NOSTATION -> "Mid_Bump";
             default -> "";
         };
     }
