@@ -302,15 +302,14 @@ public class Autos {
         }
 
         if (SubsystemConstants.hasTurret) {
-            return (new WaitCommand(0.1)).andThen(
-                        pathCommands
+            return (new WaitCommand(0.0)).andThen(
+                        pathCommands)
                         .andThen(
                                 AutoAimCommands.autoIndex(robotContainer)
                                         .alongWith(robotContainer.getTurret().autoAim())
                                         .alongWith(robotContainer.getHood().autoAimUnsafe())
                                         .alongWith(robotContainer.getIntake().oscillateIntake())
-                                        .alongWith(robotContainer.getShooter().autoAim()))
-            );
+                                        .alongWith(robotContainer.getShooter().autoAim()));
         } else {
             return (new WaitCommand(0.1)).andThen(
                     pathCommands
@@ -408,20 +407,6 @@ public class Autos {
         return oneMeter;
     }
 
-//    public Command HighDoubleNeutral() {
-//        if (!SubsystemConstants.hasTurret) {
-//            return buildAuto(
-//                    List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "HighScore-NeutralMid",
-//                            RETURN_UNDER_TRENCH_HIGH),
-//                    false);
-//        }
-//        return buildAuto(List.of("High-Neutral (under trench)", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "High-NeutralMid",
-//                RETURN_UNDER_TRENCH_HIGH), false);
-//    }
-//
-//    public Command LowPath() {
-//        return Commands.waitSeconds(0.01).andThen(intakePathResetOdometry("Low-Neutral (under trench)"));
-//    }
 
     public Command getCommand(String autoName) {
         return switch (autoName) {

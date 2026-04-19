@@ -59,6 +59,12 @@ public class ShooterIOReal implements ShooterIO {
         flywheelConfig.CurrentLimits.StatorCurrentLimit = SubsystemConstants.flywheelStatorCurrentLimit;
         flywheelConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
+        var slaveConfig = new TalonFXConfiguration();
+        slaveConfig.Slot1 = flywheelConfig.Slot1;
+        slaveConfig.TorqueCurrent = flywheelConfig.TorqueCurrent;
+        slaveConfig.CurrentLimits = flywheelConfig.CurrentLimits;
+        slaveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
         flywheelConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         // flywheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
@@ -127,20 +133,19 @@ public class ShooterIOReal implements ShooterIO {
     @Override
     public void setSpeed(double speed, double acceleration) {
         double errorRPS = speed - flywheelMaster.getVelocity().getValueAsDouble();
-        boolean inTolerance = errorRPS < SubsystemConstants.flywheelBangBangThreshold;
+        boolean wantBangBang = errorRPS > SubsystemConstants.flywheelBangBangThreshold;
         // flywheelMaster.setControl(speedVoltageRequest.withVelocity(speed).withAcceleration(0.0));
 
         if (speed < 1000.0) {
+            Logger.recordOutput("Shooter/bangbang", wantBangBang);
             Logger.recordOutput("Shooter/usingVoltage", false);
-            if (!inTolerance) {
-                Logger.recordOutput("Shooter/bangbang", true);
-                Logger.recordOutput("Shooter/usingVoltage", false);
+            if (wantBangBang) {
                 flywheelMaster.setControl(bangbangVoltageRequest);
+//                flywheelSlave.setControl(bangbangVoltageRequest);
             } else {
-                Logger.recordOutput("Shooter/bangbang", false);
-                flywheelMaster.setControl(
-                        speedRequest.withVelocity(speed).withAcceleration(acceleration));
-
+                flywheelMaster.setControl(speedRequest.withVelocity(speed));
+//                        speedRequest.withVelocity(speed).withAcceleration(acceleration));
+//                flywheelSlave.setControl(speedRequest.withVelocity(speed));
             }
         }
         else {

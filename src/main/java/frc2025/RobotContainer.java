@@ -800,8 +800,6 @@ public class RobotContainer {
         }
 
         public double getBumpWaitTime() {
-                Logger.recordOutput("Drive/bumpWaitTimeSmartdashboard",
-                                SmartDashboard.getNumber("Bump Wait Time", 2.0));
                 return SmartDashboard.getNumber("Bump Wait Time", 2.0);
         }
 }

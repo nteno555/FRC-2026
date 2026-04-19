@@ -98,16 +98,18 @@ public class IndexerIOReal implements IndexerIO {
 
     @Override
     public void setTowerSpeed(double speed) {
-        boolean inTolerance = (speed - tower.getVelocity().getValueAsDouble()) < SubsystemConstants.flywheelBangBangThreshold;
+        speed = speed * SubsystemConstants.towerFlywheelRatio;
+        boolean inTolerance = (speed - tower.getVelocity().getValueAsDouble()) < SubsystemConstants.towerBangBangThreshold;
 
         if (!inTolerance) {
             Logger.recordOutput("Tower/towerBangBang", true);
             tower.setControl(bangbangVoltageRequest);
         } else {
             Logger.recordOutput("Tower/towerBangBang", false);
-            tower.setControl(towerSpeedRequest.withVelocity(speed * SubsystemConstants.towerFlywheelRatio));
+            tower.setControl(towerSpeedRequest.withVelocity(speed));
         }
 
+        Logger.recordOutput("Tower/setpoint", speed);
         Logger.recordOutput("Tower/towerRPS", tower.getVelocity().getValueAsDouble());
     }
 }

@@ -50,13 +50,13 @@ public class SubsystemConstants {
     public static double flywheelkVAmps = 0.0;
     public static double flywheelkAAmps = 0.218;
     // Two Flywheels
-    public static double flywheelkPAmps = 8.0;
+    public static double flywheelkPAmps = 7.0;
     // One Flywheel
     // public static double flywheelkPAmps = 10.0;
     public static double flywheelkIAmps = 0.0;
     public static double flywheelkDAmps = 0.0;
 
-    public static double flywheelBangBangThreshold = 2.5;
+    public static double flywheelBangBangThreshold = 2.0;
     public static double flywheelkSAmpsBangBang = 15.0;
     public static double flywheelkVAmpsBangBang = 0.0;
     public static double flywheelkAAmpsBangBang = 0.0;
@@ -86,8 +86,8 @@ public class SubsystemConstants {
     public static double towerkPAmps = 5.0;
     public static double towerkIAmps = 0.0;
     public static double towerkDAmps = 0.0;
-    public static double towerFlywheelRatio = 2.0;
-    public static double towerBangBangThreshold = 4.0;
+    public static double towerFlywheelRatio = 3.0;
+    public static double towerBangBangThreshold = 15.0;
 
     public static double hoodkS = 0.4;
     public static double hoodkV = 0.12;
@@ -159,8 +159,8 @@ public class SubsystemConstants {
     public static double turretZeroOffsetRadians = 0.0;
     // 8 (44-42) 26 10 110
     public static double turretRotationsPerRadian = 44.0 / 8.0 * 26.0 / 42.0 * 110.0 / 10.0 / (2 * Math.PI);
-    public static double turretMinAngleRadians = -3.2;
-    public static double turretMaxAngleRadians = 4.0;
+    public static double turretMinAngleRadians = -3.6;
+    public static double turretMaxAngleRadians = 3.9;
     public static double throughBoreZero1 = 0.325;
     public static double throughBoreZero2 = 0.861;
     public static double throughBoreRatio1 = 44.0 / 8.0 * 26.0 / 42.0; // 6.17

@@ -89,7 +89,7 @@ public class AutoAimCommands {
             }
         }, () -> {
             if (readySupplier.getAsBoolean()) {
-                double indexerSpeed = robotContainer.getShooter().getVelocity() * SubsystemConstants.towerFlywheelRatio;
+                double indexerSpeed = robotContainer.getShooter().getVelocity();
                 return indexerSpeed;
             } else {
                 return 0.0;
@@ -200,7 +200,7 @@ public class AutoAimCommands {
             }
         }, () -> {
             if (readySupplier.getAsBoolean()) {
-                double indexerSpeed = robotContainer.getShooter().getVelocity() * SubsystemConstants.towerFlywheelRatio;
+                double indexerSpeed = robotContainer.getShooter().getVelocity();
                 return indexerSpeed;
             } else {
                 return 0.0;
