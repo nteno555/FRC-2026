@@ -20,6 +20,7 @@ public class IndexerIOReal implements IndexerIO {
     private final DutyCycleOut speedRequest = new DutyCycleOut(0);
     private final VoltageOut voltageRequest = new VoltageOut(0);
     private final VelocityVoltage towerSpeedRequest = new VelocityVoltage(0).withEnableFOC(true);
+    private final VoltageOut bangbangVoltageRequest = new VoltageOut(12.0).withEnableFOC(true);
 
     public IndexerIOReal() {
         indexer.getConfigurator().apply(new TalonFXConfiguration());
@@ -66,7 +67,7 @@ public class IndexerIOReal implements IndexerIO {
 
         TorqueCurrentConfigs towerConfigTorque =  new TorqueCurrentConfigs();
         towerConfigTorque.PeakForwardTorqueCurrent = 100;
-        towerConfigTorque.PeakReverseTorqueCurrent = 100;
+        towerConfigTorque.PeakReverseTorqueCurrent = 40;
         towerConfigTorque.TorqueNeutralDeadband = 1;
 
         tower.getConfigurator().apply(towerConfigs, 0.050);
@@ -97,7 +98,16 @@ public class IndexerIOReal implements IndexerIO {
 
     @Override
     public void setTowerSpeed(double speed) {
-        tower.setControl(towerSpeedRequest.withVelocity(speed * SubsystemConstants.towerFlywheelRatio));
-        Logger.recordOutput("Indexer/Tower RPS", tower.getVelocity().getValueAsDouble());
+        boolean inTolerance = (speed - tower.getVelocity().getValueAsDouble()) < SubsystemConstants.flywheelBangBangThreshold;
+
+        if (!inTolerance) {
+            Logger.recordOutput("Tower/towerBangBang", true);
+            tower.setControl(bangbangVoltageRequest);
+        } else {
+            Logger.recordOutput("Tower/towerBangBang", false);
+            tower.setControl(towerSpeedRequest.withVelocity(speed * SubsystemConstants.towerFlywheelRatio));
+        }
+
+        Logger.recordOutput("Tower/towerRPS", tower.getVelocity().getValueAsDouble());
     }
 }

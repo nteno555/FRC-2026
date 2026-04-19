@@ -87,6 +87,7 @@ public class SubsystemConstants {
     public static double towerkIAmps = 0.0;
     public static double towerkDAmps = 0.0;
     public static double towerFlywheelRatio = 2.0;
+    public static double towerBangBangThreshold = 4.0;
 
     public static double hoodkS = 0.4;
     public static double hoodkV = 0.12;
