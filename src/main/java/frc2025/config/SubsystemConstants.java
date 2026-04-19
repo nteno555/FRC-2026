@@ -50,16 +50,17 @@ public class SubsystemConstants {
     public static double flywheelkVAmps = 0.0;
     public static double flywheelkAAmps = 0.218;
     // Two Flywheels
-    public static double flywheelkPAmps = 10;
+    public static double flywheelkPAmps = 8.0;
     // One Flywheel
     // public static double flywheelkPAmps = 10.0;
     public static double flywheelkIAmps = 0.0;
     public static double flywheelkDAmps = 0.0;
 
-    public static double flywheelkSAmpsBangBang = 17.0;
+    public static double flywheelBangBangThreshold = 2.5;
+    public static double flywheelkSAmpsBangBang = 15.0;
     public static double flywheelkVAmpsBangBang = 0.0;
     public static double flywheelkAAmpsBangBang = 0.0;
-    public static double flywheelkPAmpsBangBang = 0.0;
+    public static double flywheelkPAmpsBangBang = 67.0;
     public static double flywheelkIAmpsBangBang = 0.0;
     public static double flywheelkDAmpsBangBang = 0.0;
 
@@ -85,7 +86,7 @@ public class SubsystemConstants {
     public static double towerkPAmps = 5.0;
     public static double towerkIAmps = 0.0;
     public static double towerkDAmps = 0.0;
-    public static double towerFlywheelRatio = 1.5;
+    public static double towerFlywheelRatio = 2.0;
 
     public static double hoodkS = 0.4;
     public static double hoodkV = 0.12;
