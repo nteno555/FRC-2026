@@ -60,12 +60,13 @@ public class Autos {
      * sequence. Used to pre-seed odometry while disabled.
      *
      * @param firstPathName the PathPlanner path file name (no extension)
+     * @param useChoreo
      * @return the starting Pose2d, or empty if the path cannot be loaded
      */
-    public static Optional<Pose2d> getStartPose(String firstPathName) {
+    public static Optional<Pose2d> getStartPose(String firstPathName, boolean useChoreo) {
         PathPlannerPath path;
         try {
-            if(choreo) path = PathPlannerPath.fromChoreoTrajectory(firstPathName);
+            if(useChoreo) path = PathPlannerPath.fromChoreoTrajectory(firstPathName);
             else path = PathPlannerPath.fromPathFile(firstPathName);
             Pose2d pose = new Pose2d(
                     path.getStartingDifferentialPose().getTranslation(),
@@ -80,7 +81,6 @@ public class Autos {
     }
 
     public Autos(RobotContainer robotContainer) {
-        choreo = true;
         this.robotContainer = robotContainer;
         this.drive = robotContainer.getDrive();
         System.out.println(this.robotContainer);
@@ -115,10 +115,10 @@ public class Autos {
                                                 );
     }
 
-    private Command intakePath(String pathName) {
+    private Command intakePath(String pathName, boolean useChoreo) {
         PathPlannerPath path;
         try {
-            if(choreo) path = PathPlannerPath.fromChoreoTrajectory(pathName);
+            if(useChoreo) path = PathPlannerPath.fromChoreoTrajectory(pathName);
             else path = PathPlannerPath.fromPathFile(pathName);
         } catch (IOException | ParseException e) {
             System.out.println("BAD PATH BAD PATH BAD PATH");
@@ -133,10 +133,10 @@ public class Autos {
         return intakeDrive(followPath);
     }
 
-    private Command intakePathResetOdometry(String pathName) {
+    private Command intakePathResetOdometry(String pathName, boolean useChoreo) {
         PathPlannerPath path;
         try {
-            if(choreo) path = PathPlannerPath.fromChoreoTrajectory(pathName);
+            if(useChoreo) path = PathPlannerPath.fromChoreoTrajectory(pathName);
             else path = PathPlannerPath.fromPathFile(pathName);
         } catch (IOException | ParseException e) {
             System.out.println("BAD PATH BAD PATH BAD PATH");
@@ -150,7 +150,7 @@ public class Autos {
                 finalPath.getIdealStartingState().rotation());
 
         return SuperstructureCommands.resetOdometry(robotContainer, startPoseSupplier(startPose))
-                .andThen(intakePath(pathName));
+                .andThen(intakePath(pathName, useChoreo));
     }
 
     private Pose2d mirrorPose(Pose2d pose) {
@@ -197,16 +197,16 @@ public class Autos {
     }
 
 
-    public Command buildAuto(List<String> paths, boolean climb) {
+    public Command buildAuto(List<String> paths, boolean climb, boolean useChoreo) {
         Command pathCommands;
 
         if (paths.get(0).equals(BUMP_WAIT)) {
-            pathCommands = SuperstructureCommands.resetOdometry(robotContainer, () -> getStartPose("Mid-Bump").get())
+            pathCommands = SuperstructureCommands.resetOdometry(robotContainer, () -> getStartPose("MidBump", useChoreo).get())
                     .andThen(
                             bumpWaitCommand()
                     );
         }
-        else pathCommands = intakePathResetOdometry(paths.get(0));
+        else pathCommands = intakePathResetOdometry(paths.get(0), useChoreo);
 
         for (int i = 1; i < paths.size(); i++) {
             if (paths.get(i).equals(WAIT_SHOOT) || paths.get(i).equals(WAIT_SHOOT_EXTENDED)) {
@@ -297,7 +297,7 @@ public class Autos {
                 bumpWaitCommand();
             }
             else {
-                pathCommands = pathCommands.andThen(intakePath(paths.get(i)));
+                pathCommands = pathCommands.andThen(intakePath(paths.get(i), useChoreo));
             }
         }
 
@@ -325,82 +325,43 @@ public class Autos {
         }
     }
 
-//    public Command LowNeutralStation() {
-//        return buildAuto(List.of("Low-NeutralMid (under trench)", RETURN_UNDER_TRENCH_STATION),
-//                false);
-//    }
-//
-//    public Command LowNeutralLoopAngled() {
-//        return buildAuto(List.of("Low-Neutral-Angled (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-Loop",
-//                RETURN_UNDER_TRENCH_LOW), false);
-//    }
-//
-//    public Command LowDoubleNeutralStation() {
-//        if (!SubsystemConstants.hasTurret) {
-//            return buildAuto(
-//                    List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "LowScore-NeutralMid",
-//                            RETURN_UNDER_TRENCH_STATION),
-//                    false);
-//        }
-//        return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid",
-//                RETURN_UNDER_TRENCH_STATION), false);
-//    }
-//
-//    public Command LowDoubleNeutral() {
-//        if (!SubsystemConstants.hasTurret) {
-//            return buildAuto(
-//                    List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "LowScore-NeutralMid",
-//                            RETURN_UNDER_TRENCH_LOW),
-//                    false);
-//        }
-//        return buildAuto(List.of("Low-Neutral (under trench)", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "Low-NeutralMid",
-//                RETURN_UNDER_TRENCH_LOW), false);
-//    }
-
-    // public Command MidStationDepot() {
-    //         return buildAuto(List.of("MidStation", WAIT_SHOOT, "StationDepot", "DepotSweep"),
-    //                 false);
-    //     }
 
     public Command LowNeutralLoop() {
         choreo = true;
+        String firstPath = "LowNeutral"; //"HighNeutralUnderTrench" for intake to start other way
         if (!SubsystemConstants.hasTurret) {
             return buildAuto(
-                    List.of("LowNeutral_under_trench", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "LowScoreLoop",
+                    List.of(firstPath, RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "LowScoreLoop",
                             RETURN_UNDER_TRENCH_LOW),
-                    false);
+                    false, true);
         }
-        return buildAuto(List.of("LowNeutral_under_trench", RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT_EXTENDED, "LowLoop",
-                RETURN_UNDER_TRENCH_LOW), false);
+        return buildAuto(List.of(firstPath, RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT_EXTENDED, "LowLoop",
+                RETURN_UNDER_TRENCH_LOW), false, true);
     }
 
-    
-
     public Command HighNeutralLoop() {
-        choreo = true; 
+        choreo = true;
+        String firstPath = "HighNeutral"; //"HighNeutralUnderTrench" for intake to start other way
         if (!SubsystemConstants.hasTurret) {
             return buildAuto(
-                    List.of("HighNeutral_under_trench", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "HighScoreLoop",
+                    List.of(firstPath, RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "HighScoreLoop",
                             RETURN_UNDER_TRENCH_HIGH),
-                    false);
+                    false, true);
         }
-        return buildAuto(List.of("HighNeutral_under_trench", RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT_EXTENDED, "HighLoop",
-                RETURN_UNDER_TRENCH_HIGH), false);
+        return buildAuto(List.of(firstPath, RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT_EXTENDED, "HighLoop",
+                RETURN_UNDER_TRENCH_HIGH), false, true);
     }
 
     public Command MidBumpStation() {
-        choreo = false;
-        return buildAuto(List.of(BUMP_WAIT, "Mid-Bump", "Bump-Loop", "Bump-Mid", WAIT_SHOOT, "Bump-Station", WAIT_NO_SHOOT, "Station-Score"), false);
+        return buildAuto(List.of(BUMP_WAIT, "MidBump", "BumpLoop", "BumpMid", WAIT_SHOOT, "BumpStation", WAIT_NO_SHOOT, "StationScore"), false, true);
     }
 
     public Command MidBump() {
-        choreo = false;
-        return buildAuto(List.of(BUMP_WAIT, "Mid-Bump", "Bump-Loop", "Bump-Mid"), false);
+        return buildAuto(List.of(BUMP_WAIT, "MidBump", "BumpLoop", "BumpMid"), false, true);
     }
 
     public Command OneMeterAuto() {
-        choreo = false;
-        return (new WaitCommand(0.1)).andThen(intakePathResetOdometry("three meter"));
+        return (new WaitCommand(0.1)).andThen(intakePathResetOdometry("three meter", false));
     }
 
     public Command getOneMeter() {
@@ -410,7 +371,7 @@ public class Autos {
 
     public Command getCommand(String autoName) {
         return switch (autoName) {
-//            case LOW_NEUTRAL_LOOP_ANGLED -> LowNeutralLoopAngled();
+//            case LOW_NEUTRAL_LOOP_ANGED -> LowNeutralLoopAngled();
 //            case LOW_X2_NEUTRAL_STATION -> LowDoubleNeutralStation();
 //            case LOW_X2_NEUTRAL -> LowDoubleNeutral();
             case LOW_NEUTRAL_LOOP -> lowNeutralLoop;
