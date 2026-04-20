@@ -9,19 +9,19 @@ import edu.wpi.first.math.geometry.Translation3d;
 
 
 public class SubsystemConstants {
-    public static final double climberFF = 1.0;
-    public static final double climberkS = 0.0;
-    public static final double climberkV = 0.12;
-    public static final double climberkA = 0.0;
-    public static final double climberkP = 6.0;
-    public static final double climberkI = 0.0;
-    public static final double climberkD = 0.0;
-    public static final double climberSupplyCurrentLimit = 100;
-    public static final double climberStatorCurrentLimit = 200;
-    public static final double climbersMetersPerRotation = 0.5;
-    public static final double climberMotionMagicCruiseVelocity = 60;
-    public static final double climberMotionMagicAcceleration = 150;
-    public static final double climberMotionMagicJerk = 700;
+    public static final double climbFF = 1.0;
+    public static final double climbkS = 0.0;
+    public static final double climbkV = 0.12;
+    public static final double climbkA = 0.0;
+    public static final double climbkP = 6.0;
+    public static final double climbkI = 0.0;
+    public static final double climbkD = 0.0;
+    public static final double climbSupplyCurrentLimit = 100;
+    public static final double climbStatorCurrentLimit = 200;
+    public static final double climbsMetersPerRotation = 0.5;
+    public static final double climbMotionMagicCruiseVelocity = 60;
+    public static final double climbMotionMagicAcceleration = 150;
+    public static final double climbMotionMagicJerk = 700;
     
 
     public static final double flywheelkS = 0.0;
@@ -177,7 +177,7 @@ public class SubsystemConstants {
     public static final double autoAimMaxSpeed = 2.0;
     public static final double autoAimMaxAccel = 10.0;
 
-    public static final int climberID = 19;
+    public static final int climbID = 19;
     public static final int flywheelMasterID = 13;
     public static final int flywheelSlaveID = 17;
     public static final int hoodID = 27;
