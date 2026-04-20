@@ -40,6 +40,20 @@ public class IntakeSubsystem extends SubsystemBase {
         });
     }
 
+    public Command noMovement() {
+        return this.run(() -> {
+            io.setDeployVoltage(0.0);
+            io.setVoltage(0.0);
+        });
+    }
+
+    public Command extendAndIntake() {
+        return this.run(() -> {
+            io.setDeployPosition(SubsystemConstants.intakeDeployPosition, false);
+            io.setVoltage(SubsystemConstants.intakeRollerVoltage);
+        });
+    }
+
     public Command oscillateIntake() {
         return this.run(() -> {
             double time = (Timer.getFPGATimestamp());
