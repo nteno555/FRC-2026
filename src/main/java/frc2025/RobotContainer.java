@@ -34,6 +34,11 @@ import frc2025.subsystems.drive.DriveSubsystem;
 import frc2025.subsystems.vision.VisionIOReal;
 import frc2025.subsystems.vision.VisionIOSim;
 import frc2025.subsystems.vision.VisionSubsystem;
+
+import frc2025.subsystems.climb.ClimbIOReal;
+import frc2025.subsystems.climb.ClimbIOSim;
+import frc2025.subsystems.climb.ClimbSubsystem;
+
 import frc2025.util.Alliance;
 import java.util.ArrayList;
 
@@ -49,6 +54,7 @@ public class RobotContainer {
 
     DriveSubsystem driveSubsystem;
     VisionSubsystem visionSubsystem;
+    ClimbSubsystem climbSubsystem;
 
     Autos autos;
     Command autoCommand;
@@ -70,10 +76,12 @@ public class RobotContainer {
         if(RobotBase.isReal()) {
             driveSubsystem = new DriveSubsystem(new DriveIOReal(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOReal());
+            climbSubsystem = new ClimbSubsystem(new ClimbIOReal());
 
         } else {
             driveSubsystem = new DriveSubsystem(new DriveIOSim(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOSim());
+            climbSubsystem = new ClimbSubsystem(new ClimbIOSim());
         }
     }
 
