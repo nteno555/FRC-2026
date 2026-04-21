@@ -4,14 +4,18 @@ import org.littletonrobotics.junction.AutoLog;
 
 public interface IntakeIO {
     @AutoLog
-    public class IntakeIOInputs {
-        //lin prefix are attributes of the linear motor and rot prefix signifies values for the intake motor ON THe front
-        double linVoltage, linCurrent, position, rotVoltage, rotCurrent, logLinVoltage, logLinCurrent, logPosition, logRotVoltage, logRotCurrent;
-        
+    public static class IntakeIOInputs{
+        double voltage;
+        double current;
+        double position;
+        boolean deployConnected;
+        double totalCurrent;
     }
     public void updateInputs(IntakeIOInputs inputs);
-    public void setPosition(double position); //horizontal position of the intake
-    public void setLinVoltage(double linVoltage);
-    public void setRotVoltage(double rotVoltage);
-
+    public void setSpeed(double speed);
+    public void setVoltage(double voltage);
+    public void setDeployVoltage(double voltage);
+    public void setDeployPosition(double position, boolean fast);
+    public void rezero(double position);
+//    public void setZeroPosition();
 }

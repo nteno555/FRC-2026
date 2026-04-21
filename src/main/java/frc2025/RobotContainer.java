@@ -33,6 +33,9 @@ import frc2025.subsystems.drive.DriveSubsystem;
 import frc2025.subsystems.indexer.IndexerIOReal;
 import frc2025.subsystems.indexer.IndexerIOSim;
 import frc2025.subsystems.indexer.IndexerSubsystem;
+import frc2025.subsystems.intake.IntakeIOReal;
+import frc2025.subsystems.intake.IntakeIOSim;
+import frc2025.subsystems.intake.IntakeSubsystem;
 import frc2025.subsystems.vision.VisionIOReal;
 import frc2025.subsystems.vision.VisionIOSim;
 import frc2025.subsystems.vision.VisionSubsystem;
@@ -56,6 +59,7 @@ public class RobotContainer {
 
     DriveSubsystem driveSubsystem;
     VisionSubsystem visionSubsystem;
+    IntakeSubsystem intakeSubsystem;
     IndexerSubsystem indexerSubsystem;
     ClimbSubsystem climbSubsystem;
 
@@ -79,12 +83,14 @@ public class RobotContainer {
         if(RobotBase.isReal()) {
             driveSubsystem = new DriveSubsystem(new DriveIOReal(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOReal());
+            intakeSubsystem = new IntakeSubsystem(new IntakeIOReal());
             indexerSubsystem = new IndexerSubsystem(new IndexerIOReal());
             climbSubsystem = new ClimbSubsystem(new ClimbIOReal());
 
         } else {
             driveSubsystem = new DriveSubsystem(new DriveIOSim(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOSim());
+            intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
             indexerSubsystem = new IndexerSubsystem(new IndexerIOSim());
             climbSubsystem = new ClimbSubsystem(new ClimbIOSim());
         }
@@ -98,6 +104,10 @@ public class RobotContainer {
         return visionSubsystem;
     }
 
+    public IntakeSubsystem getIntake() {
+        return intakeSubsystem;
+    }
+    
     public IndexerSubsystem getIndexer() {
         return indexerSubsystem;
     }

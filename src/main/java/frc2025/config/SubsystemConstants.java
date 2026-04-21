@@ -28,6 +28,29 @@ public class SubsystemConstants {
     public static final double climbMotionMagicCruiseVelocity = 60;
     public static final double climbMotionMagicAcceleration = 150;
     public static final double climbMotionMagicJerk = 700;
+
+    public static double intakekS = 0.1;
+    public static double intakekG = 0.0;
+    public static double intakekV = 0.07;
+    public static double intakekA = 0.0;
+    public static double intakekP = 2.0;
+    public static double intakekI = 0.0;
+    public static double intakekD = 0.0;
+    public static double intakeSupplyCurrentLimit = 100;
+    public static double intakeStatorCurrentLimit = 100;
+    public static double intakeMotionMagicCruiseVelocity = 120;
+    public static double intakeMotionMagicAcceleration = 300;
+    public static double intakeMotionMagicJerk = 1400;
+    public static double intakePeakForwardTorqueCurrent = 100;
+    public static double intakePeakReverseTorqueCurrent = 100;
+    public static double intakeTorqueNeutralDeadband = 1;
+    public static double intakePeakForwardVoltage = 12.0;
+    public static double intakePeakReverseVoltage = -12.0;
+    public static double intakeRetractPosition = 0.3;
+    public static double intakeDeployPosition = 4.1;
+    public static double intakeRollerVoltage = 12.0;
+    public static double intakeHalfPosition = 2.0;
+    public static double intakeQuarterPosition = 1.0;
     
 
     public static final double flywheelkS = 0.0;
@@ -66,24 +89,6 @@ public class SubsystemConstants {
     public static final double hoodMaxAngleRotations = 2.84;
     public static final double hoodMinAngleRadians = 1.48;
     public static final double hoodMaxAngleRadians = 0.87;
-
-    public static final double intakekS = 0.00;
-    public static final double intakekG = 0.2;
-    public static final double intakekV = 0.175;
-    public static final double intakekA = 0.0;
-    public static final double intakekP = 2.5;
-    public static final double intakekI = 0.0;
-    public static final double intakekD = 0.0;
-    public static final double intakeCruiseVelocity = 10;
-    public static final double intakeAcceleration = 20;
-    public static final double intakeJerk = 700;
-    public static final double intakeSupplyCurrentLimit = 100;
-    public static final double intakeStatorCurrentLimit = 200;
-    public static final double intakePeakForwardTorqueCurrent = 100;
-    public static final double intakePeakReverseTorqueCurrent = -100;
-    public static final double intakeTorqueNeutralDeadband = 1;
-    public static final double intakeDeployPosition = -3.9;
-    public static final double intakeRollerVoltage = 8.0;
 
     public static final double indexerSupplyCurrentLimit = 120;
     public static final double indexerStatorCurrentLimit = 120;
