@@ -9,6 +9,12 @@ import edu.wpi.first.math.geometry.Translation3d;
 
 
 public class SubsystemConstants {
+    public static final double translationkP = 0.0;
+    public static final double translationkI = 0.0;
+    public static final double translationkD = 0.0;
+    public static final double rotationkP = 0.0;
+    public static final double rotationkI = 0.0;
+    public static final double rotationkD = 0.0;
     public static final double climbFF = 1.0;
     public static final double climbkS = 0.0;
     public static final double climbkV = 0.12;
@@ -168,10 +174,6 @@ public class SubsystemConstants {
     public static final double robotToBackCameraYaw = 0.0;
     public static final double robotToBackCameraPitch = 18.0; // to be updated
     public static final double robotToBackCameraRoll = 0.0;
-
-    public static final double photonCameraHeight = 0.381;
-    public static final Transform3d robotToPhotonCamera = new Transform3d(new Translation3d(0.34163, -0.127, photonCameraHeight), new Rotation3d(0, 0, 0));
-    public static final Transform2d robotToPhotonCamera2d = new Transform2d(new Translation2d(0.34163, -0.127), new Rotation2d());
 
 
     public static final double autoAimMaxSpeed = 2.0;

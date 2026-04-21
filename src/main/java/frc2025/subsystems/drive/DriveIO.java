@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import frc2025.RobotState;
 import frc2025.subsystems.vision.VisionPoseEstimator;
 import org.littletonrobotics.junction.AutoLog;
 
@@ -34,7 +35,7 @@ public interface DriveIO{
     public void updateInputs(DriveIOInputs inputs);
     public void resetOdometry(Pose2d pose);
     public void setControl(SwerveRequest request);
-    public void addVisionMeasurement(List<VisionPoseEstimator.TimestampedVisionUpdate> update);
+    public void addVisionMeasurement(List<RobotState.TimestampedVisionUpdate> updates);
     public Translation2d[] getModulePositions();
     public SwerveModule[] getModules();
     public Optional<Pose2d> samplePoseAt(double timestamp);

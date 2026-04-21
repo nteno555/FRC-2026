@@ -27,9 +27,4 @@ public class ClimbIOSim implements ClimbIO {
     public void setVoltage(double climbVoltage) {
         this.voltage = climbVoltage;
     }
-
-    @Override
-    public void setTowerSpeed(double speed) {
-
-    }
 }

@@ -156,7 +156,7 @@ public class LimelightFiducialCamera {
             distStdDevs = VecBuilder.fill(Math.pow(meanDistance, 2) / 4.0, Math.pow(meanDistance, 2) / 4.0, 99999999999.0);
            
 
-            VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
+            RobotState.TimestampedVisionUpdate update = new RobotState.TimestampedVisionUpdate(
                     poseEstimate.timestampSeconds, pose, distStdDevs
             );
 
@@ -210,7 +210,7 @@ public class LimelightFiducialCamera {
         if(!reject) {
             Vector<N3> distStdDevs;
             distStdDevs = VecBuilder.fill(Math.pow(leastDistance, 2) / 4.0, Math.pow(leastDistance, 2) / 4.0, 999999999);
-            VisionPoseEstimator.TimestampedVisionUpdate update = new VisionPoseEstimator.TimestampedVisionUpdate(
+            RobotState.TimestampedVisionUpdate update = new RobotState.TimestampedVisionUpdate(
                     poseEstimate.timestampSeconds, pose, distStdDevs
             );
 

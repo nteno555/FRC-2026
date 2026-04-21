@@ -2,8 +2,6 @@ package frc2025.subsystems.vision;
 
 import java.util.*;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
@@ -15,7 +13,7 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class VisionPoseEstimator {
 
-    private static final double historyLengthSecs = 0.5;
+    private static final double historyLengthSecs = 0.1;
 
     private Pose2d basePose = new Pose2d();
     private Pose2d latestPose = new Pose2d();
@@ -57,7 +55,7 @@ public class VisionPoseEstimator {
         for (var timestampedVisionUpdate : visionData) {
             var timestamp = timestampedVisionUpdate.timestamp();
             var visionUpdate = new VisionUpdate(timestampedVisionUpdate.pose(), timestampedVisionUpdate.stdDevs());
-            Logger.recordOutput("Vision/visionPoseEstimatorUpdate", visionUpdate);
+
             if (updates.containsKey(timestamp)) {
                 // There was already an update at this timestamp, add to it
                 var oldVisionUpdates = updates.get(timestamp).visionUpdates();
@@ -91,7 +89,6 @@ public class VisionPoseEstimator {
                 updates.put(
                         nextUpdate.getKey(), new PoseUpdate(twist1, nextUpdate.getValue().visionUpdates()));
             }
-            Logger.recordOutput("Vision/updateslist", timestampedVisionUpdate);
         }
 
         // Recalculate latest pose once

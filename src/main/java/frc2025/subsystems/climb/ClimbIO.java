@@ -16,5 +16,4 @@ public interface ClimbIO {
     public void updateInputs(ClimbIOInputs inputs);
     public void setSpeed(double climbSpeed);
     public void setVoltage(double climbVoltage);
-    public void setTowerSpeed(double speed);
 }

@@ -53,22 +53,4 @@ public class ClimbSubsystem extends SubsystemBase {
             io.setVoltage(climbVoltage.get());
         });
     }
-
-    public Command setClimbVoltageWithTowerSpeed(Supplier<Double> climbVoltage, Supplier<Double> towerSpeed) {
-        if (!SubsystemConstants.hasTower) {
-            return this.runEnd(() -> {}, () -> {});
-        }
-
-        return this.runEnd(() -> {
-            io.setVoltage(climbVoltage.get());
-            io.setTowerSpeed(towerSpeed.get());
-        }, () -> {
-            io.setVoltage(0.0);
-            io.setTowerSpeed(0.0);
-        });
-    }
-
-    public double getCurrent() {
-        return inputs.totalCurrent;
-    }
 }

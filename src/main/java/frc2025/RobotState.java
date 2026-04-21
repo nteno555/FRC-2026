@@ -1,29 +1,21 @@
 package frc2025;
 
-import com.ctre.phoenix6.Utils;
+import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj.Timer;
 import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
-import frc2025.subsystems.vision.LimelightHelpers;
-import frc2025.subsystems.vision.VisionPoseEstimator;
 import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
-import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonUtils;
-import org.photonvision.proto.Photon;
-import org.photonvision.targeting.PhotonTrackedTarget;
 
-import java.lang.StackWalker.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,28 +23,29 @@ import java.util.Optional;
 public class RobotState {
     private static RobotState instance;
 
+    private DriverStation.Alliance alliance;
 
-    private VisionPoseEstimator visionPoseEstimator;
+    public static record TimestampedVisionUpdate(
+            double timestamp, Pose2d pose, Matrix<N3, N1> stdDevs) {
+    }
 
-    private List<VisionPoseEstimator.TimestampedVisionUpdate> visionUpdates = new ArrayList<>();
+    private Pose2d latestPose = new Pose2d();
+
+    private List<TimestampedVisionUpdate> visionUpdates = new ArrayList<>();
+
     private ChassisSpeeds robotRelativeSpeeds;
+
     private ChassisSpeeds fieldRelativeSpeeds;
+
     private double pigeonAcceleration;
 
-
-
-
-    private List<PhotonTrackedTarget> ballTargets;
-    private final Field2d field = new Field2d();
-    private ArrayList<String> states;
-    private String matchState;
-
     public RobotState() {
-        visionPoseEstimator = new VisionPoseEstimator(new Matrix<>(Nat.N3(), Nat.N1(), new double[] { 1, 1, 0.00001 }));
+        latestPose = new Pose2d();
     }
 
     public static RobotState getInstance() {
-        if(instance == null) instance = new RobotState();
+        if (instance == null)
+            instance = new RobotState();
         return instance;
     }
 
@@ -61,15 +54,33 @@ public class RobotState {
         fieldRelativeSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeSpeeds, getVisionPose().getRotation());
     }
 
-    public void setPigeonAcceleration(double accel) { pigeonAcceleration = accel; }
-    public double getPigeonAcceleration() { return pigeonAcceleration; }
+    public void setPigeonAcceleration(double accel) {
+        pigeonAcceleration = accel;
+    }
 
-    public ChassisSpeeds getFieldRelativeSpeeds() {return fieldRelativeSpeeds;}
-    public ChassisSpeeds getRobotRelativeSpeeds() {return robotRelativeSpeeds;}
+    public double getPigeonAcceleration() {
+        return pigeonAcceleration;
+    }
 
+    public ChassisSpeeds getFieldRelativeSpeeds() {
+        return fieldRelativeSpeeds;
+    }
+
+    public ChassisSpeeds getRobotRelativeSpeeds() {
+        return robotRelativeSpeeds;
+    }
 
     public Pose2d getVisionPose() {
-        return visionPoseEstimator.getLatestPose();
+        return latestPose;
+    }
+
+    public void setPose(Pose2d pose) {
+        latestPose = pose;
+    }
+
+    public Pose2d getVisionShooterPose() {
+        Pose2d visionPose = getVisionPose();
+        return visionPose.transformBy(SubsystemConstants.robotToShooter);
     }
 
     public double getSpeed() {
@@ -77,20 +88,27 @@ public class RobotState {
     }
 
     public void rezero(Pose2d pose) {
-        visionPoseEstimator.resetPose(pose);
-    }
-
-    public void addDriveData(double timestamp, Twist2d twist) {
-        visionPoseEstimator.addDriveData(timestamp, twist);
-    }
-
-    public void addVisionData(List<VisionPoseEstimator.TimestampedVisionUpdate> update) {
-        visionUpdates.addAll(update);
-    }
-
-    public void updateVisionPose() {
-        visionPoseEstimator.addVisionData(visionUpdates);
+        latestPose = pose;
         visionUpdates.clear();
     }
 
+    public void addDriveData(double timestamp, Twist2d twist) {
+    }
+
+    public void addVisionData(List<TimestampedVisionUpdate> update) {
+        visionUpdates.addAll(update);
+    }
+
+    public List<TimestampedVisionUpdate> getVisionUpdates() {
+        var updates = new ArrayList<>(visionUpdates);
+        visionUpdates.clear();
+        return updates;
+    }
+
+    public void updateVisionPose() {
+        visionUpdates.clear();
+    }
+
+
+ 
 }
