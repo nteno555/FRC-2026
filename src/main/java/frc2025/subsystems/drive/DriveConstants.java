@@ -1,38 +1,18 @@
 package frc2025.subsystems.drive;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.CANBus;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
-import com.ctre.phoenix6.swerve.SwerveDrivetrain;
-import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants.ClosedLoopOutputType;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants.DriveMotorArrangement;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerFeedbackType;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
-import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
+import com.ctre.phoenix6.configs.*;
+import com.ctre.phoenix6.hardware.*;
+import com.ctre.phoenix6.signals.*;
+import com.ctre.phoenix6.swerve.*;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.KilogramSquareMeters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.Volts;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.units.measure.MomentOfInertia;
-import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.units.measure.*;
 
 // import frc.robot.subsystems.CommandSwerveDrivetrain;
 
@@ -62,7 +42,7 @@ public class DriveConstants {
 
     // The type of motor used for the drive motor
     private static final DriveMotorArrangement kDriveMotorType = DriveMotorArrangement.TalonFX_Integrated;
-    // The type of motor used for the drive motor
+    // The type of motor used for the steer motor
     private static final SteerMotorArrangement kSteerMotorType = SteerMotorArrangement.TalonFX_Integrated;
 
     // The remote sensor feedback type to use for the steer motors;
@@ -75,7 +55,14 @@ public class DriveConstants {
 
     // Initial configs for the drive and steer motors and the azimuth encoder; these cannot be null.
     // Some configs will be overwritten; check the `with*InitialConfigs()` API documentation.
-    private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration();
+    private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration()
+        .withCurrentLimits(
+            new CurrentLimitsConfigs()
+                // Default supply current limit is 70 A, but it can be lowered to avoid brownouts.
+                // Supply current limits can be larger than the breaker current rating.
+                .withSupplyCurrentLimit(Amps.of(70))
+                .withSupplyCurrentLimitEnable(true)
+        );
     private static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
         .withCurrentLimits(
             new CurrentLimitsConfigs()
@@ -92,7 +79,8 @@ public class DriveConstants {
     // All swerve devices must share the same CAN bus
     public static final CANBus kCANBus = new CANBus("Awesome Sauce", "./logs/example.hoot");
 
-    // Theoretical free speed (m/s) at 12 V applied output;
+    // Measured robot speed (m/s) at 12 V applied output;
+    // This is NOT the desired max robot speed - see MaxSpeed in RobotContainer instead;
     // This needs to be tuned to your individual robot
     public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(5.23);
 
@@ -104,14 +92,14 @@ public class DriveConstants {
     private static final double kSteerGearRatio = 21.428571428571427;
     private static final Distance kWheelRadius = Inches.of(2);
 
-    private static final boolean kInvertLeftSide = false;
-    private static final boolean kInvertRightSide = true;
+    private static final boolean kInvertLeftSide = true;
+    private static final boolean kInvertRightSide = false;
 
     private static final int kPigeonId = 0;
 
     // These are only used for simulation
     private static final MomentOfInertia kSteerInertia = KilogramSquareMeters.of(0.01);
-    private static final MomentOfInertia kDriveInertia = KilogramSquareMeters.of(0.01);
+    private static final MomentOfInertia kDriveInertia = KilogramSquareMeters.of(0.035);
     // Simulated voltage necessary to overcome friction
     private static final Voltage kSteerFrictionVoltage = Volts.of(0.2);
     private static final Voltage kDriveFrictionVoltage = Volts.of(0.2);
@@ -149,7 +137,7 @@ public class DriveConstants {
     private static final int kFrontLeftDriveMotorId = 42;
     private static final int kFrontLeftSteerMotorId = 12;
     private static final int kFrontLeftEncoderId = 0;
-    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.287841796875);
+    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.03955078125);
     private static final boolean kFrontLeftSteerMotorInverted = true;
     private static final boolean kFrontLeftEncoderInverted = false;
 
@@ -160,7 +148,7 @@ public class DriveConstants {
     private static final int kFrontRightDriveMotorId = 15;
     private static final int kFrontRightSteerMotorId = 3;
     private static final int kFrontRightEncoderId = 50;
-    private static final Angle kFrontRightEncoderOffset = Rotations.of(-0.4951171875);
+    private static final Angle kFrontRightEncoderOffset = Rotations.of(-0.267578125);
     private static final boolean kFrontRightSteerMotorInverted = true;
     private static final boolean kFrontRightEncoderInverted = false;
 
@@ -171,7 +159,7 @@ public class DriveConstants {
     private static final int kBackLeftDriveMotorId = 1;
     private static final int kBackLeftSteerMotorId = 20;
     private static final int kBackLeftEncoderId = 20;
-    private static final Angle kBackLeftEncoderOffset = Rotations.of(0.23046875);
+    private static final Angle kBackLeftEncoderOffset = Rotations.of(0.479736328125);
     private static final boolean kBackLeftSteerMotorInverted = true;
     private static final boolean kBackLeftEncoderInverted = false;
 
@@ -182,7 +170,7 @@ public class DriveConstants {
     private static final int kBackRightDriveMotorId = 11;
     private static final int kBackRightSteerMotorId = 16;
     private static final int kBackRightEncoderId = 30;
-    private static final Angle kBackRightEncoderOffset = Rotations.of(0.237548828125);
+    private static final Angle kBackRightEncoderOffset = Rotations.of(0.000732421875);
     private static final boolean kBackRightSteerMotorInverted = true;
     private static final boolean kBackRightEncoderInverted = false;
 
@@ -282,10 +270,10 @@ public class DriveConstants {
          *                                  unspecified or set to 0 Hz, this is 250 Hz on
          *                                  CAN FD, and 100 Hz on CAN 2.0.
          * @param odometryStandardDeviation The standard deviation for odometry calculation
-         *                                  in the form [x, y, theta]áµ€, with units in meters
+         *                                  in the form [x, y, theta]ᵀ, with units in meters
          *                                  and radians
          * @param visionStandardDeviation   The standard deviation for vision calculation
-         *                                  in the form [x, y, theta]áµ€, with units in meters
+         *                                  in the form [x, y, theta]ᵀ, with units in meters
          *                                  and radians
          * @param modules                   Constants for each specific module
          */

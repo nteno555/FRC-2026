@@ -184,18 +184,18 @@ public class SubsystemConstants {
     public static final double autoAimMaxSpeed = 2.0;
     public static final double autoAimMaxAccel = 10.0;
 
-    public static final int climbID = 19;
-    public static final int flywheelMasterID = 13;
-    public static final int flywheelSlaveID = 17;
-    public static final int hoodID = 27;
-    public static final int indexerID = 21;
-    public static final int indexerID2 = 21;
-    public static final int intakeDeployMasterID = 15;
-    public static final int intakeDeploySlaveID = 16;
-    public static final int intakeRollerID = 42;
-    public static final int towerID = 25;
-    public static final int towerID2 = 25;
-    public static final int turretID = 23;
-    public static final int turretTb1ID = 8;
-    public static final int turretTb2ID = 7;
+    public static final int climbID = 190;
+    public static final int flywheelMasterID = 180;
+    public static final int flywheelSlaveID = 170;
+    public static final int hoodID = 205;
+    public static final int indexerID = 9999;
+    public static final int indexerID2 = 201;
+    public static final int intakeDeployMasterID = 150;
+    public static final int intakeDeploySlaveID = 160;
+    public static final int intakeRollerID = 420;
+    public static final int towerID = 250;
+    public static final int towerID2 = 241;
+    public static final int turretID = 230;
+    public static final int turretTb1ID = 810;
+    public static final int turretTb2ID = 734;
 }
