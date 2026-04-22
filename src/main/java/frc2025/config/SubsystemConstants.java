@@ -46,7 +46,7 @@ public class SubsystemConstants {
     // 20/0.4 = 50 rps/s^2 @ 20A
     // kA = (20A - 10A) / (50.0 - 4.167) = 10 / 45.833 = 0.218 A/(rps/s^2)
 
-    public static double flywheelkSAmps = 15.0;
+    public static double flywheelkSAmps = 12.0;
     public static double flywheelkVAmps = 0.0;
     public static double flywheelkAAmps = 0.218;
     // Two Flywheels

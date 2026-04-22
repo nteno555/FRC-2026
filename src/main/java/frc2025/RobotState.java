@@ -110,6 +110,10 @@ public class RobotState {
         return visionPose.transformBy(SubsystemConstants.robotToShooter);
     }
 
+    public Pose2d getDelayedShooterPose() {
+        return getDelayedPose().transformBy(SubsystemConstants.robotToShooter);
+    }
+
     public double getSpeed() {
         return Math.hypot(fieldRelativeSpeeds.vxMetersPerSecond, fieldRelativeSpeeds.vyMetersPerSecond);
     }

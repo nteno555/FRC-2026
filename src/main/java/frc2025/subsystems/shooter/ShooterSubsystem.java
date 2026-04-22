@@ -63,7 +63,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public Command autoAim() {
         return setSpeed(() -> {
-            Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
+            Pose2d robotPose = RobotState.getInstance().getDelayedShooterPose();
             Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
             double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
 

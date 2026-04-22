@@ -118,9 +118,9 @@ public class AutoAimCommands {
                 }
 
                 if(alliance == DriverStation.Alliance.Red) {
-                    xVelocityReady = RobotState.getInstance().getFieldRelativeSpeeds().vxMetersPerSecond > -1.5;
+                    xVelocityReady = RobotState.getInstance().getFieldRelativeSpeeds().vxMetersPerSecond > -3.0;
                 } else {
-                    xVelocityReady = RobotState.getInstance().getFieldRelativeSpeeds().vxMetersPerSecond < 1.5;
+                    xVelocityReady = RobotState.getInstance().getFieldRelativeSpeeds().vxMetersPerSecond < 3.0;
                 }
 
                 Logger.recordOutput("Indexer/autoIndex/turretReady", robotContainer.getTurret().getShotReadyLenient());
@@ -200,8 +200,7 @@ public class AutoAimCommands {
             }
         }, () -> {
             if (readySupplier.getAsBoolean()) {
-                double indexerSpeed = robotContainer.getShooter().getVelocity();
-                return indexerSpeed;
+                return robotContainer.getShooter().getVelocity();
             } else {
                 return 0.0;
             }

@@ -133,7 +133,7 @@ public class ShooterIOReal implements ShooterIO {
     @Override
     public void setSpeed(double speed, double acceleration) {
         double errorRPS = speed - flywheelMaster.getVelocity().getValueAsDouble();
-        boolean wantBangBang = errorRPS > SubsystemConstants.flywheelBangBangThreshold;
+        boolean wantBangBang = false; //errorRPS > SubsystemConstants.flywheelBangBangThreshold;
         // flywheelMaster.setControl(speedVoltageRequest.withVelocity(speed).withAcceleration(0.0));
 
         if (speed < 1000.0) {

@@ -22,12 +22,14 @@ public class ShooterTreeMap {
         tofTreeMap.put(1.46, 1.09);
 
 
-        lowerWheelTreeMap.put(5.05, 30.0); // 24.22
-        lowerWheelTreeMap.put(4.10, 27.5 ); // 21.85
-        lowerWheelTreeMap.put(3.03, 24.0); // 20.78
-        lowerWheelTreeMap.put(2.12, 22.0); // 19.95
-        lowerWheelTreeMap.put(1.57, 20.5); // 19.10
+        lowerWheelTreeMap.put(6.0, 58.0);
+        lowerWheelTreeMap.put(5.05, 52.0); // 24.22
+        lowerWheelTreeMap.put(4.10, 47.0); // 21.85
+        lowerWheelTreeMap.put(3.03, 42.0); // 20.78
+        lowerWheelTreeMap.put(2.12, 38.0); // 19.95
+        lowerWheelTreeMap.put(1.57, 36.0); // 19.10
 
+        hoodTreeMap.put(6.0, 2.55);
         hoodTreeMap.put(5.05, 2.5);
         hoodTreeMap.put(4.10, 2.2);
         hoodTreeMap.put(3.03, 1.95);
@@ -35,10 +37,10 @@ public class ShooterTreeMap {
         hoodTreeMap.put(1.57, 1.3);
         // vy = rps * sin(85 - 12.28*hood)
 
-        shuttlingRPSTreeMap.put(3.0, 20.0);
-        shuttlingRPSTreeMap.put(6.0, 30.0);
-        shuttlingRPSTreeMap.put(10.0, 40.0);
-        shuttlingRPSTreeMap.put(20.0, 70.0);
+        shuttlingRPSTreeMap.put(3.0, 35.0);
+        shuttlingRPSTreeMap.put(6.0, 50.0);
+        shuttlingRPSTreeMap.put(10.0, 70.0);
+        shuttlingRPSTreeMap.put(20.0, 120.0);
 
         shuttlingTofTreeMap.put(1.0, 0.5);
         shuttlingTofTreeMap.put(16.0, 4.0);

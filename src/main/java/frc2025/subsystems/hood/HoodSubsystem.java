@@ -60,7 +60,7 @@ public class HoodSubsystem extends SubsystemBase {
         return setPosition(() -> {
             ChassisSpeeds robotVelocity = RobotState.getInstance().getFieldRelativeSpeeds();
             double dt = 1.0;
-            Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
+            Pose2d robotPose = RobotState.getInstance().getDelayedShooterPose();
             double robotXpose = robotPose.getX();
             double robotYpose = robotPose.getY();
 
@@ -110,7 +110,7 @@ public class HoodSubsystem extends SubsystemBase {
 
     public Command autoAimUnsafe() {
         return setPosition(() -> {
-            Pose2d robotPose = RobotState.getInstance().getVisionShooterPose();
+            Pose2d robotPose = RobotState.getInstance().getDelayedPose();
             Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
             double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
             if (RobotState.getInstance().getShuttling()) {

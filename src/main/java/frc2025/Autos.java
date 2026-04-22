@@ -188,12 +188,10 @@ public class Autos {
             }
         };
 
-        Command deferredScoreCommand = Commands.defer(() -> {
+        return Commands.defer(() -> {
             Logger.recordOutput("Drive/waitTime", waitTime.get());
             return scoreCommandSupplier.get().withTimeout(waitTime.get());
         }, scoreCommandSupplier.get().getRequirements());
-
-        return deferredScoreCommand;
     }
 
 
@@ -302,9 +300,7 @@ public class Autos {
         }
 
         if (SubsystemConstants.hasTurret) {
-            return (new WaitCommand(0.0)).andThen(
-                        pathCommands)
-                        .andThen(
+            return pathCommands.andThen(
                                 AutoAimCommands.autoIndex(robotContainer)
                                         .alongWith(robotContainer.getTurret().autoAim())
                                         .alongWith(robotContainer.getHood().autoAimUnsafe())
