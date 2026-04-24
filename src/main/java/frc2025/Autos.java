@@ -324,7 +324,7 @@ public class Autos {
 
     public Command LowNeutralLoop() {
         choreo = true;
-        String firstPath = "LowNeutral"; //"HighNeutralUnderTrench" for intake to start other way
+        String firstPath = "LowNeutralUnderTrench"; //"LowNeutral" for intake to start other way
         if (!SubsystemConstants.hasTurret) {
             return buildAuto(
                     List.of(firstPath, RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT, "LowScoreLoop",
@@ -337,7 +337,7 @@ public class Autos {
 
     public Command HighNeutralLoop() {
         choreo = true;
-        String firstPath = "HighNeutral"; //"HighNeutralUnderTrench" for intake to start other way
+        String firstPath = "HighNeutralUnderTrench"; //"HighNeutral" for intake to start other way
         if (!SubsystemConstants.hasTurret) {
             return buildAuto(
                     List.of(firstPath, RETURN_UNDER_TRENCH_HIGH, WAIT_SHOOT, "HighScoreLoop",
