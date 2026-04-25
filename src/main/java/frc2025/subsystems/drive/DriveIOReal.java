@@ -56,7 +56,8 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
             inputs.swervePoseMeters = state.Pose;
         } else {
             this.setStateStdDevs(slippingStdDevs);
-            inputs.currentChassisSpeeds = lastGoodChassisSpeeds;
+            double omega = getPigeon2().getAngularVelocityZWorld().getValue().in(Units.RadiansPerSecond);
+            inputs.currentChassisSpeeds = new ChassisSpeeds(0.0, 0.0, omega);
 
             if (Timer.getFPGATimestamp() - lastVisionUpdateTimestamp > 0.15) {
                 // Pin the robot translation since we have no vision and are slipping
