@@ -32,19 +32,25 @@ public class Autos {
     public static final String LOW_X2_NEUTRAL_STATION = "Low x2 Neutral Station";
     public static final String LOW_X2_NEUTRAL = "Low x2 Neutral";
     public static final String LOW_NEUTRAL_LOOP = "Low Neutral Loop";
+    public static final String LOW_NEUTRAL_STATION = "Low Neutral Station";
+    public static final String LOW_MID_BUMP_NOSTATION = "Low Mid Bump No Station";
+    public static final String LOW_MID_BUMP_STATION = "Low Mid Bump Station";
+    public static final String LOW_TRENCH_WAIT = "Low Trench Wait";
     public static final String MID_DEPOT_STATION = "Mid Depot Station";
-    public static final String MID_BUMP_STATION = "Mid Bump Station";
     public static final String HIGH_X2_NEUTRAL = "High x2 Neutral";
     public static final String HIGH_NEUTRAL_LOOP = "High Neutral Loop";
-    public static final String LOW_NEUTRAL_STATION = "Low Neutral Station";
-    public static final String MID_BUMP_NOSTATION = "Mid Bump No Station";
+    public static final String HIGH_MID_BUMP = "High Mid Bump";
+    public static final String HIGH_TRENCH_WAIT = "High Trench Wait";
     public static final String ONE_METER = "One Meter";
 
     public static Command lowNeutralLoop;
-    public static Command highNeutralLoop;
+    public static Command lowMidBumpStation;
+    public static Command lowMidBumpNoStation;
+    public static Command lowTrenchWait;
     public static Command midDepotStation;
-    public static Command midBumpStation;
-    public static Command midBumpNoStation;
+    public static Command highNeutralLoop;
+    public static Command highMidBump;
+    public static Command highTrenchWait;
     public static Command oneMeter;
 
     private final String WAIT_SHOOT = "wait_shoot";
@@ -54,6 +60,7 @@ public class Autos {
     private final String RETURN_UNDER_TRENCH_LOW = "return_under_trench_low";
     private final String RETURN_UNDER_TRENCH_STATION = "return_under_trench_station";
     private final String BUMP_WAIT = "bump wait";
+    private final String JUST_WAIT = "just wait";
 
     /**
      * Returns the alliance-corrected starting pose of the first path in an auto
@@ -86,9 +93,12 @@ public class Autos {
         System.out.println(this.robotContainer);
 
         lowNeutralLoop = LowNeutralLoop();
+        lowMidBumpStation = LowMidBumpStation();
+        lowMidBumpNoStation = LowMidBump();
+        lowTrenchWait = LowTrenchWait();
         highNeutralLoop = HighNeutralLoop();
-        midBumpStation = MidBumpStation();
-        midBumpNoStation = MidBump();
+        highMidBump = HighMidBump();
+        highTrenchWait = HighTrenchWait();
         oneMeter = OneMeterAuto();
     }
 
@@ -122,6 +132,7 @@ public class Autos {
             else path = PathPlannerPath.fromPathFile(pathName);
         } catch (IOException | ParseException e) {
             System.out.println("BAD PATH BAD PATH BAD PATH");
+            System.out.println(pathName);
             return null;
         }
 
@@ -140,6 +151,7 @@ public class Autos {
             else path = PathPlannerPath.fromPathFile(pathName);
         } catch (IOException | ParseException e) {
             System.out.println("BAD PATH BAD PATH BAD PATH");
+            System.out.println(pathName);
             return null;
         }
 
@@ -167,7 +179,7 @@ public class Autos {
     }
 
     private Command bumpWaitCommand() {
-        Supplier<Double> waitTime = () -> robotContainer.getBumpWaitTime();
+        Supplier<Double> waitTime = () -> robotContainer.getFirstWaitTime();
 
         Supplier<Command> scoreCommandSupplier = () -> {
             if (SubsystemConstants.hasTurret) {
@@ -199,10 +211,17 @@ public class Autos {
         Command pathCommands;
 
         if (paths.get(0).equals(BUMP_WAIT)) {
-            pathCommands = SuperstructureCommands.resetOdometry(robotContainer, () -> getStartPose("MidBump", useChoreo).get())
+            pathCommands = SuperstructureCommands.resetOdometry(robotContainer, () -> getStartPose(paths.get(1), useChoreo).get())
                     .andThen(
                             bumpWaitCommand()
                     );
+        }
+        else if (paths.get(0).equals(JUST_WAIT)) {
+            pathCommands = SuperstructureCommands.resetOdometry(robotContainer, () -> getStartPose(paths.get(1), useChoreo).get())
+                    .andThen(Commands.defer(
+                            () -> Commands.waitSeconds(robotContainer.getFirstWaitTime()),
+                            Commands.waitSeconds(robotContainer.getFirstWaitTime()).getRequirements()
+                    ));
         }
         else pathCommands = intakePathResetOdometry(paths.get(0), useChoreo);
 
@@ -292,7 +311,13 @@ public class Autos {
 //                        .andThen(intakePath(returnPathSupplier.get()));
             }
             else if (paths.get(i).equals(BUMP_WAIT)) {
-                bumpWaitCommand();
+                pathCommands = pathCommands.andThen(bumpWaitCommand());
+            }
+            else if (paths.get(i).equals(JUST_WAIT)) {
+                pathCommands = pathCommands.andThen(Commands.defer(
+                        () -> Commands.waitSeconds(robotContainer.getTrenchWaitTime()),
+                        Commands.waitSeconds(robotContainer.getTrenchWaitTime()).getRequirements())
+                );
             }
             else {
                 pathCommands = pathCommands.andThen(intakePath(paths.get(i), useChoreo));
@@ -323,7 +348,6 @@ public class Autos {
 
 
     public Command LowNeutralLoop() {
-        choreo = true;
         String firstPath = "LowNeutralUnderTrench"; //"LowNeutral" for intake to start other way
         if (!SubsystemConstants.hasTurret) {
             return buildAuto(
@@ -333,6 +357,18 @@ public class Autos {
         }
         return buildAuto(List.of(firstPath, RETURN_UNDER_TRENCH_LOW, WAIT_SHOOT_EXTENDED, "LowLoop",
                 RETURN_UNDER_TRENCH_LOW), false, true);
+    }
+
+    public Command LowMidBumpStation() {
+        return buildAuto(List.of(BUMP_WAIT, "LowMidBump", "LowBumpLoop", "LowBumpMid", WAIT_SHOOT, "LowBumpStation", WAIT_NO_SHOOT, "StationScore"), false, true);
+    }
+
+    public Command LowMidBump() {
+        return buildAuto(List.of(BUMP_WAIT, "LowMidBump", "LowBumpLoop", "LowBumpMid"), false, true);
+    }
+
+    public Command LowTrenchWait() {
+        return buildAuto(List.of(JUST_WAIT, "LowTrenchWait", JUST_WAIT, "LowWaitLoop", "LowBumpMid"), false, true);
     }
 
     public Command HighNeutralLoop() {
@@ -348,12 +384,13 @@ public class Autos {
                 RETURN_UNDER_TRENCH_HIGH), false, true);
     }
 
-    public Command MidBumpStation() {
-        return buildAuto(List.of(BUMP_WAIT, "MidBump", "BumpLoop", "BumpMid", WAIT_SHOOT, "BumpStation", WAIT_NO_SHOOT, "StationScore"), false, true);
+
+    public Command HighMidBump() {
+        return buildAuto(List.of(BUMP_WAIT, "HighMidBump", "HighBumpLoop", "HighBumpMid"), false, true);
     }
 
-    public Command MidBump() {
-        return buildAuto(List.of(BUMP_WAIT, "MidBump", "BumpLoop", "BumpMid"), false, true);
+    public Command HighTrenchWait() {
+        return buildAuto(List.of(JUST_WAIT, "HighTrenchWait", JUST_WAIT, "HighWaitLoop", "HighBumpMid"), false, true);
     }
 
     public Command OneMeterAuto() {
@@ -371,13 +408,16 @@ public class Autos {
 //            case LOW_X2_NEUTRAL_STATION -> LowDoubleNeutralStation();
 //            case LOW_X2_NEUTRAL -> LowDoubleNeutral();
             case LOW_NEUTRAL_LOOP -> lowNeutralLoop;
+            case LOW_MID_BUMP_STATION -> lowMidBumpStation;
+            case LOW_MID_BUMP_NOSTATION -> lowMidBumpNoStation;
+            case LOW_TRENCH_WAIT ->  lowTrenchWait;
             case MID_DEPOT_STATION -> midDepotStation;
 //            case HIGH_X2_NEUTRAL -> HighDoubleNeutral();
             case HIGH_NEUTRAL_LOOP -> highNeutralLoop;
-            case ONE_METER -> oneMeter;
-            case MID_BUMP_STATION -> midBumpStation;
-            case MID_BUMP_NOSTATION -> midBumpNoStation;
+            case HIGH_MID_BUMP ->  highMidBump;
+            case HIGH_TRENCH_WAIT -> highTrenchWait;
 //            case LOW_NEUTRAL_STATION -> LowNeutralStation();
+            case ONE_METER -> oneMeter;
             default -> Commands.none();
         };
     }
@@ -388,8 +428,8 @@ public class Autos {
             case LOW_NEUTRAL_STATION, "Low-NeutralMid (under trench)" -> "Low-NeutralMid (under trench)";
             case MID_DEPOT_STATION -> "Mid-Depot";
             case HIGH_X2_NEUTRAL, HIGH_NEUTRAL_LOOP -> "High-Neutral (under trench)";
-            case MID_BUMP_STATION -> "Mid-Bump";
-            case MID_BUMP_NOSTATION -> "Mid-Bump";
+            case LOW_MID_BUMP_STATION -> "Mid-Bump";
+            case LOW_MID_BUMP_NOSTATION -> "Mid-Bump";
             default -> "";
         };
     }

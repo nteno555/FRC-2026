@@ -149,13 +149,18 @@ public class RobotContainer {
                 autoChooser.setDefaultOption("No Auto", "No Auto");
 
                 autoChooser.addOption(Autos.LOW_NEUTRAL_LOOP, Autos.LOW_NEUTRAL_LOOP);
-                autoChooser.addOption(Autos.MID_BUMP_STATION, Autos.MID_BUMP_STATION);
-                autoChooser.addOption(Autos.MID_BUMP_NOSTATION, Autos.MID_BUMP_NOSTATION);
+                autoChooser.addOption(Autos.LOW_MID_BUMP_STATION, Autos.LOW_MID_BUMP_STATION);
+                autoChooser.addOption(Autos.LOW_MID_BUMP_NOSTATION, Autos.LOW_MID_BUMP_NOSTATION);
+                autoChooser.addOption(Autos.LOW_TRENCH_WAIT, Autos.LOW_TRENCH_WAIT);
                 autoChooser.addOption(Autos.HIGH_NEUTRAL_LOOP, Autos.HIGH_NEUTRAL_LOOP);
-                autoChooser.addOption(Autos.ONE_METER, Autos.ONE_METER);
+                autoChooser.addOption(Autos.HIGH_MID_BUMP, Autos.HIGH_MID_BUMP);
+                autoChooser.addOption(Autos.HIGH_TRENCH_WAIT, Autos.HIGH_TRENCH_WAIT);
 
-                SmartDashboard.putData("Auto Chooser", autoChooser);
-                SmartDashboard.putNumber("Bump Wait Time", 2.0);
+            //                autoChooser.addOption(Autos.ONE_METER, Autos.ONE_METER);
+
+            SmartDashboard.putData("Auto Chooser", autoChooser);
+                SmartDashboard.putNumber("Initial Wait Time", 2.0);
+                SmartDashboard.putNumber("Trench Wait Time", 2.0);
         }
 
         public DriveSubsystem getDrive() {
@@ -799,7 +804,11 @@ public class RobotContainer {
                 }
         }
 
-        public double getBumpWaitTime() {
-                return SmartDashboard.getNumber("Bump Wait Time", 2.0);
+        public double getFirstWaitTime() {
+                return SmartDashboard.getNumber("Initial Wait Time", 2.0);
+        }
+
+        public double getTrenchWaitTime() {
+            return SmartDashboard.getNumber("Trench Wait Time", 2.0);
         }
 }
