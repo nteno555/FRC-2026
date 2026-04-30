@@ -137,7 +137,7 @@ public class RobotContainer {
                         indexerSubsystem = new IndexerSubsystem(new IndexerIOSim());
                         intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
                         hoodSubsystem = new HoodSubsystem(new HoodIOSim());
-                        shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
+                        shooterSubsystem = new ShooterSubsystem(new ShooterIOReal());
                         turretSubsystem = new TurretSubsystem(new TurretIOSim());
                 }
         }
@@ -156,9 +156,9 @@ public class RobotContainer {
                 autoChooser.addOption(Autos.HIGH_MID_BUMP, Autos.HIGH_MID_BUMP);
                 autoChooser.addOption(Autos.HIGH_TRENCH_WAIT, Autos.HIGH_TRENCH_WAIT);
 
-            //                autoChooser.addOption(Autos.ONE_METER, Autos.ONE_METER);
+                // autoChooser.addOption(Autos.ONE_METER, Autos.ONE_METER);
 
-            SmartDashboard.putData("Auto Chooser", autoChooser);
+                SmartDashboard.putData("Auto Chooser", autoChooser);
                 SmartDashboard.putNumber("Initial Wait Time", 2.0);
                 SmartDashboard.putNumber("Trench Wait Time", 2.0);
         }
@@ -809,6 +809,6 @@ public class RobotContainer {
         }
 
         public double getTrenchWaitTime() {
-            return SmartDashboard.getNumber("Trench Wait Time", 2.0);
+                return SmartDashboard.getNumber("Trench Wait Time", 2.0);
         }
 }

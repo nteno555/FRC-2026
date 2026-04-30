@@ -136,7 +136,7 @@ public class ShooterIOReal implements ShooterIO {
         boolean wantBangBang = false; //errorRPS > SubsystemConstants.flywheelBangBangThreshold;
         // flywheelMaster.setControl(speedVoltageRequest.withVelocity(speed).withAcceleration(0.0));
 
-        if (speed < 1000.0) {
+        if (speed < 64.0) {
             Logger.recordOutput("Shooter/bangbang", wantBangBang);
             Logger.recordOutput("Shooter/usingVoltage", false);
             if (wantBangBang) {
