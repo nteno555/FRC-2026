@@ -234,10 +234,6 @@ public class LimelightFiducialCamera {
             reject = true;
         }
 
-        if (turretMounted && RobotState.getInstance().getSpeed() > 1.0) {
-            reject = true;
-        }
-
         if ((Math.abs(
                 pose.getRotation().minus(RobotState.getInstance().getVisionPose().getRotation()).getRadians()) > 0.5)
                 && !turretMounted) {
@@ -248,6 +244,17 @@ public class LimelightFiducialCamera {
         if (turretMounted && SubsystemConstants.hasTurret) {
             omega -= RobotState.getInstance().getTurretVelocity();
         }
+
+        if (turretMounted && RobotState.getInstance().getSpeed() > 1.08 ||  Math.abs(omega) > Math.PI*0.5) {
+            reject = true;
+        }
+
+        if (turretMounted &&
+            Math.abs(pose.getRotation().getDegrees() - RobotState.getInstance().getVisionPose().getRotation().getDegrees()) > 16.7) {
+            reject = true;
+        }
+
+
         if (Math.abs(omega) > maxYawRate) {
             reject = true;
         }
@@ -327,7 +334,12 @@ public class LimelightFiducialCamera {
             omega -= RobotState.getInstance().getTurretVelocity();
         }
 
-        if (turretMounted && RobotState.getInstance().getSpeed() > 1.0) {
+        if (turretMounted && RobotState.getInstance().getSpeed() > 1.08 ||  Math.abs(omega) > Math.PI*0.5) {
+            reject = true;
+        }
+
+        if (turretMounted &&
+                Math.abs(pose.getRotation().getDegrees() - RobotState.getInstance().getVisionPose().getRotation().getDegrees()) > 16.7) {
             reject = true;
         }
 

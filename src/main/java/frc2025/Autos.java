@@ -34,6 +34,8 @@ public class Autos {
     public static final String LOW_NEUTRAL_LOOP = "Low Neutral Loop";
     public static final String LOW_NEUTRAL_STATION = "Low Neutral Station";
     public static final String LOW_MID_BUMP_NOSTATION = "Low Mid Bump No Station";
+    public static final String LOW_BUMP_TRENCH_WAIT = "Low Bump Trench Wait";
+    public static final String LOW_BUMP_TRENCH = "Low Bump Trench";
     public static final String LOW_MID_BUMP_STATION = "Low Mid Bump Station";
     public static final String LOW_TRENCH_WAIT = "Low Trench Wait";
     public static final String MID_DEPOT_STATION = "Mid Depot Station";
@@ -47,6 +49,8 @@ public class Autos {
     public static Command lowMidBumpStation;
     public static Command lowMidBumpNoStation;
     public static Command lowTrenchWait;
+    public static Command lowBumpTrench;
+    public static Command lowBumpTrenchWait;
     public static Command midDepotStation;
     public static Command highNeutralLoop;
     public static Command highMidBump;
@@ -96,6 +100,8 @@ public class Autos {
         lowMidBumpStation = LowMidBumpStation();
         lowMidBumpNoStation = LowMidBump();
         lowTrenchWait = LowTrenchWait();
+        lowBumpTrenchWait = LowBumpTrenchWait();
+        lowBumpTrench = LowBumpTrench();
         highNeutralLoop = HighNeutralLoop();
         highMidBump = HighMidBump();
         highTrenchWait = HighTrenchWait();
@@ -371,6 +377,14 @@ public class Autos {
         return buildAuto(List.of(JUST_WAIT, "LowTrenchWait", JUST_WAIT, "LowWaitLoop", "LowBumpMid"), false, true);
     }
 
+    public Command LowBumpTrench() {
+        return buildAuto(List.of(JUST_WAIT, "LowMidBumpLoop", "LowBumpMid"), false, true);
+    }
+
+    public Command LowBumpTrenchWait() {
+        return buildAuto(List.of(JUST_WAIT, "LowBumpWait", JUST_WAIT, "LowWaitLoop", "LowBumpMid"), false, true);
+    }
+
     public Command HighNeutralLoop() {
         choreo = true;
         String firstPath = "HighNeutralUnderTrench"; //"HighNeutral" for intake to start other way
@@ -411,6 +425,8 @@ public class Autos {
             case LOW_MID_BUMP_STATION -> lowMidBumpStation;
             case LOW_MID_BUMP_NOSTATION -> lowMidBumpNoStation;
             case LOW_TRENCH_WAIT ->  lowTrenchWait;
+            case LOW_BUMP_TRENCH_WAIT -> lowBumpTrenchWait;
+            case LOW_BUMP_TRENCH -> lowBumpTrench;
             case MID_DEPOT_STATION -> midDepotStation;
 //            case HIGH_X2_NEUTRAL -> HighDoubleNeutral();
             case HIGH_NEUTRAL_LOOP -> highNeutralLoop;

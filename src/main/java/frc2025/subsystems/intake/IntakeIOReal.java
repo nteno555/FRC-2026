@@ -11,10 +11,16 @@ import edu.wpi.first.units.Units;
 import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
+import javax.swing.text.Position;
+
 public class IntakeIOReal implements IntakeIO {
     private final TalonFX intakeDeployMaster = new TalonFX(SubsystemConstants.intakeDeployMasterID, CANBus.roboRIO());
     private final TalonFX intakeDeploySlave = new TalonFX(SubsystemConstants.intakeDeploySlaveID, CANBus.roboRIO());
     private final TalonFX intakeRoller = new TalonFX(SubsystemConstants.intakeRollerID,CANBus.roboRIO());
+
+    private final PositionVoltage voltageRequest = new PositionVoltage(0);
+    private final VoltageOut voltageOutRequest = new VoltageOut(12.0);
+    private final PositionTorqueCurrentFOC torqueRequest = new PositionTorqueCurrentFOC(0);
 
     public IntakeIOReal() {
         var rollerConfigs = new TalonFXConfiguration();
@@ -62,6 +68,14 @@ public class IntakeIOReal implements IntakeIO {
         slot1.kI = SubsystemConstants.intakekI;
         slot1.kD = SubsystemConstants.intakekD;
 
+        var slot2 = deployConfigs.Slot2;
+        slot2.kS = 0.0;
+        slot2.kV = 0.0;
+        slot2.kA = 0.0;
+        slot2.kP = 1.0;
+        slot2.kI = 0.0;
+        slot2.kD = 0.0;
+
         intakeRoller.getConfigurator().apply(rollerConfigs);
         intakeDeployMaster.getConfigurator().apply(deployConfigs);
         intakeDeploySlave.getConfigurator().apply(deployConfigs);
@@ -103,10 +117,20 @@ public class IntakeIOReal implements IntakeIO {
     public void setDeployPosition(double position, boolean fast) {
         if (fast) {
             intakeDeployMaster.setControl(
-                    new PositionVoltage(position)
+                    voltageRequest.withPosition(position)
                             .withEnableFOC(true)
                             .withSlot(0)
             );
+
+//            if (intakeDeployMaster.getPosition().getValueAsDouble() > 0.5) {
+//                Logger.recordOutput("Intake/deployTorque", true);
+//                intakeDeployMaster.setControl(torqueRequest.withPosition(position)
+//                        .withSlot(2));
+//            }
+//            else {
+//                Logger.recordOutput("Intake/deployTorque", false);
+//                intakeDeployMaster.setControl(voltageOutRequest);
+//            }
         } else {
             intakeDeployMaster.setControl(
                 new PositionVoltage(position)

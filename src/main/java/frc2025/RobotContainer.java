@@ -78,7 +78,7 @@ public class RobotContainer {
 
         private double driveSpeed = 1.3;
         private double slowmodeDriveSpeed = 0.3;
-        private double rotationSpeed = 1.2;
+        private double rotationSpeed = 0.9;
         private double slowmodeRotationSpeed = 0.5;
         private boolean slowmode;
         private double manualTurretSpeed = 2.0;
@@ -149,11 +149,13 @@ public class RobotContainer {
                 autoChooser.setDefaultOption("No Auto", "No Auto");
 
                 autoChooser.addOption(Autos.LOW_NEUTRAL_LOOP, Autos.LOW_NEUTRAL_LOOP);
-                autoChooser.addOption(Autos.LOW_MID_BUMP_STATION, Autos.LOW_MID_BUMP_STATION);
-                autoChooser.addOption(Autos.LOW_MID_BUMP_NOSTATION, Autos.LOW_MID_BUMP_NOSTATION);
+//                autoChooser.addOption(Autos.LOW_MID_BUMP_STATION, Autos.LOW_MID_BUMP_STATION);
+//                autoChooser.addOption(Autos.LOW_MID_BUMP_NOSTATION, Autos.LOW_MID_BUMP_NOSTATION);
+                autoChooser.addOption(Autos.LOW_BUMP_TRENCH, Autos.LOW_BUMP_TRENCH);
+//                autoChooser.addOption(Autos.LOW_BUMP_TRENCH_WAIT, Autos.LOW_BUMP_TRENCH_WAIT);
                 autoChooser.addOption(Autos.LOW_TRENCH_WAIT, Autos.LOW_TRENCH_WAIT);
                 autoChooser.addOption(Autos.HIGH_NEUTRAL_LOOP, Autos.HIGH_NEUTRAL_LOOP);
-                autoChooser.addOption(Autos.HIGH_MID_BUMP, Autos.HIGH_MID_BUMP);
+//                autoChooser.addOption(Autos.HIGH_MID_BUMP, Autos.HIGH_MID_BUMP);
                 autoChooser.addOption(Autos.HIGH_TRENCH_WAIT, Autos.HIGH_TRENCH_WAIT);
 
                 // autoChooser.addOption(Autos.ONE_METER, Autos.ONE_METER);
