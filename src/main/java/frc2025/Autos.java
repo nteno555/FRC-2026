@@ -43,6 +43,7 @@ public class Autos {
     public static final String HIGH_NEUTRAL_LOOP = "High Neutral Loop";
     public static final String HIGH_MID_BUMP = "High Mid Bump";
     public static final String HIGH_TRENCH_WAIT = "High Trench Wait";
+    public static final String HIGH_BUMP_TRENCH = "High Bump Trench Wait";
     public static final String ONE_METER = "One Meter";
 
     public static Command lowNeutralLoop;
@@ -55,6 +56,7 @@ public class Autos {
     public static Command highNeutralLoop;
     public static Command highMidBump;
     public static Command highTrenchWait;
+    public static Command highBumpTrench;
     public static Command oneMeter;
 
     private final String WAIT_SHOOT = "wait_shoot";
@@ -105,6 +107,7 @@ public class Autos {
         highNeutralLoop = HighNeutralLoop();
         highMidBump = HighMidBump();
         highTrenchWait = HighTrenchWait();
+        highBumpTrench = HighBumpTrench();
         oneMeter = OneMeterAuto();
     }
 
@@ -382,7 +385,7 @@ public class Autos {
     }
 
     public Command LowBumpTrenchWait() {
-        return buildAuto(List.of(JUST_WAIT, "LowBumpWait", JUST_WAIT, "LowWaitLoop", "LowBumpMid"), false, true);
+        return buildAuto(List.of(JUST_WAIT, "LowBumpWait", JUST_WAIT, "LowWaitLoop", "LowBumpMid", "LowBumpScore"), false, true);
     }
 
     public Command HighNeutralLoop() {
@@ -405,6 +408,10 @@ public class Autos {
 
     public Command HighTrenchWait() {
         return buildAuto(List.of(JUST_WAIT, "HighTrenchWait", JUST_WAIT, "HighWaitLoop", "HighBumpMid"), false, true);
+    }
+
+    public Command HighBumpTrench() {
+        return buildAuto(List.of(JUST_WAIT, "HighBumpTrench", JUST_WAIT, "HighWaitLoop", "HighBumpMid", "HighBumpScore"), false, true);
     }
 
     public Command OneMeterAuto() {
@@ -432,6 +439,7 @@ public class Autos {
             case HIGH_NEUTRAL_LOOP -> highNeutralLoop;
             case HIGH_MID_BUMP ->  highMidBump;
             case HIGH_TRENCH_WAIT -> highTrenchWait;
+            case HIGH_BUMP_TRENCH -> highBumpTrench;
 //            case LOW_NEUTRAL_STATION -> LowNeutralStation();
             case ONE_METER -> oneMeter;
             default -> Commands.none();
