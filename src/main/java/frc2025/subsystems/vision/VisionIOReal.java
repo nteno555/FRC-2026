@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 
 public class VisionIOReal implements VisionIO {
     ArrayList<AprilTagFiducialCamera> cameras;
+    PhotonCamera ballCamera;
     // PhotonCamera colorCamera;
     // //PhotonVisionFiducialCamera photonCamera;
 
@@ -32,7 +33,8 @@ public class VisionIOReal implements VisionIO {
         //         0,
         //         49, 
         //         180);
-        this.cameras = new ArrayList<>(List.of(new AprilTagFiducialCamera("camera", 0, 0, 0, 0, 0, 0)));
+        this.cameras = new ArrayList<>(List.of(new AprilTagFiducialCamera("oldCamera", 0.3429, 0, 0, 180, 48, 0)));
+        ballCamera = new PhotonCamera("ballCamera");
 
         
     }
@@ -46,6 +48,7 @@ public class VisionIOReal implements VisionIO {
         // cameras.writeGyro();
         // cameras.updatePose();
         //photonCamera.updatePose();
+        RobotState.getInstance().setBallTargets(ballCamera.getLatestResult().getTargets());
     }
 
     @Override

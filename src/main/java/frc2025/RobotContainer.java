@@ -66,7 +66,7 @@ public class RobotContainer {
     Autos autos;
     Command autoCommand;
 
-    private double driveSpeed = 0.2;
+    private double driveSpeed = 0.8;
     private double rotationSpeed = 0.7;
 
     public RobotContainer() {

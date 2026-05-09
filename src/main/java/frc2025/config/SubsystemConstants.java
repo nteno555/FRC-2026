@@ -180,6 +180,9 @@ public class SubsystemConstants {
     public static final double robotToBackCameraPitch = 18.0; // to be updated
     public static final double robotToBackCameraRoll = 0.0;
 
+    // Ball Camera
+    public static final Transform3d robotToBallCamera = new Transform3d(new Translation3d(0.0, 0.0, 0.0), new Rotation3d(0.0, 0.0, 0.0));
+
 
     public static final double autoAimMaxSpeed = 2.0;
     public static final double autoAimMaxAccel = 10.0;
