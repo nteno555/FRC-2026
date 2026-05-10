@@ -180,6 +180,14 @@ public class TurretSubsystem extends SubsystemBase {
         });
     }
 
+    public Command setVoltageWithClamp(Supplier<Double> voltage) {
+        return this.run(() -> {
+            double pos = inputs.positionRadians;
+            if ((pos > SubsystemConstants.turretMinAngleRadians + 0.1 && voltage.get() < 0.0) || (pos < SubsystemConstants.turretMaxAngleRadians - 0.1 && voltage.get() > 0.0)) io.setVoltage(voltage.get());
+            else io.setVoltage(0.0);
+        });
+    }
+
     public Command rezeroCRT() {
         return this.runOnce(() -> io.rezeroCRT());
     }

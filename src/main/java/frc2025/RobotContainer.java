@@ -79,8 +79,10 @@ public class RobotContainer {
 //        private double flyhoodAngle = 0.9;
         private final double[] listFlywheelRps = {10.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 50.0};
         private final double[] listFlywheelAngle = {0.8, 1.2, 1.6, 2.0, 2.4};
+        private final double[] listTurretSetpoints = {SubsystemConstants.turretMinAngleRadians, -2.0, 0, 2.0, SubsystemConstants.turretMaxAngleRadians};
         private int flywheelRpsIdx = 3;
         private int flywheelAngleIdx = 1;
+        private int turretSetpointIdx = 2;
         private final double triggerThreshold = 0.2;
 
         // private double driveSpeed = 1.3;
@@ -206,8 +208,8 @@ public class RobotContainer {
                 // B: stop shooting
                 // Right Trigger: increase flywheel speed
                 // Left Trigger: decrease flywheel speed
-                // Right Trigger: decrease shooting angle
-                // Left Trigger: increase shooting angle
+                // Right Bumper: decrease shooting angle
+                // Left Bumper: increase shooting angle
                 // D-pad up: intake on
                 // D-pad left: intake extend
                 // D-pad right: intake off and retract
@@ -251,13 +253,16 @@ public class RobotContainer {
                             .onTrue(Commands.runOnce(() -> {
                                 flywheelAngleIdx = Math.max(flywheelAngleIdx - 1, 0);
                             }));
-                    driverXboxController.start().onTrue(
+                    driverXboxController.button(8).onTrue(
                             SuperstructureCommands.resetOdometry(
                                     this,
                                     () -> !Alliance.get()
                                             ? new Pose2d(new Translation2d(),
                                             new Rotation2d(Math.PI))
                                             : new Pose2d()));
+                    driverXboxController.back().onTrue(
+                            intakeSubsystem.homeThenRezero()
+                    );
                 }
                 else { // for simulation on my controller, since inputs are different
                     driveSubsystem.setDefaultCommand(
@@ -309,7 +314,7 @@ public class RobotContainer {
                 driverXboxController.a()
                         .whileTrue(intakeSubsystem.extendAndIntake())
                         .onFalse(intakeSubsystem
-                                .setDeployPosition(() -> SubsystemConstants.intakeRetractPosition));
+                                .noMovement());
 
                 driverXboxController
                                 .b()
@@ -326,8 +331,8 @@ public class RobotContainer {
                                 .whileTrue(
                                                 shooterSubsystem.setSpeed(() -> listFlywheelRps[flywheelRpsIdx])
                                                                 .alongWith(hoodSubsystem.setPosition(
-                                                                                () -> listFlywheelAngle[flywheelAngleIdx])));
-//                                                                .alongWith(intakeSubsystem.oscillateIntake())));
+                                                                                () -> listFlywheelAngle[flywheelAngleIdx]))
+                                                                .alongWith(intakeSubsystem.oscillateIntake()));
 
                 new Trigger(() -> aiming)
                         .and(() -> (aimMode == AimMode.MANUAL))
@@ -347,18 +352,28 @@ public class RobotContainer {
 //                        .y()
 //                        .and(driverXboxController.back())
 //                        .whileTrue(turretSubsystem.rezeroCRT());
-
-                driverXboxController.povLeft() // left bottom paddle
-                        .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));
-//                driverXboxController.povDown() // right bottom paddle
-//                        .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
-
                 driverXboxController.povUp() // left middle paddle
                         .onTrue(intakeSubsystem
-                                .setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
+                                .extendAndIntake());
+
+                driverXboxController.povDown() // right bottom paddle
+                        .onTrue(intakeSubsystem.noMovement());
+                driverXboxController.povLeft() // left bottom paddle
+                        .whileTrue(
+                            turretSubsystem.setVoltageWithClamp(() -> -2.0)
+                        )
+                        .whileFalse(turretSubsystem.setVoltage(() -> 0.0));
+
                 driverXboxController.povRight() // right middle paddle
-                        .onTrue(intakeSubsystem
-                                .setDeployPosition(() -> SubsystemConstants.intakeRetractPosition));
+                        .whileTrue(
+                            turretSubsystem.setVoltageWithClamp(() -> 2.0)
+                        )
+                        .whileFalse(turretSubsystem.setVoltage(() -> 0.0));
+
+                driverXboxController.rightStick()
+                        .onTrue(
+                                turretSubsystem.setPositionSafe(() -> 0.0, () -> 0.0, () -> true)
+                        );
 
         }
 
@@ -463,6 +478,10 @@ public class RobotContainer {
             Logger.recordOutput("Controller/RightX", driverXboxController.getRightX());
             Logger.recordOutput("Controller/RightTrigger", driverXboxController.getRightTriggerAxis());
             Logger.recordOutput("Controller/LeftTrigger", driverXboxController.getLeftTriggerAxis());
+            for (int i = 1; i <= 10; i++) {
+                Logger.recordOutput("Controller/" + i, driverXboxController.button(i).getAsBoolean());
+            }
+
                 if (autoWon) {
                     Logger.recordOutput("Superstructure/Won Auto", "WON");
                 }

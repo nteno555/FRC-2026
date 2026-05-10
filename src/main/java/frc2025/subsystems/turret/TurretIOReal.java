@@ -22,6 +22,8 @@ import frc2025.RobotState;
 import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
+import java.util.function.Supplier;
+
 public class TurretIOReal implements TurretIO{
     private final TalonFX turretMotor = new TalonFX(SubsystemConstants.turretID, CANBus.roboRIO());
     private final CANcoder throughBore1 = new CANcoder(SubsystemConstants.turretTb1ID);
@@ -157,6 +159,7 @@ public class TurretIOReal implements TurretIO{
     public void rezero(double position) {
         turretMotor.setPosition(position);
     }
+
 
     public void rezeroCRT() { // todo move to turretsubsystem
         if (!SubsystemConstants.useTurretThroughBores) {

@@ -41,7 +41,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public Command noMovement() {
-        return this.run(() -> {
+        return this.runOnce(() -> {
             io.setDeployVoltage(0.0);
             io.setVoltage(0.0);
         });
