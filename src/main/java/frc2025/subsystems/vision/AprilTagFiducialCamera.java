@@ -207,13 +207,22 @@ public class AprilTagFiducialCamera {
    private void addVisionUpdateMultiTag(PhotonPipelineResult result) {
         String prefix = "Vision/" + name + "_mt1/";
 
-        double maxMeanDistance = 2.5;
+        double maxMeanDistance = 3.5;
         double maxMeanAmbiguity = 0.2;
         double maxYawRate = Math.PI * 1.67;
+
+
 
         if (!result.hasTargets()) return;
 
         Optional<EstimatedRobotPose> optionalPose = multiTagEstimator.estimateCoprocMultiTagPose(result);
+
+        Logger.recordOutput(prefix + "isPresent", optionalPose.isPresent());
+        if (optionalPose.isPresent()) {
+            Logger.recordOutput(prefix + "optionalPose", optionalPose.get().estimatedPose.toPose2d());
+        }
+            
+
         if (optionalPose.isEmpty()) return;
 
 
@@ -254,6 +263,23 @@ public class AprilTagFiducialCamera {
         Logger.recordOutput(prefix + "rejected", reject);
         Logger.recordOutput(prefix + "rawPose", pose);
 
+
+        Logger.recordOutput(prefix + "meanDistance", meanDistance);
+        Logger.recordOutput(prefix + "meanAmbiguity", meanAmbiguity);
+        Logger.recordOutput(prefix + "rotationDelta", Math.abs(pose.getRotation()
+
+            .minus(RobotState.getInstance().getVisionPose().getRotation())
+            .getRadians()));
+
+        Logger.recordOutput(prefix + "omega", RobotState.getInstance()
+            .getFieldRelativeSpeeds().omegaRadiansPerSecond);
+
+        Logger.recordOutput(prefix + "visionPoseRotation", 
+            RobotState.getInstance().getVisionPose().getRotation().getDegrees());
+
+        Logger.recordOutput(prefix + "estimatedRotation",
+            pose.getRotation().getDegrees());
+
         if (!reject) {
             Vector<N3> distStdDevs = VecBuilder.fill(
                     Math.pow(meanDistance, 2) / 2.0,
@@ -268,7 +294,7 @@ public class AprilTagFiducialCamera {
     private void addVisionUpdateConstrained(PhotonPipelineResult result) {
         String prefix = "Vision/" + name + "_mt2/";
 
-        double maxMeanDistance = 2.5;
+        double maxMeanDistance = 3.5;
         double maxYawRate = Math.PI * 1.67;
 
         if (!result.hasTargets()) return;
@@ -286,6 +312,11 @@ public class AprilTagFiducialCamera {
                 false,
                 0.5
         );
+
+        Logger.recordOutput(prefix + "isPresent", optionalPose.isPresent());
+        if (optionalPose.isPresent()) {
+            Logger.recordOutput(prefix + "optionalPose", optionalPose.get().estimatedPose.toPose2d());
+        }
 
         if (optionalPose.isEmpty()) return;
 
@@ -320,6 +351,20 @@ public class AprilTagFiducialCamera {
         Logger.recordOutput(prefix + "tagCount", usedTargets.size());
         Logger.recordOutput(prefix + "rejected", reject);
         Logger.recordOutput(prefix + "rawPose", pose);
+
+
+        Logger.recordOutput(prefix + "meanDistance", meanDistance);
+        // Logger.recordOutput(prefix + "meanAmbiguity", meanAmbiguity); // MT1 only
+
+        Logger.recordOutput(prefix + "rotationDelta", Math.abs(pose.getRotation()
+            .minus(RobotState.getInstance().getVisionPose().getRotation())
+            .getRadians()));
+        Logger.recordOutput(prefix + "omega", RobotState.getInstance()
+            .getFieldRelativeSpeeds().omegaRadiansPerSecond);
+        Logger.recordOutput(prefix + "visionPoseRotation", 
+            RobotState.getInstance().getVisionPose().getRotation().getDegrees());
+        Logger.recordOutput(prefix + "estimatedRotation",
+            pose.getRotation().getDegrees());
 
         if (!reject) {
             Vector<N3> distStdDevs = VecBuilder.fill(
