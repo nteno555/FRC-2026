@@ -313,6 +313,7 @@ public class RobotContainer {
                 new Trigger(() -> aiming)
                         .and(() -> aimMode == AimMode.MANUAL)
                         .and(() -> manualAimState == ManualAimState.FLUSH)
+                        .and(() -> !(turretSubsystem.getSpinAround()))
                         .whileTrue(
                                 shooterSubsystem.setSpeed(() -> listFlywheelRps[flywheelRpsIdx])
                                         .alongWith(hoodSubsystem.setPosition(
@@ -324,6 +325,7 @@ public class RobotContainer {
                         .whileTrue(indexerSubsystem.setIndexerVoltageWithTowerSpeed(
                                 () -> SubsystemConstants.indexerShootVoltage, () -> 12.0));
 
+                new Trigger(() -> turretSubsystem.getSpinAround()).whileTrue(shooterSubsystem.setVoltage(() -> 0.0));
 //              driverXboxController
 //                      .b()
 //                      .and(driverXboxController.back())

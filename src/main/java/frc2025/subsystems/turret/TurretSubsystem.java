@@ -16,6 +16,7 @@ public class TurretSubsystem extends SubsystemBase {
     TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
     double setpoint, voltage;
     boolean zeroed = false;
+    boolean spinAround = false;
 
     public TurretSubsystem(TurretIO io) {
         this.io = io;
@@ -184,13 +185,17 @@ public class TurretSubsystem extends SubsystemBase {
         return this.run(() -> {
             double pos = inputs.positionRadians;
             if (voltage.get() < 0.0) {
-                if (pos > SubsystemConstants.turretMinAngleRadians + 0.1) io.setVoltage(voltage.get());
-                else setPositionSafe(() -> SubsystemConstants.turretMaxAngleRadians, () -> 0.0, () -> true);
+                if (pos > SubsystemConstants.turretMinAngleRadians + 0.1) {io.setVoltage(voltage.get());}
+                else {setPositionSafe(() -> SubsystemConstants.turretMaxAngleRadians, () -> 0.0, () -> true); spinAround = true;}
             } else if (voltage.get() > 0.0) {
-                if (pos < SubsystemConstants.turretMaxAngleRadians - 0.1) io.setVoltage(voltage.get());
-                else setPositionSafe(() -> SubsystemConstants.turretMinAngleRadians, () -> 0.0, () -> true);
+                if (pos < SubsystemConstants.turretMaxAngleRadians - 0.1) {io.setVoltage(voltage.get());}
+                else {setPositionSafe(() -> SubsystemConstants.turretMinAngleRadians, () -> 0.0, () -> true); spinAround = true;}
             }
         });
+    }
+
+    public boolean getSpinAround() {
+        return spinAround;
     }
 
     public Command rezeroCRT() {
