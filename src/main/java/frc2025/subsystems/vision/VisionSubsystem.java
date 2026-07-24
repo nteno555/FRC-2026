@@ -21,8 +21,6 @@ public class VisionSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.recordOutput("Vision/visionPose", RobotState.getInstance().getVisionPose());
 
-        RobotState.getInstance().updateVisionPose();
-
 //        LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-front");
 //        Logger.recordOutput("Vision/testtesttest", poseEstimate.tagCount);
 
