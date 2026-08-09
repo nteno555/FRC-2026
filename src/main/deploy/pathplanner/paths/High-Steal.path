@@ -23,9 +23,25 @@
         "x": 8.819048413311993,
         "y": 7.2709768125746
       },
-      "nextControl": null,
+      "nextControl": {
+        "x": 7.816868034080223,
+        "y": 3.9472389930442526
+      },
       "isLocked": false,
       "linkedName": "steal (high)"
+    },
+    {
+      "anchor": {
+        "x": 5.424152560763888,
+        "y": 7.442
+      },
+      "prevControl": {
+        "x": 5.450948484632703,
+        "y": 5.713458038188794
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
     }
   ],
   "rotationTargets": [
@@ -45,6 +61,12 @@
       "name": "stop auto aim",
       "waypointRelativePos": 0.0,
       "endWaypointRelativePos": 1.0,
+      "command": null
+    },
+    {
+      "name": "",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
       "command": null
     }
   ],
