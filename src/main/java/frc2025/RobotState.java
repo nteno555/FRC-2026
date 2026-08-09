@@ -17,6 +17,7 @@ import frc2025.util.Alliance;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +40,10 @@ public class RobotState {
     private ChassisSpeeds fieldRelativeSpeeds;
 
     private double pigeonAcceleration;
+
+    private Pose2d shootingWhileMovingVirtualPose;
+
+    private double wantedShooterAcceleration = 0.0;
 
     private List<PhotonTrackedTarget> ballTargets;
 
@@ -80,12 +85,13 @@ public class RobotState {
     public void setPose(Pose2d pose) {
         latestPose = pose;
     }
-
     public Pose2d getVisionShooterPose() {
         Pose2d visionPose = getVisionPose();
         return visionPose.transformBy(SubsystemConstants.robotToShooter);
     }
-
+    public Pose2d getDelayedShooterPose(){
+        return getDelayedPose().transformBy(SubsystemConstants.robotToShooter);
+    }
     public double getSpeed() {
         return Math.hypot(fieldRelativeSpeeds.vxMetersPerSecond, fieldRelativeSpeeds.vyMetersPerSecond);
     }
@@ -172,6 +178,26 @@ public class RobotState {
 
         return ballPoses;
     }
+    public Pose2d getDelayedPose(){
+        double phaseDelay = 0.02;
+        Pose2d currPose = getVisionPose();
+        ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeSpeeds,currPose.getRotation());
+        return currPose.exp(new Twist2d(speeds.vxMetersPerSecond*phaseDelay,speeds.vyMetersPerSecond*phaseDelay,speeds.omegaRadiansPerSecond*phaseDelay));
+    }
+    public Pose2d getShootingWhileMovingVirtualPose(){
+        return shootingWhileMovingVirtualPose;
+    }
+    public boolean getShuttling(){
+        if(DriverStation.isAutonomousEnabled()) return false;
 
- 
+        double xPos = RobotState.getInstance().getVisionPose().getX();
+        boolean inBlue = xPos<FieldConstants.inBlueZoneX&&!Alliance.get();
+        boolean inRed = xPos>FieldConstants.inRedZoneX&&Alliance.get();
+        Logger.recordOutput("Drive/inBlueZone",inBlue);
+        Logger.recordOutput("Drive/inRedZone",inRed);
+        return !inBlue&&!inRed;
+    }
+    public double getWantedShooterAcceleration() {
+        return wantedShooterAcceleration;
+    }
 }

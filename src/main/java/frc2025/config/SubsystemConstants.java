@@ -15,6 +15,7 @@ public class SubsystemConstants {
     public static final double rotationkP = 0.0;
     public static final double rotationkI = 0.0;
     public static final double rotationkD = 0.0;
+    //climb
     public static final double climbFF = 1.0;
     public static final double climbkS = 0.0;
     public static final double climbkV = 0.12;
@@ -28,7 +29,7 @@ public class SubsystemConstants {
     public static final double climbMotionMagicCruiseVelocity = 60;
     public static final double climbMotionMagicAcceleration = 150;
     public static final double climbMotionMagicJerk = 700;
-
+    //intake
     public static double intakekS = 0.1;
     public static double intakekG = 0.0;
     public static double intakekV = 0.07;
@@ -52,13 +53,29 @@ public class SubsystemConstants {
     public static double intakeHalfPosition = 2.0;
     public static double intakeQuarterPosition = 1.0;
     
-
+    //flywheel
     public static final double flywheelkS = 0.0;
     public static final double flywheelkV = 0.123;
     public static final double flywheelkA = 0.00;
     public static final double flywheelkP = 0.127;
     public static final double flywheelkI = 0.0;
     public static final double flywheelkD = 0.0;
+
+    public static double flywheelkSAmps = 12.0;
+    public static double flywheelkVAmps = 0.0;
+    public static double flywheelkAAmps = 0.218;
+    public static double flywheelkPAmps = 7.0;
+    public static double flywheelkIAmps = 0.0;
+    public static double flywheelkDAmps = 0.0;
+
+    public static double flywheelBangBangThreshold = 2.0;
+    public static double flywheelkSAmpsBangBang = 15.0;
+    public static double flywheelkVAmpsBangBang = 0.0;
+    public static double flywheelkAAmpsBangBang = 0.0;
+    public static double flywheelkPAmpsBangBang = 67.0;
+    public static double flywheelkIAmpsBangBang = 0.0;
+    public static double flywheelkDAmpsBangBang = 0.0;
+
     public static final double topFlywheelGearRatio = 1.0;
     public static final double bottomFlywheelGearRatio = 2.0;
     public static final double topFlywheelDiameter = 0.05; // 2 inches in meters

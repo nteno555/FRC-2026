@@ -13,7 +13,6 @@ import org.littletonrobotics.junction.Logger;
 
 public class IntakeIOReal implements IntakeIO {
     private final TalonFX intakeDeployMaster = new TalonFX(SubsystemConstants.intakeDeployMasterID, CANBus.roboRIO());
-    private final TalonFX intakeDeploySlave = new TalonFX(SubsystemConstants.intakeDeploySlaveID, CANBus.roboRIO());
     private final TalonFX intakeRoller = new TalonFX(SubsystemConstants.intakeRollerID,CANBus.roboRIO());
 
     public IntakeIOReal() {
@@ -64,33 +63,26 @@ public class IntakeIOReal implements IntakeIO {
 
         intakeRoller.getConfigurator().apply(rollerConfigs);
         intakeDeployMaster.getConfigurator().apply(deployConfigs);
-        intakeDeploySlave.getConfigurator().apply(deployConfigs);
 
         intakeDeployMaster.setNeutralMode(NeutralModeValue.Brake);
-        intakeDeploySlave.setNeutralMode(NeutralModeValue.Brake);
 
         intakeDeployMaster.setPosition(0.0);
-        intakeDeploySlave.setPosition(0.0);
-
-        intakeDeploySlave.setControl(new Follower(intakeDeployMaster.getDeviceID(), MotorAlignmentValue.Opposed));
     }
 
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
         inputs.voltage = intakeRoller.getMotorVoltage().getValue().in(Units.Volts);
         inputs.position = intakeDeployMaster.getPosition().getValueAsDouble();
-        inputs.deployConnected = intakeDeployMaster.isConnected() && intakeDeploySlave.isConnected();
+        inputs.deployConnected = intakeDeployMaster.isConnected();
 //        Logger.recordOutput("Intake/deployVoltage", intakeDeployMaster.getMotorVoltage().getValue().in(Units.Volts));
 //        Logger.recordOutput("Intake/deployRPS", intakeDeployMaster.getVelocity().getValueAsDouble());
 //        Logger.recordOutput("Intake/masterPosition", intakeDeployMaster.getPosition().getValueAsDouble());
 //        Logger.recordOutput("Intake/slavePosition", intakeDeploySlave.getPosition().getValueAsDouble());
 
         inputs.totalCurrent = intakeDeployMaster.getStatorCurrent().getValueAsDouble() +
-                intakeDeploySlave.getStatorCurrent().getValueAsDouble() +
                 intakeRoller.getStatorCurrent().getValueAsDouble();
 
         Logger.recordOutput("Current/Intake Deploy Master", intakeDeployMaster.getStatorCurrent().getValueAsDouble());
-        Logger.recordOutput("Current/Intake Deploy Slave", intakeDeploySlave.getStatorCurrent().getValueAsDouble());
         Logger.recordOutput("Current/Intake Roller", intakeRoller.getStatorCurrent().getValueAsDouble());
     }
 
