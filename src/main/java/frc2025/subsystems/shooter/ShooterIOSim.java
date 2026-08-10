@@ -1,14 +1,21 @@
 package frc2025.subsystems.shooter;
 
+import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.wpilibj2.command.Command;
 
 public class ShooterIOSim implements ShooterIO {
     private double voltage;
     private double percentOutput;
+    private double current;
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
-        inputs.slaveVelocityRPS = voltage;
+        inputs.alignedVelocityRPS = voltage;
+        inputs.opposedAVelocityRPS = voltage;
+        inputs.opposedBVelocityRPS = voltage;
         inputs.masterVelocityRPS = voltage;
     }
 
@@ -21,6 +28,11 @@ public class ShooterIOSim implements ShooterIO {
     @Override
     public void setVoltage(double voltage) {
         this.voltage = voltage;
+    }
+
+    @Override
+    public void setCurrent(double currentAmps) {
+        this.current = currentAmps;
     }
 }
 

@@ -15,6 +15,7 @@ public class ShooterSubsystem extends SubsystemBase {
     double wantedVelocity = 0.0;
     double wantedVoltage = 0.0;
     boolean usingVoltage = false;
+    double rampCurrentAmps = 0.0;
     ShooterIO io;
     ShooterIOInputsAutoLogged inputs;
 
@@ -29,6 +30,30 @@ public class ShooterSubsystem extends SubsystemBase {
         Logger.recordOutput("Superstructure/ShooterSpeed", inputs.masterVelocityRPS);
         Logger.recordOutput("Shooter/wantedSpeed", wantedVelocity);
         io.updateInputs(this.inputs);
+    }
+
+    
+
+    public Command characterizeStaticCurrent() {
+        return this.runOnce(() -> rampCurrentAmps = 0.0)
+            .andThen(this.run(() -> {
+                rampCurrentAmps += 0.02;
+                io.setCurrent(rampCurrentAmps);
+                Logger.recordOutput("Shooter/staticRampCurrent", rampCurrentAmps);
+                Logger.recordOutput("Shooter/staticVelocityRPS", inputs.masterVelocityRPS);
+            }).until(() -> (Math.abs(inputs.masterVelocityRPS) > 0.5)))
+            .finallyDo((interrupted) -> {
+                Logger.recordOutput("Shooter/measuredkSAmps", rampCurrentAmps);
+                io.setCurrent(0.0);
+            });
+    }
+
+    public Command characterizeCurrentStep(double currentAmps) {
+        return this.runEnd(() -> {
+            io.setCurrent(currentAmps);
+            Logger.recordOutput("Shooter/currentStepCurrent", currentAmps);
+            Logger.recordOutput("Shooter/currentStepVelocityRPS", inputs.masterVelocityRPS);
+        }, () -> io.setCurrent(0.0));
     }
 
     public Command setVoltage(Supplier<Double> voltage) {

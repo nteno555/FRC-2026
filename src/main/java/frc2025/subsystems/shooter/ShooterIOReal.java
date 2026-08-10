@@ -14,7 +14,9 @@ import org.littletonrobotics.junction.Logger;
 
 public class ShooterIOReal implements ShooterIO {
     private TalonFX flywheelMaster = new TalonFX(SubsystemConstants.flywheelMasterID, CANBus.roboRIO());
-    private TalonFX flywheelSlave = new TalonFX(SubsystemConstants.flywheelSlaveID, CANBus.roboRIO());
+    private TalonFX flywheelAligned = new TalonFX(SubsystemConstants.flywheelSlaveID, CANBus.roboRIO());
+    private TalonFX flywheelOpposedA = new TalonFX(SubsystemConstants.flywheelSlave1ID, CANBus.roboRIO());
+    private TalonFX flywheelOpposedB = new TalonFX(SubsystemConstants.flywheelSlave2ID, CANBus.roboRIO());
 //    private TalonFX tower = new TalonFX(SubsystemConstants.towerID, CANBus.roboRIO());
 
     private final VoltageOut voltageRequest = new VoltageOut(0);
@@ -22,6 +24,7 @@ public class ShooterIOReal implements ShooterIO {
     private final VelocityVoltage speedVoltageRequest = new VelocityVoltage(0).withSlot(0).withEnableFOC(true);
     private final VoltageOut bangbangVoltageRequest = new VoltageOut(12.0).withEnableFOC(true);
     private final VelocityVoltage towerSpeedVoltageRequest = new VelocityVoltage(0).withSlot(0).withEnableFOC(true);
+    private final TorqueCurrentFOC currentRequest = new TorqueCurrentFOC(0);
 
     public ShooterIOReal() {
         flywheelMaster.getConfigurator().apply(new TalonFXConfiguration());
@@ -97,10 +100,18 @@ public class ShooterIOReal implements ShooterIO {
 //         towerConfigTorque.TorqueNeutralDeadband = 1;
 
         flywheelMaster.getConfigurator().apply(flywheelConfig, 0.050);
-        flywheelSlave.getConfigurator().apply(flywheelConfig, 0.050);
+        flywheelAligned.getConfigurator().apply(flywheelConfig, 0.050);
+        flywheelOpposedA.getConfigurator().apply(flywheelConfig, 0.050);
+        flywheelOpposedB.getConfigurator().apply(flywheelConfig, 0.050);
+
         flywheelMaster.setNeutralMode(NeutralModeValue.Coast);
-        flywheelSlave.setNeutralMode(NeutralModeValue.Coast);
-        flywheelSlave.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Opposed));
+        flywheelAligned.setNeutralMode(NeutralModeValue.Coast);
+        flywheelOpposedA.setNeutralMode(NeutralModeValue.Coast);
+        flywheelOpposedB.setNeutralMode(NeutralModeValue.Coast);
+
+        flywheelAligned.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Aligned));
+        flywheelOpposedA.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Opposed));
+        flywheelOpposedB.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Opposed));
 
         // tower.getConfigurator().apply(towerConfigs, 0.050);
         // tower.getConfigurator().apply(towerConfigTorque, 0.05);
@@ -111,23 +122,38 @@ public class ShooterIOReal implements ShooterIO {
         inputs.masterVoltage = flywheelMaster.getMotorVoltage().getValueAsDouble();
         inputs.masterVelocityRPS = flywheelMaster.getVelocity().getValueAsDouble();
 
-        inputs.slaveVoltage = flywheelSlave.getMotorVoltage().getValueAsDouble();
-        inputs.slaveVelocityRPS = flywheelSlave.getVelocity().getValueAsDouble();
+        inputs.alignedVoltage = flywheelAligned.getMotorVoltage().getValueAsDouble();
+        inputs.alignedVelocityRPS = flywheelAligned.getVelocity().getValueAsDouble();
+
+        inputs.opposedAVoltage = flywheelOpposedA.getMotorVoltage().getValueAsDouble();
+        inputs.opposedAVelocityRPS = flywheelOpposedA.getVelocity().getValueAsDouble();
+
+        inputs.opposedBVoltage = flywheelOpposedB.getMotorVoltage().getValueAsDouble();
+        inputs.opposedBVelocityRPS = flywheelOpposedB.getVelocity().getValueAsDouble();
 
         // inputs.towerVoltage = tower.getMotorVoltage().getValueAsDouble();
         // inputs.towerRPS = tower.getVelocity().getValueAsDouble();
 
         inputs.totalCurrent = flywheelMaster.getStatorCurrent().getValueAsDouble()
-                + flywheelSlave.getStatorCurrent().getValueAsDouble();
+                + flywheelAligned.getStatorCurrent().getValueAsDouble() + flywheelOpposedA.getStatorCurrent().getValueAsDouble()
+                + flywheelOpposedB.getStatorCurrent().getValueAsDouble();
 
         Logger.recordOutput("Current/Shooter Master", flywheelMaster.getStatorCurrent().getValueAsDouble());
-        Logger.recordOutput("Current/Shooter Slave", flywheelSlave.getStatorCurrent().getValueAsDouble());
+        Logger.recordOutput("Current/Shooter Aligned Follower", flywheelAligned.getStatorCurrent().getValueAsDouble());
+        Logger.recordOutput("Current/Shooter Opposed Master", flywheelOpposedA.getStatorCurrent().getValueAsDouble());
+        Logger.recordOutput("Current/Shooter Opposed Follower", flywheelOpposedB.getStatorCurrent().getValueAsDouble());
+
     }
 
     @Override
     public void setVoltage(double voltage) {
         flywheelMaster.setControl(voltageRequest.withOutput(voltage));
         // tower.setControl(new VoltageOut(0.0));
+    }
+
+    @Override
+    public void setCurrent(double currentAmps) {
+        flywheelMaster.setControl(currentRequest.withOutput(currentAmps));
     }
 
     @Override
