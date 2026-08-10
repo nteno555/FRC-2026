@@ -83,6 +83,7 @@ public class SubsystemConstants {
     public static final double flywheelEfficiency = 0.80;
     public static final double flywheelSupplyCurrentLimit = 100;
     public static final double flywheelStatorCurrentLimit = 200;
+    public static final double flywheelTorqueCurrentMaxRPS = 70.0;
 
     // Hood: 50 to 85 degrees
     public static final double hoodFF = 0.35;
@@ -119,22 +120,22 @@ public class SubsystemConstants {
     public static final double spindexerShootVoltage = -12.0;
     public static final double towerShootVoltage = -12.0;
 
-    public static final double towerkS = 0.45;
-    public static final double towerkV = 0.095;
-    public static final double towerkA = 0.00;
-    public static final double towerkP = 0.2;
-    public static final double towerkI = 0.0;
-    public static final double towerkD = 0.0;
-
-    public static final double towerkSAmps = 0.0;
-    public static final double towerkVAmps = 0.0;
-    public static final double towerkAAmps = 0.00;
-    public static final double towerkPAmps = 5.0;
-    public static final double towerkIAmps = 0.0;
-    public static final double towerkDAmps = 0.0;
-    public static final double towerFlywheelRatio = 1.0;
-    public static final boolean hasTower = false;
-    public static final boolean needDoubleTower = false;
+//    public static final double towerkS = 0.45;
+//    public static final double towerkV = 0.095;
+//    public static final double towerkA = 0.00;
+//    public static final double towerkP = 0.2;
+//    public static final double towerkI = 0.0;
+//    public static final double towerkD = 0.0;
+//
+//    public static final double towerkSAmps = 0.0;
+//    public static final double towerkVAmps = 0.0;
+//    public static final double towerkAAmps = 0.00;
+//    public static final double towerkPAmps = 5.0;
+//    public static final double towerkIAmps = 0.0;
+//    public static final double towerkDAmps = 0.0;
+//    public static final double towerFlywheelRatio = 1.0;
+//    public static final boolean hasTower = false;
+//    public static final boolean needDoubleTower = false;
 
     // Turret Gear Ratio: 8:60 & 44:54
     public static final double turretkS = 0.45;
@@ -206,7 +207,9 @@ public class SubsystemConstants {
 
     public static final int climbID = 190;
     public static final int flywheelMasterID = 180;
-    public static final int flywheelSlaveID = 170;
+    public static final int flywheelSlaveA1ID = 170;
+    public static final int flywheelSlaveB1ID = 199;
+    public static final int flywheelSlaveB2ID = 199;
     public static final int hoodID = 205;
     public static final int indexerID = 9999;
     public static final int indexerID2 = 201;

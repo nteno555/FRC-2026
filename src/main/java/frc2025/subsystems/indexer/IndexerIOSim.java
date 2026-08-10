@@ -8,14 +8,11 @@ public class IndexerIOSim implements IndexerIO{
     @Override
     public void updateInputs(IndexerIOInputs inputs) {
         inputs.indexerCurrent = 0;
-        if (SubsystemConstants.hasTower) inputs.towerCurrent = 0;
 
         if(voltage > 0) {
             inputs.indexerCurrent = 9999;
-            if (SubsystemConstants.hasTower) inputs.towerCurrent = 9999;
         }
         inputs.indexerVoltage = voltage;
-        if (SubsystemConstants.hasTower) inputs.towerVoltage = voltage;
     }
 
     @Override
@@ -28,8 +25,4 @@ public class IndexerIOSim implements IndexerIO{
         this.voltage = indexerVoltage;
     }
 
-    @Override
-    public void setTowerSpeed(double speed) {
-
-    }
 }

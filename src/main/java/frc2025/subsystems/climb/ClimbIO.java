@@ -8,8 +8,6 @@ public interface ClimbIO {
         public boolean connected;
         double climbVoltage;
         double climbCurrent;
-        double towerVoltage;
-        double towerCurrent;
         double totalCurrent;
     }
 

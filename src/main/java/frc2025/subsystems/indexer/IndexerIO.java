@@ -8,13 +8,10 @@ public interface IndexerIO {
         public boolean connected;
         double indexerVoltage;
         double indexerCurrent;
-        double towerVoltage;
-        double towerCurrent;
         double totalCurrent;
     }
 
     public void updateInputs(IndexerIOInputs inputs);
     public void setSpeed(double indexerSpeed);
     public void setVoltage(double indexerVoltage);
-    public void setTowerSpeed(double speed);
 }
