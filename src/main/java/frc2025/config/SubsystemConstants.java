@@ -214,7 +214,9 @@ public class SubsystemConstants {
 
     public static int climberID = 22;
     public static int flywheelMasterID = 13;
-    public static int flywheelSlaveID = 14;
+    public static int flywheelSlaveA1ID = 14;
+    public static int flywheelSlaveB1ID = 99;
+    public static int flywheelSlaveB2ID = 99;
     public static int hoodID = 15;
     public static int indexerID = 16;
     public static int intakeDeployMasterID = 17;
