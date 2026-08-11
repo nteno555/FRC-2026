@@ -14,9 +14,9 @@ import org.littletonrobotics.junction.Logger;
 
 public class ShooterIOReal implements ShooterIO {
     private TalonFX flywheelMaster = new TalonFX(SubsystemConstants.flywheelMasterID, CANBus.roboRIO());
-    private TalonFX flywheelAligned = new TalonFX(SubsystemConstants.flywheelSlaveID, CANBus.roboRIO());
-    private TalonFX flywheelOpposedA = new TalonFX(SubsystemConstants.flywheelSlave1ID, CANBus.roboRIO());
-    private TalonFX flywheelOpposedB = new TalonFX(SubsystemConstants.flywheelSlave2ID, CANBus.roboRIO());
+    private TalonFX flywheelAligned = new TalonFX(SubsystemConstants.flywheelAlignedID, CANBus.roboRIO());
+    private TalonFX flywheelOpposedA = new TalonFX(SubsystemConstants.flywheelOpposedAID, CANBus.roboRIO());
+    private TalonFX flywheelOpposedB = new TalonFX(SubsystemConstants.flywheelOpposedBID, CANBus.roboRIO());
 //    private TalonFX tower = new TalonFX(SubsystemConstants.towerID, CANBus.roboRIO());
 
     private final VoltageOut voltageRequest = new VoltageOut(0);
@@ -28,6 +28,10 @@ public class ShooterIOReal implements ShooterIO {
 
     public ShooterIOReal() {
         flywheelMaster.getConfigurator().apply(new TalonFXConfiguration());
+        flywheelAligned.getConfigurator().apply(new TalonFXConfiguration());
+        flywheelOpposedA.getConfigurator().apply(new TalonFXConfiguration());
+        flywheelOpposedB.getConfigurator().apply(new TalonFXConfiguration());
+
         // tower.getConfigurator().apply(new TalonFXConfiguration());
 
         var flywheelConfig = new TalonFXConfiguration();
@@ -54,64 +58,39 @@ public class ShooterIOReal implements ShooterIO {
         flywheelConfig.Slot2.kD = SubsystemConstants.flywheelkDAmpsBangBang;
         flywheelConfig.Slot2.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
-        flywheelConfig.TorqueCurrent.PeakForwardTorqueCurrent = 200;
-        flywheelConfig.TorqueCurrent.PeakReverseTorqueCurrent = -80;
+        // flywheelConfig.TorqueCurrent.PeakForwardTorqueCurrent = 200;
+        // flywheelConfig.TorqueCurrent.PeakReverseTorqueCurrent = -80;
 
-        flywheelConfig.CurrentLimits.SupplyCurrentLimit = SubsystemConstants.flywheelSupplyCurrentLimit;
-        flywheelConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-        flywheelConfig.CurrentLimits.StatorCurrentLimit = SubsystemConstants.flywheelStatorCurrentLimit;
-        flywheelConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-
+        // flywheelConfig.CurrentLimits.SupplyCurrentLimit = SubsystemConstants.flywheelSupplyCurrentLimit;
+        // flywheelConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        // flywheelConfig.CurrentLimits.StatorCurrentLimit = SubsystemConstants.flywheelStatorCurrentLimit;
+        // flywheelConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         var slaveConfig = new TalonFXConfiguration();
+        slaveConfig.Slot0 = flywheelConfig.Slot0;
         slaveConfig.Slot1 = flywheelConfig.Slot1;
-        slaveConfig.TorqueCurrent = flywheelConfig.TorqueCurrent;
-        slaveConfig.CurrentLimits = flywheelConfig.CurrentLimits;
-        slaveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        slaveConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         flywheelConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         // flywheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-//         var towerConfigs = new TalonFXConfiguration();
-
-//         towerConfigs.Slot0.kS = SubsystemConstants.towerkS;
-//         towerConfigs.Slot0.kV = SubsystemConstants.towerkV;
-//         towerConfigs.Slot0.kA = SubsystemConstants.towerkA;
-//         towerConfigs.Slot0.kP = SubsystemConstants.towerkP;
-//         towerConfigs.Slot0.kI = SubsystemConstants.towerkI;
-//         towerConfigs.Slot0.kD = SubsystemConstants.towerkD;
-//
-//         towerConfigs.Slot1.kS = SubsystemConstants.towerkSAmps;
-//         towerConfigs.Slot1.kV = SubsystemConstants.towerkVAmps;
-//         towerConfigs.Slot1.kA = SubsystemConstants.towerkAAmps;
-//         towerConfigs.Slot1.kP = SubsystemConstants.towerkPAmps;
-//         towerConfigs.Slot1.kI = SubsystemConstants.towerkIAmps;
-//         towerConfigs.Slot1.kD = SubsystemConstants.towerkDAmps;
-//
-//         towerConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-//
-//         towerConfigs.CurrentLimits.SupplyCurrentLimit = 100;
-//         towerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
-//         towerConfigs.CurrentLimits.StatorCurrentLimit = 100;
-//         towerConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
-//
-//         TorqueCurrentConfigs towerConfigTorque = new TorqueCurrentConfigs();
-//         towerConfigTorque.PeakForwardTorqueCurrent = 100;
-//         towerConfigTorque.PeakReverseTorqueCurrent = 100;
-//         towerConfigTorque.TorqueNeutralDeadband = 1;
-
         flywheelMaster.getConfigurator().apply(flywheelConfig, 0.050);
         flywheelAligned.getConfigurator().apply(flywheelConfig, 0.050);
-        flywheelOpposedA.getConfigurator().apply(flywheelConfig, 0.050);
-        flywheelOpposedB.getConfigurator().apply(flywheelConfig, 0.050);
+        flywheelOpposedA.getConfigurator().apply(slaveConfig, 0.050);
+        flywheelOpposedB.getConfigurator().apply(slaveConfig, 0.050);
 
         flywheelMaster.setNeutralMode(NeutralModeValue.Coast);
         flywheelAligned.setNeutralMode(NeutralModeValue.Coast);
         flywheelOpposedA.setNeutralMode(NeutralModeValue.Coast);
         flywheelOpposedB.setNeutralMode(NeutralModeValue.Coast);
 
-        flywheelAligned.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Aligned));
-        flywheelOpposedA.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Opposed));
-        flywheelOpposedB.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Opposed));
+        int masterID = flywheelMaster.getDeviceID();
+        var alignedStatus = flywheelAligned.setControl(new Follower(masterID, MotorAlignmentValue.Aligned));
+        var opposedAStatus = flywheelOpposedA.setControl(new Follower(masterID, MotorAlignmentValue.Opposed));
+        var opposedBStatus = flywheelOpposedB.setControl(new Follower(masterID, MotorAlignmentValue.Opposed));
+
+        Logger.recordOutput("Shooter/alignedFollowerStatus", alignedStatus.toString());
+        Logger.recordOutput("Shooter/opposedAFollowerStatus", opposedAStatus.toString());
+        Logger.recordOutput("Shooter/opposedBFollowerStatus", opposedBStatus.toString());
 
         // tower.getConfigurator().apply(towerConfigs, 0.050);
         // tower.getConfigurator().apply(towerConfigTorque, 0.05);
@@ -131,9 +110,6 @@ public class ShooterIOReal implements ShooterIO {
         inputs.opposedBVoltage = flywheelOpposedB.getMotorVoltage().getValueAsDouble();
         inputs.opposedBVelocityRPS = flywheelOpposedB.getVelocity().getValueAsDouble();
 
-        // inputs.towerVoltage = tower.getMotorVoltage().getValueAsDouble();
-        // inputs.towerRPS = tower.getVelocity().getValueAsDouble();
-
         inputs.totalCurrent = flywheelMaster.getStatorCurrent().getValueAsDouble()
                 + flywheelAligned.getStatorCurrent().getValueAsDouble() + flywheelOpposedA.getStatorCurrent().getValueAsDouble()
                 + flywheelOpposedB.getStatorCurrent().getValueAsDouble();
@@ -142,45 +118,72 @@ public class ShooterIOReal implements ShooterIO {
         Logger.recordOutput("Current/Shooter Aligned Follower", flywheelAligned.getStatorCurrent().getValueAsDouble());
         Logger.recordOutput("Current/Shooter Opposed Master", flywheelOpposedA.getStatorCurrent().getValueAsDouble());
         Logger.recordOutput("Current/Shooter Opposed Follower", flywheelOpposedB.getStatorCurrent().getValueAsDouble());
-
     }
 
+    private final Follower alignedFollower = new Follower(SubsystemConstants.flywheelMasterID, MotorAlignmentValue.Aligned);
+    private final Follower opposedAFollower = new Follower(SubsystemConstants.flywheelMasterID, MotorAlignmentValue.Opposed);
+    private final Follower opposedBFollower = new Follower(SubsystemConstants.flywheelMasterID, MotorAlignmentValue.Opposed);
     @Override
     public void setVoltage(double voltage) {
         flywheelMaster.setControl(voltageRequest.withOutput(voltage));
-        // tower.setControl(new VoltageOut(0.0));
+        flywheelAligned.setControl(alignedFollower);
+        flywheelOpposedA.setControl(opposedAFollower);
+        flywheelOpposedB.setControl(opposedBFollower);
+        // flywheelAligned.setControl(new Follower(13, MotorAlignmentValue.Aligned));
+        // flywheelOpposedA.setControl(new Follower(13, MotorAlignmentValue.Opposed));
+        // flywheelOpposedB.setControl(new Follower(13, MotorAlignmentValue.Opposed));
     }
 
     @Override
     public void setCurrent(double currentAmps) {
         flywheelMaster.setControl(currentRequest.withOutput(currentAmps));
+        flywheelAligned.setControl(alignedFollower);
+        flywheelOpposedA.setControl(opposedAFollower);
+        flywheelOpposedB.setControl(opposedBFollower);
+        // flywheelAligned.setControl(currentRequest.withOutput(currentAmps));
+        // flywheelOpposedA.setControl(currentRequest.withOutput(currentAmps));
+        // flywheelOpposedB.setControl(currentRequest.withOutput(currentAmps));
+        // flywheelAligned.setControl(new Follower(13, MotorAlignmentValue.Aligned));
+        // flywheelOpposedA.setControl(new Follower(13, MotorAlignmentValue.Opposed));
+        // flywheelOpposedB.setControl(new Follower(13, MotorAlignmentValue.Opposed));
     }
 
     @Override
     public void setSpeed(double speed, double acceleration) {
         double errorRPS = speed - flywheelMaster.getVelocity().getValueAsDouble();
-        boolean wantBangBang = false; //errorRPS > SubsystemConstants.flywheelBangBangThreshold;
-        // flywheelMaster.setControl(speedVoltageRequest.withVelocity(speed).withAcceleration(0.0));
+        boolean wantBangBang = false;
 
         if (speed < 64.0) {
             Logger.recordOutput("Shooter/bangbang", wantBangBang);
             Logger.recordOutput("Shooter/usingVoltage", false);
             if (wantBangBang) {
                 flywheelMaster.setControl(bangbangVoltageRequest);
-//                flywheelSlave.setControl(bangbangVoltageRequest);
+                flywheelAligned.setControl(alignedFollower);
+                flywheelOpposedA.setControl(opposedAFollower);
+                flywheelOpposedB.setControl(opposedBFollower);
+                // flywheelAligned.setControl(new Follower(13, MotorAlignmentValue.Aligned));
+                // flywheelOpposedA.setControl(new Follower(13, MotorAlignmentValue.Opposed));
+                // flywheelOpposedB.setControl(new Follower(13, MotorAlignmentValue.Opposed));
             } else {
                 flywheelMaster.setControl(speedRequest.withVelocity(speed));
-//                        speedRequest.withVelocity(speed).withAcceleration(acceleration));
-//                flywheelSlave.setControl(speedRequest.withVelocity(speed));
+                flywheelAligned.setControl(alignedFollower);
+                flywheelOpposedA.setControl(opposedAFollower);
+                flywheelOpposedB.setControl(opposedBFollower);
+                // flywheelAligned.setControl(new Follower(13, MotorAlignmentValue.Aligned));
+                // flywheelOpposedA.setControl(new Follower(13, MotorAlignmentValue.Opposed));
+                // flywheelOpposedB.setControl(new Follower(13, MotorAlignmentValue.Opposed));
             }
         }
         else {
             Logger.recordOutput("Shooter/usingVoltage", true);
             flywheelMaster.setControl(
                     speedVoltageRequest.withVelocity(speed));
+            flywheelAligned.setControl(alignedFollower);
+            flywheelOpposedA.setControl(opposedAFollower);
+            flywheelOpposedB.setControl(opposedBFollower);
+            // flywheelAligned.setControl(new Follower(13, MotorAlignmentValue.Aligned));
+            // flywheelOpposedA.setControl(new Follower(13, MotorAlignmentValue.Opposed));
+            // flywheelOpposedB.setControl(new Follower(13, MotorAlignmentValue.Opposed));
         }
-//        tower.setControl(towerSpeedVoltageRequest.withVelocity( SubsystemConstants.towerkV* speed *
-//                SubsystemConstants.towerFlywheelRatio)
-//                .withEnableFOC(true));
     }
 }

@@ -45,12 +45,14 @@ public class SubsystemConstants {
     // 20/4.8 = 4.167 rps/s^2 @ 10A
     // 20/0.4 = 50 rps/s^2 @ 20A
     // kA = (20A - 10A) / (50.0 - 4.167) = 10 / 45.833 = 0.218 A/(rps/s^2)
-
-    public static double flywheelkSAmps = 12.0;
-    public static double flywheelkVAmps = 0.0;
-    public static double flywheelkAAmps = 0.218;
+    //kSAmps trials: 10.420, 9,940, 11.2, 9.430, 8.520
+    //kVAmps test currents: 15 A, 25 A, 35 A, 45 A, 55 A
+    //kVAmps trials: 
+    public static double flywheelkSAmps = 9.902;
+    public static double flywheelkVAmps = 70.0;
+    public static double flywheelkAAmps = 0.0;
     // Two Flywheels
-    public static double flywheelkPAmps = 7.0;
+    public static double flywheelkPAmps = 0.0;
     // One Flywheel
     // public static double flywheelkPAmps = 10.0;
     public static double flywheelkIAmps = 0.0;
@@ -69,8 +71,8 @@ public class SubsystemConstants {
     public static double topFlywheelDiameter = 0.05; // 2 inches in meters
     public static double bottomFlywheelDiameter = 0.1; // 4 inches in meters
     public static double flywheelEfficiency = 0.80;
-    public static double flywheelSupplyCurrentLimit = 100;
-    public static double flywheelStatorCurrentLimit = 100;
+    public static double flywheelSupplyCurrentLimit = 200;
+    public static double flywheelStatorCurrentLimit = 180;
     // to do check
     public static double towerkS = 0.37;
     public static double towerkV = 0.095;
@@ -222,12 +224,12 @@ public class SubsystemConstants {
     public static double flushFlywheelRps = 42.0;
     public static double flushHoodAngle = 0.9;
 
-    public static int climberID = 22;
+    public static int climberID = 1000;
     public static int flywheelMasterID = 13;
-    public static int flywheelSlaveID = 14;
-    public static int flywheelSlave1ID = 0;
-    public static int flywheelSlave2ID = 0;
-    public static int hoodID = 15;
+    public static int flywheelAlignedID = 14;
+    public static int flywheelOpposedAID = 12;
+    public static int flywheelOpposedBID = 62;
+    public static int hoodID = 51;
     public static int indexerID = 16;
     public static int intakeDeployMasterID = 17;
     public static int intakeDeploySlaveID = 18;

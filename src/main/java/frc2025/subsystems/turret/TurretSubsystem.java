@@ -24,6 +24,12 @@ public class TurretSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        Logger.recordOutput("Turret/currentCommand",
+            getCurrentCommand() != null
+                    ? getCurrentCommand().getName()
+                    : "none");
+
         Logger.processInputs("RealOutputs/Turret", inputs);
         Logger.recordOutput("Turret/setpoint", setpoint);
 
@@ -98,7 +104,7 @@ public class TurretSubsystem extends SubsystemBase {
                     var tangent = targetFrameToRobot.getY();
                     var angular = robotSpeeds.omegaRadiansPerSecond;
                     var distanceToTarget = robotToTargetXY.getNorm();
-
+                    Logger.recordOutput("Turret/Auto Aiming Currently", true);
                     return (angular + tangent / distanceToTarget);
                     // return RobotState.getInstance().getVirtualTargetAngularVelocity();
 

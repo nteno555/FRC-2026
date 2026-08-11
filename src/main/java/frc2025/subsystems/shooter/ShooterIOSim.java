@@ -13,9 +13,9 @@ public class ShooterIOSim implements ShooterIO {
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
-        inputs.alignedVelocityRPS = voltage;
-        inputs.opposedAVelocityRPS = voltage;
-        inputs.opposedBVelocityRPS = voltage;
+        // inputs.alignedVelocityRPS = voltage;
+        // inputs.opposedAVelocityRPS = voltage;
+        // inputs.opposedBVelocityRPS = voltage;
         inputs.masterVelocityRPS = voltage;
     }
 

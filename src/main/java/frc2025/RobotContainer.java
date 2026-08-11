@@ -58,7 +58,8 @@ public class RobotContainer {
         private final CommandXboxController operatorXboxController = new CommandXboxController(1);
         private final CommandXboxController testSystemsController = new CommandXboxController(2);
         private final CommandXboxController tuningController = new CommandXboxController(3);
-        private final CommandXboxController driveTuningController = new CommandXboxController(4);
+        private final CommandXboxController characterizeController = new CommandXboxController(4);
+        private final CommandXboxController driveTuningController = new CommandXboxController(5);
         private final SendableChooser<String> autoChooser = new SendableChooser<>();
         private String lastAutoName = "";
         private final Timer matchTime = new Timer();
@@ -88,7 +89,7 @@ public class RobotContainer {
 
         private AimMode aimMode;
         private ManualAimState manualAimState;
-        private boolean aiming;
+        private boolean aiming = false;
         private boolean autoWarmupActive;
 
         private final Field2d field = new Field2d();
@@ -235,15 +236,15 @@ public class RobotContainer {
                                                                 DEAD_BAND_DRIVER, true) * Math.PI * 2));
 
                 intakeSubsystem.setDefaultCommand(intakeSubsystem.setDeployVoltage(() -> 0.0));
-                hoodSubsystem.setDefaultCommand(hoodSubsystem.setPosition(() -> 0.1));
-                shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
-                // shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
-                indexerSubsystem.setDefaultCommand(
-                                indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0));
-                // indexerSubsystem.setDefaultCommand(AutoAimCommands.);
-                // turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
-                turretSubsystem.setDefaultCommand(turretSubsystem
-                                .setPositionSafe(() -> SubsystemConstants.turretDefaultRadians, () -> 0.0, () -> true)); // for
+                // hoodSubsystem.setDefaultCommand(hoodSubsystem.setPosition(() -> 0.1));
+                // shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
+                // // shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
+                // indexerSubsystem.setDefaultCommand(
+                //                 indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0));
+                // // indexerSubsystem.setDefaultCommand(AutoAimCommands.);
+                turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
+                // turretSubsystem.setDefaultCommand(turretSubsystem
+                //                 .setPositionSafe(() -> SubsystemConstants.turretDefaultRadians, () -> 0.0, () -> true));
 
                 driverXboxController.a().onTrue(
                                 SuperstructureCommands.resetOdometry(
@@ -416,9 +417,9 @@ public class RobotContainer {
                                 .and(() -> (aimMode == AimMode.MANUAL))
                                 .onTrue(Commands.runOnce(() -> manualAimState = ManualAimState.SHUTTLE));
 
-                new Trigger(() -> aimMode == AimMode.MANUAL || aimMode == AimMode.FIXED)
-                                .whileTrue(turretSubsystem.setVoltage(
-                                                () -> manualTurretSpeed * operatorXboxController.getRightX()));
+                // new Trigger(() -> aimMode == AimMode.MANUAL || aimMode == AimMode.FIXED)
+                //                 .whileTrue(turretSubsystem.setVoltage(
+                //                                 () -> manualTurretSpeed * operatorXboxController.getRightX()));
 
                 new Trigger(() -> slowmode).whileTrue(
                                 driveSubsystem.driveTeleop(
@@ -578,6 +579,32 @@ public class RobotContainer {
                                                 () -> SubsystemConstants.indexerShootVoltage,
                                                 () -> SubsystemConstants.towerFlywheelRatio
                                                                 * SmartDashboard.getNumber("Tuning/RPM", 0.0)));
+                
+                SmartDashboard.putNumber("Tuning/testCurrentAmps", 0.0);
+
+                characterizeController.rightTrigger()
+                        .whileTrue(shooterSubsystem.characterizeStaticCurrent());
+
+                characterizeController.leftTrigger()
+                        .whileTrue(shooterSubsystem.characterizeCurrentStep(
+                                () -> SmartDashboard.getNumber("Tuning/testCurrentAmps", 0.0)));
+
+                SmartDashboard.putNumber("Tuning/testVelocityRPS", 0.0);
+
+                characterizeController.b()
+                        .whileTrue(shooterSubsystem.setSpeed(
+                                () -> SmartDashboard.getNumber("Tuning/testVelocityRPS", 0.0)));
+        
+                characterizeController.a()
+                                .whileTrue(shooterSubsystem.setVoltage(() -> 5.0))
+                                .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
+                
+                characterizeController.y().whileTrue(indexerSubsystem.setVoltage(() -> 5.0));
+                
+                
+                // characterizeController.y()
+                //                 .whileTrue(shooterSubsystem.setCurrent(() -> 5.0))
+                //                 .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
         }
 
         public static double handleDeadBand(double value, double deadBand, boolean scale) {
@@ -727,6 +754,8 @@ public class RobotContainer {
                 Logger.recordOutput("Superstructure/manualAimState", manualAimState);
                 Logger.recordOutput("Superstructure/slowmode", slowmode);
                 Logger.recordOutput("Superstructure/RPS Offset", rpsOffset);
+                Logger.recordOutput("Superstructure", aiming);
+
                 if (autoWon) {
                         Logger.recordOutput("Superstructure/Won Auto", "WON");
                 } else {

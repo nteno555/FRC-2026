@@ -27,7 +27,7 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         Logger.processInputs("RealOutputs/Shooter", inputs);
-        Logger.recordOutput("Superstructure/ShooterSpeed", inputs.masterVelocityRPS);
+        Logger.recordOutput("Superstructure/ShooterSpeed", -inputs.masterVelocityRPS);
         Logger.recordOutput("Shooter/wantedSpeed", wantedVelocity);
         io.updateInputs(this.inputs);
     }
@@ -48,10 +48,10 @@ public class ShooterSubsystem extends SubsystemBase {
             });
     }
 
-    public Command characterizeCurrentStep(double currentAmps) {
+    public Command characterizeCurrentStep(Supplier<Double> currentAmps) {
         return this.runEnd(() -> {
-            io.setCurrent(currentAmps);
-            Logger.recordOutput("Shooter/currentStepCurrent", currentAmps);
+            io.setCurrent(currentAmps.get());
+            Logger.recordOutput("Shooter/currentStepCurrent", currentAmps.get());
             Logger.recordOutput("Shooter/currentStepVelocityRPS", inputs.masterVelocityRPS);
         }, () -> io.setCurrent(0.0));
     }

@@ -8,7 +8,20 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc2025.config.SubsystemConstants;
+import org.littletonrobotics.junction.Logger;
+
+import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
+import com.ctre.phoenix6.controls.*;
+import com.ctre.phoenix6.signals.*;
+
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
@@ -72,6 +85,8 @@ public class IndexerIOReal implements IndexerIO {
 
         tower.getConfigurator().apply(towerConfigs, 0.050);
         tower.getConfigurator().apply(towerConfigTorque, 0.05);
+
+        tower.setControl(new Follower(SubsystemConstants.indexerID, MotorAlignmentValue.Aligned));
     }
 
     @Override
