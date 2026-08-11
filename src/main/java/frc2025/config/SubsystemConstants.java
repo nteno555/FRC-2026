@@ -221,8 +221,8 @@ public class SubsystemConstants {
     public static final int indexerID = 9999;
     public static final int indexerID2 = 201;
     public static final int intakeDeployMasterID = 150;
-    public static final int intakeDeploySlaveID = 160;
     public static final int intakeRollerID = 420;
+    public static final int intakeRollerSlaveID = 160;
     public static final int towerID = 250;
     public static final int towerID2 = 241;
     public static final int turretID = 230;

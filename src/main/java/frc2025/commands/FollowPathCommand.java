@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc2025.Robot;
 import frc2025.RobotState;
+import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveSubsystem;
 import org.littletonrobotics.junction.Logger;
 
@@ -36,7 +37,11 @@ public class FollowPathCommand extends Command {
     private boolean useTimeout = false;
     private boolean translationDone = false;
     private boolean doAllianceFlip = false;
+    
     private double distanceThresh = 0.15;
+    private double rotationThresh = 5.0;
+    private double speedThresh = 1.0;
+    private double timeoutMargin = 1.0;
 
     public FollowPathCommand(DriveSubsystem drive, Supplier<PathPlannerPath> pathSupplier, Supplier<Boolean> flip) {
         this.pathSupplier = pathSupplier;
@@ -44,8 +49,8 @@ public class FollowPathCommand extends Command {
         this.useDynamicPath = true;
         this.flip = flip;
 
-        translationPID = new PIDController(1.2, 0, 0);
-        rotationPID = new PIDController(1.2, 0, 0);
+        translationPID = new PIDController(SubsystemConstants.translationkP, SubsystemConstants.translationkI, SubsystemConstants.translationkD);
+        rotationPID = new PIDController(SubsystemConstants.rotationkP, SubsystemConstants.rotationkI, SubsystemConstants.rotationkD);
         rotationPID.enableContinuousInput(-Math.PI, Math.PI);
 
         addRequirements(this.driveSubsystem);
@@ -131,7 +136,8 @@ public class FollowPathCommand extends Command {
                 currentPose.getRotation().getRadians(), desiredState.pose.getRotation().getRadians());
 
         double dist = Math.sqrt(Math.pow(currentPose.getX() - desiredState.pose.getX(), 2) + Math.pow(currentPose.getY() - desiredState.pose.getY(), 2));
-
+        double rotError = Math.abs(currentPose.getRotation().minus(desiredState.pose.getRotation()).getDegrees());
+        double speed = RobotState.getInstance().getSpeed();
 
         // REPLANNING MAY CAUSE BAD BEHAVIOR IDK
         /*if(dist > 0.2) {
@@ -142,14 +148,21 @@ public class FollowPathCommand extends Command {
         }*/
 
         Logger.recordOutput("Drive/PathFollowingError", dist);
+        Logger.recordOutput("Drive/PathFollowingRotationError", rotError);
+        Logger.recordOutput("Drive/PathFollowingSpeed", speed);
 
-        if(this.timer.get() > this.trajectory.getTotalTimeSeconds()
-                && dist < distanceThresh)
-            translationDone = true;
+        translationDone = this.timer.get() > this.trajectory.getTotalTimeSeconds() && dist < distanceThresh;
+        boolean rotationDone = this.timer.get() > this.trajectory.getTotalTimeSeconds() && rotError < rotationThresh;
 
-        if(translationDone) {
+        Logger.recordOutput("Drive/PathFollowingTranslationDone", translationDone);
+
+        if (translationDone) {
             xFeedback = 0;
             yFeedback = 0;
+        }
+
+        if (rotationDone) {
+            omegaFeedback = 0;
         }
 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -171,6 +184,13 @@ public class FollowPathCommand extends Command {
         Pose2d currentPose = RobotState.getInstance().getVisionPose();
         Pose2d endPose = trajectory.getEndState().pose;
 
-        return this.timer.hasElapsed(trajectory.getTotalTimeSeconds() + 0.2);
+        double dist = currentPose.getTranslation().getDistance(endPose.getTranslation());
+        double rotError = Math.abs(currentPose.getRotation().minus(endPose.getRotation()).getDegrees());
+        double speed = RobotState.getInstance().getSpeed();
+
+        boolean finished = dist < distanceThresh && rotError < rotationThresh && speed < speedThresh;
+        boolean timedOut = this.timer.hasElapsed(trajectory.getTotalTimeSeconds() + timeoutMargin);
+
+        return finished || timedOut;
     }
 }
