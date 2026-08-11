@@ -11,8 +11,9 @@ public class ShooterTreeMap {
     public InterpolatingTreeMap lowerWheelTreeMap = new InterpolatingTreeMap();
     public InterpolatingTreeMap tofTreeMap = new InterpolatingTreeMap();
     public InterpolatingTreeMap radialVelocityTreeMap = new InterpolatingTreeMap();
+    public InterpolatingTreeMap shuttlingTofTreeMap = new InterpolatingTreeMap();
     public InterpolatingTreeMap shuttlingRPSTreeMap = new InterpolatingTreeMap();
-    public InterpolatingTreeMap shuttlingHoodTreeMap = new InterpolatingTreeMap();
+
 
     
     public ShooterTreeMap() {

@@ -43,9 +43,22 @@ public class RobotState {
 
     private Pose2d shootingWhileMovingVirtualPose;
 
-    private double wantedShooterAcceleration = 0.0;
-
     private List<PhotonTrackedTarget> ballTargets;
+
+    private double angleToVirtualTarget;
+
+    private double prevAngleToVirtualTarget = 0.0;
+    private double prevVirtualTargetTimestamp = -1.0;
+    private double virtualTargetAngularVelocity = 0.0;
+    private LinearFilter virtualTargetVelocityFilter = LinearFilter.singlePoleIIR(0.03, 0.02);
+
+    private double prevWantedShooterRPS = 0.0;
+    private double wantedShooterAcceleration = 0.0;
+    private LinearFilter shooterAccelerationFilter = LinearFilter.singlePoleIIR(0.03, 0.02);
+
+    private double prevWantedHoodRotation = 0.0;
+    private double wantedHoodVelocity = 0.0;
+    private LinearFilter hoodVelocityFilter = LinearFilter.singlePoleIIR(0.03, 0.02);
 
     public RobotState() {
         latestPose = new Pose2d();
@@ -199,5 +212,129 @@ public class RobotState {
     }
     public double getWantedShooterAcceleration() {
         return wantedShooterAcceleration;
+    }
+
+    public Pose2d getTargetPose() {
+        if (!getShuttling()) {
+            return (Alliance.get()) ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
+        }
+
+        if (getVisionPose().getY() > FieldConstants.yHalfLine) {
+            return (Alliance.get()) ? FieldConstants.redShuttlePosUpper : FieldConstants.blueShuttlePosUpper;
+        }
+
+        return (Alliance.get()) ? FieldConstants.redShuttlePosLower : FieldConstants.blueShuttlePosLower;
+    }
+
+    public void updateShootingWhileMovingVirtualPose() {
+        Pose2d currentPose = RobotState.getInstance().getVisionPose();
+        Pose2d realTargetPose = getTargetPose();
+        Pose2d virtualPose = getTargetPose();
+        Pose2d delayedPose = getDelayedPose();
+
+        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
+                robotRelativeSpeeds,
+                currentPose.getRotation());
+
+        Translation2d v = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+        Translation2d robotToShooter = SubsystemConstants.robotToShooter.getTranslation();
+        v = v.plus(
+                new Translation2d(
+                        robotToShooter.getNorm() * chassisSpeeds.omegaRadiansPerSecond,
+                        currentPose.getRotation().rotateBy(robotToShooter.getAngle()).rotateBy(Rotation2d.kCCW_90deg)));
+
+        double vx = v.getX();
+        double vy = v.getY();
+
+        for (int i = 0; i < 5; i++) {
+            double dx = virtualPose.getX() - delayedPose.getX();
+            double dy = virtualPose.getY() - delayedPose.getY();
+            double distance = Math.hypot(dx, dy);
+           
+            double flightTime;
+            if(getShuttling()) {
+                flightTime = ShooterTreeMap.getInstance().tofTreeMap.getInterpolated(distance);
+            } else {
+                flightTime = ShooterTreeMap.getInstance().shuttlingTofTreeMap.getInterpolated(distance);
+            }
+
+            virtualPose = new Pose2d(
+                    realTargetPose.getX() - vx * flightTime,
+                    realTargetPose.getY() - vy * flightTime,
+                    realTargetPose.getRotation());
+        }
+        shootingWhileMovingVirtualPose = virtualPose;
+
+        Pose2d shooterPose = delayedPose.transformBy(SubsystemConstants.robotToShooter);
+        double distance = virtualPose.getTranslation().getDistance(shooterPose.getTranslation());
+
+        angleToVirtualTarget = Math.atan2(
+                virtualPose.getY() - shooterPose.getY(),
+                virtualPose.getX() - shooterPose.getX());
+
+        double wantedShooterRPS;
+        double wantedHoodRotation;
+        if (getShuttling()) {
+            wantedShooterRPS = ShooterTreeMap.getInstance().shuttlingRPSTreeMap.getInterpolated(distance);
+            wantedHoodRotation = SubsystemConstants.hoodMaxAngleRotations;
+        } else {
+            wantedShooterRPS = ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(distance);
+            wantedHoodRotation = ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(distance);
+        }
+
+        double currentTimestamp = Timer.getFPGATimestamp();
+        if (prevVirtualTargetTimestamp != -1.0) {
+            double dt = currentTimestamp - prevVirtualTargetTimestamp;
+            if (dt > 0.0) {
+                // Drive Auto Aim Angular Velocity
+                double deltaAngle = MathUtil.angleModulus(angleToVirtualTarget - prevAngleToVirtualTarget);
+                double unfilteredTurretVelocity = deltaAngle / dt;
+                virtualTargetAngularVelocity = virtualTargetVelocityFilter.calculate(unfilteredTurretVelocity);
+
+                // Shooter Acceleration
+                double deltaRPS = wantedShooterRPS - prevWantedShooterRPS;
+                double unfilteredShooterAccel = deltaRPS / dt;
+                wantedShooterAcceleration = shooterAccelerationFilter.calculate(unfilteredShooterAccel);
+
+                // Hood Velocity
+                double deltaHood = wantedHoodRotation - prevWantedHoodRotation;
+                double unfilteredHoodVel = deltaHood / dt;
+                wantedHoodVelocity = hoodVelocityFilter.calculate(unfilteredHoodVel);
+            }
+        } else {
+            virtualTargetVelocityFilter.calculate(0.0);
+            shooterAccelerationFilter.calculate(0.0);
+            hoodVelocityFilter.calculate(0.0);
+        }
+        prevVirtualTargetTimestamp = currentTimestamp;
+        prevAngleToVirtualTarget = angleToVirtualTarget;
+        prevWantedShooterRPS = wantedShooterRPS;
+        prevWantedHoodRotation = wantedHoodRotation;
+
+        Logger.recordOutput("Drive/speed", Math.hypot(vx, vy));
+        Logger.recordOutput("Vision/shootingWhileMovingVirtualPose", shootingWhileMovingVirtualPose);
+//        Logger.recordOutput("Vision/angleToVirtualTarget", angleToVirtualTarget);
+//        Logger.recordOutput("Vision/virtualTargetAngularVelocity", virtualTargetAngularVelocity);
+//        Logger.recordOutput("Vision/wantedShooterAcceleration", wantedShooterAcceleration);
+//        Logger.recordOutput("Vision/wantedHoodVelocity", wantedHoodVelocity);
+    }
+
+    public double getWantedHoodVelocity() {
+        return wantedHoodVelocity;
+    }
+
+    public double getVirtualTargetAngularVelocity() {
+        return virtualTargetAngularVelocity;
+    }
+
+    public double getAngleToRealHub() {
+        Pose2d target = (Alliance.get()) ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
+
+        Pose2d shooterPose = getDelayedPose().transformBy(SubsystemConstants.robotToShooter);
+        double angle = Math.atan2(
+                target.getY() - shooterPose.getY(),
+                target.getX() - shooterPose.getX());
+
+        return angle;
     }
 }

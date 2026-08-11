@@ -9,6 +9,13 @@ import edu.wpi.first.math.geometry.Translation3d;
 
 
 public class SubsystemConstants {
+    //Alignment to Virtual Pose
+    public static double alignRotationkP = 0.0;
+    public static double alignRotationkI = 0.0;
+    public static double alignRotationkD = 0.0;
+
+    public static double autoAimMaxAngularVelocity = Math.PI;
+    // Following Path Command
     public static final double translationkP = 0.0;
     public static final double translationkI = 0.0;
     public static final double translationkD = 0.0;
@@ -166,13 +173,13 @@ public class SubsystemConstants {
     // Turret Cam: Forward 0 Right 0 Up 0.39 Roll 0 Pitch 29.1 Yaw 0
     // Front Cam: Forward 0 Right 0 Up 0.1 Roll 0 Pitch 18 Yaw 0
     public static final Transform2d robotToShooter = new Transform2d(0.09087, -0.0838, Rotation2d.kZero); // should be x = forward, y = side
-    public static final Transform2d shooterToCamera = new Transform2d(0.1671, 0.0, Rotation2d.kZero);
-    public static final double robotToTurretCameraForward = 0.0;
-    public static final double robotToTurretCameraRight = 0.0;
-    public static final double robotToTurretCameraUp = 0.5062;
-    public static final double robotToTurretCameraYaw = 0.0;
-    public static final double robotToTurretCameraPitch = 30.0;
-    public static final double robotToTurretCameraRoll = 0.0;
+
+    public static final double robotToFrontCameraForward = 0.0;
+    public static final double robotToFrontCameraRight = 0.0;
+    public static final double robotToFrontCameraUp = 0.5062;
+    public static final double robotToFrontCameraYaw = 0.0;
+    public static final double robotToFrontCameraPitch = 30.0;
+    public static final double robotToFrontCameraRoll = 0.0;
 
     public static final Transform2d robotToLeftCamera = new Transform2d(-0.326, -0.0277, Rotation2d.kZero);
     public static final double robotToLeftCameraForward = robotToLeftCamera.getX();
