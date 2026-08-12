@@ -35,24 +35,30 @@ public class SubsystemConstants {
     public static double climberMotionMagicAcceleration = 150;
     public static double climberMotionMagicJerk = 700;
 
-    public static double flywheelkS = 0.3;
-    public static double flywheelkV = 0.1237;
+    // public static double flywheelkS = 0.3;
+    // public static double flywheelkV = 0.1237;
+    // public static double flywheelkA = 0.00;
+    // public static double flywheelkP = 0.3;
+    // public static double flywheelkI = 0.0;
+    // public static double flywheelkD = 0.0;
+    public static double flywheelkS = 0.20;
+    public static double flywheelkV = 0.122;
     public static double flywheelkA = 0.00;
-    public static double flywheelkP = 0.3;
-    public static double flywheelkI = 0.0;
-    public static double flywheelkD = 0.0;
+    public static double flywheelkP = 0.05;
+    public static double flywheelkI = 0.00;
+    public static double flywheelkD = 0.00;
 
     // 20/4.8 = 4.167 rps/s^2 @ 10A
     // 20/0.4 = 50 rps/s^2 @ 20A
     // kA = (20A - 10A) / (50.0 - 4.167) = 10 / 45.833 = 0.218 A/(rps/s^2)
     //kSAmps trials: 10.420, 9,940, 11.2, 9.430, 8.520
     //kVAmps test currents: 15 A, 25 A, 35 A, 45 A, 55 A
-    //kVAmps trials: 
+    //kVAmps trials: (15, 6.234), (25, 22), 
     public static double flywheelkSAmps = 9.902;
-    public static double flywheelkVAmps = 70.0;
+    public static double flywheelkVAmps = 0.218;
     public static double flywheelkAAmps = 0.0;
     // Two Flywheels
-    public static double flywheelkPAmps = 0.0;
+    public static double flywheelkPAmps = 7.2;
     // One Flywheel
     // public static double flywheelkPAmps = 10.0;
     public static double flywheelkIAmps = 0.0;
@@ -93,7 +99,7 @@ public class SubsystemConstants {
 
     public static double hoodkS = 0.4;
     public static double hoodkV = 0.12;
-    public static double hoodkP = 6.0;
+    public static double hoodkP = 7.0;
     public static double hoodkI = 0.0;
     public static double hoodkD = 0.00;
     public static double hoodSupplyCurrentLimit = 40;
@@ -105,7 +111,7 @@ public class SubsystemConstants {
     public static double hoodReverseSoftLimit = -0.1;
     public static double hoodRezeroVoltage = -3.5;
     public static double hoodMinAngleRotations = 0;
-    public static double hoodMaxAngleRotations = 2.8;
+    public static double hoodMaxAngleRotations = 9.0;
     public static double hoodMinAngleRadians = 1.48;
     public static double hoodMaxAngleRadians = 0.87;
 
@@ -158,13 +164,13 @@ public class SubsystemConstants {
     public static double turretStatorCurrentLimit = 60;
     public static double turretPeakForwardTorqueCurrent = 60;
     public static double turretPeakReverseTorqueCurrent = -60;
-    public static double turretZeroOffsetRadians = 0.0;
+    public static double turretZeroOffsetRadians = 0.051;
     // 8 (44-42) 26 10 110
     public static double turretRotationsPerRadian = 44.0 / 8.0 * 26.0 / 42.0 * 110.0 / 10.0 / (2 * Math.PI);
-    public static double turretMinAngleRadians = -3.6;
-    public static double turretMaxAngleRadians = 3.9;
-    public static double throughBoreZero1 = 0.325;
-    public static double throughBoreZero2 = 0.861;
+    public static double turretMinAngleRadians = -4.789; 
+    public static double turretMaxAngleRadians = 3.976;
+    public static double throughBoreZero1 = 0.246;
+    public static double throughBoreZero2 = 0.588;
     public static double throughBoreRatio1 = 44.0 / 8.0 * 26.0 / 42.0; // 6.17
     public static double throughBoreRatio2 = 44.0 / 8.0; // 3.82
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop
@@ -225,10 +231,10 @@ public class SubsystemConstants {
     public static double flushHoodAngle = 0.9;
 
     public static int climberID = 1000;
-    public static int flywheelMasterID = 13;
-    public static int flywheelAlignedID = 14;
-    public static int flywheelOpposedAID = 12;
-    public static int flywheelOpposedBID = 62;
+    public static int flywheelMasterID = 26;
+    public static int flywheelAlignedID = 27;
+    public static int flywheelOpposedAID = 25;
+    public static int flywheelOpposedBID = 28;
     public static int hoodID = 51;
     public static int indexerID = 16;
     public static int intakeDeployMasterID = 17;

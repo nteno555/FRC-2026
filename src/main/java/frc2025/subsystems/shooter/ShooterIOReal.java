@@ -58,13 +58,13 @@ public class ShooterIOReal implements ShooterIO {
         flywheelConfig.Slot2.kD = SubsystemConstants.flywheelkDAmpsBangBang;
         flywheelConfig.Slot2.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
-        // flywheelConfig.TorqueCurrent.PeakForwardTorqueCurrent = 200;
-        // flywheelConfig.TorqueCurrent.PeakReverseTorqueCurrent = -80;
+        flywheelConfig.TorqueCurrent.PeakForwardTorqueCurrent = 200;
+        flywheelConfig.TorqueCurrent.PeakReverseTorqueCurrent = -80;
 
-        // flywheelConfig.CurrentLimits.SupplyCurrentLimit = SubsystemConstants.flywheelSupplyCurrentLimit;
-        // flywheelConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-        // flywheelConfig.CurrentLimits.StatorCurrentLimit = SubsystemConstants.flywheelStatorCurrentLimit;
-        // flywheelConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        flywheelConfig.CurrentLimits.SupplyCurrentLimit = SubsystemConstants.flywheelSupplyCurrentLimit;
+        flywheelConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        flywheelConfig.CurrentLimits.StatorCurrentLimit = SubsystemConstants.flywheelStatorCurrentLimit;
+        flywheelConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         var slaveConfig = new TalonFXConfiguration();
         slaveConfig.Slot0 = flywheelConfig.Slot0;
         slaveConfig.Slot1 = flywheelConfig.Slot1;
@@ -148,42 +148,47 @@ public class ShooterIOReal implements ShooterIO {
         // flywheelOpposedB.setControl(new Follower(13, MotorAlignmentValue.Opposed));
     }
 
+    // @Override
+    // public void setSpeed(double speed, double acceleration) {
+    //     double errorRPS = speed - flywheelMaster.getVelocity().getValueAsDouble();
+    //     boolean wantBangBang = false;
+
+    //     if (speed < 64.0) {
+    //         Logger.recordOutput("Shooter/bangbang", wantBangBang);
+    //         Logger.recordOutput("Shooter/usingVoltage", false);
+    //         if (wantBangBang) {
+    //             flywheelMaster.setControl(bangbangVoltageRequest);
+    //             flywheelAligned.setControl(alignedFollower);
+    //             flywheelOpposedA.setControl(opposedAFollower);
+    //             flywheelOpposedB.setControl(opposedBFollower);
+    //             // flywheelAligned.setControl(new Follower(13, MotorAlignmentValue.Aligned));
+    //             // flywheelOpposedA.setControl(new Follower(13, MotorAlignmentValue.Opposed));
+    //             // flywheelOpposedB.setControl(new Follower(13, MotorAlignmentValue.Opposed));
+    //         } else {
+    //             flywheelMaster.setControl(speedRequest.withVelocity(speed));
+    //             flywheelAligned.setControl(alignedFollower);
+    //             flywheelOpposedA.setControl(opposedAFollower);
+    //             flywheelOpposedB.setControl(opposedBFollower);
+    //             // flywheelAligned.setControl(new Follower(13, MotorAlignmentValue.Aligned));
+    //             // flywheelOpposedA.setControl(new Follower(13, MotorAlignmentValue.Opposed));
+    //             // flywheelOpposedB.setControl(new Follower(13, MotorAlignmentValue.Opposed));
+    //         }
+    //     }
+    //     else {
+    //         Logger.recordOutput("Shooter/usingVoltage", true);
+    //         flywheelMaster.setControl(
+    //                 speedVoltageRequest.withVelocity(speed));
+    //         flywheelAligned.setControl(alignedFollower);
+    //         flywheelOpposedA.setControl(opposedAFollower);
+    //         flywheelOpposedB.setControl(opposedBFollower);
+    //         // flywheelAligned.setControl(new Follower(13, MotorAlignmentValue.Aligned));
+    //         // flywheelOpposedA.setControl(new Follower(13, MotorAlignmentValue.Opposed));
+    //         // flywheelOpposedB.setControl(new Follower(13, MotorAlignmentValue.Opposed));
+    //     }
+    // }
     @Override
     public void setSpeed(double speed, double acceleration) {
-        double errorRPS = speed - flywheelMaster.getVelocity().getValueAsDouble();
-        boolean wantBangBang = false;
-
-        if (speed < 64.0) {
-            Logger.recordOutput("Shooter/bangbang", wantBangBang);
-            Logger.recordOutput("Shooter/usingVoltage", false);
-            if (wantBangBang) {
-                flywheelMaster.setControl(bangbangVoltageRequest);
-                flywheelAligned.setControl(alignedFollower);
-                flywheelOpposedA.setControl(opposedAFollower);
-                flywheelOpposedB.setControl(opposedBFollower);
-                // flywheelAligned.setControl(new Follower(13, MotorAlignmentValue.Aligned));
-                // flywheelOpposedA.setControl(new Follower(13, MotorAlignmentValue.Opposed));
-                // flywheelOpposedB.setControl(new Follower(13, MotorAlignmentValue.Opposed));
-            } else {
-                flywheelMaster.setControl(speedRequest.withVelocity(speed));
-                flywheelAligned.setControl(alignedFollower);
-                flywheelOpposedA.setControl(opposedAFollower);
-                flywheelOpposedB.setControl(opposedBFollower);
-                // flywheelAligned.setControl(new Follower(13, MotorAlignmentValue.Aligned));
-                // flywheelOpposedA.setControl(new Follower(13, MotorAlignmentValue.Opposed));
-                // flywheelOpposedB.setControl(new Follower(13, MotorAlignmentValue.Opposed));
-            }
-        }
-        else {
-            Logger.recordOutput("Shooter/usingVoltage", true);
-            flywheelMaster.setControl(
-                    speedVoltageRequest.withVelocity(speed));
-            flywheelAligned.setControl(alignedFollower);
-            flywheelOpposedA.setControl(opposedAFollower);
-            flywheelOpposedB.setControl(opposedBFollower);
-            // flywheelAligned.setControl(new Follower(13, MotorAlignmentValue.Aligned));
-            // flywheelOpposedA.setControl(new Follower(13, MotorAlignmentValue.Opposed));
-            // flywheelOpposedB.setControl(new Follower(13, MotorAlignmentValue.Opposed));
-        }
+        flywheelMaster.setControl(
+                   speedVoltageRequest.withVelocity(speed));
     }
 }

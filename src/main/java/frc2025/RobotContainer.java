@@ -236,15 +236,15 @@ public class RobotContainer {
                                                                 DEAD_BAND_DRIVER, true) * Math.PI * 2));
 
                 intakeSubsystem.setDefaultCommand(intakeSubsystem.setDeployVoltage(() -> 0.0));
-                // hoodSubsystem.setDefaultCommand(hoodSubsystem.setPosition(() -> 0.1));
-                // shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
-                // // shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
-                // indexerSubsystem.setDefaultCommand(
-                //                 indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0));
-                // // indexerSubsystem.setDefaultCommand(AutoAimCommands.);
-                turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
-                // turretSubsystem.setDefaultCommand(turretSubsystem
-                //                 .setPositionSafe(() -> SubsystemConstants.turretDefaultRadians, () -> 0.0, () -> true));
+                hoodSubsystem.setDefaultCommand(hoodSubsystem.setPosition(() -> 0.1));
+                shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
+                // shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
+                indexerSubsystem.setDefaultCommand(
+                                indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0));
+                // indexerSubsystem.setDefaultCommand(AutoAimCommands.);
+                // turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
+                turretSubsystem.setDefaultCommand(turretSubsystem
+                                .setPositionSafe(() -> SubsystemConstants.turretZeroOffsetRadians, () -> 0.0, () -> true));
 
                 driverXboxController.a().onTrue(
                                 SuperstructureCommands.resetOdometry(
@@ -589,17 +589,16 @@ public class RobotContainer {
                         .whileTrue(shooterSubsystem.characterizeCurrentStep(
                                 () -> SmartDashboard.getNumber("Tuning/testCurrentAmps", 0.0)));
 
-                SmartDashboard.putNumber("Tuning/testVelocityRPS", 0.0);
+                SmartDashboard.putNumber("Tuning/testHoodPosition", 0.0);
 
                 characterizeController.b()
-                        .whileTrue(shooterSubsystem.setSpeed(
-                                () -> SmartDashboard.getNumber("Tuning/testVelocityRPS", 0.0)));
+                        .whileTrue(turretSubsystem.setVoltage(() -> (-1.0)));
         
-                characterizeController.a()
-                                .whileTrue(shooterSubsystem.setVoltage(() -> 5.0))
-                                .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
+                // characterizeController.a()
+                //                 .whileTrue(shooterSubsystem.setVoltage(() -> 5.0))
+                //                 .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
                 
-                characterizeController.y().whileTrue(indexerSubsystem.setVoltage(() -> 5.0));
+                // characterizeController.y().whileTrue(indexerSubsystem.setVoltage(() -> 5.0));
                 
                 
                 // characterizeController.y()

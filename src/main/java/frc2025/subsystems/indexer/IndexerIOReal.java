@@ -3,9 +3,6 @@ package frc2025.subsystems.indexer;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
@@ -85,8 +82,6 @@ public class IndexerIOReal implements IndexerIO {
 
         tower.getConfigurator().apply(towerConfigs, 0.050);
         tower.getConfigurator().apply(towerConfigTorque, 0.05);
-
-        tower.setControl(new Follower(SubsystemConstants.indexerID, MotorAlignmentValue.Aligned));
     }
 
     @Override
@@ -115,7 +110,7 @@ public class IndexerIOReal implements IndexerIO {
     public void setTowerSpeed(double speed) {
         speed = speed * SubsystemConstants.towerFlywheelRatio;
         boolean inTolerance = (speed - tower.getVelocity().getValueAsDouble()) < SubsystemConstants.towerBangBangThreshold;
-
+        
         if (!inTolerance) {
             Logger.recordOutput("Tower/towerBangBang", true);
             tower.setControl(bangbangVoltageRequest);
