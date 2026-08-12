@@ -66,7 +66,7 @@ public class HoodIOReal implements HoodIO {
         inputs.positionRotations = hood.getPosition().getValue().in(Units.Rotation);
         inputs.positionRadians = toRadians(inputs.positionRotations);
         inputs.positionDegreesReal = Math.toDegrees(inputs.positionRadians);
-
+        inputs.velocity = hood.getVelocity().getValueAsDouble();
         inputs.totalCurrent = hood.getStatorCurrent().getValueAsDouble();
         Logger.recordOutput("Current/Hood", hood.getStatorCurrent().getValueAsDouble());
     }

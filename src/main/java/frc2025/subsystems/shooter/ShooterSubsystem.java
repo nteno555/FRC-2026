@@ -104,6 +104,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public boolean getShotReady() {
+        Logger.recordOutput("Shooter/readyToShoot", Math.abs(wantedVelocity - inputs.masterVelocityRPS) < 5.0 && inputs.masterVelocityRPS > 1.0);
         return Math.abs(wantedVelocity - inputs.masterVelocityRPS) < 5.0 && inputs.masterVelocityRPS > 1.0;
     }
 

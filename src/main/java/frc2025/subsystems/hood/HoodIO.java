@@ -9,6 +9,7 @@ public interface HoodIO {
         public double positionRadians;
         public double positionDegreesReal;
         public double totalCurrent;
+        public double velocity;
     }
 
     public void updateInputs(HoodIOInputs inputs);

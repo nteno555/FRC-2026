@@ -105,7 +105,9 @@ public class TurretSubsystem extends SubsystemBase {
                     var angular = robotSpeeds.omegaRadiansPerSecond;
                     var distanceToTarget = robotToTargetXY.getNorm();
                     Logger.recordOutput("Turret/Auto Aiming Currently", true);
-                    return (angular + tangent / distanceToTarget);
+                    double wanted = (angular + tangent / distanceToTarget);
+                    Logger.recordOutput("Turret/wanted", wanted);
+                    return (wanted);
                     // return RobotState.getInstance().getVirtualTargetAngularVelocity();
 
                     // return RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond 
@@ -226,6 +228,9 @@ public class TurretSubsystem extends SubsystemBase {
 
     public boolean getShotReady() {
         Logger.recordOutput("Turret/errorRads", Math.abs(inputs.positionRadians - io.toRadians(setpoint)));
+        Logger.recordOutput("Turret/readyToShoot", Math.abs(inputs.positionRadians - io.toRadians(setpoint)) < SubsystemConstants.turretShotReadyThreshold
+                && !(equals(setpoint, io.toRotations(SubsystemConstants.turretMinAngleRadians))
+                        || equals(setpoint, io.toRotations(SubsystemConstants.turretMaxAngleRadians))));
         return Math.abs(inputs.positionRadians - io.toRadians(setpoint)) < SubsystemConstants.turretShotReadyThreshold
                 && !(equals(setpoint, io.toRotations(SubsystemConstants.turretMinAngleRadians))
                         || equals(setpoint, io.toRotations(SubsystemConstants.turretMaxAngleRadians)));

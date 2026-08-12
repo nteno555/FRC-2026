@@ -580,19 +580,23 @@ public class RobotContainer {
                                                 () -> SubsystemConstants.towerFlywheelRatio
                                                                 * SmartDashboard.getNumber("Tuning/RPM", 0.0)));
                 
-                SmartDashboard.putNumber("Tuning/testCurrentAmps", 0.0);
+                SmartDashboard.putNumber("Tuning/testVelocityRps", 0.0);
 
                 characterizeController.rightTrigger()
                         .whileTrue(shooterSubsystem.characterizeStaticCurrent());
 
                 characterizeController.leftTrigger()
-                        .whileTrue(shooterSubsystem.characterizeCurrentStep(
-                                () -> SmartDashboard.getNumber("Tuning/testCurrentAmps", 0.0)));
+                        .whileTrue(shooterSubsystem.setSpeed(
+                                () -> SmartDashboard.getNumber("Tuning/testVelocityRps", 0.0)));
 
                 SmartDashboard.putNumber("Tuning/testHoodPosition", 0.0);
 
+                characterizeController.a().whileTrue(hoodSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/testHoodPosition", 0.0)));
+
                 characterizeController.b()
-                        .whileTrue(turretSubsystem.setVoltage(() -> (-1.0)));
+                        .whileTrue(hoodSubsystem.characterizeHoodStaticVoltage(() -> (1.0)));
+                characterizeController.y()
+                        .whileTrue(hoodSubsystem.characterizeHoodStaticVoltage(() -> (-1.0)));
         
                 // characterizeController.a()
                 //                 .whileTrue(shooterSubsystem.setVoltage(() -> 5.0))
@@ -753,7 +757,7 @@ public class RobotContainer {
                 Logger.recordOutput("Superstructure/manualAimState", manualAimState);
                 Logger.recordOutput("Superstructure/slowmode", slowmode);
                 Logger.recordOutput("Superstructure/RPS Offset", rpsOffset);
-                Logger.recordOutput("Superstructure", aiming);
+                Logger.recordOutput("Superstructure/aiming", aiming);
 
                 if (autoWon) {
                         Logger.recordOutput("Superstructure/Won Auto", "WON");

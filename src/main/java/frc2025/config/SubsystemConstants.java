@@ -97,9 +97,10 @@ public class SubsystemConstants {
     public static double towerFlywheelRatio = 3.0;
     public static double towerBangBangThreshold = 15.0;
 
-    public static double hoodkS = 0.4;
-    public static double hoodkV = 0.12;
-    public static double hoodkP = 7.0;
+    //Hood Static Trials: 0.010, 
+    public static double hoodkS = 0.140;
+    public static double hoodkV = 0.125;
+    public static double hoodkP = 7.1;
     public static double hoodkI = 0.0;
     public static double hoodkD = 0.00;
     public static double hoodSupplyCurrentLimit = 40;
@@ -164,13 +165,13 @@ public class SubsystemConstants {
     public static double turretStatorCurrentLimit = 60;
     public static double turretPeakForwardTorqueCurrent = 60;
     public static double turretPeakReverseTorqueCurrent = -60;
-    public static double turretZeroOffsetRadians = 0.051;
+    public static double turretZeroOffsetRadians = 0.0;
     // 8 (44-42) 26 10 110
     public static double turretRotationsPerRadian = 44.0 / 8.0 * 26.0 / 42.0 * 110.0 / 10.0 / (2 * Math.PI);
-    public static double turretMinAngleRadians = -4.789; 
-    public static double turretMaxAngleRadians = 3.976;
-    public static double throughBoreZero1 = 0.246;
-    public static double throughBoreZero2 = 0.588;
+    public static double turretMinAngleRadians = -3.033; 
+    public static double turretMaxAngleRadians = 4.107;
+    public static double throughBoreZero1 = 0.473;
+    public static double throughBoreZero2 = 0.867;
     public static double throughBoreRatio1 = 44.0 / 8.0 * 26.0 / 42.0; // 6.17
     public static double throughBoreRatio2 = 44.0 / 8.0; // 3.82
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop

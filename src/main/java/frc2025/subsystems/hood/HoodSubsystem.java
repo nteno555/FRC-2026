@@ -22,10 +22,27 @@ public class HoodSubsystem extends SubsystemBase {
     HoodIO io;
     HoodIOInputsAutoLogged inputs = new HoodIOInputsAutoLogged();
     double setpoint = 0.0;
+    double hoodRampVoltage = 0.0;
 
     public HoodSubsystem(HoodIO io) {
         io.rezero(0);
         this.io = io;
+    }
+
+    public Command characterizeHoodStaticVoltage(Supplier<Double> direction) {
+        double sign = Math.signum(direction.get());
+
+        return this.runOnce(() -> hoodRampVoltage = 0.0)
+            .andThen(this.run(() -> {
+                hoodRampVoltage += sign * 0.01;
+                io.setVoltage(hoodRampVoltage);
+                Logger.recordOutput("Hood/characterizeRampVoltage", hoodRampVoltage);
+                Logger.recordOutput("Hood/characterizePosition", inputs.positionRotations);
+            }))
+            .finallyDo((interrupted) -> {
+                Logger.recordOutput("Hood/measuredKsVolts_" + (sign > 0 ? "up" : "down"), hoodRampVoltage);
+                io.setVoltage(0.0);
+            });
     }
 
     @Override
@@ -46,6 +63,7 @@ public class HoodSubsystem extends SubsystemBase {
     public Command setPosition(Supplier<Double> position, Supplier<Double> velocity) {
         return this.run(() -> {
             setpoint = position.get();
+            Logger.recordOutput("Hood/wantedSetpoint", setpoint);
             io.setPosition(setpoint, velocity.get());
         });
     }
@@ -100,7 +118,7 @@ public class HoodSubsystem extends SubsystemBase {
             if (RobotState.getInstance().getShuttling()) {
                 return SubsystemConstants.hoodMaxAngleRotations;
             }
-
+            Logger.recordOutput("Hood/wantedHood", ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist));
             return ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist);
         }, () -> {
             return 0.0;
@@ -137,11 +155,14 @@ public class HoodSubsystem extends SubsystemBase {
     }
 
     public boolean getShotReady() {
-        return (inputs.positionRotations > 0.15) && (Math.abs(inputs.positionRotations - setpoint) < 0.15);
+        Logger.recordOutput("Hood/shotLenient", (Math.abs(inputs.positionRotations) > 0.15));
+        Logger.recordOutput("Hood/errorPositionRotations", (Math.abs(Math.abs(inputs.positionRotations) - setpoint)));
+        Logger.recordOutput("Hood/readyToShoot", (Math.abs(inputs.positionRotations) > 0.15) && (Math.abs(Math.abs(inputs.positionRotations) - setpoint) < 0.5));
+        return (Math.abs(inputs.positionRotations) > 0.15) && (Math.abs(Math.abs(inputs.positionRotations) - setpoint) < 0.30);
     }
 
     public boolean getShotReadyLenient() {
-        return (inputs.positionRotations > 0.15);
+        return (Math.abs(inputs.positionRotations) > 0.15);
     }
 
     public static double toRadians(double rotations) {
