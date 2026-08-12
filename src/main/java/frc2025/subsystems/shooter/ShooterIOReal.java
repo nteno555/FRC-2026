@@ -97,11 +97,8 @@ public class ShooterIOReal implements ShooterIO {
 
     @Override
     public void setSpeed(double speed) {
-        if(speed<SubsystemConstants.flywheelTorqueCurrentMaxRPS) {
-            flywheelMaster.setControl(torqueCurrentRequest.withVelocity(speed));
-        } else {
-            flywheelMaster.setControl(velocityVoltageRequest.withVelocity(speed));
-        }
+        flywheelMaster.setControl(velocityVoltageRequest.withVelocity(speed));
+    
     }
 
 }

@@ -41,7 +41,7 @@ public class SubsystemConstants {
     public static double intakekG = 0.0;
     public static double intakekV = 0.07;
     public static double intakekA = 0.0;
-    public static double intakekP = 2.0;
+    public static double intakekP = 5.5;
     public static double intakekI = 0.0;
     public static double intakekD = 0.0;
     public static double intakeSupplyCurrentLimit = 100;
@@ -91,6 +91,9 @@ public class SubsystemConstants {
     public static final double flywheelSupplyCurrentLimit = 100;
     public static final double flywheelStatorCurrentLimit = 200;
     public static final double flywheelTorqueCurrentMaxRPS = 70.0;
+
+    public static final double flushWheelRps = 0.0;
+    public static final double flushHoodRotations = 0.0;
 
     // Hood: 50 to 85 degrees
     public static final double hoodFF = 0.35;
@@ -220,7 +223,7 @@ public class SubsystemConstants {
     public static final int hoodID = 205;
     public static final int indexerID = 9999;
     public static final int indexerID2 = 201;
-    public static final int intakeDeployMasterID = 150;
+    public static final int intakeDeployMasterID = 21;
     public static final int intakeRollerID = 420;
     public static final int intakeRollerSlaveID = 160;
     public static final int towerID = 250;

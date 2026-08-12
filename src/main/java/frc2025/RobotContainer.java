@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc2025.commands.AutoAimCommands;
 import frc2025.commands.DriveToPoseCommand;
@@ -30,12 +31,18 @@ import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveIOReal;
 import frc2025.subsystems.drive.DriveIOSim;
 import frc2025.subsystems.drive.DriveSubsystem;
+import frc2025.subsystems.hood.HoodIOReal;
+import frc2025.subsystems.hood.HoodIOSim;
+import frc2025.subsystems.hood.HoodSubsystem;
 import frc2025.subsystems.indexer.IndexerIOReal;
 import frc2025.subsystems.indexer.IndexerIOSim;
 import frc2025.subsystems.indexer.IndexerSubsystem;
 import frc2025.subsystems.intake.IntakeIOReal;
 import frc2025.subsystems.intake.IntakeIOSim;
 import frc2025.subsystems.intake.IntakeSubsystem;
+import frc2025.subsystems.shooter.ShooterIOReal;
+import frc2025.subsystems.shooter.ShooterIOSim;
+import frc2025.subsystems.shooter.ShooterSubsystem;
 import frc2025.subsystems.vision.VisionIOReal;
 import frc2025.subsystems.vision.VisionIOSim;
 import frc2025.subsystems.vision.VisionSubsystem;
@@ -59,6 +66,8 @@ public class RobotContainer {
 
     DriveSubsystem driveSubsystem;
     VisionSubsystem visionSubsystem;
+    ShooterSubsystem shooterSubsystem;
+    HoodSubsystem hoodSubsystem;
     IntakeSubsystem intakeSubsystem;
     IndexerSubsystem indexerSubsystem;
     ClimbSubsystem climbSubsystem;
@@ -68,6 +77,8 @@ public class RobotContainer {
 
     private double driveSpeed = 0.8;
     private double rotationSpeed = 0.7;
+
+    private boolean aiming = false;
 
     public RobotContainer() {
         createSubsystems();
@@ -83,6 +94,8 @@ public class RobotContainer {
         if(RobotBase.isReal()) {
             driveSubsystem = new DriveSubsystem(new DriveIOReal(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOReal());
+            shooterSubsystem = new ShooterSubsystem(new ShooterIOReal());
+            hoodSubsystem = new HoodSubsystem(new HoodIOReal());
             intakeSubsystem = new IntakeSubsystem(new IntakeIOReal());
             indexerSubsystem = new IndexerSubsystem(new IndexerIOReal());
             climbSubsystem = new ClimbSubsystem(new ClimbIOReal());
@@ -90,6 +103,8 @@ public class RobotContainer {
         } else {
             driveSubsystem = new DriveSubsystem(new DriveIOSim(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOSim());
+            shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
+            hoodSubsystem = new HoodSubsystem(new HoodIOSim());
             intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
             indexerSubsystem = new IndexerSubsystem(new IndexerIOSim());
             climbSubsystem = new ClimbSubsystem(new ClimbIOSim());
@@ -102,6 +117,14 @@ public class RobotContainer {
 
     public VisionSubsystem getVision() {
         return visionSubsystem;
+    }
+
+    public ShooterSubsystem getShooter() {
+        return shooterSubsystem;
+    }
+
+    public HoodSubsystem getHood() {
+        return hoodSubsystem;
     }
 
     public IntakeSubsystem getIntake() {
@@ -126,8 +149,6 @@ public class RobotContainer {
                 )
         );
 
-
-
         driverXboxController.a().onTrue(
                 SuperstructureCommands.resetOdometry(
                         this,
@@ -137,6 +158,46 @@ public class RobotContainer {
                 )
         );
 
+        new Trigger(() -> aiming)
+                    .whileTrue(shooterSubsystem.setSpeed(() -> SubsystemConstants.flushWheelRps)
+                                    .alongWith(hoodSubsystem.setPosition(() -> SubsystemConstants.flushHoodRotations)));
+        
+        new Trigger(() -> true)
+                    .whileTrue(AutoAimCommands.autoIndex(this));
+        
+        driverXboxController.y()
+                    .onTrue(Commands.runOnce(() -> aiming = true));
+
+        driverXboxController.x()
+                    .onTrue(Commands.runOnce(() -> aiming = false));
+
+        driverXboxController.povDown()
+                    .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
+        
+        driverXboxController.povUp()
+                    .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeRetractPosition));
+
+        driverXboxController.leftBumper()
+                    .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));
+
+        driverXboxController.rightBumper()
+                    .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
+
+        SmartDashboard.putNumber("Tuning/intakeDeployPosition", 0.0);
+        SmartDashboard.putNumber("Tuning/shooterRps", 0.0);
+        SmartDashboard.putNumber("Tuning/hoodPosition", 0.0);
+
+        tuningController.rightTrigger()
+                        .whileTrue(intakeSubsystem.setDeployPosition(() -> SmartDashboard.getNumber("Tuning/intakeDeployPosition", 0.0)));
+
+        tuningController.leftTrigger()
+                        .whileTrue(intakeSubsystem.setDeployPosition(() -> 0.0));
+        
+        tuningController.b()
+                        .whileTrue(shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/shooterRps", 0.0)));
+
+        tuningController.b()
+                    .whileTrue(hoodSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/hoodPosition", 0.0)));
 
 
         driveTuningController.a()

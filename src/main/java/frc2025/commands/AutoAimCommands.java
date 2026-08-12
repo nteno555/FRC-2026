@@ -57,4 +57,16 @@ public class AutoAimCommands {
         return robotContainer.getDrive().applyChassisSpeedsCommand(() -> new ChassisSpeeds(0, 0, omegaSpeed.get()));
     }
 
+    public static Command autoIndex(RobotContainer robotContainer) {
+        Supplier<Boolean> booleanSupplier = () -> {
+            return robotContainer.getShooter().getShotReady() && robotContainer.getHood().getShotReady();
+        };
+
+        if (booleanSupplier.get()) {
+            return robotContainer.getIndexer().setVoltage(() -> SubsystemConstants.indexerShootVoltage);
+        }
+
+        return robotContainer.getIndexer().setVoltage(() -> 0.0);
+    }
+
 }

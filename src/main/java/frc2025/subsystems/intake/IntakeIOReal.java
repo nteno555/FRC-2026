@@ -97,19 +97,11 @@ public class IntakeIOReal implements IntakeIO {
 
     @Override
     public void setDeployPosition(double position, boolean fast) {
-        if (fast) {
-            intakeDeployMaster.setControl(
-                    new PositionVoltage(position)
-                            .withEnableFOC(true)
-                            .withSlot(0)
-            );
-        } else {
-            intakeDeployMaster.setControl(
+        intakeDeployMaster.setControl(
                 new PositionVoltage(position)
                         .withEnableFOC(true)
-                        .withSlot(1)
-            );
-        }
+                        .withSlot(0)
+        );
     }
 
     @Override

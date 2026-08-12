@@ -11,14 +11,17 @@ import java.util.function.Supplier;
 public class IntakeSubsystem extends SubsystemBase {
     IntakeIO io;
     IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+    double setpoint;
 
     public IntakeSubsystem(IntakeIO io){
         this.io = io;
-    }
+        io.rezero(0.0);
+    }   
 
     @Override
     public void periodic(){
         Logger.processInputs("RealOutputs/Intake", inputs);
+        Logger.recordOutput("Intake/setpoint", setpoint);
         io.updateInputs(inputs);
     }
 
@@ -35,7 +38,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public Command setDeployPosition(Supplier<Double> position) {
         return this.run(() -> {
-            if (position.get() == SubsystemConstants.intakeRetractPosition) io.setVoltage(0.0);
+            setpoint = position.get();
             io.setDeployPosition(position.get(), true);
         });
     }

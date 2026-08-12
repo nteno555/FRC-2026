@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc2025.RobotContainer;
 import frc2025.RobotState;
 import frc2025.commands.FollowPathCommand;
 import frc2025.config.SubsystemConstants;
@@ -95,6 +96,54 @@ public class DriveSubsystem extends SubsystemBase {
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);
         Logger.processInputs("RealOutputs/Drive", inputs);
     }
+
+    private double modAngle(double angle) {
+        angle = angle % (2*Math.PI);
+        if(angle > Math.PI) return angle - 2*Math.PI;
+        if(angle < -Math.PI) return angle + 2*Math.PI;
+        return angle;
+    }
+
+    public Command driveAutoAim(RobotContainer robotContainer) {
+        Supplier<Double> omegaSpeed = () -> {
+            Pose2d virtualTarget = RobotState.getInstance().getShootingWhileMovingVirtualPose();
+            if (virtualTarget == null) {
+                return 0.0;
+            }
+            
+            Pose2d shooterPose = RobotState.getInstance().getDelayedShooterPose();
+
+            double desiredHeading = Math.atan2(
+                    virtualTarget.getY() - shooterPose.getY(),
+                    virtualTarget.getX() - shooterPose.getX()
+            );
+
+            double currentHeading = RobotState.getInstance().getVisionPose().getRotation().getRadians();
+            double angleError = modAngle(desiredHeading - currentHeading);
+
+            double feedback = SubsystemConstants.alignRotationkP * angleError;
+            double feedforward = RobotState.getInstance().getVirtualTargetAngularVelocity();
+
+            double omega = feedforward + feedback;
+            return MathUtil.clamp(omega, -SubsystemConstants.autoAimMaxAngularVelocity, SubsystemConstants.autoAimMaxAngularVelocity);
+        };
+
+        return robotContainer.getDrive().applyChassisSpeedsCommand(() -> new ChassisSpeeds(0, 0, omegaSpeed.get()));
+    }
+
+    public boolean getShotReady() {
+        Pose2d shooterPose = RobotState.getInstance().getDelayedShooterPose();
+        Pose2d virtualTarget = RobotState.getInstance().getShootingWhileMovingVirtualPose();
+        double desiredHeading = Math.atan2(
+                virtualTarget.getY() - shooterPose.getY(),
+                virtualTarget.getX() - shooterPose.getX()
+        );
+
+        double currentHeading = RobotState.getInstance().getVisionPose().getRotation().getRadians();
+        double angleError = modAngle(desiredHeading - currentHeading);
+        return (Math.abs(angleError) < 3);
+    }
+
 
 
     public void applyChassisSpeeds(ChassisSpeeds speeds) {
