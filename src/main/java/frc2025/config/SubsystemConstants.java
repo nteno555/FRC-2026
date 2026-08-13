@@ -42,9 +42,9 @@ public class SubsystemConstants {
     // public static double flywheelkI = 0.0;
     // public static double flywheelkD = 0.0;
     public static double flywheelkS = 0.20;
-    public static double flywheelkV = 0.122;
+    public static double flywheelkV = 0.122; //0.122
     public static double flywheelkA = 0.00;
-    public static double flywheelkP = 0.05;
+    public static double flywheelkP = 0.05; //0.05
     public static double flywheelkI = 0.00;
     public static double flywheelkD = 0.00;
 
@@ -100,7 +100,7 @@ public class SubsystemConstants {
     //Hood Static Trials: 0.010, 
     public static double hoodkS = 0.140;
     public static double hoodkV = 0.125;
-    public static double hoodkP = 7.1;
+    public static double hoodkP = 7.5;
     public static double hoodkI = 0.0;
     public static double hoodkD = 0.00;
     public static double hoodSupplyCurrentLimit = 40;
@@ -112,9 +112,9 @@ public class SubsystemConstants {
     public static double hoodReverseSoftLimit = -0.1;
     public static double hoodRezeroVoltage = -3.5;
     public static double hoodMinAngleRotations = 0;
-    public static double hoodMaxAngleRotations = 9.0;
-    public static double hoodMinAngleRadians = 1.48;
-    public static double hoodMaxAngleRadians = 0.87;
+    public static double hoodMaxAngleRotations = 8.9;
+    public static double hoodMinAngleRadians = 0.87266463;
+    public static double hoodMaxAngleRadians = 0.08726646;
 
     public static double intakekS = 0.1;
     public static double intakekG = 0.0;

@@ -77,7 +77,7 @@ public class RobotContainer {
         Autos autos;
         Command autoCommand;
 
-        private double driveSpeed = 1.3;
+        private double driveSpeed = 0.5; //1.3
         private double slowmodeDriveSpeed = 0.3;
         private double rotationSpeed = 0.9;
         private double slowmodeRotationSpeed = 0.5;
@@ -758,6 +758,7 @@ public class RobotContainer {
                 Logger.recordOutput("Superstructure/slowmode", slowmode);
                 Logger.recordOutput("Superstructure/RPS Offset", rpsOffset);
                 Logger.recordOutput("Superstructure/aiming", aiming);
+                Logger.recordOutput("Superstructure/vy", shooterSubsystem.getVelocity()*Math.sin(0.8727 - 0.08824 * hoodSubsystem.getPosition()));
 
                 if (autoWon) {
                         Logger.recordOutput("Superstructure/Won Auto", "WON");

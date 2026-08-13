@@ -16,11 +16,20 @@ public class ShooterTreeMap {
     public double kDrag = 0.001;
 
     public ShooterTreeMap() {
-        tofTreeMap.put(5.13, 1.32); // 1.33 1.29 1.30
-        tofTreeMap.put(4.06, 1.28); // 1.33 1.28 1.32
-        tofTreeMap.put(3.06, 1.16); // 1.17 1.1 1.18
-        tofTreeMap.put(1.46, 1.09);
+        // tofTreeMap.put(5.13, 1.32); // 1.33 1.29 1.30
+        // tofTreeMap.put(4.06, 1.28); // 1.33 1.28 1.32
+        // tofTreeMap.put(3.06, 1.16); // 1.17 1.1 1.18
+        // tofTreeMap.put(1.46, 1.09);
 
+        tofTreeMap.put(5.13, 1.64); // 1.33 1.29 1.30
+        tofTreeMap.put(4.025, 1.55); // 1.33 1.28 1.32
+        tofTreeMap.put(3.009, 1.36); // 1.17 1.1 1.18
+        tofTreeMap.put(1.485, 1.26); 
+
+        // hood rotations: 1.17, 2.21, 3.05, 3.44, 4.08, 4.58
+
+        // RPS: 22.6, 27.0, 32.0, 35.0, 38.4, 40.3
+        
         // lowerWheelTreeMap.put(6.0, 58.0);
         // lowerWheelTreeMap.put(5.05, 52.0); // 24.22
         // lowerWheelTreeMap.put(4.10, 47.0); // 21.85
@@ -34,21 +43,27 @@ public class ShooterTreeMap {
         // hoodTreeMap.put(3.03, 1.95);
         // hoodTreeMap.put(2.12, 1.6);
         // hoodTreeMap.put(1.57, 1.3);
-        lowerWheelTreeMap.put(1.543, 22.6);
-        lowerWheelTreeMap.put(2.178, 27.0); // 24.22
-        lowerWheelTreeMap.put(3.099, 32.0); // 21.85
-        lowerWheelTreeMap.put(4.152, 35.0); // 20.78
-        lowerWheelTreeMap.put(5.046, 38.4); // 19.95
+        // lowerWheelTreeMap.put(1.543, 22.6);
+        // lowerWheelTreeMap.put(2.178, 27.0); // 24.22
+        // lowerWheelTreeMap.put(3.099, 32.0); // 21.85
+        // lowerWheelTreeMap.put(4.152, 35.0); // 20.78
+        // lowerWheelTreeMap.put(5.046, 38.4); // 19.95
 
-        lowerWheelTreeMap.put(6.0, 40.3); // 19.10
+        // lowerWheelTreeMap.put(6.0, 40.3); // 19.10
 
-        hoodTreeMap.put(1.543, 1.5);
-        hoodTreeMap.put(2.178, 1.9);
-        hoodTreeMap.put(3.099, 2.5);
-        hoodTreeMap.put(4.152, 3.9);
-        hoodTreeMap.put(5.046, 4.2);
+        lowerWheelTreeMap.put(1.543, 26.0); // 15.8757785
+        lowerWheelTreeMap.put(2.178, 30.0); // 16.973333
+        lowerWheelTreeMap.put(3.103, 33.0); // 17.0999029
+        lowerWheelTreeMap.put(4.155, 38.0); // 18.9597874
+        lowerWheelTreeMap.put(5.06, 39.7); // 19.6070128
+        // lowerWheelTreeMap.put(5.616, 37.5); // 17.082934
 
-        hoodTreeMap.put(6.0, 4.5);
+        hoodTreeMap.put(1.543, 1.27);
+        hoodTreeMap.put(2.178, 2.21);
+        hoodTreeMap.put(3.103, 3.05);
+        hoodTreeMap.put(4.155, 3.44);
+        hoodTreeMap.put(5.06, 3.8);
+        // hoodTreeMap.put(5.616, 4.58);
         // vy = rps * sin(85 - 12.28*hood)
         //vy = rps · sin(0.09805 · hood_rotation)
 
