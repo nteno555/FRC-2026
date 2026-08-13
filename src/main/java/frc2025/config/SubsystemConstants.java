@@ -46,9 +46,9 @@ public class SubsystemConstants {
     public static double intakekD = 0.0;
     public static double intakeSupplyCurrentLimit = 100;
     public static double intakeStatorCurrentLimit = 100;
-    public static double intakeMotionMagicCruiseVelocity = 120;
-    public static double intakeMotionMagicAcceleration = 300;
-    public static double intakeMotionMagicJerk = 1400;
+    public static double intakeMotionMagicCruiseVelocity = 10;
+    public static double intakeMotionMagicAcceleration = 15;
+    public static double intakeMotionMagicJerk = 30;
     public static double intakePeakForwardTorqueCurrent = 100;
     public static double intakePeakReverseTorqueCurrent = 100;
     public static double intakeTorqueNeutralDeadband = 1;
@@ -215,20 +215,20 @@ public class SubsystemConstants {
     public static final double autoAimMaxSpeed = 2.0;
     public static final double autoAimMaxAccel = 10.0;
 
-    public static final int climbID = 190;
-    public static final int flywheelMasterID = 180;
-    public static final int flywheelSlaveA1ID = 170;
-    public static final int flywheelSlaveB1ID = 199;
-    public static final int flywheelSlaveB2ID = 199;
-    public static final int hoodID = 205;
-    public static final int indexerID = 9999;
-    public static final int indexerID2 = 201;
+
+    public static final int flywheelMasterID = 17;
+    // public static final int flywheelSlaveA1ID = 1;
+
+    public static final int flywheelSlaveB1ID = 31;
+    public static final int flywheelSlaveB2ID = 32;
+
+    public static final int hoodID = 0;
+
+    public static final int indexerID = 14;
+    public static final int indexerID2 = 3;
+
     public static final int intakeDeployMasterID = 21;
-    public static final int intakeRollerID = 420;
-    public static final int intakeRollerSlaveID = 160;
-    public static final int towerID = 250;
-    public static final int towerID2 = 241;
-    public static final int turretID = 230;
-    public static final int turretTb1ID = 810;
-    public static final int turretTb2ID = 734;
+    public static final int intakeRollerID = 7;
+    public static final int intakeRollerSlaveID = 11;
+
 }

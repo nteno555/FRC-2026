@@ -53,14 +53,14 @@ public class IntakeIOReal implements IntakeIO {
         slot0.kI = SubsystemConstants.intakekI;
         slot0.kD = SubsystemConstants.intakekD;
 
-        var slot1 = deployConfigs.Slot1;
-        slot1.kS = SubsystemConstants.intakekS;
-        slot1.kV = SubsystemConstants.intakekV;
-        slot1.kA = SubsystemConstants.intakekA;
-        slot1.kG = SubsystemConstants.intakekG;
-        slot1.kP = SubsystemConstants.intakekP * 0.2;
-        slot1.kI = SubsystemConstants.intakekI;
-        slot1.kD = SubsystemConstants.intakekD;
+        // var slot1 = deployConfigs.Slot1;
+        // slot1.kS = SubsystemConstants.intakekS;
+        // slot1.kV = SubsystemConstants.intakekV;
+        // slot1.kA = SubsystemConstants.intakekA;
+        // slot1.kG = SubsystemConstants.intakekG;
+        // slot1.kP = SubsystemConstants.intakekP * 0.2;
+        // slot1.kI = SubsystemConstants.intakekI;
+        // slot1.kD = SubsystemConstants.intakekD;
 
         intakeRoller.getConfigurator().apply(rollerConfigs);
         intakeRollerSlave.getConfigurator().apply(rollerConfigs);
@@ -98,9 +98,13 @@ public class IntakeIOReal implements IntakeIO {
     @Override
     public void setDeployPosition(double position, boolean fast) {
         intakeDeployMaster.setControl(
-                new PositionVoltage(position)
-                        .withEnableFOC(true)
-                        .withSlot(0)
+                new MotionMagicVoltage(position)
+                    .withEnableFOC(true)
+                    //.withFeedForward(voltageFF)
+                    .withSlot(0)
+                    .withOverrideBrakeDurNeutral(true)
+                    .withLimitForwardMotion(false)
+                    .withLimitReverseMotion(false)
         );
     }
 
