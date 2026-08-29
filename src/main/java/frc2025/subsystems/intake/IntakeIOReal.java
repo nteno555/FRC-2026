@@ -13,7 +13,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class IntakeIOReal implements IntakeIO {
     private final TalonFX intakeDeployMaster = new TalonFX(SubsystemConstants.intakeDeployMasterID, CANBus.roboRIO());
-    private final TalonFX intakeRoller = new TalonFX(SubsystemConstants.intakeRollerID,CANBus.roboRIO());
+    // private final TalonFX intakeRoller = new TalonFX(SubsystemConstants.intakeRollerID,CANBus.roboRIO());
     private final TalonFX intakeRollerSlave = new TalonFX(SubsystemConstants.intakeRollerSlaveID, CANBus.roboRIO());
 
     public IntakeIOReal() {
@@ -62,11 +62,11 @@ public class IntakeIOReal implements IntakeIO {
         // slot1.kI = SubsystemConstants.intakekI;
         // slot1.kD = SubsystemConstants.intakekD;
 
-        intakeRoller.getConfigurator().apply(rollerConfigs);
+        // intakeRoller.getConfigurator().apply(rollerConfigs);
         intakeRollerSlave.getConfigurator().apply(rollerConfigs);
         intakeDeployMaster.getConfigurator().apply(deployConfigs);
 
-        intakeRollerSlave.setControl(new Follower(intakeRoller.getDeviceID(), MotorAlignmentValue.Opposed));
+        // intakeRollerSlave.setControl(new Follower(intakeRoller.getDeviceID(), MotorAlignmentValue.Opposed));
 
         intakeDeployMaster.setNeutralMode(NeutralModeValue.Brake);
 
@@ -75,7 +75,7 @@ public class IntakeIOReal implements IntakeIO {
 
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
-        inputs.voltage = intakeRoller.getMotorVoltage().getValue().in(Units.Volts);
+        // inputs.voltage = intakeRoller.getMotorVoltage().getValue().in(Units.Volts);
         inputs.position = intakeDeployMaster.getPosition().getValueAsDouble();
         inputs.deployConnected = intakeDeployMaster.isConnected();
 //        Logger.recordOutput("Intake/deployVoltage", intakeDeployMaster.getMotorVoltage().getValue().in(Units.Volts));
@@ -83,16 +83,16 @@ public class IntakeIOReal implements IntakeIO {
 //        Logger.recordOutput("Intake/masterPosition", intakeDeployMaster.getPosition().getValueAsDouble());
 //        Logger.recordOutput("Intake/slavePosition", intakeDeploySlave.getPosition().getValueAsDouble());
 
-        inputs.totalCurrent = intakeDeployMaster.getStatorCurrent().getValueAsDouble() +
-                intakeRoller.getStatorCurrent().getValueAsDouble() + intakeRollerSlave.getStatorCurrent().getValueAsDouble();
+        // inputs.totalCurrent = intakeDeployMaster.getStatorCurrent().getValueAsDouble() +
+        //         intakeRoller.getStatorCurrent().getValueAsDouble() + intakeRollerSlave.getStatorCurrent().getValueAsDouble();
 
-        Logger.recordOutput("Current/Intake Deploy Master", intakeDeployMaster.getStatorCurrent().getValueAsDouble());
-        Logger.recordOutput("Current/Intake Roller", intakeRoller.getStatorCurrent().getValueAsDouble());
+        // Logger.recordOutput("Current/Intake Deploy Master", intakeDeployMaster.getStatorCurrent().getValueAsDouble());
+        // Logger.recordOutput("Current/Intake Roller", intakeRoller.getStatorCurrent().getValueAsDouble());
     }
 
     @Override
     public void setSpeed(double speed) {
-        intakeRoller.setControl(new DutyCycleOut(speed));
+        // intakeRoller.setControl(new DutyCycleOut(speed));
     }
 
     @Override
@@ -110,7 +110,7 @@ public class IntakeIOReal implements IntakeIO {
 
     @Override
     public void setVoltage(double voltage) {
-        intakeRoller.setControl(new VoltageOut(voltage));
+        // intakeRoller.setControl(new VoltageOut(voltage));
     }
 
     @Override

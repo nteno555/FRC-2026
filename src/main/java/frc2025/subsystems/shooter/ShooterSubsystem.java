@@ -17,6 +17,7 @@ public class ShooterSubsystem extends SubsystemBase {
     boolean usingVoltage = false;
     ShooterIO io;
     ShooterIOInputsAutoLogged inputs;
+    double rampVoltage = 0.0;
 
     public ShooterSubsystem(ShooterIO io) {
         this.io = io;
@@ -29,6 +30,28 @@ public class ShooterSubsystem extends SubsystemBase {
         Logger.recordOutput("Superstructure/ShooterSpeed", inputs.masterVelocityRPS);
         Logger.recordOutput("Shooter/wantedSpeed", wantedVelocity);
         io.updateInputs(this.inputs);
+    }
+
+    public Command characterizeStaticVoltage() {
+        return this.runOnce(() -> rampVoltage = 0.0)
+            .andThen(this.run(() -> {
+                rampVoltage += 0.02;
+                io.setVoltage(rampVoltage);
+                Logger.recordOutput("Shooter/staticRampVoltage", rampVoltage);
+                Logger.recordOutput("Shooter/staticVelocityRPS", inputs.masterVelocityRPS);
+            }).until(() -> (Math.abs(inputs.masterVelocityRPS) > 0.5)))
+            .finallyDo((interrupted) -> {
+                Logger.recordOutput("Shooter/measuredkSVolts", rampVoltage);
+                io.setVoltage(0.0);
+            });
+    }
+
+    public Command characterizeVoltageStep(Supplier<Double> voltage) {
+        return this.runEnd(() -> {
+            io.setVoltage(voltage.get());
+            Logger.recordOutput("Shooter/currentStepVoltage", voltage.get());
+            Logger.recordOutput("Shooter/currentStepVelocityRPS", inputs.masterVelocityRPS);
+        }, () -> io.setVoltage(0.0));
     }
 
     public Command setVoltage(Supplier<Double> voltage) {
@@ -44,21 +67,16 @@ public class ShooterSubsystem extends SubsystemBase {
             usingVoltage = false;
             wantedVelocity = speed.get();
             io.setSpeed(speed.get(), 0.0);
-        }, () -> {
-            usingVoltage = false;
-            io.setSpeed(0.0, 0.0);
-        });
+        }, () -> {wantedVelocity = 0.0; io.setSpeed(0.0, 0.0);});
     }
+
 
     public Command setSpeed(Supplier<Double> speed, Supplier<Double> acceleration) {
         return this.runEnd(() -> {
             usingVoltage = false;
             wantedVelocity = speed.get();
             io.setSpeed(speed.get(), acceleration.get());
-        }, () -> {
-            usingVoltage = false;
-            io.setSpeed(0.0, 0.0);
-        });
+        }, () -> wantedVelocity = 0.0);
     }
 
     public Command autoAim() {

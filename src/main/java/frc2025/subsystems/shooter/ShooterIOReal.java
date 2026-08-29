@@ -15,7 +15,7 @@ import frc2025.config.SubsystemConstants;
 
 public class ShooterIOReal implements ShooterIO {
     private TalonFX flywheelMaster = new TalonFX(SubsystemConstants.flywheelMasterID, "rio");
-    // private TalonFX flywheelSlaveA1 = new TalonFX(SubsystemConstants.flywheelSlaveA1ID, "rio");
+    private TalonFX flywheelSlaveA1 = new TalonFX(SubsystemConstants.flywheelSlaveA1ID, "rio");
     private TalonFX flywheelSlaveB1 = new TalonFX(SubsystemConstants.flywheelSlaveB1ID, "rio");
     private TalonFX flywheelSlaveB2 = new TalonFX(SubsystemConstants.flywheelSlaveB2ID, "rio");
 
@@ -23,7 +23,7 @@ public class ShooterIOReal implements ShooterIO {
 
     public ShooterIOReal() {
         flywheelMaster.getConfigurator().apply(new TalonFXConfiguration());
-        // flywheelSlaveA1.getConfigurator().apply(new TalonFXConfiguration());
+        flywheelSlaveA1.getConfigurator().apply(new TalonFXConfiguration());
         flywheelSlaveB1.getConfigurator().apply(new TalonFXConfiguration());
         flywheelSlaveB2.getConfigurator().apply(new TalonFXConfiguration());
 
@@ -43,16 +43,16 @@ public class ShooterIOReal implements ShooterIO {
         flywheelConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         flywheelMaster.getConfigurator().apply(flywheelConfig, 0.050);
-        // flywheelSlaveA1.getConfigurator().apply(flywheelConfig, 0.050);
+        flywheelSlaveA1.getConfigurator().apply(flywheelConfig, 0.050);
         flywheelSlaveB1.getConfigurator().apply(flywheelConfig, 0.050);
         flywheelSlaveB2.getConfigurator().apply(flywheelConfig, 0.050);
 
         flywheelMaster.setNeutralMode(NeutralModeValue.Coast);
-        // flywheelSlaveA1.setNeutralMode(NeutralModeValue.Coast);
+        flywheelSlaveA1.setNeutralMode(NeutralModeValue.Coast);
         flywheelSlaveB1.setNeutralMode(NeutralModeValue.Coast);
         flywheelSlaveB2.setNeutralMode(NeutralModeValue.Coast);
 
-        // flywheelSlaveA1.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Aligned));
+        flywheelSlaveA1.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Aligned));
         flywheelSlaveB1.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Opposed));
         flywheelSlaveB2.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Opposed));
     }
@@ -63,15 +63,15 @@ public class ShooterIOReal implements ShooterIO {
         inputs.masterVoltage = flywheelMaster.getMotorVoltage().getValueAsDouble();
         inputs.masterVelocityRPS = flywheelMaster.getVelocity().getValueAsDouble();
 
-        // inputs.slaveA1Voltage = flywheelSlaveA1.getMotorVoltage().getValueAsDouble();
-        // inputs.slaveA1VelocityRPS = flywheelSlaveA1.getVelocity().getValueAsDouble();
+        inputs.slaveA1Voltage = flywheelSlaveA1.getMotorVoltage().getValueAsDouble();
+        inputs.slaveA1VelocityRPS = flywheelSlaveA1.getVelocity().getValueAsDouble();
         inputs.slaveB1Voltage = flywheelSlaveB1.getMotorVoltage().getValueAsDouble();
         inputs.slaveB1VelocityRPS = flywheelSlaveB1.getVelocity().getValueAsDouble();
         inputs.slaveB2Voltage = flywheelSlaveB2.getMotorVoltage().getValueAsDouble();
         inputs.slaveB2VelocityRPS = flywheelSlaveB2.getVelocity().getValueAsDouble();
 
         inputs.masterStatorCurrent = flywheelMaster.getStatorCurrent().getValueAsDouble();
-        // inputs.slaveA1StatorCurrent = flywheelSlaveA1.getStatorCurrent().getValueAsDouble();
+        inputs.slaveA1StatorCurrent = flywheelSlaveA1.getStatorCurrent().getValueAsDouble();
         inputs.slaveB1StatorCurrent = flywheelSlaveB1.getStatorCurrent().getValueAsDouble();
         inputs.slaveB2StatorCurrent = flywheelSlaveB2.getStatorCurrent().getValueAsDouble();
         inputs.totalCurrent = inputs.masterStatorCurrent+inputs.slaveA1StatorCurrent+inputs.slaveB1StatorCurrent+inputs.slaveB2StatorCurrent;
@@ -88,10 +88,14 @@ public class ShooterIOReal implements ShooterIO {
         flywheelMaster.setControl(new DutyCycleOut(percentOutput));
     }
 
-    @Override
-    public void setSpeed(double speed) {
-        flywheelMaster.setControl(velocityVoltageRequest.withVelocity(speed));
-    
+    public void setSpeed(double speed, double acceleration) {
+        flywheelMaster.setControl(
+            new VelocityVoltage(speed)
+                .withAcceleration(acceleration)
+                .withEnableFOC(true)
+                .withSlot(0)
+        );
     }
+
 
 }

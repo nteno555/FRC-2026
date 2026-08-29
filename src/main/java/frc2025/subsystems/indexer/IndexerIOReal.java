@@ -22,7 +22,6 @@ public class IndexerIOReal implements IndexerIO {
 
     private final DutyCycleOut speedRequest = new DutyCycleOut(0);
     private final VoltageOut voltageRequest = new VoltageOut(0);
-    private final VelocityVoltage towerSpeedRequest = new VelocityVoltage(0).withEnableFOC(true);
 
     public IndexerIOReal() {
         indexer.getConfigurator().apply(new TalonFXConfiguration());
@@ -44,10 +43,10 @@ public class IndexerIOReal implements IndexerIO {
 
         indexer.getConfigurator().apply(indexerConfigs, 0.050);
         indexer.getConfigurator().apply(configTorque, 0.05);
-        if (NEED_DOUBLE_INDEXER) indexer2.getConfigurator().apply(indexerConfigs, 0.050);
-        if (NEED_DOUBLE_INDEXER) indexer2.getConfigurator().apply(configTorque, 0.05);  
+        indexer2.getConfigurator().apply(indexerConfigs, 0.050);
+        indexer2.getConfigurator().apply(configTorque, 0.05);
 
-        if (NEED_DOUBLE_INDEXER) indexer2.setControl(new Follower(indexer.getDeviceID(), MotorAlignmentValue.Opposed));
+        indexer2.setControl(new Follower(indexer.getDeviceID(), MotorAlignmentValue.Opposed));
 
 
     }
@@ -55,16 +54,12 @@ public class IndexerIOReal implements IndexerIO {
     @Override
     public void updateInputs(IndexerIOInputs inputs) {
         inputs.indexerVoltage = indexer.getMotorVoltage().getValueAsDouble();
+        inputs.indexer2Voltage = indexer2.getMotorVoltage().getValueAsDouble();
+        inputs.indexer2Current = indexer2.getStatorCurrent().getValueAsDouble();
         inputs.indexerCurrent = indexer.getStatorCurrent().getValueAsDouble();
         inputs.connected = indexer.isConnected();
 
-        if (NEED_DOUBLE_INDEXER) {
-            inputs.indexerVoltage += indexer2.getMotorVoltage().getValueAsDouble();
-            inputs.indexerCurrent += indexer2.getStatorCurrent().getValueAsDouble();
-            inputs.connected = inputs.connected && indexer2.isConnected();
-        }
-
-        inputs.totalCurrent = indexer.getStatorCurrent().getValueAsDouble();
+        inputs.totalCurrent = indexer.getStatorCurrent().getValueAsDouble() + indexer2.getStatorCurrent().getValueAsDouble();
         if (NEED_DOUBLE_INDEXER) inputs.totalCurrent += indexer2.getStatorCurrent().getValueAsDouble();
 
 
@@ -77,13 +72,11 @@ public class IndexerIOReal implements IndexerIO {
     @Override
     public void setSpeed(double indexerSpeed) {
         indexer.setControl(speedRequest.withOutput(indexerSpeed));
-        if (NEED_DOUBLE_INDEXER) indexer2.setControl(speedRequest.withOutput(indexerSpeed));
     }
 
     @Override
     public void setVoltage(double indexerVoltage) {
         indexer.setControl(voltageRequest.withOutput(indexerVoltage));
-        if (NEED_DOUBLE_INDEXER) indexer2.setControl(voltageRequest.withOutput(indexerVoltage));
     }
 
 

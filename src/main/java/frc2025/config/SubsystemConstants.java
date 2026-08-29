@@ -61,10 +61,12 @@ public class SubsystemConstants {
     public static double intakeQuarterPosition = 1.0;
     
     //flywheel
-    public static final double flywheelkS = 0.0;
+    // kV Trials: (2-0.460, 14.432), (4-0.460, 31.256), (6-0.460, 46.746), (8-0.460, 63.811), (10-0.460, 79.533)
+    // kS Trials: 0.460, 
+    public static final double flywheelkS = 0.4;
     public static final double flywheelkV = 0.123;
     public static final double flywheelkA = 0.00;
-    public static final double flywheelkP = 0.127;
+    public static final double flywheelkP = 0.25;
     public static final double flywheelkI = 0.0;
     public static final double flywheelkD = 0.0;
 
@@ -217,7 +219,7 @@ public class SubsystemConstants {
 
 
     public static final int flywheelMasterID = 17;
-    // public static final int flywheelSlaveA1ID = 1;
+    public static final int flywheelSlaveA1ID = 1;
 
     public static final int flywheelSlaveB1ID = 31;
     public static final int flywheelSlaveB2ID = 32;

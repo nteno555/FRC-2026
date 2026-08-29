@@ -8,6 +8,8 @@ public interface IndexerIO {
         public boolean connected;
         double indexerVoltage;
         double indexerCurrent;
+        double indexer2Voltage;
+        double indexer2Current;
         double totalCurrent;
     }
 

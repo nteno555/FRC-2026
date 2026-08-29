@@ -127,15 +127,14 @@ public class RobotContainer {
     public IndexerSubsystem getIndexer() {
         return indexerSubsystem;
     }
-
-
+    
 
     private void configureBindings() {
         driveSubsystem.setDefaultCommand(
                 driveSubsystem.driveTeleop(
-                        () -> (driveSpeed) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                        () -> (driveSpeed) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                        () -> (-rotationSpeed) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
+                        () -> (driveSpeed) * handleDeadBand(driverXboxController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (driveSpeed) * handleDeadBand(driverXboxController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (-rotationSpeed) * handleDeadBand(driverXboxController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
                 )
         );
 
@@ -179,27 +178,38 @@ public class RobotContainer {
 
         SmartDashboard.putNumber("Tuning/IntakeRollerVoltage", 0.0);
         SmartDashboard.putNumber("Tuning/ShooterVoltage", 0.0);
+        SmartDashboard.putNumber("Tuning/LindexerVoltage", 0.0);
+        SmartDashboard.putNumber("Tuning/ShooterkV", 0.0);
 
-        tuningController.rightTrigger()
-                        .whileTrue(intakeSubsystem.setDeployPosition(() -> SmartDashboard.getNumber("Tuning/intakeDeployPosition", 0.0)));
+        // tuningController.rightTrigger()
+        //                 .whileTrue(intakeSubsystem.setDeployPosition(() -> SmartDashboard.getNumber("Tuning/intakeDeployPosition", 0.0)));
 
-        tuningController.leftTrigger()
-                        .whileTrue(intakeSubsystem.setDeployPosition(() -> 0.0));
+        // tuningController.leftTrigger()
+        //                 .whileTrue(intakeSubsystem.setDeployPosition(() -> 0.0));
         
-        tuningController.a()
+        tuningController.leftTrigger()
                         .whileTrue(shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/shooterRps", 0.0)));
 
         tuningController.leftBumper()
                         .whileTrue(shooterSubsystem.setVoltage(() -> SmartDashboard.getNumber("Tuning/ShooterVoltage", 0.0)))
                         .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
         
-        tuningController.rightBumper()
-                        .whileTrue(intakeSubsystem.setRollerVoltage(() -> SmartDashboard.getNumber("Tuning/IntakeRollerVoltage", 0.0)))
-                        .whileFalse(intakeSubsystem.setRollerVoltage(() -> 0.0));
+        // tuningController.rightBumper()
+        //                 .whileTrue(intakeSubsystem.setRollerVoltage(() -> SmartDashboard.getNumber("Tuning/IntakeRollerVoltage", 0.0)))
+        //                 .whileFalse(intakeSubsystem.setRollerVoltage(() -> 0.0));
 
-        tuningController.b()
-                    .whileTrue(hoodSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/hoodPosition", 0.0)));
+        // tuningController.b()
+        //             .whileTrue(hoodSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/hoodPosition", 0.0)));
 
+        tuningController.y()
+                    .whileTrue(indexerSubsystem.setVoltage(() -> -SmartDashboard.getNumber("Tuning/LindexerVoltage", 0.0)))
+                    .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
+
+        tuningController.povUp()
+                    .whileTrue(shooterSubsystem.characterizeStaticVoltage());
+        
+        tuningController.povDown()
+                    .whileTrue(shooterSubsystem.characterizeVoltageStep(() -> SmartDashboard.getNumber("Tuning/ShooterkV", 0.0)));
 
         driveTuningController.a()
                 .whileTrue(driveSubsystem.runDriveDynamicTest(SysIdRoutine.Direction.kForward));
