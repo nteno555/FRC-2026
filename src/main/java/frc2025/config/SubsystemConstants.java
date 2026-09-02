@@ -98,9 +98,11 @@ public class SubsystemConstants {
     public static final double flushHoodRotations = 0.0;
 
     // Hood: 50 to 85 degrees
+    // kS: 0.28
+    // kV: (1.0, 8.8), (0.5, 2.760), (1.5, 13.316)
     public static final double hoodFF = 0.35;
     public static final double hoodkS = 0.0;
-    public static final double hoodkV = 0.12;
+    public static final double hoodkV = 0.094;
     public static final double hoodkA = 0.00;
     public static final double hoodkP = 2.5;
     public static final double hoodkI = 0.0;

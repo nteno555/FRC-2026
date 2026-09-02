@@ -22,9 +22,10 @@ public class HoodSubsystem extends SubsystemBase {
     HoodIO io;
     HoodIOInputsAutoLogged inputs = new HoodIOInputsAutoLogged();
     double setpoint = 0.0;
+    double rampVoltage = 0.0;
 
     public HoodSubsystem(HoodIO io) {
-        io.rezero(0);
+        io.rezero(0.0);
         this.io = io;
     }
 
@@ -42,7 +43,11 @@ public class HoodSubsystem extends SubsystemBase {
             io.setPosition(setpoint);
         });
     }
-
+    public Command rezero() {
+        return this.run(() -> {
+            io.rezero(0.0);
+        });
+    }
     public Command setPosition(Supplier<Double> position, Supplier<Double> velocity) {
         return this.run(() -> {
             setpoint = position.get();
@@ -54,6 +59,28 @@ public class HoodSubsystem extends SubsystemBase {
         return this.run(() -> {
             io.setVoltage(voltage.get());
         });
+    }
+
+    public Command characterizeStaticVoltage() {
+        return this.runOnce(() -> rampVoltage = 0.0)
+                .andThen(this.run(() -> {
+                    rampVoltage += 0.02;
+                    io.setVoltage(rampVoltage);
+                    Logger.recordOutput("Hood/staticRampVoltage", rampVoltage);
+                    Logger.recordOutput("Hood/staticVelocityRPS", inputs.velocity);
+                }).until(() -> (Math.abs(inputs.velocity) > 0.2)))
+                .finallyDo((interrupted) -> {
+                    Logger.recordOutput("Hood/measuredkSVolts", rampVoltage);
+                    io.setVoltage(0.0);
+                });
+    }
+
+    public Command characterizeVoltageStep(Supplier<Double> voltage) {
+        return this.runEnd(() -> {
+            io.setVoltage(voltage.get());
+            Logger.recordOutput("Hood/currentStepVoltage", voltage.get());
+            Logger.recordOutput("Hood/currentStepVelocity", inputs.velocity);
+        }, () -> io.setVoltage(0.0));
     }
 
     public Command autoAim() {
@@ -159,4 +186,5 @@ public class HoodSubsystem extends SubsystemBase {
     public double getCurrent() {
         return inputs.totalCurrent;
     }
+
 }

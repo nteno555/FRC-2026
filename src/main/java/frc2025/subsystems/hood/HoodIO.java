@@ -4,7 +4,7 @@ import org.littletonrobotics.junction.AutoLog;
 public interface HoodIO{
     @AutoLog
     public class HoodIOInputs{
-        public double positionRotations, positionRadians, positionDegreesReal, totalCurrent;
+        public double positionRotations, positionRadians, positionDegreesReal, totalCurrent, velocity;
     }
     public void updateInputs(HoodIOInputs inputs);
     public void setPosition(double position);

@@ -3,6 +3,7 @@ package frc2025.subsystems.hood;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -57,7 +58,9 @@ public class HoodIOReal implements HoodIO{
         inputs.positionRadians = HoodSubsystem.toRadians(inputs.positionRotations);
         inputs.positionDegreesReal = Math.toDegrees(inputs.positionRadians);
         inputs.totalCurrent = hood.getStatorCurrent().getValueAsDouble();
+        inputs.velocity = hood.getVelocity().getValueAsDouble();
         Logger.recordOutput("Current/Hood",hood.getStatorCurrent().getValueAsDouble());
+        Logger.recordOutput("Hood/hoodVelocity", hood.getVelocity().getValueAsDouble());
     }
     @Override
     public void setPosition(double position){
