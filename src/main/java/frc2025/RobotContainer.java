@@ -182,6 +182,9 @@ public class RobotContainer {
         SmartDashboard.putNumber("Tuning/ShooterkV", 0.0);
         SmartDashboard.putNumber("Tuning/HoodkV", 0.0);
 
+        SmartDashboard.putNumber("Tuning/IntakeRollerVoltage", 0.0);
+        SmartDashboard.putNumber("Tuning/IntakeDeployVoltage", 0.0);
+
         // tuningController.rightTrigger()
         //                 .whileTrue(intakeSubsystem.setDeployPosition(() -> SmartDashboard.getNumber("Tuning/intakeDeployPosition", 0.0)));
 
@@ -203,6 +206,18 @@ public class RobotContainer {
 
         tuningController.leftTrigger()
                         .whileTrue(hoodSubsystem.rezero());
+
+        tuningController.povDown()
+                .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
+
+        tuningController.povUp()
+                .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeRetractPosition));
+
+//        tuningController.povDown()
+//                .onTrue(intakeSubsystem.setDeployVoltage(() -> SmartDashboard.getNumber("Tuning/IntakeDeployVoltage", 0)));
+//
+//        tuningController.povUp()
+//                .onTrue(intakeSubsystem.setRollerVoltage(() -> SmartDashboard.getNumber("Tuning/IntakeRollerVoltage", 0)));
 
         // tuningController.rightBumper()
         //                 .whileTrue(intakeSubsystem.setRollerVoltage(() -> SmartDashboard.getNumber("Tuning/IntakeRollerVoltage", 0.0)))

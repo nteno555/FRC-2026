@@ -12,6 +12,7 @@ public class IntakeSubsystem extends SubsystemBase {
     IntakeIO io;
     IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
     double setpoint;
+    double rampVoltage = 0.0;
 
     public IntakeSubsystem(IntakeIO io){
         this.io = io;
@@ -26,14 +27,16 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public Command setRollerVoltage(Supplier<Double> voltage) {
-        return this.run(() -> {
+        return this.runEnd(() -> {
             io.setVoltage(voltage.get());
-        });
+        }, () -> io.setVoltage(0.0));
     }
 
 
     public Command setDeployVoltage(Supplier<Double> voltage) {
-        return this.run(() -> io.setDeployVoltage(voltage.get()));
+        return this.runEnd(() -> {
+            io.setDeployVoltage(voltage.get());
+        }, () -> io.setDeployVoltage(0.0));
     }
 
     public Command setDeployPosition(Supplier<Double> position) {
