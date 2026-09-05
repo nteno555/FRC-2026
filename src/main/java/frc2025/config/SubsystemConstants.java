@@ -67,47 +67,33 @@ public class SubsystemConstants {
     public static final double flywheelkS = 0.4;
     public static final double flywheelkV = 0.123;
     public static final double flywheelkA = 0.00;
-    public static final double flywheelkP = 0.25;
+    public static final double flywheelkP = 0.4;
     public static final double flywheelkI = 0.0;
     public static final double flywheelkD = 0.0;
 
-    public static double flywheelkSAmps = 12.0;
-    public static double flywheelkVAmps = 0.0;
-    public static double flywheelkAAmps = 0.218;
-    public static double flywheelkPAmps = 7.0;
-    public static double flywheelkIAmps = 0.0;
-    public static double flywheelkDAmps = 0.0;
-
-    public static double flywheelBangBangThreshold = 2.0;
-    public static double flywheelkSAmpsBangBang = 15.0;
-    public static double flywheelkVAmpsBangBang = 0.0;
-    public static double flywheelkAAmpsBangBang = 0.0;
-    public static double flywheelkPAmpsBangBang = 67.0;
-    public static double flywheelkIAmpsBangBang = 0.0;
-    public static double flywheelkDAmpsBangBang = 0.0;
-
-    public static final double topFlywheelGearRatio = 1.0;
-    public static final double bottomFlywheelGearRatio = 2.0;
-    public static final double topFlywheelDiameter = 0.05; // 2 inches in meters
-    public static final double bottomFlywheelDiameter = 0.1; // 4 inches in meters
+    // public static final double topFlywheelGearRatio = 1.0;
+    // public static final double bottomFlywheelGearRatio = 2.0;
+    // public static final double topFlywheelDiameter = 0.05; // 2 inches in meters
+    // public static final double bottomFlywheelDiameter = 0.1; // 4 inches in meters
     public static final double flywheelEfficiency = 0.80;
     public static final double flywheelSupplyCurrentLimit = 100;
     public static final double flywheelStatorCurrentLimit = 200;
     public static final double flywheelTorqueCurrentMaxRPS = 70.0;
 
-    public static final double flushWheelRps = 0.0;
+    public static final double flushWheelRps = 26.0;
     public static final double flushHoodRotations = 0.0;
 
     // Hood: 50 to 85 degrees
     // kS: 0.28
     // kV: (1.0, 8.8), (0.5, 2.760), (1.5, 13.316)
     public static final double hoodFF = 0.35;
-    public static final double hoodkS = 0.0;
+    public static final double hoodkS = 0.260;
     public static final double hoodkV = 0.094;
     public static final double hoodkA = 0.00;
-    public static final double hoodkP = 2.5;
+    public static final double hoodkP = 4.0;
     public static final double hoodkI = 0.0;
     public static final double hoodkD = 0.00;
+
     public static final double hoodSupplyCurrentLimit = 40;
     public static final double hoodStatorCurrentLimit = 40;
     public static final double hoodPeakForwardTorqueCurrent = 40;
@@ -118,10 +104,11 @@ public class SubsystemConstants {
     public static final double hoodForwardSoftLimit = 2.84;
     public static final double hoodReverseSoftLimit = 0.0;
     public static final double hoodRezeroVoltage = -3.5;
+
     public static final double hoodMinAngleRotations = 0;
-    public static final double hoodMaxAngleRotations = 2.84;
-    public static final double hoodMinAngleRadians = 1.48;
-    public static final double hoodMaxAngleRadians = 0.87;
+    public static final double hoodMaxAngleRotations = 4.549316;
+    public static final double hoodMinAngleRadians = 0.96987894;
+    public static final double hoodMaxAngleRadians = 0.49076156;
 
     public static final double indexerSupplyCurrentLimit = 120;
     public static final double indexerStatorCurrentLimit = 120;

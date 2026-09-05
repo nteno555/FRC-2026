@@ -36,11 +36,11 @@ public class ShooterIOReal implements ShooterIO {
         flywheelConfig.Slot0.kI = SubsystemConstants.flywheelkI;
         flywheelConfig.Slot0.kD = SubsystemConstants.flywheelkD;
 
-        flywheelConfig.CurrentLimits.SupplyCurrentLimit = SubsystemConstants.flywheelSupplyCurrentLimit;
-        flywheelConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-        flywheelConfig.CurrentLimits.StatorCurrentLimit = SubsystemConstants.flywheelStatorCurrentLimit;
-        flywheelConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        flywheelConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        // flywheelConfig.CurrentLimits.SupplyCurrentLimit = SubsystemConstants.flywheelSupplyCurrentLimit;
+        // flywheelConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        // flywheelConfig.CurrentLimits.StatorCurrentLimit = SubsystemConstants.flywheelStatorCurrentLimit;
+        // flywheelConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        // flywheelConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         flywheelMaster.getConfigurator().apply(flywheelConfig, 0.050);
         flywheelSlaveA1.getConfigurator().apply(flywheelConfig, 0.050);

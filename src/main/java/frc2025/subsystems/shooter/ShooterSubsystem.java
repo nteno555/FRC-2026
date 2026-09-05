@@ -3,6 +3,7 @@ package frc2025.subsystems.shooter;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.Timer;
 import frc2025.RobotState;
 import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
@@ -18,6 +19,8 @@ public class ShooterSubsystem extends SubsystemBase {
     ShooterIO io;
     ShooterIOInputsAutoLogged inputs;
     double rampVoltage = 0.0;
+    double prevVelocity = 0.0;
+    double prevTimestamp = -1;
 
     public ShooterSubsystem(ShooterIO io) {
         this.io = io;
@@ -51,6 +54,22 @@ public class ShooterSubsystem extends SubsystemBase {
             io.setVoltage(voltage.get());
             Logger.recordOutput("Shooter/currentStepVoltage", voltage.get());
             Logger.recordOutput("Shooter/currentStepVelocityRPS", inputs.masterVelocityRPS);
+        }, () -> io.setVoltage(0.0));
+    }
+
+    public Command dynamicVoltageStep(Supplier<Double> voltage) {
+        return this.runEnd(() -> {
+            double currentTimeStamp = Timer.getFPGATimestamp();
+            io.setVoltage(voltage.get());
+            double acceleration = 0.0;
+            if (this.prevTimestamp == -1) {
+                double deltaV = inputs.masterVelocityRPS - this.prevVelocity;
+                double dt = currentTimeStamp - prevTimestamp;
+                acceleration = deltaV/dt;
+            }
+            Logger.recordOutput("Shooter/acceleration", acceleration);
+            this.prevTimestamp = currentTimeStamp;
+            this.prevVelocity = inputs.masterVelocityRPS;
         }, () -> io.setVoltage(0.0));
     }
 

@@ -76,11 +76,15 @@ public class HoodSubsystem extends SubsystemBase {
     }
 
     public Command characterizeVoltageStep(Supplier<Double> voltage) {
-        return this.runEnd(() -> {
+        return this.run(() -> {
             io.setVoltage(voltage.get());
             Logger.recordOutput("Hood/currentStepVoltage", voltage.get());
             Logger.recordOutput("Hood/currentStepVelocity", inputs.velocity);
-        }, () -> io.setVoltage(0.0));
+        }).until(() -> (inputs.positionRotations > (SubsystemConstants.hoodMaxAngleRotations - 0.5) || inputs.positionRotations < (SubsystemConstants.hoodMinAngleRotations + 0.5)))
+        .finallyDo((interrupted) -> {
+            Logger.recordOutput("Hood/currentStepVelocity", inputs.velocity);
+            io.setVoltage(0.0);
+        });
     }
 
     public Command autoAim() {
