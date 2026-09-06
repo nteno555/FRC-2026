@@ -78,9 +78,15 @@ public class IntakeIOReal implements IntakeIO {
         inputs.voltage = intakeRoller.getMotorVoltage().getValue().in(Units.Volts);
         inputs.position = intakeDeployMaster.getPosition().getValueAsDouble();
         inputs.deployConnected = intakeDeployMaster.isConnected();
+        inputs.velocity = intakeDeployMaster.getVelocity().getValueAsDouble();
         Logger.recordOutput("Intake/deployVoltage", intakeDeployMaster.getMotorVoltage().getValue().in(Units.Volts));
         Logger.recordOutput("Intake/deployRPS", intakeDeployMaster.getVelocity().getValueAsDouble());
         Logger.recordOutput("Intake/masterPosition", intakeDeployMaster.getPosition().getValueAsDouble());
+
+        double targetPosition = intakeDeployMaster.getClosedLoopReference().getValueAsDouble();
+        double targetVelocity = intakeDeployMaster.getClosedLoopReferenceSlope().getValueAsDouble();
+        Logger.recordOutput("Intake/targetVelocity", targetVelocity);
+        Logger.recordOutput("Intake/targetPosition", targetPosition);
 //        Logger.recordOutput("Intake/slavePosition", intakeDeploySlave.getPosition().getValueAsDouble());
 
          inputs.totalCurrent = intakeDeployMaster.getStatorCurrent().getValueAsDouble() +

@@ -201,23 +201,24 @@ public class RobotContainer {
        tuningController.leftTrigger()
                        .whileTrue(shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/shooterRps", 0.0)));
 //
-       tuningController.leftBumper()
-                       .whileTrue(hoodSubsystem.characterizeVoltageStep(() -> SmartDashboard.getNumber("Tuning/hoodVoltageStepkV", 0.0)));
+    //    tuningController.leftBumper()
+    //                    .whileTrue(hoodSubsystem.characterizeVoltageStep(() -> SmartDashboard.getNumber("Tuning/hoodVoltageStepkV", 0.0)));
 
         // tuningController.rightTrigger()
         //                 .whileTrue(hoodSubsystem.characterizeVoltageStep(() -> SmartDashboard.getNumber("Tuning/HoodkV", 0.0)));
 
         tuningController.rightBumper()
-                        .whileTrue(hoodSubsystem.characterizeStaticVoltage());
+                        .whileTrue(shooterSubsystem.characterizeStaticVoltage());
 
         // tuningController.leftTrigger()
         //                 .whileTrue(hoodSubsystem.rezero());
 
         tuningController.povDown()
-                .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
+                .whileTrue(intakeSubsystem.setDeployPosition(() -> SmartDashboard.getNumber("Tuning/intakeDeployPosition", 0.0)))
+                .whileFalse(intakeSubsystem.setDeployVoltage(() -> 0.0));
 
         tuningController.povUp()
-                .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeRetractPosition));
+                .whileTrue(intakeSubsystem.characterizeStaticVoltage());
 
 //        tuningController.povDown()
 //                .onTrue(intakeSubsystem.setDeployVoltage(() -> SmartDashboard.getNumber("Tuning/IntakeDeployVoltage", 0)));

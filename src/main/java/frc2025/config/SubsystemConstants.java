@@ -15,6 +15,7 @@ public class SubsystemConstants {
     public static double alignRotationkD = 0.0;
 
     public static double autoAimMaxAngularVelocity = Math.PI;
+
     // Following Path Command
     public static final double translationkP = 0.0;
     public static final double translationkI = 0.0;
@@ -22,33 +23,20 @@ public class SubsystemConstants {
     public static final double rotationkP = 0.0;
     public static final double rotationkI = 0.0;
     public static final double rotationkD = 0.0;
-    //climb
-    public static final double climbFF = 1.0;
-    public static final double climbkS = 0.0;
-    public static final double climbkV = 0.12;
-    public static final double climbkA = 0.0;
-    public static final double climbkP = 6.0;
-    public static final double climbkI = 0.0;
-    public static final double climbkD = 0.0;
-    public static final double climbSupplyCurrentLimit = 100;
-    public static final double climbStatorCurrentLimit = 200;
-    public static final double climbsMetersPerRotation = 0.5;
-    public static final double climbMotionMagicCruiseVelocity = 60;
-    public static final double climbMotionMagicAcceleration = 150;
-    public static final double climbMotionMagicJerk = 700;
+
     //intake
-    public static double intakekS = 0.1;
+    public static double intakekS = 0.760;
     public static double intakekG = 0.0;
-    public static double intakekV = 0.07;
-    public static double intakekA = 0.0;
-    public static double intakekP = 5.5;
+    public static double intakekV = 0.112;
+    public static double intakekA = 0.07;
+    public static double intakekP = 6.5;
     public static double intakekI = 0.0;
     public static double intakekD = 0.0;
     public static double intakeSupplyCurrentLimit = 100;
     public static double intakeStatorCurrentLimit = 100;
-    public static double intakeMotionMagicCruiseVelocity = 10;
-    public static double intakeMotionMagicAcceleration = 15;
-    public static double intakeMotionMagicJerk = 30;
+    public static double intakeMotionMagicCruiseVelocity = 70;
+    public static double intakeMotionMagicAcceleration = 90;
+    public static double intakeMotionMagicJerk = 110;
     public static double intakePeakForwardTorqueCurrent = 100;
     public static double intakePeakReverseTorqueCurrent = 100;
     public static double intakeTorqueNeutralDeadband = 1;
@@ -56,20 +44,20 @@ public class SubsystemConstants {
     public static double intakePeakReverseVoltage = -12.0;
     public static double intakeRollerVoltage = -5.0;
 
-    public static double intakeRetractPosition = -0.3;
-    public static double intakeDeployPosition = -8.0;
-    public static double intakeHalfPosition = -4.0;
+    public static double intakeRetractPosition = 0.0;
+    public static double intakeDeployPosition = -5.0;
+    public static double intakeHalfPosition = -3.0;
     public static double intakeQuarterPosition = -2.0;
     
     //flywheel
     // kV Trials: (2-0.460, 14.432), (4-0.460, 31.256), (6-0.460, 46.746), (8-0.460, 63.811), (10-0.460, 79.533)
     // kS Trials: 0.460, 
-    public static final double flywheelkS = 0.4;
-    public static final double flywheelkV = 0.123;
+    public static final double flywheelkS = 0.340;
+    public static final double flywheelkV = 0.112;
     public static final double flywheelkA = 0.00;
-    public static final double flywheelkP = 0.4;
+    public static final double flywheelkP = 0.45;
     public static final double flywheelkI = 0.0;
-    public static final double flywheelkD = 0.0;
+    public static final double flywheelkD = 0.00;
 
     // public static final double topFlywheelGearRatio = 1.0;
     // public static final double bottomFlywheelGearRatio = 2.0;
@@ -84,9 +72,9 @@ public class SubsystemConstants {
     public static final double flushHoodRotations = 0.0;
 
     // Hood: 50 to 85 degrees
-    // kS: 0.28
+    // kS: 0.260
     // kV: (1.0, 8.8), (0.5, 2.760), (1.5, 13.316)
-    public static final double hoodFF = 0.35;
+    // public static final double hoodFF = 0.35;
     public static final double hoodkS = 0.260;
     public static final double hoodkV = 0.094;
     public static final double hoodkA = 0.00;
@@ -139,35 +127,8 @@ public class SubsystemConstants {
 //    public static final boolean hasTower = false;
 //    public static final boolean needDoubleTower = false;
 
-    // Turret Gear Ratio: 8:60 & 44:54
-    public static final double turretkS = 0.45;
-    public static final double turretkV = 0.128;
-    public static final double turretkG = 0.0;
-    public static final double turretkP = 2.0;
-    public static final double turretkI = 0.0;
-    public static final double turretkD = 0.0;
-    public static final double turretCruiseVelocity = 60;
-    public static final double turretAcceleration = 150;
-    public static final double turretJerk = 700;
-    public static final double turretSupplyCurrentLimit = 40;
-    public static final double turretStatorCurrentLimit = 40;
-    public static final double turretPeakForwardTorqueCurrent = 40;
-    public static final double turretPeakReverseTorqueCurrent = 40;
-    public static final double turretTorqueNeutralDeadband = 1;
-    public static final double turretZeroOffsetRadians = 0.0;
-    public static final double turretRotationsPerRadian = 5.05539761;
-    public static final double turretMinAngleRadians = 0;
-    public static final double turretMaxAngleRadians = 2.2 * Math.PI;
-    public static final double throughBoreZero1 = 0.641;
-    public static final double throughBoreZero2 = 0.505;
-    public static final double throughBoreRatio1 = 9.204;
-    public static final double throughBoreRatio2 = 7.5;
-    public static final double turretHomeAngleRotations = 0.0; // hard stop position in motor rotations
-    public static final boolean hasTurret = true;
-
-    // Turret Cam: Forward 0 Right 0 Up 0.39 Roll 0 Pitch 29.1 Yaw 0
     // Front Cam: Forward 0 Right 0 Up 0.1 Roll 0 Pitch 18 Yaw 0
-    public static final Transform2d robotToShooter = new Transform2d(0.09087, -0.0838, Rotation2d.kZero); // should be x = forward, y = side
+    public static final Transform2d robotToShooter = new Transform2d(0.09087, -0.0838, Rotation2d.kZero);
 
     public static final double robotToFrontCameraForward = 0.0;
     public static final double robotToFrontCameraRight = 0.0;

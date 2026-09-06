@@ -46,6 +46,20 @@ public class IntakeSubsystem extends SubsystemBase {
         });
     }
 
+    public Command characterizeStaticVoltage() {
+        return this.runOnce(() -> rampVoltage = 0.0)
+                .andThen(this.run(() -> {
+                    rampVoltage += 0.02;
+                    io.setDeployVoltage(rampVoltage);
+                    Logger.recordOutput("Intake/staticRampVoltage", rampVoltage);
+                    Logger.recordOutput("Intake/staticVelocityRPS", inputs.velocity);
+                }).until(() -> (Math.abs(inputs.velocity) > 0.2)))
+                .finallyDo((interrupted) -> {
+                    Logger.recordOutput("Intake/measuredkSVolts", rampVoltage);
+                    io.setDeployVoltage(0.0);
+                });
+    }
+
     public Command oscillateIntake() {
         return this.run(() -> {
             double time = (Timer.getFPGATimestamp());

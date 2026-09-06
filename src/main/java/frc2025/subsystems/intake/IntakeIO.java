@@ -11,6 +11,7 @@ public interface IntakeIO {
         boolean deployConnected;
         double totalCurrent;
         double positionRotations;
+        double velocity;
     }
     public void updateInputs(IntakeIOInputs inputs);
     public void setSpeed(double speed);
