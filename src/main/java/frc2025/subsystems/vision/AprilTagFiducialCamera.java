@@ -240,26 +240,32 @@ public class AprilTagFiducialCamera {
         double meanDistance = 0;
         double meanAmbiguity = 0;
         double leastDistance = Double.MAX_VALUE;
+        boolean meanDistanceReject = false;
+        boolean poseAmbiguityReject = false;
+        boolean meanAmbiguityReject = false;
+        boolean rotationReject = false;
+        boolean maxYawRateReject = false;
 
         for (var t : usedTargets) {
             double dist = t.getBestCameraToTarget().getTranslation().getNorm();
             meanDistance += dist;
             leastDistance = Math.min(leastDistance, dist);
             meanAmbiguity += t.getPoseAmbiguity();
-            if (t.getPoseAmbiguity() > 0.9) reject = true;
+            if (t.getPoseAmbiguity() > 0.9) reject = true; poseAmbiguityReject = true;
         }
         meanDistance /= usedTargets.size();
         meanAmbiguity /= usedTargets.size();
 
-        if (meanDistance > maxMeanDistance) reject = true;
-        if (meanAmbiguity > maxMeanAmbiguity) reject = true;
+
+        if (meanDistance > maxMeanDistance) reject = true; meanDistanceReject = true;
+        if (meanAmbiguity > maxMeanAmbiguity) reject = true; meanAmbiguityReject = true;
 
         if (Math.abs(pose.getRotation()
                 .minus(RobotState.getInstance().getVisionPose().getRotation())
-                .getRadians()) > 0.5) reject = true;
+                .getRadians()) > 0.5) reject = true; rotationReject = true;
 
         double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
-        if (Math.abs(omega) > maxYawRate) reject = true;
+        if (Math.abs(omega) > maxYawRate) reject = true; maxYawRateReject = true;
 
         Logger.recordOutput(prefix + "tagCount", allowedTagsUsed);
         Logger.recordOutput(prefix + "rejected", reject);
@@ -275,6 +281,11 @@ public class AprilTagFiducialCamera {
                 RobotState.getInstance().getVisionPose().getRotation().getDegrees());
         Logger.recordOutput(prefix + "estimatedRotation",
                 pose.getRotation().getDegrees());
+        Logger.recordOutput(prefix + "poseAmbiguityReject",  poseAmbiguityReject);
+        Logger.recordOutput(prefix + "meanDistanceReject",  meanDistanceReject);
+        Logger.recordOutput(prefix + "meanAmbiguityReject",  meanAmbiguityReject);
+        Logger.recordOutput(prefix + "rotationReject",  rotationReject);
+        Logger.recordOutput(prefix + "maxYawRateReject",  maxYawRateReject);
 
         if (!reject) {
             Vector<N3> distStdDevs;
