@@ -10,7 +10,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 
 public class SubsystemConstants {
     //Alignment to Virtual Pose
-    public static double alignRotationkP = 0.0;
+    public static double alignRotationkP = 3.0;
     public static double alignRotationkI = 0.0;
     public static double alignRotationkD = 0.0;
 

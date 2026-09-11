@@ -286,7 +286,7 @@ public class AprilTagFiducialCamera {
         Logger.recordOutput(prefix + "meanAmbiguityReject",  meanAmbiguityReject);
         Logger.recordOutput(prefix + "rotationReject",  rotationReject);
         Logger.recordOutput(prefix + "maxYawRateReject",  maxYawRateReject);
-
+        reject = false;
         if (!reject) {
             Vector<N3> distStdDevs;
             if (!usingFallback) {

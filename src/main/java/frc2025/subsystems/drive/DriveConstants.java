@@ -109,6 +109,7 @@ public class DriveConstants {
             .withPigeon2Id(kPigeonId)
             .withPigeon2Configs(pigeonConfigs);
 
+
     private static final SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> ConstantCreator =
         new SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>()
             .withDriveMotorGearRatio(kDriveGearRatio)
@@ -138,8 +139,8 @@ public class DriveConstants {
     private static final int kFrontLeftSteerMotorId = 12;
     private static final int kFrontLeftEncoderId = 0;
     private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.03955078125);
-    private static final boolean kFrontLeftSteerMotorInverted = true;
-    private static final boolean kFrontLeftEncoderInverted = false;
+    private static final boolean kFrontLeftSteerMotorInverted = false;
+    private static final boolean kFrontLeftEncoderInverted = true;
 
     private static final Distance kFrontLeftXPos = Inches.of(10.75);
     private static final Distance kFrontLeftYPos = Inches.of(10.75);
@@ -196,7 +197,7 @@ public class DriveConstants {
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BackRight =
         ConstantCreator.createModuleConstants(
             kBackRightSteerMotorId, kBackRightDriveMotorId, kBackRightEncoderId, kBackRightEncoderOffset,
-            kBackRightXPos, kBackRightYPos, true, kBackRightSteerMotorInverted, kBackRightEncoderInverted
+            kBackRightXPos, kBackRightYPos, kInvertLeftSide, kBackRightSteerMotorInverted, kBackRightEncoderInverted
         );
 
     /**

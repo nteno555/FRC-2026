@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc2025.RobotContainer;
 import frc2025.RobotState;
 import frc2025.commands.FollowPathCommand;
+import frc2025.config.FieldConstants;
 import frc2025.config.SubsystemConstants;
 import frc2025.util.Alliance;
 import frc2025.util.SwerveSysidVoltageRequest;
@@ -104,14 +105,14 @@ public class DriveSubsystem extends SubsystemBase {
         return angle;
     }
 
-    public Command driveAutoAim(RobotContainer robotContainer) {
+    public Command driveAutoAim() {
         Supplier<Double> omegaSpeed = () -> {
-            Pose2d virtualTarget = RobotState.getInstance().getShootingWhileMovingVirtualPose();
+            Pose2d virtualTarget = FieldConstants.blueNetPos;
             if (virtualTarget == null) {
                 return 0.0;
             }
             
-            Pose2d shooterPose = RobotState.getInstance().getDelayedShooterPose();
+            Pose2d shooterPose = RobotState.getInstance().getVisionPose();
 
             double desiredHeading = Math.atan2(
                     virtualTarget.getY() - shooterPose.getY(),
@@ -121,6 +122,8 @@ public class DriveSubsystem extends SubsystemBase {
             double currentHeading = RobotState.getInstance().getVisionPose().getRotation().getRadians();
             double angleError = modAngle(desiredHeading - currentHeading);
 
+            Logger.recordOutput("Drive/angleError", angleError);
+
             double feedback = SubsystemConstants.alignRotationkP * angleError;
             double feedforward = RobotState.getInstance().getVirtualTargetAngularVelocity();
 
@@ -128,7 +131,10 @@ public class DriveSubsystem extends SubsystemBase {
             return MathUtil.clamp(omega, -SubsystemConstants.autoAimMaxAngularVelocity, SubsystemConstants.autoAimMaxAngularVelocity);
         };
 
-        return robotContainer.getDrive().applyChassisSpeedsCommand(() -> new ChassisSpeeds(0, 0, omegaSpeed.get()));
+        Logger.recordOutput("Drive/Omega", omegaSpeed.get());
+    
+
+        return applyChassisSpeedsCommand(() -> new ChassisSpeeds(0, 0, -omegaSpeed.get()));
     }
 
     public boolean getShotReady() {
@@ -151,6 +157,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public Command applyChassisSpeedsCommand(Supplier<ChassisSpeeds> speed) {
+        Logger.recordOutput("Drive/Speed", true);
         return this.run(() -> applyChassisSpeeds(speed.get()));
     }
 
