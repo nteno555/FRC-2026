@@ -44,23 +44,20 @@ public class AprilTagFiducialCamera {
 
     private ArrayList<Integer> allowedTagIDs = new ArrayList<>();
 
-    // private boolean gyroInitialized = false;
-    // private double resetOdometryTime = 0.0;
-    // private boolean flushNextOrientation = false;
-
     private PhotonPoseEstimator multiTagEstimator;
-    // private PhotonPoseEstimator constrainedPnPEstimator;
 
     private PhotonCamera camera;
 
     private final Transform3d robotToCam;
 
+    private boolean hasSeenFirstPose = false;
+
     public AprilTagFiducialCamera(String name, double robotToCameraForward,
                                    double robotToCameraRight, double robotToCameraUp,
                                    double robotToCameraYaw, double robotToCameraPitch, double robotToCameraRoll) {
-                            
+
         camera = new PhotonCamera(name);
-        
+
         this.name = name;
         this.robotToCameraForward = robotToCameraForward;
         this.robotToCameraRight = robotToCameraRight;
@@ -69,62 +66,20 @@ public class AprilTagFiducialCamera {
         this.robotToCameraPitch = robotToCameraPitch;
         this.robotToCameraRoll = robotToCameraRoll;
 
-        this.robotToCam = new Transform3d(new Translation3d(this.robotToCameraForward, this.robotToCameraRight, this.robotToCameraUp), new Rotation3d(this.robotToCameraRoll, this.robotToCameraPitch, this.robotToCameraYaw));
+        this.robotToCam = new Transform3d(
+                new Translation3d(this.robotToCameraForward, this.robotToCameraRight, this.robotToCameraUp),
+                new Rotation3d(this.robotToCameraRoll, this.robotToCameraPitch, this.robotToCameraYaw));
 
         multiTagEstimator = new PhotonPoseEstimator(kTagLayout, PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
-        // constrainedPnPEstimator = new PhotonPoseEstimator(kTagLayout, PhotonPoseEstimator.PoseStrategy.CONSTRAINED_SOLVEPNP, robotToCam);
     }
 
     public void resetOdometry() {
-//        resetOdometryTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
-//        flushNextOrientation = true;
-//        LimelightHelpers.SetIMUMode(name, 0);
         return;
     }
 
-    // public void initializeGyro() {
-    //     if (this.turretMounted) {
-    //         LimelightHelpers.SetIMUMode(name, 3);
-    //         LimelightHelpers.SetIMUAssistAlpha(name, 0.01);
-    //         LimelightHelpers.setCameraPose_RobotSpace(name, 0.0, 0.0, this.robotToCameraUp,
-    //             this.robotToCameraRoll, this.robotToCameraPitch, 0.0);
-    //     } else {
-    //         LimelightHelpers.SetIMUMode(name, 4);
-    //         LimelightHelpers.SetIMUAssistAlpha(name, 0.01);
-    //         LimelightHelpers.setCameraPose_RobotSpace(name, this.robotToCameraForward, this.robotToCameraRight,
-    //             this.robotToCameraUp,
-    //             this.robotToCameraRoll, this.robotToCameraPitch, this.robotToCameraYaw);
-    //     }
-
-    //     this.gyroInitialized = true;
-
-    // }
-
     public void writeGyro() {
-        // String prefix = "Vision/" + name + "_mt2/";
-
-//        if(imuMode != 4) {
-//            LimelightHelpers.SetIMUAssistAlpha(name, 0.01);
-//            LimelightHelpers.SetIMUMode(name, 4);
-//            imuMode = 4;
-//        }
-
-//        Logger.recordOutput(prefix + "IMU", imuMode);
-
         double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
         omega = Units.radiansToDegrees(omega);
-
-        // this.constrainedPnPEstimator.addHeadingData(Timer.getFPGATimestamp(), RobotState.getInstance().getVisionPose().getRotation());
-
-//            if (flushNextOrientation) {
-//                LimelightHelpers.SetRobotOrientation(name,
-//                        RobotState.getInstance().getVisionPose().getRotation().getDegrees(), omega, 0, 0, 0, 0);
-//            } else {
-//                LimelightHelpers.SetRobotOrientation_NoFlush(name,
-//                        RobotState.getInstance().getVisionPose().getRotation().getDegrees(), omega, 0, 0, 0, 0);
-//            }
-        
-        // flushNextOrientation = false;
     }
 
     private Boolean lastAllianceState = null;
@@ -140,9 +95,9 @@ public class AprilTagFiducialCamera {
             }
         } else {
             if (isRed) {
-                this.allowedTagIDs = new ArrayList<>(List.of( 2, 3, 4, 5, 8, 9, 10, 11, 25, 26 ));
+                this.allowedTagIDs = new ArrayList<>(List.of(2, 3, 4, 5, 8, 9, 10, 11, 25, 26));
             } else {
-                this.allowedTagIDs = new ArrayList<>(List.of( 9, 10, 18, 19, 20, 21, 24, 25, 26, 27 ));
+                this.allowedTagIDs = new ArrayList<>(List.of(9, 10, 18, 19, 20, 21, 24, 25, 26, 27));
             }
         }
     }
@@ -171,35 +126,6 @@ public class AprilTagFiducialCamera {
         return false;
     }
 
-//     private Pose2d transformTurretPose(Pose2d pose, double time) {
-//         String prefix = "Vision/" + name + "_mt1/";
-
-//         if (SubsystemConstants.hasTurret) {
-//             double latency = Utils.getCurrentTimeSeconds() - Utils.fpgaToCurrentTime(time);
-
-//             Logger.recordOutput(prefix + "latency", latency);
-
-//             double compensatedTurretAngle = RobotState.getInstance().getTurretAngle() 
-//                     + RobotState.getInstance().getTurretVelocity() * latency;
-
-//             Transform2d robotToShooterReal = new Transform2d(
-//                     SubsystemConstants.robotToShooter.getTranslation(),
-//                     SubsystemConstants.robotToShooter.getRotation()
-//                             .plus(Rotation2d.fromRadians(-compensatedTurretAngle)));
-
-//             Transform2d cameraToRobotTransform = robotToShooterReal.plus(SubsystemConstants.shooterToCamera).inverse();
-
-// //            Logger.recordOutput("Vision/" + name + "_mt2/turretTransform",
-// //                    cameraToRobotTransform.getRotation().getDegrees());
-
-//             return pose.transformBy(cameraToRobotTransform);
-//         } else {
-//             Transform2d cameraToRobotTransform = SubsystemConstants.robotToShooter
-//                     .plus(SubsystemConstants.shooterToCamera).inverse();
-//             return pose.transformBy(cameraToRobotTransform);
-//         }
-//     }
-
     private void addVisionUpdateMultiTag(PhotonPipelineResult result) {
         String prefix = "Vision/" + name + "_mt1/";
 
@@ -226,6 +152,10 @@ public class AprilTagFiducialCamera {
 
         int allowedTagsUsed = (int) optionalPose.get().targetsUsed.stream()
                 .filter(t -> tagAllowed(t.getFiducialId())).count();
+        Logger.recordOutput(prefix + "allowedTagsUsed", allowedTagsUsed);
+        Logger.recordOutput(prefix + "usingFallbackPreCheck", usingFallback);
+        Logger.recordOutput(prefix + "allowedTagIDs", allowedTagIDs.stream().mapToInt(Integer::intValue).toArray());
+        Logger.recordOutput(prefix + "visibleFiducialIDs", optionalPose.get().targetsUsed.stream().mapToInt(PhotonTrackedTarget::getFiducialId).toArray());
 
         if (!usingFallback && allowedTagsUsed < 2) return;
         if (usingFallback && allowedTagsUsed < 1) return;
@@ -251,21 +181,39 @@ public class AprilTagFiducialCamera {
             meanDistance += dist;
             leastDistance = Math.min(leastDistance, dist);
             meanAmbiguity += t.getPoseAmbiguity();
-            if (t.getPoseAmbiguity() > 0.9) reject = true; poseAmbiguityReject = true;
+
+            if (usingFallback) {
+                meanAmbiguity += t.getPoseAmbiguity();
+                if (t.getPoseAmbiguity() > 0.9) {
+                    reject = true;
+                    poseAmbiguityReject = true;
+                }
+            }
         }
         meanDistance /= usedTargets.size();
         meanAmbiguity /= usedTargets.size();
 
+        if (meanDistance > maxMeanDistance) {
+            reject = true;
+            meanDistanceReject = true;
+        }
+        if (meanAmbiguity > maxMeanAmbiguity) {
+            reject = true;
+            meanAmbiguityReject = true;
+        }
 
-        if (meanDistance > maxMeanDistance) reject = true; meanDistanceReject = true;
-        if (meanAmbiguity > maxMeanAmbiguity) reject = true; meanAmbiguityReject = true;
-
-        if (Math.abs(pose.getRotation()
-                .minus(RobotState.getInstance().getVisionPose().getRotation())
-                .getRadians()) > 0.5) reject = true; rotationReject = true;
+        // if (hasSeenFirstPose && Math.abs(pose.getRotation()
+        //         .minus(RobotState.getInstance().getVisionPose().getRotation())
+        //         .getRadians()) > 0.5) {
+        //     reject = true;
+        //     rotationReject = true;
+        // }
 
         double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
-        if (Math.abs(omega) > maxYawRate) reject = true; maxYawRateReject = true;
+        if (Math.abs(omega) > maxYawRate) {
+            reject = true;
+            maxYawRateReject = true;
+        }
 
         Logger.recordOutput(prefix + "tagCount", allowedTagsUsed);
         Logger.recordOutput(prefix + "rejected", reject);
@@ -281,12 +229,12 @@ public class AprilTagFiducialCamera {
                 RobotState.getInstance().getVisionPose().getRotation().getDegrees());
         Logger.recordOutput(prefix + "estimatedRotation",
                 pose.getRotation().getDegrees());
-        Logger.recordOutput(prefix + "poseAmbiguityReject",  poseAmbiguityReject);
-        Logger.recordOutput(prefix + "meanDistanceReject",  meanDistanceReject);
-        Logger.recordOutput(prefix + "meanAmbiguityReject",  meanAmbiguityReject);
-        Logger.recordOutput(prefix + "rotationReject",  rotationReject);
-        Logger.recordOutput(prefix + "maxYawRateReject",  maxYawRateReject);
-        reject = false;
+        Logger.recordOutput(prefix + "poseAmbiguityReject", poseAmbiguityReject);
+        Logger.recordOutput(prefix + "meanDistanceReject", meanDistanceReject);
+        Logger.recordOutput(prefix + "meanAmbiguityReject", meanAmbiguityReject);
+        Logger.recordOutput(prefix + "rotationReject", rotationReject);
+        Logger.recordOutput(prefix + "maxYawRateReject", maxYawRateReject);
+
         if (!reject) {
             Vector<N3> distStdDevs;
             if (!usingFallback) {
@@ -299,19 +247,19 @@ public class AprilTagFiducialCamera {
                         Math.pow(leastDistance, 2) / 2.0,
                         Math.pow(leastDistance, 2) / 2.0,
                         999999999);
+                
             }
             RobotState.getInstance().addVisionData(List.of(
                     new RobotState.TimestampedVisionUpdate(
                             estimate.timestampSeconds, pose, distStdDevs)));
+            hasSeenFirstPose = true;
         }
     }
-
 
     public void updatePose() {
         updateSide();
         for (var result : camera.getAllUnreadResults()) {
             addVisionUpdateMultiTag(result);
-            // addVisionUpdateConstrained(result);
         }
     }
 }
