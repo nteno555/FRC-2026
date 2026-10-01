@@ -62,10 +62,6 @@ public class RobotContainer {
 
     DriveSubsystem driveSubsystem;
     VisionSubsystem visionSubsystem;
-    ShooterSubsystem shooterSubsystem;
-    HoodSubsystem hoodSubsystem;
-    IntakeSubsystem intakeSubsystem;
-    IndexerSubsystem indexerSubsystem;
 
     Autos autos;
     Command autoCommand;
@@ -89,18 +85,9 @@ public class RobotContainer {
         if(RobotBase.isReal()) {
             driveSubsystem = new DriveSubsystem(new DriveIOReal(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOReal());
-            shooterSubsystem = new ShooterSubsystem(new ShooterIOReal());
-            hoodSubsystem = new HoodSubsystem(new HoodIOReal());
-            intakeSubsystem = new IntakeSubsystem(new IntakeIOReal());
-            indexerSubsystem = new IndexerSubsystem(new IndexerIOReal());
-
         } else {
             driveSubsystem = new DriveSubsystem(new DriveIOSim(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight));
             visionSubsystem = new VisionSubsystem(new VisionIOSim());
-            shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
-            hoodSubsystem = new HoodSubsystem(new HoodIOSim());
-            intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
-            indexerSubsystem = new IndexerSubsystem(new IndexerIOSim());
         }
     }
 
@@ -110,24 +97,7 @@ public class RobotContainer {
 
     public VisionSubsystem getVision() {
         return visionSubsystem;
-    }
-
-    public ShooterSubsystem getShooter() {
-        return shooterSubsystem;
-    }
-
-    public HoodSubsystem getHood() {
-        return hoodSubsystem;
-    }
-
-    public IntakeSubsystem getIntake() {
-        return intakeSubsystem;
-    }
-    
-    public IndexerSubsystem getIndexer() {
-        return indexerSubsystem;
-    }
-    
+    }   
 
     private void configureBindings() {
         driveSubsystem.setDefaultCommand(
@@ -147,104 +117,7 @@ public class RobotContainer {
                 )
         );
 
-        new Trigger(() -> aiming)
-                    .whileTrue(shooterSubsystem.setSpeed(() -> SubsystemConstants.flushWheelRps)
-                                    .alongWith(hoodSubsystem.setPosition(() -> SubsystemConstants.flushHoodRotations)));
-        
-        new Trigger(() -> true)
-                    .whileTrue(AutoAimCommands.autoIndex(this));
-        
-        driverXboxController.y()
-                    .onTrue(Commands.runOnce(() -> aiming = true));
-
-        driverXboxController.x()
-                    .onTrue(Commands.runOnce(() -> aiming = false));
-        
-        driverXboxController.leftTrigger()
-                    .onTrue(driveSubsystem.driveAutoAim());
-
-        driverXboxController.povDown()
-                    .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
-        
-        driverXboxController.povUp()
-                    .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeRetractPosition));
-
-        driverXboxController.leftBumper()
-                    .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));
-
-        driverXboxController.rightBumper()
-                    .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
-
-        SmartDashboard.putNumber("Tuning/intakeDeployPosition", 0.0);
-        SmartDashboard.putNumber("Tuning/shooterRps", 0.0);
-        SmartDashboard.putNumber("Tuning/hoodPosition", 0.0);
-        SmartDashboard.putNumber("Tuning/hoodVoltageStepkV", 0.0);
-
-        SmartDashboard.putNumber("Tuning/IntakeRollerVoltage", 0.0);
-        SmartDashboard.putNumber("Tuning/ShooterVoltage", 0.0);
-        SmartDashboard.putNumber("Tuning/LindexerVoltage", 0.0);
-        SmartDashboard.putNumber("Tuning/ShooterkV", 0.0);
-        SmartDashboard.putNumber("Tuning/HoodkV", 0.0);
-
-        SmartDashboard.putNumber("Tuning/IntakeRollerVoltage", 0.0);
-        SmartDashboard.putNumber("Tuning/IntakeDeployVoltage", 0.0);
-        SmartDashboard.putNumber("Tuning/ShooterkA", 0.0);
-
-        tuningController.rightTrigger()
-                        .whileTrue(hoodSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/hoodPosition", 0.0)))
-                        .whileFalse(hoodSubsystem.setVoltage(() -> 0.0));
-        
-        tuningController.a()
-                        .onTrue(hoodSubsystem.rezero());
-                        
-
-        // tuningController.leftTrigger()
-        //                 .whileTrue(intakeSubsystem.setDeployPosition(() -> 0.0));
-        
-       tuningController.leftTrigger()
-                       .whileTrue(shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/shooterRps", 0.0)));
-//
-    //    tuningController.leftBumper()
-    //                    .whileTrue(hoodSubsystem.characterizeVoltageStep(() -> SmartDashboard.getNumber("Tuning/hoodVoltageStepkV", 0.0)));
-
-        // tuningController.rightTrigger()
-        //                 .whileTrue(hoodSubsystem.characterizeVoltageStep(() -> SmartDashboard.getNumber("Tuning/HoodkV", 0.0)));
-
-        tuningController.rightBumper()
-                        .whileTrue(shooterSubsystem.characterizeStaticVoltage());
-
-        // tuningController.leftTrigger()
-        //                 .whileTrue(hoodSubsystem.rezero());
-
-        tuningController.povDown()
-                .whileTrue(intakeSubsystem.setDeployPosition(() -> SmartDashboard.getNumber("Tuning/intakeDeployPosition", 0.0)))
-                .whileFalse(intakeSubsystem.setDeployVoltage(() -> 0.0));
-
-        tuningController.povUp()
-                .whileTrue(intakeSubsystem.characterizeStaticVoltage());
-
-//        tuningController.povDown()
-//                .onTrue(intakeSubsystem.setDeployVoltage(() -> SmartDashboard.getNumber("Tuning/IntakeDeployVoltage", 0)));
-//
-//        tuningController.povUp()
-//                .onTrue(intakeSubsystem.setRollerVoltage(() -> SmartDashboard.getNumber("Tuning/IntakeRollerVoltage", 0)));
-
-        // tuningController.rightBumper()
-        //                 .whileTrue(intakeSubsystem.setRollerVoltage(() -> SmartDashboard.getNumber("Tuning/IntakeRollerVoltage", 0.0)))
-        //                 .whileFalse(intakeSubsystem.setRollerVoltage(() -> 0.0));
-
-        // tuningController.b()
-        //             .whileTrue(hoodSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/hoodPosition", 0.0)));
-
-        tuningController.y()
-                    .whileTrue(indexerSubsystem.setVoltage(() -> -SmartDashboard.getNumber("Tuning/LindexerVoltage", 0.0)))
-                    .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
-
-        // tuningController.povUp()
-        //             .whileTrue(shooterSubsystem.characterizeStaticVoltage());
-        
-//        tuningController.povDown()
-//                    .whileTrue(shooterSubsystem.characterizeVoltageStep(() -> SmartDashboard.getNumber("Tuning/ShooterkV", 0.0)));
+                
 
         driveTuningController.a()
                 .whileTrue(driveSubsystem.runDriveDynamicTest(SysIdRoutine.Direction.kForward));

@@ -29,36 +29,5 @@ import frc2025.config.SubsystemConstants;
 
 
 public class IndexerSubsystem extends SubsystemBase {
-    IndexerIO io;
-    IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
 
-    public IndexerSubsystem(IndexerIO io) {
-        this.io = io;
-    }
-
-    @Override
-    public void periodic() {
-        Logger.processInputs("RealOutputs/Indexer", inputs);
-        Logger.recordOutput("Superstructure/Indexing", inputs.indexerVoltage > 1.0);
-        io.updateInputs(inputs);
-    }
-
-    public Command setSpeed(Supplier<Double> indexerSpeed) {
-        return this.run(() -> {
-            io.setSpeed(indexerSpeed.get());
-        });
-    }
-
-    public Command setVoltage(Supplier<Double> indexerVoltage) {
-        return this.run(() -> {
-            io.setVoltage(indexerVoltage.get());
-        });
-    }
-
-
-
-
-    public double getCurrent() {
-        return inputs.totalCurrent;
-    }
 }
