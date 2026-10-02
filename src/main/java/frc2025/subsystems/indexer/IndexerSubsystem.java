@@ -29,5 +29,15 @@ import frc2025.config.SubsystemConstants;
 
 
 public class IndexerSubsystem extends SubsystemBase {
-
+    //create instance of IndexerIO called io
+    //create a constructor of this class that takes in io and sets it to this instance
+    @Override
+    public void periodic(){
+        //update inputs of io instace
+    }
+    //create new method setSpeed that returns a Command
+        //return a lambda setting the speed in the io to the indexerSpeed
+    //create new method setVoltage that also returns a Command
+        //return a lambda setting the voltage of the io to indexerVoltage
+    //make a function getCurrent() returning a double that just returns totalCurrent from io instace
 }
