@@ -56,6 +56,7 @@ public class RobotContainer {
     private final CommandXboxController driverXboxController = new CommandXboxController(0);
     private final CommandXboxController operatorXboxController = new CommandXboxController(1);
     private final CommandXboxController testSystemsController = new CommandXboxController(2);
+    private final CommandXboxController treeMapTuningController = new CommandXboxController(5);
     private final CommandXboxController tuningController = new CommandXboxController(3);
     private final CommandXboxController driveTuningController = new CommandXboxController(4);
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -132,9 +133,9 @@ public class RobotContainer {
     private void configureBindings() {
         driveSubsystem.setDefaultCommand(
                 driveSubsystem.driveTeleop(
-                        () -> (driveSpeed) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                        () -> (driveSpeed) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                        () -> (-rotationSpeed) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
+                        () -> (driveSpeed) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY() + treeMapTuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (driveSpeed) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX() + treeMapTuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
+                        () -> (-rotationSpeed) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX() + treeMapTuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
                 )
         );
 
@@ -175,6 +176,7 @@ public class RobotContainer {
         driverXboxController.rightBumper()
                     .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
 
+        
         SmartDashboard.putNumber("Tuning/intakeDeployPosition", 0.0);
         SmartDashboard.putNumber("Tuning/shooterRps", 0.0);
         SmartDashboard.putNumber("Tuning/hoodPosition", 0.0);
@@ -198,11 +200,43 @@ public class RobotContainer {
                         .onTrue(hoodSubsystem.rezero());
                         
 
-        // tuningController.leftTrigger()
-        //                 .whileTrue(intakeSubsystem.setDeployPosition(() -> 0.0));
+        tuningController.leftTrigger()
+                        .whileTrue(shooterSubsystem.setSpeed(() -> 30.0))
+                        .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
         
-       tuningController.leftTrigger()
-                       .whileTrue(shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/shooterRps", 0.0)));
+
+        treeMapTuningController.leftTrigger()
+                        .whileTrue(shooterSubsystem.setSpeed(()-> SmartDashboard.getNumber("Tuning/ShooterTreeMapRPS", 0.0)))
+                        .whileFalse(shooterSubsystem.setVoltage(()->0.0));
+        
+        
+        treeMapTuningController.leftBumper()
+                        .whileTrue(hoodSubsystem.setPosition(()-> SmartDashboard.getNumber("Tuning/ShooterTreeMapHoodAngle", 0.0)))
+                        .whileFalse(hoodSubsystem.setVoltage(()->0.0));
+        
+        treeMapTuningController.rightTrigger()
+                        .whileTrue(driveSubsystem.driveAutoAim());
+        
+        treeMapTuningController.b()
+                        .whileTrue(indexerSubsystem.setVoltage(() -> -3.0)) //negative is forward
+                        .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
+        
+        treeMapTuningController.povUp()
+                        .onTrue(intakeSubsystem.setRollerVoltage(() -> -4.0));
+        
+        treeMapTuningController.povDown()
+                        .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
+        
+        treeMapTuningController.povLeft()
+                        .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeRetractPosition));
+
+        treeMapTuningController.povRight()
+                        .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
+
+        SmartDashboard.putNumber("Tuning/ShooterTreeMapRPS", 0.0);
+        SmartDashboard.putNumber("Tuning/ShooterTreeMapHoodAngle",0.0);
+    //    tuningController.leftTrigger()
+    //                    .whileTrue(shooterSubsystem.setSpeed(() -> SmartDashboard.getNumber("Tuning/shooterRps", 0.0)));
 //
     //    tuningController.leftBumper()
     //                    .whileTrue(hoodSubsystem.characterizeVoltageStep(() -> SmartDashboard.getNumber("Tuning/hoodVoltageStepkV", 0.0)));
@@ -211,14 +245,18 @@ public class RobotContainer {
         //                 .whileTrue(hoodSubsystem.characterizeVoltageStep(() -> SmartDashboard.getNumber("Tuning/HoodkV", 0.0)));
 
         tuningController.rightBumper()
-                        .whileTrue(shooterSubsystem.characterizeStaticVoltage());
+                        .whileTrue(intakeSubsystem.setRollerVoltage(() -> SmartDashboard.getNumber("Tuning/IntakeRollerVoltage", 0.0)))
+                        .whileFalse(intakeSubsystem.setRollerVoltage(() -> 0.0));
+        
+        tuningController.leftBumper()
+                        .whileTrue(intakeSubsystem.setDeployPosition(() -> -SmartDashboard.getNumber("Tuning/intakeDeployPosition", 0.0)));
 
         // tuningController.leftTrigger()
         //                 .whileTrue(hoodSubsystem.rezero());
 
         tuningController.povDown()
-                .whileTrue(intakeSubsystem.setDeployPosition(() -> SmartDashboard.getNumber("Tuning/intakeDeployPosition", 0.0)))
-                .whileFalse(intakeSubsystem.setDeployVoltage(() -> 0.0));
+                .whileTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeRetractPosition))
+                .whileFalse(intakeSubsystem.setDeployVoltage(() -> SubsystemConstants.intakeDeployPosition));
 
         tuningController.povUp()
                 .whileTrue(intakeSubsystem.characterizeStaticVoltage());
@@ -237,7 +275,7 @@ public class RobotContainer {
         //             .whileTrue(hoodSubsystem.setPosition(() -> SmartDashboard.getNumber("Tuning/hoodPosition", 0.0)));
 
         tuningController.y()
-                    .whileTrue(indexerSubsystem.setVoltage(() -> -SmartDashboard.getNumber("Tuning/LindexerVoltage", 0.0)))
+                    .whileTrue(indexerSubsystem.setVoltage(() -> SmartDashboard.getNumber("Tuning/LindexerVoltage", 0.0)))
                     .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
 
         // tuningController.povUp()

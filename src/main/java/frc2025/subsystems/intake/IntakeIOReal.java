@@ -48,6 +48,7 @@ public class IntakeIOReal implements IntakeIO {
         slot0.kS = SubsystemConstants.intakekS;
         slot0.kV = SubsystemConstants.intakekV;
         slot0.kA = SubsystemConstants.intakekA;
+        
         slot0.kG = SubsystemConstants.intakekG;
         slot0.kP = SubsystemConstants.intakekP;
         slot0.kI = SubsystemConstants.intakekI;
@@ -104,13 +105,13 @@ public class IntakeIOReal implements IntakeIO {
     @Override
     public void setDeployPosition(double position, boolean fast) {
         intakeDeployMaster.setControl(
-                new MotionMagicVoltage(position)
+                new PositionVoltage(position)
                     .withEnableFOC(true)
-                    //.withFeedForward(voltageFF)
+                    // .withFeedForward(voltageFF)
                     .withSlot(0)
-                    .withOverrideBrakeDurNeutral(true)
-                    .withLimitForwardMotion(false)
-                    .withLimitReverseMotion(false)
+                    // .withOverrideBrakeDurNeutral(true)
+                    // .withLimitForwardMotion(false)
+                    // .withLimitReverseMotion(false)
         );
     }
 

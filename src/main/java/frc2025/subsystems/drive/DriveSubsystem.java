@@ -134,7 +134,20 @@ public class DriveSubsystem extends SubsystemBase {
         Logger.recordOutput("Drive/Omega", omegaSpeed.get());
     
 
-        return applyChassisSpeedsCommand(() -> new ChassisSpeeds(0, 0, -omegaSpeed.get()));
+        return applyChassisSpeedsCommand(() -> new ChassisSpeeds(0, 0, -omegaSpeed.get())).until(() -> {
+            Pose2d virtualTarget = FieldConstants.blueNetPos;
+            
+            Pose2d shooterPose = RobotState.getInstance().getVisionPose();
+
+            double desiredHeading = Math.atan2(
+                    virtualTarget.getY() - shooterPose.getY(),
+                    virtualTarget.getX() - shooterPose.getX()
+            );
+
+            double currentHeading = RobotState.getInstance().getVisionPose().getRotation().getRadians();
+            double angleError = modAngle(desiredHeading - currentHeading);
+            return Math.abs(angleError) < 0.15;
+        });
     }
 
     public boolean getShotReady() {
