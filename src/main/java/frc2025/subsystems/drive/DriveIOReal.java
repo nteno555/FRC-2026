@@ -69,7 +69,25 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
             } else {
                 inputs.swervePoseMeters = state.Pose;
             }
+
+        SwerveModule<TalonFX, TalonFX, CANcoder>[] modules = getModules();
+        for (int i = 0; i < modules.length; i++) {
+            TalonFX drive = modules[i].getDriveMotor();
+            TalonFX steer = modules[i].getSteerMotor();
+            String prefix = "Drive/swerveModule" + i + "/";
+
+            Logger.recordOutput(prefix + "driveVoltage", drive.getSupplyVoltage().getValueAsDouble());
+            Logger.recordOutput(prefix + "driveStatorCurrent", drive.getStatorCurrent().getValueAsDouble());
+            Logger.recordOutput(prefix + "driveSupplyCurrent", drive.getSupplyCurrent().getValueAsDouble());
+            Logger.recordOutput(prefix + "driveVelocityRPS", drive.getVelocity().getValueAsDouble());
+            Logger.recordOutput(prefix + "driveTemp", drive.getDeviceTemp().getValueAsDouble());
+
+            Logger.recordOutput(prefix + "steerVoltage", steer.getSupplyVoltage().getValueAsDouble());
+            Logger.recordOutput(prefix + "steerStatorCurrent", steer.getStatorCurrent().getValueAsDouble());
+            Logger.recordOutput(prefix + "steerSupplyCurrent", steer.getSupplyCurrent().getValueAsDouble());
         }
+        
+    }
 
         // SwerveModulePosition[] wheelDeltas = new SwerveModulePosition[4];
         // for (int i = 0; i < 4; i++) {

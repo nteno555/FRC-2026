@@ -76,7 +76,7 @@ public class IndexerIOReal implements IndexerIO {
 
     @Override
     public void setVoltage(double indexerVoltage) {
-        indexer.setControl(voltageRequest.withOutput(indexerVoltage));
+        indexer.setControl(voltageRequest.withOutput(-indexerVoltage));
     }
 
 

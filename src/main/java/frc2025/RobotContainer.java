@@ -204,6 +204,14 @@ public class RobotContainer {
                         .whileTrue(shooterSubsystem.setSpeed(() -> 30.0))
                         .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
         
+        treeMapTuningController.a().onTrue(
+                SuperstructureCommands.resetOdometry(
+                        this,
+                        () -> !Alliance.get()
+                                ? new Pose2d(new Translation2d(), new Rotation2d(Math.PI))
+                                : new Pose2d()
+                )
+        );
 
         treeMapTuningController.leftTrigger()
                         .whileTrue(shooterSubsystem.setSpeed(()-> SmartDashboard.getNumber("Tuning/ShooterTreeMapRPS", 0.0)))
@@ -217,12 +225,12 @@ public class RobotContainer {
         treeMapTuningController.rightTrigger()
                         .whileTrue(driveSubsystem.driveAutoAim());
         
-        treeMapTuningController.b()
-                        .whileTrue(indexerSubsystem.setVoltage(() -> -3.0)) //negative is forward
+        treeMapTuningController.rightBumper()
+                        .whileTrue(indexerSubsystem.setVoltage(() -> 3.0)) //negative is forward
                         .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
         
         treeMapTuningController.povUp()
-                        .onTrue(intakeSubsystem.setRollerVoltage(() -> -4.0));
+                        .onTrue(intakeSubsystem.setRollerVoltage(() -> 4.0));
         
         treeMapTuningController.povDown()
                         .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));

@@ -20,7 +20,8 @@ public class VisionSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.recordOutput("Vision/visionPose", RobotState.getInstance().getVisionPose());
-
+        Logger.recordOutput("Vision/distanceToHub", RobotState.getInstance().getDistanceToHub());
+        Logger.recordOutput("Vision/shootingWhileMovingVirtualPose", RobotState.getInstance().getShootingWhileMovingVirtualPose());
 //        LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-front");
 //        Logger.recordOutput("Vision/testtesttest", poseEstimate.tagCount);
 

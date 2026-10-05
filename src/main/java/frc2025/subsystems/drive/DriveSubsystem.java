@@ -31,6 +31,7 @@ import frc2025.util.Alliance;
 import frc2025.util.SwerveSysidVoltageRequest;
 import org.littletonrobotics.junction.Logger;
 
+import java.lang.reflect.Field;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -107,7 +108,12 @@ public class DriveSubsystem extends SubsystemBase {
 
     public Command driveAutoAim() {
         Supplier<Double> omegaSpeed = () -> {
-            Pose2d virtualTarget = FieldConstants.blueNetPos;
+            Pose2d virtualTarget = null;
+            if (Alliance.get()) {
+                virtualTarget = FieldConstants.redNetPos;
+            } else {
+                virtualTarget = FieldConstants.blueNetPos;
+            }
             if (virtualTarget == null) {
                 return 0.0;
             }
@@ -135,7 +141,12 @@ public class DriveSubsystem extends SubsystemBase {
     
 
         return applyChassisSpeedsCommand(() -> new ChassisSpeeds(0, 0, -omegaSpeed.get())).until(() -> {
-            Pose2d virtualTarget = FieldConstants.blueNetPos;
+            Pose2d virtualTarget = null;
+            if (Alliance.get()) {
+                virtualTarget = FieldConstants.redNetPos;
+            } else {
+                virtualTarget = FieldConstants.blueNetPos;
+            }
             
             Pose2d shooterPose = RobotState.getInstance().getVisionPose();
 
@@ -146,7 +157,7 @@ public class DriveSubsystem extends SubsystemBase {
 
             double currentHeading = RobotState.getInstance().getVisionPose().getRotation().getRadians();
             double angleError = modAngle(desiredHeading - currentHeading);
-            return Math.abs(angleError) < 0.15;
+            return Math.abs(angleError) < 0.01;
         });
     }
 

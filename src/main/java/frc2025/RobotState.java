@@ -139,6 +139,15 @@ public class RobotState {
         return this.ballTargets;
     }
 
+    public double getDistanceToHub() {
+        double distance = 0.0;
+        if (Alliance.get()) {
+            distance = Math.sqrt(Math.pow((FieldConstants.redNetPos.getY() - getVisionPose().getY()), 2) + Math.pow((FieldConstants.redNetPos.getX() - getVisionPose().getX()), 2));  
+        } else {
+            distance = Math.sqrt(Math.pow((FieldConstants.blueNetPos.getY() - getVisionPose().getY()), 2) + Math.pow((FieldConstants.blueNetPos.getX() - getVisionPose().getX()), 2));  
+        }
+        return distance;
+    }
     public ArrayList<Pose2d> getBallFieldPoses() {
         ArrayList<Pose2d> ballPoses = new ArrayList<>();
         if (ballTargets == null || ballTargets.isEmpty()) return ballPoses;

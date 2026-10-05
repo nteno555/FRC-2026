@@ -117,7 +117,7 @@ public class IntakeIOReal implements IntakeIO {
 
     @Override
     public void setVoltage(double voltage) {
-        intakeRoller.setControl(new VoltageOut(voltage));
+        intakeRoller.setControl(new VoltageOut(-voltage));
     }
 
     @Override

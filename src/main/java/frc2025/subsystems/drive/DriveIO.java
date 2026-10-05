@@ -30,6 +30,10 @@ public interface DriveIO{
         public double odometryTimestamp;
         public Twist2d odometryTwist;
         public double pigeonAcceleration;
+        public double[] driveCurrent = new double[4];
+        public double[] driveVoltage = new double[4];
+        public double[] turnCurrent = new double[4];
+        public double[] turnVoltage = new double[4];
     }
 
     public void updateInputs(DriveIOInputs inputs);

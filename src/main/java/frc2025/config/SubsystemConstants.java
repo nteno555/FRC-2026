@@ -55,7 +55,7 @@ public class SubsystemConstants {
     public static final double flywheelkS = 0.340;
     public static final double flywheelkV = 0.112;
     public static final double flywheelkA = 0.00;
-    public static final double flywheelkP = 0.45;
+    public static final double flywheelkP = 0.7;
     public static final double flywheelkI = 0.0;
     public static final double flywheelkD = 0.00;
 
