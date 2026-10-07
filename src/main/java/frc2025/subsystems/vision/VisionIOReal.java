@@ -29,16 +29,16 @@ public class VisionIOReal implements VisionIO {
                 //         SubsystemConstants.robotToBackCameraPitch,
                 //         SubsystemConstants.robotToBackCameraRoll
                 // ),
-                // new LimelightFiducialCamera(
-                //         "limelight-right",
-                //         false,
-                //         SubsystemConstants.robotToRightCameraForward,
-                //         SubsystemConstants.robotToRightCameraRight,
-                //         SubsystemConstants.robotToRightCameraUp,
-                //         SubsystemConstants.robotToRightCameraYaw,
-                //         SubsystemConstants.robotToRightCameraPitch,
-                //         SubsystemConstants.robotToRightCameraRoll
-                // ),
+                new LimelightFiducialCamera(
+                        "limelight-right",
+                        false,
+                        SubsystemConstants.robotToRightCameraForward,
+                        SubsystemConstants.robotToRightCameraRight,
+                        SubsystemConstants.robotToRightCameraUp,
+                        SubsystemConstants.robotToRightCameraYaw,
+                        SubsystemConstants.robotToRightCameraPitch,
+                        SubsystemConstants.robotToRightCameraRoll
+                ),
                new LimelightFiducialCamera(
                        "limelight-front",
                        false,
