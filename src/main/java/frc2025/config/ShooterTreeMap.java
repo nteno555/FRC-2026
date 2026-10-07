@@ -22,6 +22,19 @@ public class ShooterTreeMap {
         updateDashboardMap();
         SmartDashboard.putString("Tuning/lowerWheelTree Map", lowerWheelTreeMap.toString());
 
+        // lowerWheelTreeMap.put(1.4389, null);
+        // lowerWheelTreeMap.put(1.5029, null);
+        // lowerWheelTreeMap.put(1.5029, null);
+        // lowerWheelTreeMap.put(1.5029, null);
+        // lowerWheelTreeMap.put(1.5029, null);
+        // lowerWheelTreeMap.put(1.5029, null);
+        
+        // hoodTreeMap.put(1.5029, null);
+        // hoodTreeMap.put(1.5029, null);
+        // hoodTreeMap.put(1.5029, null);
+        // hoodTreeMap.put(1.5029, null);
+        // hoodTreeMap.put(1.5029, null);
+        // hoodTreeMap.put(1.5029, null);
     }
 
     public static ShooterTreeMap getInstance() {

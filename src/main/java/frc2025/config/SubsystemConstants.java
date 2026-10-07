@@ -44,8 +44,8 @@ public class SubsystemConstants {
     public static double intakePeakReverseVoltage = -4.0;
     public static double intakeRollerVoltage = -4.0;
 
-    public static double intakeRetractPosition = 16.0;
-    public static double intakeDeployPosition = 0.0;
+    public static double intakeRetractPosition = 0.0;
+    public static double intakeDeployPosition = 16.0;
     public static double intakeHalfPosition = -3.0;
     public static double intakeQuarterPosition = -2.0;
     
@@ -103,7 +103,7 @@ public class SubsystemConstants {
     public static final double indexerPeakForwardTorqueCurrent = 120;
     public static final double indexerPeakReverseTorqueCurrent = 120;
     public static final double indexerTorqueNeutralDeadband = 1;
-    public static final double indexerShootVoltage = -12.0;
+    public static final double indexerShootVoltage = 3.5;
     public static final double indexerReverseVoltage = 2.0;
     public static final boolean needDoubleIndexer = false;
 

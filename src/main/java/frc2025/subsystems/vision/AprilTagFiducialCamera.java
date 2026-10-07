@@ -129,7 +129,7 @@ public class AprilTagFiducialCamera {
     private void addVisionUpdateMultiTag(PhotonPipelineResult result) {
         String prefix = "Vision/" + name + "_mt1/";
 
-        double maxMeanDistance = 3.5;
+        double maxMeanDistance = 6.0;
         double maxMeanAmbiguity = 0.2;
         double maxYawRate = Math.PI * 1.67;
 
@@ -179,6 +179,7 @@ public class AprilTagFiducialCamera {
         for (var t : usedTargets) {
             double dist = t.getBestCameraToTarget().getTranslation().getNorm();
             meanDistance += dist;
+            // Logger.recordOutput();
             leastDistance = Math.min(leastDistance, dist);
             meanAmbiguity += t.getPoseAmbiguity();
 
