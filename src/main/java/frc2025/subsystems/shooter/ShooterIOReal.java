@@ -120,32 +120,14 @@ public class ShooterIOReal implements ShooterIO {
         Logger.recordOutput("Current/Shooter Opposed Follower", flywheelOpposedB.getStatorCurrent().getValueAsDouble());
     }
 
-    private final Follower alignedFollower = new Follower(SubsystemConstants.flywheelMasterID, MotorAlignmentValue.Aligned);
-    private final Follower opposedAFollower = new Follower(SubsystemConstants.flywheelMasterID, MotorAlignmentValue.Opposed);
-    private final Follower opposedBFollower = new Follower(SubsystemConstants.flywheelMasterID, MotorAlignmentValue.Opposed);
     @Override
     public void setVoltage(double voltage) {
         flywheelMaster.setControl(voltageRequest.withOutput(voltage));
-        flywheelAligned.setControl(alignedFollower);
-        flywheelOpposedA.setControl(opposedAFollower);
-        flywheelOpposedB.setControl(opposedBFollower);
-        // flywheelAligned.setControl(new Follower(13, MotorAlignmentValue.Aligned));
-        // flywheelOpposedA.setControl(new Follower(13, MotorAlignmentValue.Opposed));
-        // flywheelOpposedB.setControl(new Follower(13, MotorAlignmentValue.Opposed));
     }
 
     @Override
     public void setCurrent(double currentAmps) {
         flywheelMaster.setControl(currentRequest.withOutput(currentAmps));
-        flywheelAligned.setControl(alignedFollower);
-        flywheelOpposedA.setControl(opposedAFollower);
-        flywheelOpposedB.setControl(opposedBFollower);
-        // flywheelAligned.setControl(currentRequest.withOutput(currentAmps));
-        // flywheelOpposedA.setControl(currentRequest.withOutput(currentAmps));
-        // flywheelOpposedB.setControl(currentRequest.withOutput(currentAmps));
-        // flywheelAligned.setControl(new Follower(13, MotorAlignmentValue.Aligned));
-        // flywheelOpposedA.setControl(new Follower(13, MotorAlignmentValue.Opposed));
-        // flywheelOpposedB.setControl(new Follower(13, MotorAlignmentValue.Opposed));
     }
 
     // @Override
@@ -189,6 +171,6 @@ public class ShooterIOReal implements ShooterIO {
     @Override
     public void setSpeed(double speed, double acceleration) {
         flywheelMaster.setControl(
-                   speedVoltageRequest.withVelocity(speed));
+                   speedRequest.withVelocity(speed));
     }
 }

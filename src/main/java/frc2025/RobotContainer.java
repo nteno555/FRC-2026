@@ -243,8 +243,8 @@ public class RobotContainer {
                                 indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0));
                 // indexerSubsystem.setDefaultCommand(AutoAimCommands.);
                 // turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
-                turretSubsystem.setDefaultCommand(turretSubsystem
-                                .setPositionSafe(() -> SubsystemConstants.turretZeroOffsetRadians, () -> 0.0, () -> true));
+                // turretSubsystem.setDefaultCommand(turretSubsystem
+                //                 .setPositionSafe(() -> SubsystemConstants.turretZeroOffsetRadians, () -> 0.0, () -> true));
 
                 driverXboxController.a().onTrue(
                                 SuperstructureCommands.resetOdometry(

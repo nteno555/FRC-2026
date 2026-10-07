@@ -210,7 +210,7 @@ public class SubsystemConstants {
     public static double robotToBackCameraPitch = 28.0;
     public static double robotToBackCameraRoll = 180.0;
 
-    public static Transform2d robotToRightCamera = new Transform2d(-0.2766, 0.3429, Rotation2d.kZero);
+    public static Transform2d robotToRightCamera = new Transform2d(0.28575, 0.33655, Rotation2d.kZero);
     // public static Transform2d robotToRightCamera = new Transform2d(0.1015,
     // 0.3274, Rotation2d.kZero);
     public static double robotToRightCameraForward = robotToRightCamera.getX();
