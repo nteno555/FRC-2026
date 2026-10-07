@@ -128,15 +128,15 @@ public class SubsystemConstants {
     public static double intakeMotionMagicCruiseVelocity = 120;
     public static double intakeMotionMagicAcceleration = 300;
     public static double intakeMotionMagicJerk = 1400;
-    public static double intakePeakForwardTorqueCurrent = 100;
-    public static double intakePeakReverseTorqueCurrent = 100;
+    public static double intakePeakForwardTorqueCurrent = 40;
+    public static double intakePeakReverseTorqueCurrent = 40;
     public static double intakeTorqueNeutralDeadband = 1;
-    public static double intakePeakForwardVoltage = 12.0;
-    public static double intakePeakReverseVoltage = -12.0;
-    public static double intakeRetractPosition = 0.3;
-    public static double intakeDeployPosition = 4.1;
-    public static double intakeRollerVoltage = 12.0;
-    public static double intakeHalfPosition = 2.0;
+    public static double intakePeakForwardVoltage = 6.0;
+    public static double intakePeakReverseVoltage = -6.0;
+    public static double intakeRetractPosition = -1.0;
+    public static double intakeDeployPosition = -20.38;
+    public static double intakeRollerVoltage = 6.0;
+    public static double intakeHalfPosition = 9.450;
     public static double intakeQuarterPosition = 1.0;
 
     public static double indexerSupplyCurrentLimit = 100;
@@ -168,10 +168,10 @@ public class SubsystemConstants {
     public static double turretZeroOffsetRadians = 0.0;
     // 8 (44-42) 26 10 110
     public static double turretRotationsPerRadian = 44.0 / 8.0 * 26.0 / 42.0 * 110.0 / 10.0 / (2 * Math.PI);
-    public static double turretMinAngleRadians = -3.033; 
-    public static double turretMaxAngleRadians = 4.107;
-    public static double throughBoreZero1 = 0.473;
-    public static double throughBoreZero2 = 0.867;
+    public static double turretMinAngleRadians = -9.790; 
+    public static double turretMaxAngleRadians = -1.194;
+    public static double throughBoreZero1 = 0.434;
+    public static double throughBoreZero2 = 0.650;
     public static double throughBoreRatio1 = 44.0 / 8.0 * 26.0 / 42.0; // 6.17
     public static double throughBoreRatio2 = 44.0 / 8.0; // 3.82
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop
@@ -231,7 +231,6 @@ public class SubsystemConstants {
     public static double flushFlywheelRps = 42.0;
     public static double flushHoodAngle = 0.9;
 
-    public static int climberID = 1000;
     public static int flywheelMasterID = 26;
     public static int flywheelAlignedID = 27;
     public static int flywheelOpposedAID = 25;
@@ -239,10 +238,10 @@ public class SubsystemConstants {
     public static int hoodID = 51;
     public static int indexerID = 16;
     public static int intakeDeployMasterID = 17;
-    public static int intakeDeploySlaveID = 18;
-    public static int intakeRollerID = 19;
+    public static int intakeRollerMasterID = 12;
+    public static int intakeRollerSlaveID = 0;
     public static int towerID = 20;
-    public static int turretID = 21;
+    public static int turretID = 41;
     public static int turretTb1ID = 5;
     public static int turretTb2ID = 6;
 }

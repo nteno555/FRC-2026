@@ -130,7 +130,7 @@ public class RobotContainer {
                         intakeSubsystem = new IntakeSubsystem(new IntakeIOReal());
                         hoodSubsystem = new HoodSubsystem(new HoodIOReal());
                         shooterSubsystem = new ShooterSubsystem(new ShooterIOReal());
-                        turretSubsystem = new TurretSubsystem(new TurretIOReal());
+                        turretSubsystem = new TurretSubsystem(new TurretIOSim());
                 } else {
                         driveSubsystem = new DriveSubsystem(new DriveIOSim(DrivetrainConstants, FrontLeft, FrontRight,
                                         BackLeft, BackRight));
@@ -235,16 +235,17 @@ public class RobotContainer {
                                                                                 + testSystemsController.getRightX(),
                                                                 DEAD_BAND_DRIVER, true) * Math.PI * 2));
 
-                intakeSubsystem.setDefaultCommand(intakeSubsystem.setDeployVoltage(() -> 0.0));
+                intakeSubsystem.setDefaultCommand(
+                        intakeSubsystem.setDeployVoltage(() -> 0.0));
                 hoodSubsystem.setDefaultCommand(hoodSubsystem.setPosition(() -> 0.1));
                 shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
-                // shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
+                //shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
                 indexerSubsystem.setDefaultCommand(
-                                indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0));
-                // indexerSubsystem.setDefaultCommand(AutoAimCommands.);
-                // turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
-                turretSubsystem.setDefaultCommand(turretSubsystem
-                                .setPositionSafe(() -> SubsystemConstants.turretZeroOffsetRadians, () -> 0.0, () -> true));
+                                 indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0));
+                // // indexerSubsystem.setDefaultCommand(AutoAimCommands.);
+                turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
+                // turretSubsystem.setDefaultCommand(turretSubsystem
+                //                 .setPositionSafe(() -> SubsystemConstants.turretZeroOffsetRadians, () -> 0.0, () -> true));
 
                 driverXboxController.a().onTrue(
                                 SuperstructureCommands.resetOdometry(
@@ -792,7 +793,7 @@ public class RobotContainer {
 
         public void teleopInit() {
                 // autoCommand.cancel();
-
+                
                 CommandScheduler.getInstance().cancelAll();
                 autoWarmupActive = false;
                 shooterSubsystem.setSpeed(() -> 0.0);
