@@ -33,8 +33,23 @@ public class VisionIOReal implements VisionIO {
         //         0,
         //         49, 
         //         180);
-        this.cameras = new ArrayList<>(List.of(new AprilTagFiducialCamera("front-right", 0., 0, 
-        0, 0,0, 0), new AprilTagFiducialCamera("side-right", 0, 0, 0, Math.PI/2, 0, Math.PI))); //-250
+        this.cameras = new ArrayList<>(List.of(
+            new AprilTagFiducialCamera(
+                "front-right", 
+                0, 
+                0, 
+                0, 
+                0,
+                0,
+                0),
+            new AprilTagFiducialCamera(
+                "side-right", 
+                0, 
+                0, 
+                0, Math.PI/2, 
+                0, 
+                Math.PI)
+        ));
         
         ballCamera = new PhotonCamera("ballCamera");
 

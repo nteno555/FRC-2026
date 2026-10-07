@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc2025.Robot;
 import frc2025.RobotState;
+import frc2025.config.FieldConstants;
+
 import org.littletonrobotics.junction.Logger;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -22,6 +24,7 @@ public class VisionSubsystem extends SubsystemBase {
         Logger.recordOutput("Vision/visionPose", RobotState.getInstance().getVisionPose());
         Logger.recordOutput("Vision/distanceToHub", RobotState.getInstance().getDistanceToHub());
         Logger.recordOutput("Vision/shootingWhileMovingVirtualPose", RobotState.getInstance().getShootingWhileMovingVirtualPose());
+        Logger.recordOutput("Vision/hubPosition", FieldConstants.blueNetPos);
 //        LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-front");
 //        Logger.recordOutput("Vision/testtesttest", poseEstimate.tagCount);
 
