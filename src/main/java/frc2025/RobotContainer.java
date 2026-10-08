@@ -226,7 +226,10 @@ public class RobotContainer {
                         .whileTrue(driveSubsystem.driveAutoAim());
         
         treeMapTuningController.rightBumper()
-                        .whileTrue(indexerSubsystem.setVoltage(() -> 3.0)) //negative is forward
+                        .whileTrue(
+                            indexerSubsystem.setVoltage(() -> -7.0)
+                            .withTimeout(5.0)
+                            .andThen(indexerSubsystem.setVoltage(()->7.0)))//negative is forward
                         .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
         
         treeMapTuningController.povUp()
