@@ -30,13 +30,17 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
     public Command setDeployVoltage(Supplier<Double> voltage) {
-        return this.run(() -> io.setDeployVoltage(voltage.get()));
+        return this.run(() -> {
+            io.setDeployVoltage(voltage.get());
+            io.setVoltage(voltage.get());
+        });
     }
 
     public Command setDeployPosition(Supplier<Double> position) {
         return this.run(() -> {
             if (position.get() == SubsystemConstants.intakeRetractPosition) io.setVoltage(0.0);
             io.setDeployPosition(position.get(), true);
+            io.setVoltage(0.0);
         });
     }
 

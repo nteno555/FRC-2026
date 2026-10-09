@@ -44,7 +44,7 @@ public class SubsystemConstants {
     public static double flywheelkS = 0.20;
     public static double flywheelkV = 0.122; //0.122
     public static double flywheelkA = 0.00;
-    public static double flywheelkP = 0.05; //0.05
+    public static double flywheelkP = 0.3; //0.05
     public static double flywheelkI = 0.00;
     public static double flywheelkD = 0.00;
 
@@ -55,10 +55,10 @@ public class SubsystemConstants {
     //kVAmps test currents: 15 A, 25 A, 35 A, 45 A, 55 A
     //kVAmps trials: (15, 6.234), (25, 22), 
     public static double flywheelkSAmps = 9.902;
-    public static double flywheelkVAmps = 0.218;
+    public static double flywheelkVAmps = 10;
     public static double flywheelkAAmps = 0.0;
     // Two Flywheels
-    public static double flywheelkPAmps = 7.2;
+    public static double flywheelkPAmps = 0.0;
     // One Flywheel
     // public static double flywheelkPAmps = 10.0;
     public static double flywheelkIAmps = 0.0;
@@ -66,9 +66,9 @@ public class SubsystemConstants {
 
     public static double flywheelBangBangThreshold = 2.0;
     public static double flywheelkSAmpsBangBang = 15.0;
-    public static double flywheelkVAmpsBangBang = 0.0;
+    public static double flywheelkVAmpsBangBang = 30.0;
     public static double flywheelkAAmpsBangBang = 0.0;
-    public static double flywheelkPAmpsBangBang = 67.0;
+    public static double flywheelkPAmpsBangBang = 0.0;
     public static double flywheelkIAmpsBangBang = 0.0;
     public static double flywheelkDAmpsBangBang = 0.0;
 
@@ -96,11 +96,11 @@ public class SubsystemConstants {
     public static double towerkDAmps = 0.0;
     public static double towerFlywheelRatio = 3.0;
     public static double towerBangBangThreshold = 15.0;
-
+    /// Min: 5 degrees, Max: 45 degrees
     //Hood Static Trials: 0.010, 
-    public static double hoodkS = 0.140;
-    public static double hoodkV = 0.125;
-    public static double hoodkP = 7.5;
+    public static double hoodkS = 0.0;
+    public static double hoodkV = 0.0;
+    public static double hoodkP = 2.5;
     public static double hoodkI = 0.0;
     public static double hoodkD = 0.00;
     public static double hoodSupplyCurrentLimit = 40;
@@ -113,14 +113,14 @@ public class SubsystemConstants {
     public static double hoodRezeroVoltage = -3.5;
     public static double hoodMinAngleRotations = 0;
     public static double hoodMaxAngleRotations = 8.9;
-    public static double hoodMinAngleRadians = 0.87266463;
-    public static double hoodMaxAngleRadians = 0.08726646;
+    public static double hoodMinAngleRadians = 0.785398;
+    public static double hoodMaxAngleRadians = 0.0872665;
 
     public static double intakekS = 0.1;
     public static double intakekG = 0.0;
     public static double intakekV = 0.07;
     public static double intakekA = 0.0;
-    public static double intakekP = 2.0;
+    public static double intakekP = 2.7;
     public static double intakekI = 0.0;
     public static double intakekD = 0.0;
     public static double intakeSupplyCurrentLimit = 100;
@@ -133,11 +133,11 @@ public class SubsystemConstants {
     public static double intakeTorqueNeutralDeadband = 1;
     public static double intakePeakForwardVoltage = 6.0;
     public static double intakePeakReverseVoltage = -6.0;
-    public static double intakeRetractPosition = -1.0;
-    public static double intakeDeployPosition = -20.38;
+    public static double intakeRetractPosition = 19.2; // actual: -1.0
+    public static double intakeDeployPosition = 3.6; // actual: -20.2
     public static double intakeRollerVoltage = 6.0;
-    public static double intakeHalfPosition = 9.450;
-    public static double intakeQuarterPosition = 1.0;
+    public static double intakeHalfPosition = -10.66;
+    public static double intakeQuarterPosition = -5.0;
 
     public static double indexerSupplyCurrentLimit = 100;
     public static double indexerStatorCurrentLimit = 100;
@@ -165,13 +165,14 @@ public class SubsystemConstants {
     public static double turretStatorCurrentLimit = 60;
     public static double turretPeakForwardTorqueCurrent = 60;
     public static double turretPeakReverseTorqueCurrent = -60;
-    public static double turretZeroOffsetRadians = 0.0;
+    public static double turretZeroOffsetRadians = Math.PI * 2;
     // 8 (44-42) 26 10 110
+    
     public static double turretRotationsPerRadian = 44.0 / 8.0 * 26.0 / 42.0 * 110.0 / 10.0 / (2 * Math.PI);
     public static double turretMinAngleRadians = -9.790; 
     public static double turretMaxAngleRadians = -1.194;
-    public static double throughBoreZero1 = 0.434;
-    public static double throughBoreZero2 = 0.650;
+    public static double throughBoreZero1 = 0.445;
+    public static double throughBoreZero2 = 0.667;
     public static double throughBoreRatio1 = 44.0 / 8.0 * 26.0 / 42.0; // 6.17
     public static double throughBoreRatio2 = 44.0 / 8.0; // 3.82
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop

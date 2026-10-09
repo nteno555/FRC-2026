@@ -115,8 +115,8 @@ public class RobotContainer {
         }
 
         public void periodic() {
-                updateMatchTime();
-                loggerPeriodic();
+                // updateMatchTime();
+                // loggerPeriodic();
         }
 
         // shooterSubststem.setDefaultCommand( just shoot me);
@@ -130,7 +130,7 @@ public class RobotContainer {
                         intakeSubsystem = new IntakeSubsystem(new IntakeIOReal());
                         hoodSubsystem = new HoodSubsystem(new HoodIOReal());
                         shooterSubsystem = new ShooterSubsystem(new ShooterIOReal());
-                        turretSubsystem = new TurretSubsystem(new TurretIOSim());
+                        turretSubsystem = new TurretSubsystem(new TurretIOReal());
                 } else {
                         driveSubsystem = new DriveSubsystem(new DriveIOSim(DrivetrainConstants, FrontLeft, FrontRight,
                                         BackLeft, BackRight));
@@ -243,9 +243,8 @@ public class RobotContainer {
                 indexerSubsystem.setDefaultCommand(
                                  indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0));
                 // // indexerSubsystem.setDefaultCommand(AutoAimCommands.);
-                turretSubsystem.setDefaultCommand(turretSubsystem.setVoltage(() -> 0.0));
-                // turretSubsystem.setDefaultCommand(turretSubsystem
-                //                 .setPositionSafe(() -> SubsystemConstants.turretZeroOffsetRadians, () -> 0.0, () -> true));
+                turretSubsystem.setDefaultCommand(turretSubsystem
+                                .setVoltage(() -> 0.0));
 
                 driverXboxController.a().onTrue(
                                 SuperstructureCommands.resetOdometry(
@@ -549,7 +548,7 @@ public class RobotContainer {
                 tuningController.rightBumper()
                                 .whileTrue(
                                                 shooterSubsystem.setSpeed(
-                                                                () -> SmartDashboard.getNumber("Tuning/RPM", 0.0))
+                                                                () ->  SmartDashboard.getNumber("Tuning/RPM", 0.0))
                                                                 .alongWith(hoodSubsystem.setPosition(
                                                                                 () -> SmartDashboard.getNumber(
                                                                                                 "Tuning/hoodPosition",
@@ -800,6 +799,7 @@ public class RobotContainer {
                 indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0);
                 intakeSubsystem.setDeployVoltage(() -> 0.0);
                 intakeSubsystem.setRollerVoltage(() -> 0.0);
+                turretSubsystem.setVoltage(() -> 0.0);
 
                 // AutoAimCommands.autoIndexTeleop(this, () -> true).schedule();
 

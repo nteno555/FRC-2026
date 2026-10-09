@@ -25,10 +25,7 @@ public class TurretSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        Logger.recordOutput("Turret/currentCommand",
-            getCurrentCommand() != null
-                    ? getCurrentCommand().getName()
-                    : "none");
+        Logger.recordOutput("Turret/currentCommand", getCurrentCommand() != null ? getCurrentCommand().getName() : "none");
 
         Logger.processInputs("RealOutputs/Turret", inputs);
         Logger.recordOutput("Turret/setpoint", setpoint);

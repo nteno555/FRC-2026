@@ -11,6 +11,7 @@ public interface IndexerIO {
         double towerVoltage;
         double towerCurrent;
         double totalCurrent;
+        double towerActualSpeed;
     }
 
     public void updateInputs(IndexerIOInputs inputs);

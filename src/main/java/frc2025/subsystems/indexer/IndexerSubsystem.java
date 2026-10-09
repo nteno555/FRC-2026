@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 public class IndexerSubsystem extends SubsystemBase {
     IndexerIO io;
     IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
+    double setpoint = 0.0;
 
     public IndexerSubsystem(IndexerIO io) {
         this.io = io;
@@ -20,6 +21,7 @@ public class IndexerSubsystem extends SubsystemBase {
     public void periodic() {
         Logger.processInputs("RealOutputs/Indexer", inputs);
         Logger.recordOutput("Superstructure/Indexing", inputs.indexerVoltage > 1.0);
+        Logger.recordOutput("Indexer/towerSetpoint", this.setpoint);
         io.updateInputs(inputs);
     }
 
@@ -39,6 +41,7 @@ public class IndexerSubsystem extends SubsystemBase {
         return this.runEnd(() -> {
             io.setVoltage(indexerVoltage.get());
             io.setTowerSpeed(towerSpeed.get());
+            this.setpoint = towerSpeed.get();
         }, () -> {
             io.setVoltage(0.0);
             io.setTowerSpeed(0.0);

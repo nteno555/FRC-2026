@@ -84,13 +84,9 @@ public class ShooterIOReal implements ShooterIO {
         flywheelOpposedB.setNeutralMode(NeutralModeValue.Coast);
 
         int masterID = flywheelMaster.getDeviceID();
-        var alignedStatus = flywheelAligned.setControl(new Follower(masterID, MotorAlignmentValue.Aligned));
-        var opposedAStatus = flywheelOpposedA.setControl(new Follower(masterID, MotorAlignmentValue.Opposed));
-        var opposedBStatus = flywheelOpposedB.setControl(new Follower(masterID, MotorAlignmentValue.Opposed));
-
-        Logger.recordOutput("Shooter/alignedFollowerStatus", alignedStatus.toString());
-        Logger.recordOutput("Shooter/opposedAFollowerStatus", opposedAStatus.toString());
-        Logger.recordOutput("Shooter/opposedBFollowerStatus", opposedBStatus.toString());
+        flywheelAligned.setControl(new Follower(masterID, MotorAlignmentValue.Aligned));
+        flywheelOpposedA.setControl(new Follower(masterID, MotorAlignmentValue.Opposed));
+        flywheelOpposedB.setControl(new Follower(masterID, MotorAlignmentValue.Opposed));
 
         // tower.getConfigurator().apply(towerConfigs, 0.050);
         // tower.getConfigurator().apply(towerConfigTorque, 0.05);
@@ -171,6 +167,6 @@ public class ShooterIOReal implements ShooterIO {
     @Override
     public void setSpeed(double speed, double acceleration) {
         flywheelMaster.setControl(
-                   speedRequest.withVelocity(speed));
+                   new VelocityVoltage(speed).withAcceleration(acceleration));
     }
 }

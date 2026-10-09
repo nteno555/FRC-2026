@@ -51,18 +51,26 @@ public class ShooterTreeMap {
 
         // lowerWheelTreeMap.put(6.0, 40.3); // 19.10
 
-        lowerWheelTreeMap.put(1.543, 26.0); // 15.8757785
-        lowerWheelTreeMap.put(2.178, 30.0); // 16.973333
-        lowerWheelTreeMap.put(3.103, 33.0); // 17.0999029
-        lowerWheelTreeMap.put(4.155, 38.0); // 18.9597874
+        lowerWheelTreeMap.put(1.534, 27.0); // 15.8757785
+        lowerWheelTreeMap.put(2.220, 30.0); // 16.973333
+        lowerWheelTreeMap.put(3.111, 35.5); // 17.0999029
+        lowerWheelTreeMap.put(3.939, 40.0); // 18.9597874
+
+        lowerWheelTreeMap.put(4.664, 39.7); // 19.6070128
+
+        lowerWheelTreeMap.put(5.06, 39.7); // 19.6070128
         lowerWheelTreeMap.put(5.06, 39.7); // 19.6070128
         // lowerWheelTreeMap.put(5.616, 37.5); // 17.082934
 
-        hoodTreeMap.put(1.543, 1.27);
-        hoodTreeMap.put(2.178, 2.21);
-        hoodTreeMap.put(3.103, 3.05);
-        hoodTreeMap.put(4.155, 3.44);
-        hoodTreeMap.put(5.06, 3.8);
+        hoodTreeMap.put(1.534, 1.5);
+        hoodTreeMap.put(2.220, 2.0);
+        hoodTreeMap.put(3.103, 2.5);
+        hoodTreeMap.put(3.939, 3.00);
+
+        hoodTreeMap.put(4.664, 3.8);
+
+        lowerWheelTreeMap.put(5.06, 39.7); // 19.6070128
+        lowerWheelTreeMap.put(5.06, 39.7); // 19.6070128
         // hoodTreeMap.put(5.616, 4.58);
         // vy = rps * sin(85 - 12.28*hood)
         //vy = rps · sin(0.09805 · hood_rotation)

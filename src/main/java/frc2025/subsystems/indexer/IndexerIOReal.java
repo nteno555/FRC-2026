@@ -89,11 +89,13 @@ public class IndexerIOReal implements IndexerIO {
         inputs.indexerVoltage = indexer.getMotorVoltage().getValueAsDouble();
         inputs.indexerCurrent = indexer.getStatorCurrent().getValueAsDouble();
         inputs.connected = indexer.isConnected();
+        inputs.towerActualSpeed = tower.getVelocity().getValueAsDouble();
 
         inputs.totalCurrent = indexer.getStatorCurrent().getValueAsDouble() + tower.getStatorCurrent().getValueAsDouble();
 
         Logger.recordOutput("Current/Indexer", indexer.getStatorCurrent().getValueAsDouble());
         Logger.recordOutput("Current/Tower", tower.getStatorCurrent().getValueAsDouble());
+
     }
 
     @Override
