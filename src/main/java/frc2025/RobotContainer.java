@@ -144,8 +144,8 @@ public class RobotContainer {
                     .whileTrue(shooterSubsystem.setSpeed(() -> SubsystemConstants.flushWheelRps)
                                     .alongWith(hoodSubsystem.setPosition(() -> SubsystemConstants.flushHoodRotations)));
         
-        new Trigger(() -> true)
-                    .whileTrue(AutoAimCommands.autoIndex(this));
+        // new Trigger(() -> true)
+        //             .whileTrue(AutoAimCommands.autoIndex(this));
         
         driverXboxController.y()
                     .onTrue(Commands.runOnce(() -> aiming = true));
@@ -256,6 +256,10 @@ public class RobotContainer {
                 )
         );
 
+        treeMapTuningController.b()
+                        .whileTrue(indexerSubsystem.setVoltage(() -> -3.0))
+                        .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
+
         treeMapTuningController.leftTrigger()
                         .whileTrue(shooterSubsystem.setSpeed(()-> SmartDashboard.getNumber("Tuning/ShooterTreeMapRPS", 0.0)))
                         .whileFalse(shooterSubsystem.setVoltage(()->0.0));
@@ -269,10 +273,10 @@ public class RobotContainer {
                         .whileTrue(driveSubsystem.driveAutoAim());
         
         treeMapTuningController.rightBumper()
-                        .whileTrue(
-                            indexerSubsystem.setVoltage(() -> -7.0)
-                            .withTimeout(5.0)
-                            .andThen(indexerSubsystem.setVoltage(()->7.0)))//negative is forward
+                        .whileTrue(indexerSubsystem.setVoltage(() -> 3.5))
+                            // indexerSubsystem.setVoltage(() -> -3.5)
+                            // .withTimeout(5.0)
+                            // .andThen(indexerSubsystem.setVoltage(()->3.5)))//negative is forward
                         .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
         
         treeMapTuningController.povUp()

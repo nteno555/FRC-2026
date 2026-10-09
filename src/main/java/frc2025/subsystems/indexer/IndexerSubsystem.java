@@ -31,6 +31,7 @@ import frc2025.config.SubsystemConstants;
 public class IndexerSubsystem extends SubsystemBase {
     IndexerIO io;
     IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
+    double targetVoltage = 0.0;
 
     public IndexerSubsystem(IndexerIO io) {
         this.io = io;
@@ -40,6 +41,7 @@ public class IndexerSubsystem extends SubsystemBase {
     public void periodic() {
         Logger.processInputs("RealOutputs/Indexer", inputs);
         Logger.recordOutput("Superstructure/Indexing", inputs.indexerVoltage > 1.0);
+        Logger.recordOutput("RealOutputs/Indexer/targetVoltage", targetVoltage);
         io.updateInputs(inputs);
     }
 
@@ -50,6 +52,7 @@ public class IndexerSubsystem extends SubsystemBase {
     }
 
     public Command setVoltage(Supplier<Double> indexerVoltage) {
+        targetVoltage = (indexerVoltage.get());
         return this.run(() -> {
             io.setVoltage(indexerVoltage.get());
         });

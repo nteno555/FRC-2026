@@ -22,19 +22,24 @@ public class ShooterTreeMap {
         updateDashboardMap();
         SmartDashboard.putString("Tuning/lowerWheelTree Map", lowerWheelTreeMap.toString());
 
-        // lowerWheelTreeMap.put(1.4389, null);
-        // lowerWheelTreeMap.put(1.5029, null);
-        // lowerWheelTreeMap.put(1.5029, null);
-        // lowerWheelTreeMap.put(1.5029, null);
-        // lowerWheelTreeMap.put(1.5029, null);
-        // lowerWheelTreeMap.put(1.5029, null);
+        lowerWheelTreeMap.put(1.4367, 18.2);
+        lowerWheelTreeMap.put(1.928, 20.5);
+        lowerWheelTreeMap.put(2.3132, 22.9);
+        lowerWheelTreeMap.put(2.7972, 24.8);
+        lowerWheelTreeMap.put(3.2983, 28.0);
+        lowerWheelTreeMap.put(3.6102, 30.4);
+        lowerWheelTreeMap.put(4.3841, 36.8);
         
+        // default RPS is 27.0
         // hoodTreeMap.put(1.5029, null);
         // hoodTreeMap.put(1.5029, null);
         // hoodTreeMap.put(1.5029, null);
         // hoodTreeMap.put(1.5029, null);
         // hoodTreeMap.put(1.5029, null);
         // hoodTreeMap.put(1.5029, null);
+        
+        // default RPS 32.0
+        // hoodTreeMap.put(4.3871, 1.1);
     }
 
     public static ShooterTreeMap getInstance() {
