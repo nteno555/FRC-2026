@@ -274,9 +274,7 @@ public class RobotContainer {
         
         treeMapTuningController.rightBumper()
                         .whileTrue(indexerSubsystem.setVoltage(() -> 3.5))
-                            // indexerSubsystem.setVoltage(() -> -3.5)
-                            // .withTimeout(5.0)
-                            // .andThen(indexerSubsystem.setVoltage(()->3.5)))//negative is forward
+                        // .alongWith(intakeSubsystem.oscillateIntake()))
                         .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
         
         treeMapTuningController.povUp()

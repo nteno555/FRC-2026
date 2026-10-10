@@ -67,7 +67,7 @@ public class IntakeSubsystem extends SubsystemBase {
             if (time % 0.67 < 0.335) io.setDeployPosition(SubsystemConstants.intakeDeployPosition, true);
             else io.setDeployPosition(SubsystemConstants.intakeHalfPosition, true);
 
-            io.setVoltage(SubsystemConstants.intakeRollerVoltage);
+            io.setVoltage(-SubsystemConstants.intakeRollerVoltage);
         });
     }
 
