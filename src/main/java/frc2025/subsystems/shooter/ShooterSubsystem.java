@@ -30,11 +30,14 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         Logger.processInputs("RealOutputs/Shooter", inputs);
-        Logger.recordOutput("Superstructure/ShooterSpeed", inputs.masterVelocityRPS);
-        Logger.recordOutput("Shooter/wantedSpeed", wantedVelocity);
+        Logger.recordOutput("Superstructure/masterVelocityRPS", inputs.masterVelocityRPS);
+        Logger.recordOutput("Shooter/wantedVelocity", wantedVelocity);
+        Logger.recordOutput("Shooter/shotReadyAF", getShotReadyAF());
         io.updateInputs(this.inputs);
     }
-
+    public double[] getInputs(){
+        return new double[]{wantedVelocity,inputs.masterVelocityRPS};
+    }
     public Command characterizeStaticVoltage() {
         return this.runOnce(() -> rampVoltage = 0.0)
             .andThen(this.run(() -> {
@@ -115,8 +118,9 @@ public class ShooterSubsystem extends SubsystemBase {
         });
     }
 
-    public boolean getShotReady() {
-        return Math.abs(wantedVelocity - inputs.masterVelocityRPS) < 5.0 && inputs.masterVelocityRPS > 1.0;
+    public boolean getShotReadyAF() {
+        return Math.abs(wantedVelocity - inputs.masterVelocityRPS) < 5.0;
+        // && Math.abs(inputs.masterVelocityRPS) > 1.0
     }
 
     public double getCurrent() {

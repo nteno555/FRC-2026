@@ -8,6 +8,7 @@ import static frc2025.subsystems.drive.DriveConstants.FrontLeft;
 import static frc2025.subsystems.drive.DriveConstants.FrontRight;
 import static frc2025.subsystems.drive.DriveConstants.kSpeedAt12Volts;
 
+import frc2025.config.ShooterTreeMap;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -139,22 +140,32 @@ public class RobotContainer {
                                 : new Pose2d()
                 )
         );
-
+        driverXboxController.b()
+                .whileTrue(indexerSubsystem.setVoltage(() -> -3.0))
+                .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
         new Trigger(() -> aiming)
-                    .whileTrue(shooterSubsystem.setSpeed(() -> SubsystemConstants.flushWheelRps)
-                                    .alongWith(hoodSubsystem.setPosition(() -> SubsystemConstants.flushHoodRotations)));
-        
-        // new Trigger(() -> true)
-        //             .whileTrue(AutoAimCommands.autoIndex(this));
-        
-        driverXboxController.y()
+                    .whileTrue(
+                            shooterSubsystem.setSpeed(
+                                    () -> ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(RobotState.getDistanceToHub())
+                                    )
+                            .alongWith(
+                                    hoodSubsystem.setPosition(
+                                            () -> ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(RobotState.getDistanceToHub())
+                                            )
+                                    .alongWith(
+                                        driveSubsystem.driveAutoAim()
+                                        .alongWith(AutoAimCommands.autoIndex(this)))));
+
+//         new Trigger(() -> true)
+//                     .whileTrue(AutoAimCommands.autoIndex(this));
+        driverXboxController.rightTrigger()
                     .onTrue(Commands.runOnce(() -> aiming = true));
 
-        driverXboxController.x()
+        driverXboxController.leftTrigger()
                     .onTrue(Commands.runOnce(() -> aiming = false));
         
-        driverXboxController.leftTrigger()
-                    .onTrue(driveSubsystem.driveAutoAim());
+//        driverXboxController.rightTrigger()
+//                    .onTrue(driveSubsystem.driveAutoAim());
 
         driverXboxController.povDown()
                     .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
@@ -162,10 +173,10 @@ public class RobotContainer {
         driverXboxController.povUp()
                     .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeRetractPosition));
 
-        driverXboxController.leftBumper()
+        driverXboxController.povRight()
                     .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));
 
-        driverXboxController.rightBumper()
+        driverXboxController.povLeft()
                     .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
 
         // ---------- TUNING CONTROLLER----------------

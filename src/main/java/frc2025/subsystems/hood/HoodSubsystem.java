@@ -34,6 +34,7 @@ public class HoodSubsystem extends SubsystemBase {
         Logger.processInputs("RealOutputs/Hood", inputs);
         Logger.recordOutput("Superstructure/HoodAngle", inputs.positionRotations);
         Logger.recordOutput("Hood/setpoint", setpoint);
+        Logger.recordOutput("Hood/shotReady", getShotReady());
         io.updateInputs(inputs);
     }
 
@@ -168,7 +169,7 @@ public class HoodSubsystem extends SubsystemBase {
     }
 
     public boolean getShotReady() {
-        return (inputs.positionRotations > 0.15) && (Math.abs(inputs.positionRotations - setpoint) < 0.15);
+        return (Math.abs(inputs.positionRotations - setpoint) < 0.15);
     }
 
     public boolean getShotReadyLenient() {

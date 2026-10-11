@@ -97,6 +97,7 @@ public class DriveSubsystem extends SubsystemBase {
         RobotState.getInstance().setPigeonAcceleration(inputs.pigeonAcceleration);
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);
         Logger.processInputs("RealOutputs/Drive", inputs);
+        Logger.recordOutput("Drive/shotReady", getShotReady());
     }
 
     private double modAngle(double angle) {
@@ -162,14 +163,14 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public boolean getShotReady() {
-        Pose2d shooterPose = RobotState.getInstance().getDelayedShooterPose();
-        Pose2d virtualTarget = RobotState.getInstance().getShootingWhileMovingVirtualPose();
+        Pose2d shooterPose = RobotState.getVisionPose();
+        Pose2d virtualTarget = (Alliance.get()?FieldConstants.redNetPos:FieldConstants.blueNetPos);
         double desiredHeading = Math.atan2(
                 virtualTarget.getY() - shooterPose.getY(),
                 virtualTarget.getX() - shooterPose.getX()
         );
 
-        double currentHeading = RobotState.getInstance().getVisionPose().getRotation().getRadians();
+        double currentHeading = RobotState.getVisionPose().getRotation().getRadians();
         double angleError = modAngle(desiredHeading - currentHeading);
         return (Math.abs(angleError) < 3);
     }
@@ -226,7 +227,6 @@ public class DriveSubsystem extends SubsystemBase {
             resetOdometry(position.get());
         });
     }
-
     public SwerveModule[] getSwerveModules() {
         return io.getModules();
     }

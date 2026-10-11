@@ -59,9 +59,14 @@ public class AutoAimCommands {
 
     public static Command autoIndex(RobotContainer robotContainer) {
         Supplier<Boolean> booleanSupplier = () -> {
-            return robotContainer.getShooter().getShotReady() && robotContainer.getHood().getShotReady();
+            return robotContainer.getShooter().getShotReadyAF() && robotContainer.getHood().getShotReady() && robotContainer.getDrive().getShotReady();
         };
-
+        Logger.recordOutput("Indexer/shooterShotReady", robotContainer.getShooter().getShotReadyAF());
+        Logger.recordOutput("Indexer/shooterWantedVelocity", robotContainer.getShooter().getInputs()[0]);
+        Logger.recordOutput("Indexer/shooterMasterVelocityRPS", robotContainer.getShooter().getInputs()[1]);
+        Logger.recordOutput("Indexer/hoodShotReady", robotContainer.getHood().getShotReady());
+        Logger.recordOutput("Indexer/driveShotReady", robotContainer.getDrive().getShotReady());
+        Logger.recordOutput("Indexer/autoIndexBoolean", booleanSupplier.get());
         if (booleanSupplier.get()) {
             return robotContainer.getIndexer().setVoltage(() -> SubsystemConstants.indexerShootVoltage);
         }

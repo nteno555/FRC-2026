@@ -42,7 +42,7 @@ public class SubsystemConstants {
     public static double intakeTorqueNeutralDeadband = 1;
     public static double intakePeakForwardVoltage = 4.0;
     public static double intakePeakReverseVoltage = -4.0;
-    public static double intakeRollerVoltage = -4.0;
+    public static double intakeRollerVoltage = 4.0;
 
     public static double intakeRetractPosition = 16.0;
     public static double intakeDeployPosition = 0.0;

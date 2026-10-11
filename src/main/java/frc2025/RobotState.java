@@ -31,7 +31,7 @@ public class RobotState {
             double timestamp, Pose2d pose, Matrix<N3, N1> stdDevs) {
     }
 
-    private Pose2d latestPose = new Pose2d();
+    private static Pose2d latestPose = new Pose2d();
 
     private List<TimestampedVisionUpdate> visionUpdates = new ArrayList<>();
 
@@ -91,7 +91,7 @@ public class RobotState {
         return robotRelativeSpeeds;
     }
 
-    public Pose2d getVisionPose() {
+    public static Pose2d getVisionPose() {
         return latestPose;
     }
 
@@ -139,7 +139,7 @@ public class RobotState {
         return this.ballTargets;
     }
 
-    public double getDistanceToHub() {
+    public static double getDistanceToHub() {
         double distance = 0.0;
         if (Alliance.get()) {
             distance = Math.sqrt(Math.pow((FieldConstants.redNetPos.getY() - getVisionPose().getY()), 2) + Math.pow((FieldConstants.redNetPos.getX() - getVisionPose().getX()), 2));  
