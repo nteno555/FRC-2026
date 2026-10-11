@@ -145,6 +145,11 @@ public class RobotContainer {
         driverXboxController.b()
                 .whileTrue(indexerSubsystem.setVoltage(() -> -3.0))
                 .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
+        
+        driverXboxController.x()
+                .whileTrue(intakeSubsystem.setRollerVoltage(() -> -3.0))
+                .whileFalse(intakeSubsystem.setRollerVoltage(() -> 0.0));
+
 
 //         new Trigger(() -> true)
 //                     .whileTrue(AutoAimCommands.autoIndex(this));
@@ -169,8 +174,9 @@ public class RobotContainer {
         
         // right trigger is shoot
         driverXboxController.rightTrigger()
-                    .onTrue(Commands.runOnce(() -> aiming = true))
-                    .onFalse(Commands.runOnce(() -> aiming = false));
+                    .whileTrue(Commands.runOnce(() -> aiming = true))
+                    .whileFalse(Commands.runOnce(() -> aiming = false)
+                    .alongWith(indexerSubsystem.setVoltage(() -> 0.0)));
         
 //        driverXboxController.rightTrigger()
 //                    .onTrue(driveSubsystem.driveAutoAim());
