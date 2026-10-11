@@ -79,6 +79,8 @@ public class RobotContainer {
 
     public RobotContainer() {
         createSubsystems();
+        autos = new Autos(this);
+        autoCommand = autos.testAuto();
         configureBindings();
         loggerInit();
     }
@@ -357,11 +359,16 @@ public class RobotContainer {
     }
 
     public void autoInit() {
-        CommandScheduler.getInstance().schedule(autoCommand);
+        autoCommand.schedule();
     }
 
+//     public void disabledPeriodic() {
+//         Logger.recordOutput("Drive/heartbeat", Math.random());
+//         autoCommand = autos.testAuto();        
+//     }
+
     public void teleopInit() {
-        //autoCommand.cancel();
+        autoCommand.cancel();
         CommandScheduler.getInstance().cancelAll();
     }
 }

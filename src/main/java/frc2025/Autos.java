@@ -36,6 +36,7 @@ public class Autos {
 
     /* Path Commands */
 
+
     private Command intakePath(String pathName) {
         PathPlannerPath path;
         try {
@@ -74,12 +75,40 @@ public class Autos {
         };
     }
 
+    public Command resetOdometryIntakePath(String pathName) {
+        PathPlannerPath path;
+        try {
+            path = PathPlannerPath.fromPathFile(pathName);
+        } catch (IOException | ParseException e) {
+            System.out.println("BAD PATH BAD PATH BAD PATH");
+            return null;
+        }
+
+        PathPlannerPath finalPath = path;
+        if (Robot.isSimulation()) {
+            return new FollowPathCommand(drive, () -> finalPath, () -> true, true);
+            //.raceWith(robotContainer.getIntake().setIntaking(() -> true));
+            //.andThen(new WaitCommand(0.2));
+        }
+
+        Command followPathCommand = new FollowPathCommand(drive, () -> finalPath, () -> Alliance.get(), true);
+        Command resetOdom = this.drive.resetOdometryCommand(() -> finalPath.getStartingDifferentialPose());
+        Command intakePathFinalCommand = resetOdom.andThen(followPathCommand);
+        return intakePathFinalCommand;
+        //.raceWith(robotContainer.getIntake().setIntaking(() -> true));
+        //.andThen(new WaitCommand(0.2));
+    }
+
     
     public Command Taxi() {
         Command auto = drive.driveRobotRelative(() -> new ChassisSpeeds(1, 0, 0))
                 .withTimeout(2.0)
                 .andThen(drive.driveRobotRelative(() -> new ChassisSpeeds(0, 0, 0)));
         return auto;
+    }
+
+    public Command testAuto() {
+        return resetOdometryIntakePath("TestPath");
     }
     
 }
