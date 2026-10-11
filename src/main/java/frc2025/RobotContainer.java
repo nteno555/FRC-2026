@@ -77,7 +77,7 @@ public class RobotContainer {
         Autos autos;
         Command autoCommand;
 
-        private double driveSpeed = 0.5; //1.3
+        private double driveSpeed = 1.3; //1.3
         private double slowmodeDriveSpeed = 0.3;
         private double rotationSpeed = 0.9;
         private double slowmodeRotationSpeed = 0.5;
@@ -237,7 +237,7 @@ public class RobotContainer {
 
                 intakeSubsystem.setDefaultCommand(
                         intakeSubsystem.setDeployVoltage(() -> 0.0));
-                hoodSubsystem.setDefaultCommand(hoodSubsystem.setPosition(() -> 0.1));
+                // hoodSubsystem.setDefaultCommand(hoodSubsystem.setPosition(() -> 0.0));
                 shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
                 //shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
                 indexerSubsystem.setDefaultCommand(
@@ -583,7 +583,7 @@ public class RobotContainer {
                 SmartDashboard.putNumber("Tuning/testVelocityRps", 0.0);
 
                 characterizeController.rightTrigger()
-                        .whileTrue(shooterSubsystem.characterizeStaticCurrent());
+                        .whileTrue(shooterSubsystem.characterizeStaticVoltage());
 
                 characterizeController.leftTrigger()
                         .whileTrue(shooterSubsystem.setSpeed(

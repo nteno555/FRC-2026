@@ -26,6 +26,8 @@ public class ShooterIOReal implements ShooterIO {
     private final VelocityVoltage towerSpeedVoltageRequest = new VelocityVoltage(0).withSlot(0).withEnableFOC(true);
     private final TorqueCurrentFOC currentRequest = new TorqueCurrentFOC(0);
 
+    private boolean fullPower = false;
+
     public ShooterIOReal() {
         flywheelMaster.getConfigurator().apply(new TalonFXConfiguration());
         flywheelAligned.getConfigurator().apply(new TalonFXConfiguration());
@@ -167,6 +169,22 @@ public class ShooterIOReal implements ShooterIO {
     @Override
     public void setSpeed(double speed, double acceleration) {
         flywheelMaster.setControl(
-                   new VelocityVoltage(speed).withAcceleration(acceleration));
+                   speedVoltageRequest.withVelocity(speed).withAcceleration(acceleration));
+    }
+
+    public void setSpeedBangBang(double speed, double acceleration) {
+        double error = speed - flywheelMaster.getVelocity().getValueAsDouble();
+
+        if (error > 3.0) {
+            fullPower = true;
+        } else if (error < 1.0) {
+            fullPower = false;
+        }
+
+        if (fullPower) {
+            flywheelMaster.setControl(bangbangVoltageRequest.withOutput(12.0));
+        } else {
+            flywheelMaster.setControl(speedVoltageRequest.withVelocity(speed).withAcceleration(acceleration));
+        }
     }
 }

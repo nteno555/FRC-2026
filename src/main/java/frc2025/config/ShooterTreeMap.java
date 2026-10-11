@@ -21,10 +21,10 @@ public class ShooterTreeMap {
         // tofTreeMap.put(3.06, 1.16); // 1.17 1.1 1.18
         // tofTreeMap.put(1.46, 1.09);
 
-        tofTreeMap.put(5.13, 1.64); // 1.33 1.29 1.30
-        tofTreeMap.put(4.025, 1.55); // 1.33 1.28 1.32
-        tofTreeMap.put(3.009, 1.36); // 1.17 1.1 1.18
-        tofTreeMap.put(1.485, 1.26); 
+        // tofTreeMap.put(5.13, 1.64); // 1.33 1.29 1.30
+        // tofTreeMap.put(4.025, 1.55); // 1.33 1.28 1.32
+        // tofTreeMap.put(3.009, 1.36); // 1.17 1.1 1.18
+        // tofTreeMap.put(1.485, 1.26); 
 
         // hood rotations: 1.17, 2.21, 3.05, 3.44, 4.08, 4.58
 
@@ -50,27 +50,61 @@ public class ShooterTreeMap {
         // lowerWheelTreeMap.put(5.046, 38.4); // 19.95
 
         // lowerWheelTreeMap.put(6.0, 40.3); // 19.10
+        /* 1.534   76.8d      1.82   26.4 -3.1/+3.1   1.06  70.7d
+            2.220   73.3d      2.61   28.2 -2.5/+2.5   1.14  67.4d
+            3.111   67.6d      3.86   29.6 -1.9/+1.9   1.16  60.9d
+            3.939   62.2d      5.06   31.0 -1.5/+1.5   1.16  54.7d
+            4.664   58.1d      5.98   32.4 -1.4/+1.4   1.16  50.3d
+            5.060   56.3d      6.38   33.2 -1.2/+1.2   1.17  48.8d
+            5.616   54.6d      6.76   34.8 -1.2/+1.2   1.20  47.8d */
+        
+        lowerWheelTreeMap.put(1.534, 26.4);
+        lowerWheelTreeMap.put(2.220, 28.2);
+        lowerWheelTreeMap.put(3.111, 29.6);
+        lowerWheelTreeMap.put(3.939, 31.0);
+        lowerWheelTreeMap.put(4.664, 32.4);
+        lowerWheelTreeMap.put(5.060, 33.2);
+        lowerWheelTreeMap.put(5.616, 34.8);
 
-        lowerWheelTreeMap.put(1.534, 27.0); // 15.8757785
-        lowerWheelTreeMap.put(2.220, 30.0); // 16.973333
-        lowerWheelTreeMap.put(3.111, 35.5); // 17.0999029
-        lowerWheelTreeMap.put(3.939, 40.0); // 18.9597874
+        hoodTreeMap.put(1.534, 1.82);
+        hoodTreeMap.put(2.220, 2.61);
+        hoodTreeMap.put(3.111, 3.86);
+        hoodTreeMap.put(3.939, 5.06);
+        hoodTreeMap.put(4.664, 5.98);
+        hoodTreeMap.put(5.060, 6.38);
+        hoodTreeMap.put(5.616, 6.76);
 
-        lowerWheelTreeMap.put(4.664, 39.7); // 19.6070128
+        tofTreeMap.put(1.534, 1.06);
+        tofTreeMap.put(2.220, 1.14);
+        tofTreeMap.put(3.111, 1.16);
+        tofTreeMap.put(3.939, 1.16);
+        tofTreeMap.put(4.664, 1.16);
+        tofTreeMap.put(5.060, 1.17);
+        tofTreeMap.put(5.616, 1.20);
+        
 
-        lowerWheelTreeMap.put(5.06, 39.7); // 19.6070128
-        lowerWheelTreeMap.put(5.06, 39.7); // 19.6070128
-        // lowerWheelTreeMap.put(5.616, 37.5); // 17.082934
+        // TUNED
 
-        hoodTreeMap.put(1.534, 1.5);
-        hoodTreeMap.put(2.220, 2.0);
-        hoodTreeMap.put(3.103, 2.5);
-        hoodTreeMap.put(3.939, 3.00);
+        // lowerWheelTreeMap.put(1.534, 27.0); // 15.8757785
+        // lowerWheelTreeMap.put(2.220, 30.0); // 16.973333
+        // lowerWheelTreeMap.put(3.111, 35.5); // 17.0999029
+        // lowerWheelTreeMap.put(3.939, 40.0); // 18.9597874
 
-        hoodTreeMap.put(4.664, 3.8);
+        // lowerWheelTreeMap.put(4.664, 39.7); // 19.6070128
 
-        lowerWheelTreeMap.put(5.06, 39.7); // 19.6070128
-        lowerWheelTreeMap.put(5.06, 39.7); // 19.6070128
+        // lowerWheelTreeMap.put(5.06, 39.7); // 19.6070128
+        // lowerWheelTreeMap.put(5.06, 39.7); // 19.6070128
+        // // lowerWheelTreeMap.put(5.616, 37.5); // 17.082934
+
+        // hoodTreeMap.put(1.534, 1.5);
+        // hoodTreeMap.put(2.220, 2.0);
+        // hoodTreeMap.put(3.103, 2.5);
+        // hoodTreeMap.put(3.939, 3.00);
+
+        // hoodTreeMap.put(4.664, 3.8);
+
+        // lowerWheelTreeMap.put(5.06, 39.7); // 19.6070128
+        // lowerWheelTreeMap.put(5.06, 39.7); // 19.6070128
         // hoodTreeMap.put(5.616, 4.58);
         // vy = rps * sin(85 - 12.28*hood)
         //vy = rps · sin(0.09805 · hood_rotation)
@@ -128,11 +162,13 @@ public class ShooterTreeMap {
     public void resetRPS() {
         lowerWheelTreeMap.clear();
 
-        lowerWheelTreeMap.put(5.24, 58.0); // 47.41
-        lowerWheelTreeMap.put(4.04, 50.0); // 43.13
-        lowerWheelTreeMap.put(3.07, 45.0); // 41.05
-        lowerWheelTreeMap.put(2.47, 43.0); // 39.71
-        lowerWheelTreeMap.put(1.29, 40.0); // 39.67
+        lowerWheelTreeMap.put(1.534, 26.4);
+        lowerWheelTreeMap.put(2.220, 28.2);
+        lowerWheelTreeMap.put(3.111, 29.6);
+        lowerWheelTreeMap.put(3.939, 31.0);
+        lowerWheelTreeMap.put(4.664, 32.4);
+        lowerWheelTreeMap.put(5.060, 33.2);
+        lowerWheelTreeMap.put(5.616, 34.8);
     }
 
     public double getMinDistance() {

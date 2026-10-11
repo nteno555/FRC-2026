@@ -27,4 +27,5 @@ public interface ShooterIO {
     public void setVoltage(double voltage);
     public void setCurrent(double currentAmps);
     public void updateInputs(ShooterIOInputs inputs);
+    public void setSpeedBangBang(double speed, double acceleration);
 }

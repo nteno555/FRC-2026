@@ -17,7 +17,7 @@ public class IntakeIOReal implements IntakeIO {
     private final TalonFX intakeDeployMotor = new TalonFX(SubsystemConstants.intakeDeployMasterID, CANBus.roboRIO());
     //private final TalonFX intakeDeploySlave = new TalonFX(SubsystemConstants.intakeDeploySlaveID, CANBus.roboRIO());
     private final TalonFX intakeRollerMaster = new TalonFX(SubsystemConstants.intakeRollerMasterID,CANBus.roboRIO());
-    private final TalonFX intakeRollerSlave = new TalonFX(SubsystemConstants.intakeRollerSlaveID,CANBus.roboRIO());
+    private final TalonFX intakeDeploySlave = new TalonFX(SubsystemConstants.intakeDeploySlaveID,CANBus.roboRIO());
 
     private final PositionVoltage voltageRequest = new PositionVoltage(0);
     private final VoltageOut voltageOutRequest = new VoltageOut(12.0);
@@ -78,13 +78,13 @@ public class IntakeIOReal implements IntakeIO {
         slot2.kD = 0.0;
 
         intakeRollerMaster.getConfigurator().apply(rollerConfigs);
-        intakeRollerSlave.getConfigurator().apply(rollerConfigs);
+        intakeDeploySlave.getConfigurator().apply(deployConfigs);
         intakeDeployMotor.getConfigurator().apply(deployConfigs);
 
         intakeDeployMotor.setNeutralMode(NeutralModeValue.Brake);
         intakeDeployMotor.setPosition(0.0);
 
-        intakeRollerSlave.setControl(new Follower(intakeRollerMaster.getDeviceID(), MotorAlignmentValue.Opposed));
+        intakeDeploySlave.setControl(new Follower(intakeDeployMotor.getDeviceID(), MotorAlignmentValue.Opposed));
 
         
     }
@@ -101,11 +101,11 @@ public class IntakeIOReal implements IntakeIO {
 
         inputs.totalCurrent = intakeDeployMotor.getStatorCurrent().getValueAsDouble() +
                 intakeRollerMaster.getStatorCurrent().getValueAsDouble() +
-                intakeRollerSlave.getStatorCurrent().getValueAsDouble();
+                intakeDeploySlave.getStatorCurrent().getValueAsDouble();
 
         Logger.recordOutput("Current/Intake Deploy Master", intakeDeployMotor.getStatorCurrent().getValueAsDouble());
         Logger.recordOutput("Current/Intake Deploy Slave", intakeRollerMaster.getStatorCurrent().getValueAsDouble());
-        Logger.recordOutput("Current/Intake Roller", intakeRollerSlave.getStatorCurrent().getValueAsDouble());
+        Logger.recordOutput("Current/Intake Roller", intakeDeploySlave.getStatorCurrent().getValueAsDouble());
     }
 
     //private final Follower rollerFollower = new Follower(SubsystemConstants.intakeRollerMasterID, MotorAlignmentValue.Opposed);

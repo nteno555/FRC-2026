@@ -49,6 +49,7 @@ public class HoodSubsystem extends SubsystemBase {
     public void periodic() {
         Logger.processInputs("RealOutputs/Hood", inputs);
         Logger.recordOutput("Superstructure/HoodAngle", inputs.positionRotations);
+        Logger.recordOutput("Hood/launchAngle", Math.PI/2 - inputs.positionRadians);
         Logger.recordOutput("Hood/setpoint", setpoint);
         io.updateInputs(inputs);
     }
@@ -170,6 +171,7 @@ public class HoodSubsystem extends SubsystemBase {
                 / (SubsystemConstants.hoodMaxAngleRotations - SubsystemConstants.hoodMinAngleRotations);
         return (rotations - SubsystemConstants.hoodMinAngleRotations) * m + SubsystemConstants.hoodMinAngleRadians;
     }
+
 
     public static double toRotations(double radians) {
         double m = (SubsystemConstants.hoodMaxAngleRotations - SubsystemConstants.hoodMinAngleRotations)

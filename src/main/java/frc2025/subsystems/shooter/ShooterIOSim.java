@@ -25,6 +25,10 @@ public class ShooterIOSim implements ShooterIO {
         voltage = speed;
     }
 
+    public void setSpeedBangBang(double speed, double acceleration) {
+        voltage = speed;
+    }
+
     @Override
     public void setVoltage(double voltage) {
         this.voltage = voltage;

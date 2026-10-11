@@ -41,10 +41,10 @@ public class SubsystemConstants {
     // public static double flywheelkP = 0.3;
     // public static double flywheelkI = 0.0;
     // public static double flywheelkD = 0.0;
-    public static double flywheelkS = 0.20;
-    public static double flywheelkV = 0.122; //0.122
-    public static double flywheelkA = 0.00;
-    public static double flywheelkP = 0.3; //0.05
+    public static double flywheelkS = 0.380;
+    public static double flywheelkV = 0.115; //0.122
+    public static double flywheelkA = 0.0;
+    public static double flywheelkP = 0.2; //0.05
     public static double flywheelkI = 0.00;
     public static double flywheelkD = 0.00;
 
@@ -94,13 +94,13 @@ public class SubsystemConstants {
     public static double towerkPAmps = 5.0;
     public static double towerkIAmps = 0.0;
     public static double towerkDAmps = 0.0;
-    public static double towerFlywheelRatio = 3.0;
+    public static double towerFlywheelRatio = 3.2;
     public static double towerBangBangThreshold = 15.0;
     /// Min: 5 degrees, Max: 45 degrees
     //Hood Static Trials: 0.010, 
     public static double hoodkS = 0.0;
     public static double hoodkV = 0.0;
-    public static double hoodkP = 2.5;
+    public static double hoodkP = 12.0;
     public static double hoodkI = 0.0;
     public static double hoodkD = 0.00;
     public static double hoodSupplyCurrentLimit = 40;
@@ -113,8 +113,8 @@ public class SubsystemConstants {
     public static double hoodRezeroVoltage = -3.5;
     public static double hoodMinAngleRotations = 0;
     public static double hoodMaxAngleRotations = 8.9;
-    public static double hoodMinAngleRadians = 0.785398;
-    public static double hoodMaxAngleRadians = 0.0872665;
+    public static double hoodMinAngleRadians = 0.0872665; // 5 degree hood and launch angle is about 85 degrees 
+    public static double hoodMaxAngleRadians = 0.785398; // 45 degree hood launch angle is about 45 degrees
 
     public static double intakekS = 0.1;
     public static double intakekG = 0.0;
@@ -135,7 +135,7 @@ public class SubsystemConstants {
     public static double intakePeakReverseVoltage = -6.0;
     public static double intakeRetractPosition = 19.2; // actual: -1.0
     public static double intakeDeployPosition = 3.6; // actual: -20.2
-    public static double intakeRollerVoltage = 6.0;
+    public static double intakeRollerVoltage = 10.0;
     public static double intakeHalfPosition = -10.66;
     public static double intakeQuarterPosition = -5.0;
 
@@ -195,7 +195,7 @@ public class SubsystemConstants {
     public static double robotToTurretCameraRoll = 180.0;
     public static boolean ignoreTurretLimelight = false;
 
-    public static Transform2d robotToFrontCamera = new Transform2d(0.326, 0.326, Rotation2d.kZero);
+    public static Transform2d robotToFrontCamera = new Transform2d(0.4064, 0.326, Rotation2d.kZero);
     public static double robotToFrontCameraForward = robotToFrontCamera.getX();
     public static double robotToFrontCameraRight = robotToFrontCamera.getY();
     public static double robotToFrontCameraUp = 0.225;
@@ -238,9 +238,9 @@ public class SubsystemConstants {
     public static int flywheelOpposedBID = 28;
     public static int hoodID = 51;
     public static int indexerID = 16;
-    public static int intakeDeployMasterID = 17;
-    public static int intakeRollerMasterID = 12;
-    public static int intakeRollerSlaveID = 0;
+    public static int intakeDeployMasterID = 11;
+    public static int intakeRollerMasterID = 17;
+    public static int intakeDeploySlaveID = 23;
     public static int towerID = 20;
     public static int turretID = 41;
     public static int turretTb1ID = 5;
