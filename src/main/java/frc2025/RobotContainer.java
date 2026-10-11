@@ -145,6 +145,15 @@ public class RobotContainer {
         driverXboxController.b()
                 .whileTrue(indexerSubsystem.setVoltage(() -> -3.0))
                 .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
+
+//         new Trigger(() -> true)
+//                     .whileTrue(AutoAimCommands.autoIndex(this));
+
+        // left trigger is intake
+        driverXboxController.leftTrigger()
+                    .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage))
+                    .onFalse(intakeSubsystem.setRollerVoltage(() -> 0.0));
+
         new Trigger(() -> aiming)
                     .whileTrue(
                             shooterSubsystem.setSpeed(
@@ -157,14 +166,11 @@ public class RobotContainer {
                                     .alongWith(
                                         driveSubsystem.driveAutoAim()
                                         .alongWith(AutoAimCommands.autoIndex(this)))));
-
-//         new Trigger(() -> true)
-//                     .whileTrue(AutoAimCommands.autoIndex(this));
+        
+        // right trigger is shoot
         driverXboxController.rightTrigger()
-                    .onTrue(Commands.runOnce(() -> aiming = true));
-
-        driverXboxController.leftTrigger()
-                    .onTrue(Commands.runOnce(() -> aiming = false));
+                    .onTrue(Commands.runOnce(() -> aiming = true))
+                    .onFalse(Commands.runOnce(() -> aiming = false));
         
 //        driverXboxController.rightTrigger()
 //                    .onTrue(driveSubsystem.driveAutoAim());
@@ -175,11 +181,12 @@ public class RobotContainer {
         driverXboxController.povUp()
                     .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeRetractPosition));
 
-        driverXboxController.povRight()
-                    .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));
+        // intake is now activated on left trigger hold
+        // driverXboxController.povRight()
+        //             .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));
 
-        driverXboxController.povLeft()
-                    .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
+        // driverXboxController.povLeft()
+        //             .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
 
         // ---------- TUNING CONTROLLER----------------
         SmartDashboard.putNumber("Tuning/intakeDeployPosition", 0.0);
@@ -273,6 +280,10 @@ public class RobotContainer {
                         .whileTrue(indexerSubsystem.setVoltage(() -> -3.0))
                         .whileFalse(indexerSubsystem.setVoltage(() -> 0.0));
 
+        treeMapTuningController.x()
+                        .whileTrue(intakeSubsystem.setRollerVoltage(() -> -3.0))
+                        .whileFalse(intakeSubsystem.setRollerVoltage(() -> 0.0));
+
         treeMapTuningController.leftTrigger()
                         .whileTrue(shooterSubsystem.setSpeed(()-> SmartDashboard.getNumber("Tuning/ShooterTreeMapRPS", 0.0)))
                         .whileFalse(shooterSubsystem.setVoltage(()->0.0));
@@ -359,8 +370,10 @@ public class RobotContainer {
     }
 
     public void autoInit() {
-        autoCommand.schedule();
+        CommandScheduler.getInstance().schedule(autoCommand);
     }
+
+    
 
 //     public void disabledPeriodic() {
 //         Logger.recordOutput("Drive/heartbeat", Math.random());
