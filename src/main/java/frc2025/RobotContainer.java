@@ -24,7 +24,10 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc2025.commands.AutoAimCommands;
+import frc2025.commands.FollowPathCommand;
+import frc2025.commands.PathPlanCommands;
 import frc2025.commands.SuperstructureCommands;
+import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveIOReal;
@@ -485,9 +488,9 @@ public class RobotContainer {
                 // turretSubsystem.rezeroCRT()
                 // );
 
-                tuningController.povDown().whileTrue(
-                                // turretSubsystem.setVoltage(() -> -1.0);
-                                turretSubsystem.setPositionSafe(() -> 0.0, () -> 0.0, () -> true));
+                // tuningController.povDown().whileTrue(
+                //                 // turretSubsystem.setVoltage(() -> -1.0);
+                //                 turretSubsystem.setPositionSafe(() -> 0.0, () -> 0.0, () -> true));
 
                 tuningController.povRight().whileTrue(
                                 turretSubsystem.setVoltage(() -> 2.0)
@@ -546,16 +549,17 @@ public class RobotContainer {
                 SmartDashboard.putNumber("Tuning/RPM", 0.0);
                 SmartDashboard.putNumber("Tuning/hoodPosition", 0.0);
                 tuningController.rightBumper()
-                                .whileTrue(
+                                .onTrue(
                                                 shooterSubsystem.setSpeed(
-                                                                () ->  SmartDashboard.getNumber("Tuning/RPM", 0.0))
+                                                                () ->  SmartDashboard.getNumber("Tuning/RPM", 0.0), () -> 0.0)
                                                                 .alongWith(hoodSubsystem.setPosition(
                                                                                 () -> SmartDashboard.getNumber(
                                                                                                 "Tuning/hoodPosition",
                                                                                                 0.0)))
                                 // .alongWith(turretSubsystem.autoAim())
-                                )
-                                .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
+                                );
+                tuningController.povDown()
+                                .onTrue(shooterSubsystem.setVoltage(() -> 0.0));
 
                 // tuningController.rightBumper()
                 // .whileTrue(AutoAimCommands.autoAim(
@@ -574,11 +578,15 @@ public class RobotContainer {
                 // ))
                 // .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
+                // tuningController.rightTrigger().whileTrue(
+                //                 indexerSubsystem.setIndexerVoltageWithTowerSpeed(
+                //                                 () -> SubsystemConstants.indexerShootVoltage,
+                //                                 () -> SubsystemConstants.towerFlywheelRatio
+                //                                                 * SmartDashboard.getNumber("Tuning/RPM", 0.0)));
                 tuningController.rightTrigger().whileTrue(
-                                indexerSubsystem.setIndexerVoltageWithTowerSpeed(
-                                                () -> SubsystemConstants.indexerShootVoltage,
-                                                () -> SubsystemConstants.towerFlywheelRatio
-                                                                * SmartDashboard.getNumber("Tuning/RPM", 0.0)));
+                        PathPlanCommands.returnUnderTrenchAuto(this, () -> FieldConstants.blueTrenchLowMid, () -> FieldConstants.blueTrenchLowZone, () -> 0.0) 
+                );
+        
                 
                 SmartDashboard.putNumber("Tuning/testVelocityRps", 0.0);
 
@@ -824,8 +832,8 @@ public class RobotContainer {
                 // lastAutoName = selected;
                 // }
 
-                // autoCommand = autos.getCommand(selected);
-                autoCommand = autos.intakeJustDrivePath("LowNeutralUnderTrench", true);
+                autoCommand = autos.getCommand(selected);
+                // autoCommand = autos.intakeJustDrivePath("LowNeutralUnderTrench", true);
 
                 // if(!autoWarmupActive) {
                 // autoCommand.schedule();

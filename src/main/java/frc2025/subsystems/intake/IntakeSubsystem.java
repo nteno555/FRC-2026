@@ -45,14 +45,15 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public Command oscillateIntake() {
-        return this.run(() -> {
-            double time = (Timer.getFPGATimestamp());
+        // return this.run(() -> {
+        //     double time = (Timer.getFPGATimestamp());
 
-            if (time % 0.67 < 0.335) io.setDeployPosition(SubsystemConstants.intakeDeployPosition, true);
-            else io.setDeployPosition(SubsystemConstants.intakeHalfPosition, true);
+        //     if (time % 0.67 < 0.335) io.setDeployPosition(SubsystemConstants.intakeDeployPosition, true);
+        //     else io.setDeployPosition(SubsystemConstants.intakeHalfPosition, true);
 
-            io.setVoltage(SubsystemConstants.intakeRollerVoltage);
-        });
+        //     io.setVoltage(SubsystemConstants.intakeRollerVoltage);
+        // });
+        return this.run(() -> {double time = 0;});
     }
 
     public Command retractSlow() {
@@ -80,9 +81,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public Command setIntakingAuto() {
         return this.run(() -> {
-            if (inputs.deployConnected) {
-                io.setDeployPosition(SubsystemConstants.intakeDeployPosition, true);
-            }
+            // if (inputs.deployConnected) {
+            //     io.setDeployPosition(SubsystemConstants.intakeDeployPosition, true);
+            // }
             io.setVoltage(SubsystemConstants.intakeRollerVoltage);
         });
     }

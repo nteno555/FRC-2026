@@ -114,8 +114,7 @@ public class Autos {
     /* Path Commands */
 
     private Command intakeDrive(Command driveCommand) {
-        return robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
-                .alongWith(robotContainer.getHood().setPosition(() -> 0.0))
+        return robotContainer.getHood().setPosition(() -> 0.0)
                 .until(() -> robotContainer.getHood().getPosition() < 0.3)
 //                .until(() -> robotContainer.getIntake().getDeployReady()
 //                        && robotContainer.getHood().getPosition() < 0.3)
@@ -134,7 +133,7 @@ public class Autos {
                                                 );
     }
 
-    public Command intakePath(String pathName, boolean useChoreo) {
+    private Command intakePath(String pathName, boolean useChoreo) {
         PathPlannerPath path;
         try {
             if(useChoreo) path = PathPlannerPath.fromChoreoTrajectory(pathName);
@@ -151,26 +150,6 @@ public class Autos {
         var followPath = new FollowPathCommand(drive, ()-> finalPath, ()-> Alliance.get(),true);
 
         return intakeDrive(followPath);
-    }
-
-
-    public Command intakeJustDrivePath(String pathName, boolean useChoreo) {
-        PathPlannerPath path;
-        try {
-            if(useChoreo) path = PathPlannerPath.fromChoreoTrajectory(pathName);
-            else path = PathPlannerPath.fromPathFile(pathName);
-        } catch (IOException | ParseException e) {
-            System.out.println("BAD PATH BAD PATH BAD PATH");
-            System.out.println(pathName);
-            return null;
-        }
-
-        PathPlannerPath finalPath = path;
-
-        //var followPath = drive.followPathCommand(finalPath);
-        var followPath = new FollowPathCommand(drive, ()-> finalPath, ()-> Alliance.get(),true);
-
-        return followPath;
     }
 
     private Command intakePathResetOdometry(String pathName, boolean useChoreo) {

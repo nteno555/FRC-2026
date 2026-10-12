@@ -44,7 +44,7 @@ public class SubsystemConstants {
     public static double flywheelkS = 0.380;
     public static double flywheelkV = 0.115; //0.122
     public static double flywheelkA = 0.0;
-    public static double flywheelkP = 0.2; //0.05
+    public static double flywheelkP = 0.05; //0.05
     public static double flywheelkI = 0.00;
     public static double flywheelkD = 0.00;
 
@@ -171,8 +171,8 @@ public class SubsystemConstants {
     public static double turretRotationsPerRadian = 44.0 / 8.0 * 26.0 / 42.0 * 110.0 / 10.0 / (2 * Math.PI);
     public static double turretMinAngleRadians = -8.739; 
     public static double turretMaxAngleRadians = -2.916;
-    public static double throughBoreZero1 = 0.378;
-    public static double throughBoreZero2 = 0.619;
+    public static double throughBoreZero1 = 0.161; //0.378
+    public static double throughBoreZero2 = 0.731; //0.619
     public static double throughBoreRatio1 = 44.0 / 8.0 * 26.0 / 42.0; // 6.17
     public static double throughBoreRatio2 = 44.0 / 8.0; // 3.82
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop

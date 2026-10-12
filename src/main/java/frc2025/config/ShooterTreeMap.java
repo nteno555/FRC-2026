@@ -58,21 +58,31 @@ public class ShooterTreeMap {
             5.060   56.3d      6.38   33.2 -1.2/+1.2   1.17  48.8d
             5.616   54.6d      6.76   34.8 -1.2/+1.2   1.20  47.8d */
         
-        lowerWheelTreeMap.put(1.534, 28.4);
-        lowerWheelTreeMap.put(2.220, 30.2);
-        lowerWheelTreeMap.put(3.111, 31.6);
-        lowerWheelTreeMap.put(3.939, 33.0);
-        lowerWheelTreeMap.put(4.664, 34.4);
-        lowerWheelTreeMap.put(5.060, 35.2);
-        lowerWheelTreeMap.put(5.616, 36.8);
+        lowerWheelTreeMap.put(1.526, 26.0);
 
-        hoodTreeMap.put(1.534, 1.82);
-        hoodTreeMap.put(2.220, 2.61);
-        hoodTreeMap.put(3.111, 3.86);
-        hoodTreeMap.put(3.939, 5.06);
-        hoodTreeMap.put(4.664, 5.98);
-        hoodTreeMap.put(5.060, 6.38);
-        hoodTreeMap.put(5.616, 6.76);
+        lowerWheelTreeMap.put(2.181, 29.0);
+
+        lowerWheelTreeMap.put(3.213, 29.9);
+
+        lowerWheelTreeMap.put(3.939, 30.2);
+
+        lowerWheelTreeMap.put(4.603, 33.6);
+
+        lowerWheelTreeMap.put(5.060, 36.0);
+        // lowerWheelTreeMap.put(5.616, 36.0);
+
+        hoodTreeMap.put(1.526, 1.82);
+
+        hoodTreeMap.put(2.181, 2.61);
+
+        hoodTreeMap.put(3.213, 3.86);
+
+        hoodTreeMap.put(3.939, 4.95);
+
+        hoodTreeMap.put(4.603, 5.6);
+
+        hoodTreeMap.put(5.060, 6.1);
+        // hoodTreeMap.put(5.616, 6.76);
 
         tofTreeMap.put(1.534, 1.177);
         tofTreeMap.put(2.220, 1.248);
