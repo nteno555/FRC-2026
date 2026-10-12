@@ -133,8 +133,8 @@ public class SubsystemConstants {
     public static double intakeTorqueNeutralDeadband = 1;
     public static double intakePeakForwardVoltage = 6.0;
     public static double intakePeakReverseVoltage = -6.0;
-    public static double intakeRetractPosition = 19.2; // actual: -1.0
-    public static double intakeDeployPosition = 3.6; // actual: -20.2
+    public static double intakeRetractPosition = 0.0; // actual: -1.0
+    public static double intakeDeployPosition = 0.0; // actual: -20.2
     public static double intakeRollerVoltage = 10.0;
     public static double intakeHalfPosition = -10.66;
     public static double intakeQuarterPosition = -5.0;
@@ -169,16 +169,16 @@ public class SubsystemConstants {
     // 8 (44-42) 26 10 110
     
     public static double turretRotationsPerRadian = 44.0 / 8.0 * 26.0 / 42.0 * 110.0 / 10.0 / (2 * Math.PI);
-    public static double turretMinAngleRadians = -9.790; 
-    public static double turretMaxAngleRadians = -1.194;
-    public static double throughBoreZero1 = 0.445;
-    public static double throughBoreZero2 = 0.667;
+    public static double turretMinAngleRadians = -8.739; 
+    public static double turretMaxAngleRadians = -2.916;
+    public static double throughBoreZero1 = 0.378;
+    public static double throughBoreZero2 = 0.619;
     public static double throughBoreRatio1 = 44.0 / 8.0 * 26.0 / 42.0; // 6.17
     public static double throughBoreRatio2 = 44.0 / 8.0; // 3.82
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop
                                                                                                       // position in
                                                                                                       // motor rotations
-    public static double turretDefaultRadians = Math.PI / 2;
+    public static double turretDefaultRadians = 0.0;
     public static boolean hasTurret = true;
     public static boolean useTurretThroughBores = true;
     public static double turretShotReadyThreshold = 0.12; // 5.73 degrees
@@ -211,7 +211,7 @@ public class SubsystemConstants {
     public static double robotToBackCameraPitch = 28.0;
     public static double robotToBackCameraRoll = 180.0;
 
-    public static Transform2d robotToRightCamera = new Transform2d(0.28575, 0.33655, Rotation2d.kZero);
+    public static Transform2d robotToRightCamera = new Transform2d(-0.3048, 0.33655, Rotation2d.kZero);
     // public static Transform2d robotToRightCamera = new Transform2d(0.1015,
     // 0.3274, Rotation2d.kZero);
     public static double robotToRightCameraForward = robotToRightCamera.getX();

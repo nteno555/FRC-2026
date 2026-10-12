@@ -7,7 +7,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public class FieldConstants {
-    public static Pose2d blueNetPos = new Pose2d(4.626, 4.035, new Rotation2d(0));
+    public static Pose2d blueNetPos = new Pose2d(4.608, 4.039, new Rotation2d(0)); //4.626, 4.035
     public static Pose2d redNetPos = new Pose2d(11.913, 4.018, new Rotation2d(0));
     public static Pose2d blueShuttlePosUpper = new Pose2d(0.40, 6.50, new Rotation2d(0));
     public static Pose2d blueShuttlePosLower = new Pose2d(0.40, 1.50, new Rotation2d(0));

@@ -237,14 +237,14 @@ public class RobotContainer {
 
                 intakeSubsystem.setDefaultCommand(
                         intakeSubsystem.setDeployVoltage(() -> 0.0));
-                // hoodSubsystem.setDefaultCommand(hoodSubsystem.setPosition(() -> 0.0));
-                shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
+                hoodSubsystem.setDefaultCommand(hoodSubsystem.setPosition(() -> 0.0));
+                // shooterSubsystem.setDefaultCommand(shooterSubsystem.setVoltage(() -> 0.0));
                 //shooterSubsystem.setDefaultCommand(shooterSubsystem.autoAim());
                 indexerSubsystem.setDefaultCommand(
                                  indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 0.0, () -> 0.0));
                 // // indexerSubsystem.setDefaultCommand(AutoAimCommands.);
                 turretSubsystem.setDefaultCommand(turretSubsystem
-                                .setVoltage(() -> 0.0));
+                                .setPositionSafe(() -> -SubsystemConstants.turretZeroOffsetRadians, () -> 0.0, () -> true));
 
                 driverXboxController.a().onTrue(
                                 SuperstructureCommands.resetOdometry(
@@ -824,7 +824,8 @@ public class RobotContainer {
                 // lastAutoName = selected;
                 // }
 
-                autoCommand = autos.getCommand(selected);
+                // autoCommand = autos.getCommand(selected);
+                autoCommand = autos.intakeJustDrivePath("LowNeutralUnderTrench", true);
 
                 // if(!autoWarmupActive) {
                 // autoCommand.schedule();

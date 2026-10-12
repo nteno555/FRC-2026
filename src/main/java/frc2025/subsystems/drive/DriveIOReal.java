@@ -7,6 +7,8 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModule;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -17,6 +19,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.filter.Debouncer;
 import frc2025.RobotState;
@@ -81,7 +84,8 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
             driveCurrent += modules[i].getSteerMotor().getStatorCurrent().getValueAsDouble();
         }
         inputs.totalDriveCurrent = driveCurrent;
-
+        inputs.gyroYawRadians = getPigeon2().getYaw().getValue().in(Units.Radians);
+        Logger.recordOutput("Drive/headingMinusGyroDeg", Math.toDegrees(MathUtil.angleModulus(inputs.swervePoseMeters.getRotation().getRadians() - inputs.gyroYawRadians)));
         // SwerveModulePosition[] wheelDeltas = new SwerveModulePosition[4];
         // for (int i = 0; i < 4; i++) {
         // wheelDeltas[i] = new SwerveModulePosition(
@@ -129,7 +133,18 @@ public class DriveIOReal extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
 
             double timestamp = Utils.fpgaToCurrentTime(update.timestamp());
             avgTimestamp += timestamp;
-            addVisionMeasurement(update.pose(), timestamp, update.stdDevs());
+
+            var sd = update.stdDevs();
+            double rotStd = 0.0;
+            if (DriverStation.isEnabled()) {
+                rotStd = 9999999999.0;
+            } else {
+                sd.get(2, 0);
+            }
+            
+            Matrix<N3, N1> stds = new Matrix<>(Nat.N3(), Nat.N1(), new double[] { sd.get(0, 0), sd.get(1, 0), rotStd });
+
+            addVisionMeasurement(update.pose(), timestamp, stds);
         }
         if (!updates.isEmpty()) {
             lastVisionUpdateTimestamp = Timer.getFPGATimestamp();
