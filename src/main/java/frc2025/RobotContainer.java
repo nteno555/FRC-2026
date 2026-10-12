@@ -1,34 +1,28 @@
 package frc2025;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc2025.commands.AutoAimCommands;
+import frc2025.commands.SuperstructureCommands;
+import frc2025.config.ShooterTreeMap;
+import frc2025.config.SubsystemConstants;
 import static frc2025.subsystems.drive.DriveConstants.BackLeft;
 import static frc2025.subsystems.drive.DriveConstants.BackRight;
 import static frc2025.subsystems.drive.DriveConstants.DrivetrainConstants;
 import static frc2025.subsystems.drive.DriveConstants.FrontLeft;
 import static frc2025.subsystems.drive.DriveConstants.FrontRight;
 import static frc2025.subsystems.drive.DriveConstants.kSpeedAt12Volts;
-
-import frc2025.config.ShooterTreeMap;
-import org.littletonrobotics.junction.Logger;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.*;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc2025.commands.AutoAimCommands;
-import frc2025.commands.DriveToPoseCommand;
-import frc2025.commands.SuperstructureCommands;
-import frc2025.config.SubsystemConstants;
-
 import frc2025.subsystems.drive.DriveIOReal;
 import frc2025.subsystems.drive.DriveIOSim;
 import frc2025.subsystems.drive.DriveSubsystem;
@@ -47,9 +41,7 @@ import frc2025.subsystems.shooter.ShooterSubsystem;
 import frc2025.subsystems.vision.VisionIOReal;
 import frc2025.subsystems.vision.VisionIOSim;
 import frc2025.subsystems.vision.VisionSubsystem;
-
 import frc2025.util.Alliance;
-import java.util.ArrayList;
 
 public class RobotContainer {
     public static final double DEAD_BAND_DRIVER = 0.1;
@@ -133,7 +125,21 @@ public class RobotContainer {
 
 
 
-        //--------------------DRIVER XBOX CONTROLLER------------
+        /*--------------------DRIVER XBOX CONTROLLER------------
+        * action buttons - ABXY
+        * pov buttons - D-pad (directional pad)
+        * trigger - Zl, Zr
+        * bumper - L, R
+        * 
+        * Controls: 
+        * reset odometry - action down (click)
+        * reverse intake - action left (hold)
+        * reverse indexer - action right (hold)
+        * intake down - pov down (click)
+        * intake up - pov up (click)
+        * intake - left trigger (hold)
+        * shoot - right trigger (hold)
+        */
         driverXboxController.a()
                 .onTrue(SuperstructureCommands.resetOdometry(
                         this,
@@ -173,7 +179,11 @@ public class RobotContainer {
                                         )));
         
         new Trigger(() -> aiming)
-                    .whileTrue(AutoAimCommands.autoIndex(this));
+                .whileTrue(AutoAimCommands.autoIndex(this)
+                .alongWith(intakeSubsystem.retractSlow())
+                .until(() -> AutoAimCommands.indexingReady(this))
+                .andThen(Commands.waitSeconds(1.5))
+        );
         
         
         // right trigger is shoot

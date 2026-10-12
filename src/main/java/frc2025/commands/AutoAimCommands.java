@@ -66,13 +66,17 @@ public class AutoAimCommands {
         return throughputReady ? SubsystemConstants.indexerShootVoltage : 0.0;
     });
 
-
-
     // Logger.recordOutput("Indexer/shooterShotReady", robotContainer.getShooter().getShotReadyAF());
     // Logger.recordOutput("Indexer/shooterWantedVelocity", robotContainer.getShooter().getInputs()[0]);
     // Logger.recordOutput("Indexer/shooterMasterVelocityRPS", robotContainer.getShooter().getInputs()[1]);
     // Logger.recordOutput("Indexer/hoodShotReady", robotContainer.getHood().getShotReady());
     // Logger.recordOutput("Indexer/driveShotReady", robotContainer.getDrive().getShotReady());
+    }
+
+    public static boolean indexingReady(RobotContainer robotContainer) {
+        return robotContainer.getShooter().getShotReadyAF() &&
+               robotContainer.getHood().getShotReady() &&
+               robotContainer.getDrive().getShotReady();
     }
 
 }

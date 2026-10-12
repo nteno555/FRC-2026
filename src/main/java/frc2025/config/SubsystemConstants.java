@@ -4,7 +4,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 
 
@@ -46,8 +45,8 @@ public class SubsystemConstants {
 
     public static double intakeRetractPosition = 16.0;
     public static double intakeDeployPosition = 0.0;
-    public static double intakeHalfPosition = -8.0;
-    public static double intakeQuarterPosition = -2.0;
+    public static double intakeHalfPosition = 8.0;
+    public static double intakeQuarterPosition = 4.0;
     
     //flywheel
     // kV Trials: (2-0.460, 14.432), (4-0.460, 31.256), (6-0.460, 46.746), (8-0.460, 63.811), (10-0.460, 79.533)

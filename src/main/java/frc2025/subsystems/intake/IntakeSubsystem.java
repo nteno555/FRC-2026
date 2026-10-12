@@ -73,7 +73,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public Command retractSlow() {
         return this.run(() -> {
-            io.setDeployPosition(SubsystemConstants.intakeQuarterPosition, false);
+            io.setDeployPosition(SubsystemConstants.intakeRetractPosition, false);
 //            io.setVoltage(SubsystemConstants.intakeRollerVoltage);
         });
     }

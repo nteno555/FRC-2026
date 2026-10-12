@@ -1,9 +1,7 @@
 package frc2025.config;
 
-import edu.wpi.first.wpilibj2.command.Subsystem;
-// import frc2025.subsystems.hood.HoodSubsystem;
-import frc2025.util.InterpolatingTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc2025.util.InterpolatingTreeMap;
 
 public class ShooterTreeMap {
     private static ShooterTreeMap instance;
@@ -27,8 +25,8 @@ public class ShooterTreeMap {
         lowerWheelTreeMap.put(2.4111, 24.0); // 3
         lowerWheelTreeMap.put(2.8889, 24.8); // 4
         lowerWheelTreeMap.put(3.2965, 26.0); // 5
-        lowerWheelTreeMap.put(3.8140, 28.1); // 6
-        lowerWheelTreeMap.put(4.3200, 30.3); // 7
+        lowerWheelTreeMap.put(3.8140, 27.9); // 6
+        lowerWheelTreeMap.put(4.3200, 30.0); // 7
         // lowerWheelTreeMap.put(4.4185, 28.2); // 8
         
         // default RPS is 27.0
