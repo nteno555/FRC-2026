@@ -134,8 +134,8 @@ public class RobotContainer {
 
 
         //--------------------DRIVER XBOX CONTROLLER------------
-        driverXboxController.a().onTrue(
-                SuperstructureCommands.resetOdometry(
+        driverXboxController.a()
+                .onTrue(SuperstructureCommands.resetOdometry(
                         this,
                         () -> !Alliance.get()
                                 ? new Pose2d(new Translation2d(), new Rotation2d(Math.PI))
@@ -170,7 +170,11 @@ public class RobotContainer {
                                             )
                                     .alongWith(
                                         driveSubsystem.driveAutoAim()
-                                        .alongWith(AutoAimCommands.autoIndex(this)))));
+                                        )));
+        
+        new Trigger(() -> aiming)
+                    .whileTrue(AutoAimCommands.autoIndex(this));
+        
         
         // right trigger is shoot
         driverXboxController.rightTrigger()

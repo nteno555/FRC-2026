@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc2025.Robot;
 import frc2025.RobotContainer;
@@ -58,20 +59,20 @@ public class AutoAimCommands {
     }
 
     public static Command autoIndex(RobotContainer robotContainer) {
-        Supplier<Boolean> booleanSupplier = () -> {
-            return robotContainer.getShooter().getShotReadyAF() && robotContainer.getHood().getShotReady() && robotContainer.getDrive().getShotReady();
-        };
-        Logger.recordOutput("Indexer/shooterShotReady", robotContainer.getShooter().getShotReadyAF());
-        Logger.recordOutput("Indexer/shooterWantedVelocity", robotContainer.getShooter().getInputs()[0]);
-        Logger.recordOutput("Indexer/shooterMasterVelocityRPS", robotContainer.getShooter().getInputs()[1]);
-        Logger.recordOutput("Indexer/hoodShotReady", robotContainer.getHood().getShotReady());
-        Logger.recordOutput("Indexer/driveShotReady", robotContainer.getDrive().getShotReady());
-        Logger.recordOutput("Indexer/autoIndexBoolean", booleanSupplier.get());
-        if (booleanSupplier.get()) {
-            return robotContainer.getIndexer().setVoltage(() -> SubsystemConstants.indexerShootVoltage);
-        }
+        return robotContainer.getIndexer().setVoltage(() -> {
+            boolean throughputReady = robotContainer.getShooter().getShotReadyAF() &&
+                                      robotContainer.getHood().getShotReady() &&
+                                      robotContainer.getDrive().getShotReady();
+        return throughputReady ? SubsystemConstants.indexerShootVoltage : 0.0;
+    });
 
-        return robotContainer.getIndexer().setVoltage(() -> 0.0);
+
+
+    // Logger.recordOutput("Indexer/shooterShotReady", robotContainer.getShooter().getShotReadyAF());
+    // Logger.recordOutput("Indexer/shooterWantedVelocity", robotContainer.getShooter().getInputs()[0]);
+    // Logger.recordOutput("Indexer/shooterMasterVelocityRPS", robotContainer.getShooter().getInputs()[1]);
+    // Logger.recordOutput("Indexer/hoodShotReady", robotContainer.getHood().getShotReady());
+    // Logger.recordOutput("Indexer/driveShotReady", robotContainer.getDrive().getShotReady());
     }
 
 }
