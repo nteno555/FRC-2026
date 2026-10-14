@@ -208,9 +208,9 @@ public class RobotState {
            
             double flightTime;
             if(getShuttling()) {
-                flightTime = ShooterTreeMap.getInstance().getRealTof(distance);
-            } else {
                 flightTime = ShooterTreeMap.getInstance().getRealTofShuttling(distance);
+            } else {
+                flightTime = ShooterTreeMap.getInstance().getRealTof(distance);
             }
 
             virtualPose = new Pose2d(

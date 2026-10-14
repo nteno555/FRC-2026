@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 public class IntakeSubsystem extends SubsystemBase {
     IntakeIO io;
     IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+    double setpoint = 0.0;
 
     public IntakeSubsystem(IntakeIO io){
         this.io = io;
@@ -45,15 +46,14 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public Command oscillateIntake() {
-        // return this.run(() -> {
-        //     double time = (Timer.getFPGATimestamp());
+        return this.run(() -> {
+            double time = (Timer.getFPGATimestamp());
 
-        //     if (time % 0.67 < 0.335) io.setDeployPosition(SubsystemConstants.intakeDeployPosition, true);
-        //     else io.setDeployPosition(SubsystemConstants.intakeHalfPosition, true);
-
-        //     io.setVoltage(SubsystemConstants.intakeRollerVoltage);
-        // });
-        return this.run(() -> {double time = 0;});
+            if (time % 0.67 < 0.335) {io.setDeployPosition(SubsystemConstants.intakeDeployPosition, true); setpoint = SubsystemConstants.intakeDeployPosition;}
+            else {io.setDeployPosition(SubsystemConstants.intakeHalfPosition, true); setpoint = SubsystemConstants.intakeDeployPosition;}
+            
+            io.setVoltage(SubsystemConstants.intakeRollerVoltage);
+        });
     }
 
     public Command retractSlow() {

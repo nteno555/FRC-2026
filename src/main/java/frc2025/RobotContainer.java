@@ -210,6 +210,14 @@ public class RobotContainer {
 
                 manualAimState = ManualAimState.FLUSH;
 
+                /* x: auto aiming and shooting
+                 * b: stop shooting
+                 * a: reset odometry
+                 * dpad left: intake rollers
+                 * dpad down: stop intaking rollers
+                 * right bumper hold: oscillate intake
+                 */
+
                 driveSubsystem.setDefaultCommand(
                                 // driveSubsystem.driveTeleop(
                                 // () -> (driveSpeed) * handleDeadBand(getDriverLeftY(), DEAD_BAND_DRIVER, true)
@@ -497,13 +505,22 @@ public class RobotContainer {
                 // turretSubsystem.setPositionSafe(() -> -Math.PI * 0.5, () -> 0.0)
                 );
 
-                tuningController.povUp().whileTrue(
-                                turretSubsystem.setPositionSafe(() -> Math.PI * 0.5, () -> 0.0, () -> true));
+                // tuningController.povUp().whileTrue(
+                //                 turretSubsystem.setPositionSafe(() -> Math.PI * 0.5, () -> 0.0, () -> true));
 
-                tuningController.povLeft().whileTrue(
-                                turretSubsystem.setVoltage(() -> -2.0)
-                // turretSubsystem.setPositionSafe(() -> Math.PI, () -> 0.0)
+                // tuningController.povLeft().whileTrue(
+                //                 turretSubsystem.setVoltage(() -> -2.0)
+                // // turretSubsystem.setPositionSafe(() -> Math.PI, () -> 0.0)
+                // );
+
+                tuningController.povLeft().onTrue(
+                        intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage)
                 );
+
+                tuningController.povUp().onTrue(
+                        intakeSubsystem.setRollerVoltage(() -> 0.0)
+                );
+                
 
                 tuningController.x().onTrue(intakeSubsystem.retractSlow());
 
@@ -552,10 +569,8 @@ public class RobotContainer {
                                 .onTrue(
                                                 shooterSubsystem.setSpeed(
                                                                 () ->  SmartDashboard.getNumber("Tuning/RPM", 0.0), () -> 0.0)
-                                                                .alongWith(hoodSubsystem.setPosition(
-                                                                                () -> SmartDashboard.getNumber(
-                                                                                                "Tuning/hoodPosition",
-                                                                                                0.0)))
+                                                                .alongWith(hoodSubsystem.setPosition(() -> SubsystemConstants.hoodMaxAngleRotations
+                                                                                )) // () -> SmartDashboard.getNumber("Tuning/hoodPosition",0.0)
                                 // .alongWith(turretSubsystem.autoAim())
                                 );
                 tuningController.povDown()
@@ -578,14 +593,14 @@ public class RobotContainer {
                 // ))
                 // .whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
 
-                // tuningController.rightTrigger().whileTrue(
-                //                 indexerSubsystem.setIndexerVoltageWithTowerSpeed(
-                //                                 () -> SubsystemConstants.indexerShootVoltage,
-                //                                 () -> SubsystemConstants.towerFlywheelRatio
-                //                                                 * SmartDashboard.getNumber("Tuning/RPM", 0.0)));
                 tuningController.rightTrigger().whileTrue(
-                        PathPlanCommands.returnUnderTrenchAuto(this, () -> FieldConstants.blueTrenchLowMid, () -> FieldConstants.blueTrenchLowZone, () -> 0.0) 
-                );
+                                indexerSubsystem.setIndexerVoltageWithTowerSpeed(
+                                                () -> SubsystemConstants.indexerShootVoltage,
+                                                () -> SubsystemConstants.towerFlywheelRatio
+                                                                * SmartDashboard.getNumber("Tuning/RPM", 0.0)));
+                // tuningController.rightTrigger().whileTrue(
+                //         PathPlanCommands.returnUnderTrenchAuto(this, () -> FieldConstants.blueTrenchLowMid, () -> FieldConstants.blueTrenchLowZone, () -> 0.0) 
+                // );
         
                 
                 SmartDashboard.putNumber("Tuning/testVelocityRps", 0.0);

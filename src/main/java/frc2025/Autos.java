@@ -14,6 +14,7 @@ import frc2025.commands.SuperstructureCommands;
 import frc2025.config.FieldConstants;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveSubsystem;
+import frc2025.subsystems.intake.IntakeSubsystem;
 import frc2025.util.Alliance;
 import org.json.simple.parser.ParseException;
 import org.littletonrobotics.junction.Logger;
@@ -243,7 +244,7 @@ public class Autos {
                                     .alongWith(robotContainer.getTurret().snapThenTrack())
                                     .alongWith(robotContainer.getHood().autoAimUnsafe())
                                     .alongWith(robotContainer.getIntake().oscillateIntake()))
-                                    .withTimeout(waitTime));
+                                    .withTimeout(waitTime)).andThen(robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
                 } else {
                     pathCommands = pathCommands.andThen(
                             AutoAimCommands.driveAutoAim(
