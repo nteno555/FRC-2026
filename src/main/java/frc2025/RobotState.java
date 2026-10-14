@@ -198,10 +198,13 @@ public class RobotState {
         double xPos = RobotState.getVisionPose().getX();
         boolean inBlue = xPos<FieldConstants.inBlueZoneX&&!Alliance.get();
         boolean inRed = xPos>FieldConstants.inRedZoneX&&Alliance.get();
+        boolean notInsideBlue = xPos>=FieldConstants.inBlueZoneX;
         Logger.recordOutput("Drive/inBlueZone",inBlue);
         Logger.recordOutput("Drive/inRedZone",inRed);
+        Logger.recordOutput("Drive/notinbluezone",notInsideBlue);
         return !inBlue&&!inRed;
     }
+
     public static double getWantedShooterAcceleration() {
         return wantedShooterAcceleration;
     }

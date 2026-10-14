@@ -102,12 +102,12 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public Command setSpeedWithShuttling() {
-        if (RobotState.getShuttling()) {
-            return setSpeed(()->ShooterTreeMap.shuttlingRPSTreeMap.getInterpolated(RobotState.getDistanceToHub()));
-        } else {
-            return setSpeed(()->ShooterTreeMap.lowerWheelTreeMap.getInterpolated(RobotState.getDistanceToHub()));
-        }
-
+        // if (RobotState.getShuttling()) {
+        //     return setSpeed(()->ShooterTreeMap.shuttlingRPSTreeMap.getInterpolated(RobotState.getDistanceToHub()));
+        // } else {
+        //     return setSpeed(()->ShooterTreeMap.lowerWheelTreeMap.getInterpolated(RobotState.getDistanceToHub()));
+        // }
+        return setSpeed(()->ShooterTreeMap.lowerWheelTreeMap.getInterpolated(RobotState.getDistanceToHub()));
 //        return setSpeed(() -> {
 //            Pose2d robotPose = RobotState.getDelayedShooterPose();
 //            Pose2d targetPose = RobotState.getShootingWhileMovingVirtualPose();

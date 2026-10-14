@@ -90,12 +90,12 @@ public class HoodSubsystem extends SubsystemBase {
     }
 
     public Command setPositionWithShuttling() {
-        if(RobotState.getShuttling()){
-            return setPosition(()->ShooterTreeMap.shuttlingHoodTreeMap.getInterpolated(RobotState.getDistanceToHub()));
-        } else {
-            return setPosition(()->ShooterTreeMap.hoodTreeMap.getInterpolated(RobotState.getDistanceToHub()));
-        }
-//
+        // if(RobotState.getShuttling()){
+        //     return setPosition(()->ShooterTreeMap.shuttlingHoodTreeMap.getInterpolated(RobotState.getDistanceToHub()));
+        // } else {
+        //     return setPosition(()->ShooterTreeMap.hoodTreeMap.getInterpolated(RobotState.getDistanceToHub()));
+        // }
+        return setPosition(()->ShooterTreeMap.hoodTreeMap.getInterpolated(RobotState.getDistanceToHub()));
 //        return setPosition(() -> {
 //            ChassisSpeeds robotVelocity = RobotState.getInstance().getFieldRelativeSpeeds();
 //            double dt = 1.0;

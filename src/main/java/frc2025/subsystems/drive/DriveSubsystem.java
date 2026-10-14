@@ -107,15 +107,16 @@ public class DriveSubsystem extends SubsystemBase {
         return angle;
     }
     public Pose2d getAutoAimTarget(){
-            if(RobotState.getShuttling()){ //is shuttling
-                if(RobotState.getVisionPose().getY()<FieldConstants.yHalfLine){
-                    return Alliance.get()?FieldConstants.redShuttlePosLower:FieldConstants.blueShuttlePosLower;
-                } else {
-                    return Alliance.get()?FieldConstants.redShuttlePosUpper:FieldConstants.blueShuttlePosUpper;
-                }
-            } else { //is shooting
-                return Alliance.get()?FieldConstants.redNetPos:FieldConstants.blueNetPos;
-            }
+            // if(RobotState.getShuttling()){ //is shuttling
+            //     if(RobotState.getVisionPose().getY()<FieldConstants.yHalfLine){
+            //         return Alliance.get()?FieldConstants.redShuttlePosLower:FieldConstants.blueShuttlePosLower;
+            //     } else {
+            //         return Alliance.get()?FieldConstants.redShuttlePosUpper:FieldConstants.blueShuttlePosUpper;
+            //     }
+            // } else { //is shooting
+            //     return Alliance.get()?FieldConstants.redNetPos:FieldConstants.blueNetPos;
+            // }
+            return Alliance.get()?FieldConstants.redNetPos:FieldConstants.blueNetPos;
     }
     public Command driveAutoAim() {
         Supplier<Double> omegaSpeed = () -> {
@@ -161,7 +162,7 @@ public class DriveSubsystem extends SubsystemBase {
 
             double currentHeading = RobotState.getVisionPose().getRotation().getRadians();
             double angleError = modAngle(desiredHeading - currentHeading);
-            return Math.abs(angleError) < 0.01;
+            return Math.abs(angleError) < 0.15;
         });
     }
 

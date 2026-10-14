@@ -39,14 +39,14 @@ public class SubsystemConstants {
     public static double intakePeakForwardTorqueCurrent = 100;
     public static double intakePeakReverseTorqueCurrent = 100;
     public static double intakeTorqueNeutralDeadband = 1;
-    public static double intakePeakForwardVoltage = 4.0;
-    public static double intakePeakReverseVoltage = -4.0;
-    public static double intakeRollerVoltage = 4.0;
+    public static double intakePeakForwardVoltage = 6.0;
+    public static double intakePeakReverseVoltage = -6.0;
+    public static double intakeRollerVoltage = 6.0;
 
-    public static double intakeRetractPosition = 16.0;
-    public static double intakeDeployPosition = 0.0;
-    public static double intakeHalfPosition = 8.0;
-    public static double intakeQuarterPosition = 4.0;
+    public static double intakeRetractPosition = 0.233;
+    public static double intakeDeployPosition = -16.3;
+    public static double intakeHalfPosition = -8.0;
+    public static double intakeQuarterPosition = -4.0;
     
     //flywheel
     // kV Trials: (2-0.460, 14.432), (4-0.460, 31.256), (6-0.460, 46.746), (8-0.460, 63.811), (10-0.460, 79.533)

@@ -162,8 +162,8 @@ public class RobotContainer {
 
         // left trigger is intake
         driverXboxController.leftTrigger()
-                    .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage))
-                    .onFalse(intakeSubsystem.setRollerVoltage(() -> 0.0));
+                    .whileTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage))
+                    .whileFalse(intakeSubsystem.setRollerVoltage(() -> 0.0));
 
         new Trigger(() -> aiming)
                     .whileTrue(shooterSubsystem.setSpeedWithShuttling()
@@ -171,18 +171,18 @@ public class RobotContainer {
                             .alongWith(driveSubsystem.driveAutoAim())
                     );
         
-        new Trigger(() -> aiming)
-                .whileTrue(AutoAimCommands.autoIndex(this)
-                .alongWith(intakeSubsystem.retractSlow())
-                .until(() -> AutoAimCommands.indexingReady(this))
-                .andThen(Commands.waitSeconds(1.5))
-        );
+        // new Trigger(() -> aiming)
+        //         .whileTrue(AutoAimCommands.autoIndex(this)
+        //         .alongWith(intakeSubsystem.retractSlow())
+        //         .until(() -> AutoAimCommands.indexingReady(this))
+        //         .andThen(Commands.waitSeconds(1.5))
+        // );
         
         // right trigger is shoot
         driverXboxController.rightTrigger()
-                    .whileTrue(Commands.runOnce(() -> aiming = true))
-                    .whileFalse(Commands.runOnce(() -> aiming = false)
-                    .alongWith(indexerSubsystem.setVoltage(() -> 0.0)));
+                    .onTrue(Commands.runOnce(() -> aiming = true))
+                     .whileFalse(Commands.runOnce(() -> aiming = false)
+                     .alongWith(indexerSubsystem.setVoltage(() -> 0.0)));
         
 //        driverXboxController.rightTrigger()
 //                    .onTrue(driveSubsystem.driveAutoAim());
