@@ -4,11 +4,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc2025.util.InterpolatingTreeMap;
 
 public class ShooterTreeMap {
-    //shooting
     public static InterpolatingTreeMap hoodTreeMap = new InterpolatingTreeMap();
     public static InterpolatingTreeMap lowerWheelTreeMap = new InterpolatingTreeMap();
     public static InterpolatingTreeMap tofTreeMap = new InterpolatingTreeMap();
-    //shuttling
+    public static InterpolatingTreeMap radialVelocityTreeMap = new InterpolatingTreeMap();
     public static InterpolatingTreeMap shuttlingTofTreeMap = new InterpolatingTreeMap();
     public static InterpolatingTreeMap shuttlingRPSTreeMap = new InterpolatingTreeMap();
     public static InterpolatingTreeMap shuttlingHoodTreeMap = new InterpolatingTreeMap();
@@ -16,6 +15,7 @@ public class ShooterTreeMap {
 
     
     public ShooterTreeMap() {
+
 
         updateDashboardMap();
         SmartDashboard.putString("Tuning/lowerWheelTree Map", lowerWheelTreeMap.toString());

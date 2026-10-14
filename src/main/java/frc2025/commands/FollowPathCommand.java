@@ -107,7 +107,7 @@ public class FollowPathCommand extends Command {
             path = path.flipPath();
 
         trajectory = path.generateTrajectory(
-                driveSubsystem.getRobotRelativeSpeeds(), RobotState.getVisionPose().getRotation(), getPPConfig());
+                driveSubsystem.getRobotRelativeSpeeds(), RobotState.getInstance().getVisionPose().getRotation(), getPPConfig());
         translationDone = false;
         this.timer.restart();
 
@@ -118,7 +118,7 @@ public class FollowPathCommand extends Command {
     public void execute() {
         double currentTime = this.timer.get();
         PathPlannerTrajectoryState desiredState = trajectory.sample(currentTime);
-        var currentPose = RobotState.getVisionPose();
+        var currentPose = RobotState.getInstance().getVisionPose();
 
         //if(this.timer.get() > this.trajectory.getTotalTimeSeconds())
         //    translationPID = new PIDController(3, 0, 0);
@@ -137,7 +137,7 @@ public class FollowPathCommand extends Command {
 
         double dist = Math.sqrt(Math.pow(currentPose.getX() - desiredState.pose.getX(), 2) + Math.pow(currentPose.getY() - desiredState.pose.getY(), 2));
         double rotError = Math.abs(currentPose.getRotation().minus(desiredState.pose.getRotation()).getDegrees());
-        double speed = RobotState.getSpeed();
+        double speed = RobotState.getInstance().getSpeed();
 
         // REPLANNING MAY CAUSE BAD BEHAVIOR IDK
         /*if(dist > 0.2) {
@@ -181,12 +181,12 @@ public class FollowPathCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        Pose2d currentPose = RobotState.getVisionPose();
+        Pose2d currentPose = RobotState.getInstance().getVisionPose();
         Pose2d endPose = trajectory.getEndState().pose;
 
         double dist = currentPose.getTranslation().getDistance(endPose.getTranslation());
         double rotError = Math.abs(currentPose.getRotation().minus(endPose.getRotation()).getDegrees());
-        double speed = RobotState.getSpeed();
+        double speed = RobotState.getInstance().getSpeed();
 
         boolean finished = dist < distanceThresh && rotError < rotationThresh && speed < speedThresh;
         boolean timedOut = this.timer.hasElapsed(trajectory.getTotalTimeSeconds() + timeoutMargin);

@@ -60,7 +60,7 @@ public class DriveSubsystem extends SubsystemBase {
         this.io = io;
 
         AutoBuilder.configure(
-                () -> RobotState.getVisionPose(), // Robot pose supplier
+                () -> RobotState.getInstance().getVisionPose(), // Robot pose supplier
                 this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
                 this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 (speeds, feedforwards) -> drive(speeds, feedforwards), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also outputs individual module feedforwards for things like gearbox friction and motor back-EMF compensation
@@ -86,15 +86,15 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        io.addVisionMeasurement(RobotState.getVisionUpdates());
+        io.addVisionMeasurement(RobotState.getInstance().getVisionUpdates());
         io.updateInputs(inputs);
         if (!sysIdActive) {
             io.setControl(request.withSpeeds(wantedSpeeds));
         }
 
-        RobotState.setPose(inputs.swervePoseMeters);
-        RobotState.setRobotRelativeSpeeds(inputs.currentChassisSpeeds);
-        RobotState.setPigeonAcceleration(inputs.pigeonAcceleration);
+        RobotState.getInstance().setPose(inputs.swervePoseMeters);
+        RobotState.getInstance().setRobotRelativeSpeeds(inputs.currentChassisSpeeds);
+        RobotState.getInstance().setPigeonAcceleration(inputs.pigeonAcceleration);
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);
         Logger.processInputs("RealOutputs/Drive", inputs);
         Logger.recordOutput("Drive/shotReady", getShotReady());
@@ -107,22 +107,21 @@ public class DriveSubsystem extends SubsystemBase {
         return angle;
     }
     public Pose2d getAutoAimTarget(){
-            // if(RobotState.getShuttling()){ //is shuttling
-            //     if(RobotState.getVisionPose().getY()<FieldConstants.yHalfLine){
-            //         return Alliance.get()?FieldConstants.redShuttlePosLower:FieldConstants.blueShuttlePosLower;
-            //     } else {
-            //         return Alliance.get()?FieldConstants.redShuttlePosUpper:FieldConstants.blueShuttlePosUpper;
-            //     }
-            // } else { //is shooting
-            //     return Alliance.get()?FieldConstants.redNetPos:FieldConstants.blueNetPos;
-            // }
-            return Alliance.get()?FieldConstants.redNetPos:FieldConstants.blueNetPos;
+            if(RobotState.getInstance().getShuttling()){ //is shuttling
+                if(RobotState.getVisionPose().getY()<FieldConstants.yHalfLine){
+                    return Alliance.get()?FieldConstants.redShuttlePosLower:FieldConstants.blueShuttlePosLower;
+                } else {
+                    return Alliance.get()?FieldConstants.redShuttlePosUpper:FieldConstants.blueShuttlePosUpper;
+                }
+            } else { //is shooting
+                return Alliance.get()?FieldConstants.redNetPos:FieldConstants.blueNetPos;
+            }
     }
     public Command driveAutoAim() {
         Supplier<Double> omegaSpeed = () -> {
             Pose2d virtualTarget = getAutoAimTarget();
 
-//            if(RobotState.getShuttling()){
+//            if(RobotState.getInstance().getShuttling()){
 //                if(Alliance.get()) return
 //                else return
 //            }
@@ -141,7 +140,7 @@ public class DriveSubsystem extends SubsystemBase {
             Logger.recordOutput("Drive/angleError", angleError);
 
             double feedback = SubsystemConstants.alignRotationkP * angleError;
-            double feedforward = RobotState.getVirtualTargetAngularVelocity();
+            double feedforward = RobotState.getInstance().getVirtualTargetAngularVelocity();
 
             double omega = feedforward + feedback;
             return MathUtil.clamp(omega, -SubsystemConstants.autoAimMaxAngularVelocity, SubsystemConstants.autoAimMaxAngularVelocity);
@@ -162,7 +161,7 @@ public class DriveSubsystem extends SubsystemBase {
 
             double currentHeading = RobotState.getVisionPose().getRotation().getRadians();
             double angleError = modAngle(desiredHeading - currentHeading);
-            return Math.abs(angleError) < 0.15;
+            return Math.abs(angleError) < 0.01;
         });
     }
 
@@ -237,7 +236,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void resetOdometry(Pose2d position) {
         io.resetOdometry(position);
-        RobotState.rezero(position);
+        RobotState.getInstance().rezero(position);
     }
 
     public static RobotConfig getPPConfig() {

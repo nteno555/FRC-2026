@@ -21,7 +21,7 @@ public class WheelRadiusCharacterizationCommand extends Command {
 
     @Override
     public void initialize() {
-        initialGyroAngle = RobotState.getVisionPose().getRotation().getRadians();
+        initialGyroAngle = RobotState.getInstance().getVisionPose().getRotation().getRadians();
         initialDriveMotorRotation = driveSubsystem.getSwerveModules()[0].getDriveMotor().getPosition().getValue().in(Units.Rotation);
     }
 
@@ -35,7 +35,7 @@ public class WheelRadiusCharacterizationCommand extends Command {
             )
         );
 
-        double currentGyroAngle = RobotState.getVisionPose().getRotation().getRadians();
+        double currentGyroAngle = RobotState.getInstance().getVisionPose().getRotation().getRadians();
         double currentDriveMotorRotation = driveSubsystem.getSwerveModules()[0].getDriveMotor().getPosition().getValue().in(Units.Rotation);
         double deltaGyroAngle = currentGyroAngle - initialGyroAngle;
         double deltaDriveMotorRotation = currentDriveMotorRotation - initialDriveMotorRotation;

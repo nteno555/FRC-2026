@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class RobotState {
+    private static RobotState instance;
+
     private static DriverStation.Alliance alliance;
 
     public static record TimestampedVisionUpdate(
@@ -57,6 +59,11 @@ public class RobotState {
         latestPose = new Pose2d();
     }
 
+    public static RobotState getInstance() {
+        if (instance == null)
+            instance = new RobotState();
+        return instance;
+    }
 
     public static void setRobotRelativeSpeeds(ChassisSpeeds speeds) {
         robotRelativeSpeeds = speeds;
@@ -116,12 +123,12 @@ public class RobotState {
         visionUpdates.clear();
     }
 
-    public static void setBallTargets(List<PhotonTrackedTarget> targets) {
-        ballTargets = targets;
+    public void setBallTargets(List<PhotonTrackedTarget> targets) {
+        this.ballTargets = targets;
     }
 
-    public static List<PhotonTrackedTarget> getBallTargets() {
-        return ballTargets;
+    public List<PhotonTrackedTarget> getBallTargets() {
+        return this.ballTargets;
     }
 
     public static double getDistanceToHub() {
@@ -135,7 +142,7 @@ public class RobotState {
         ArrayList<Pose2d> ballPoses = new ArrayList<>();
         if (ballTargets == null || ballTargets.isEmpty()) return ballPoses;
 
-        Pose2d robotPose = getVisionPose();
+        Pose2d robotPose = getInstance().getVisionPose();
         if (robotPose == null) return ballPoses;
 
         Translation3d camOffset = SubsystemConstants.robotToBallCamera.getTranslation();
@@ -198,13 +205,10 @@ public class RobotState {
         double xPos = RobotState.getVisionPose().getX();
         boolean inBlue = xPos<FieldConstants.inBlueZoneX&&!Alliance.get();
         boolean inRed = xPos>FieldConstants.inRedZoneX&&Alliance.get();
-        boolean notInsideBlue = xPos>=FieldConstants.inBlueZoneX;
         Logger.recordOutput("Drive/inBlueZone",inBlue);
         Logger.recordOutput("Drive/inRedZone",inRed);
-        Logger.recordOutput("Drive/notinbluezone",notInsideBlue);
         return !inBlue&&!inRed;
     }
-
     public static double getWantedShooterAcceleration() {
         return wantedShooterAcceleration;
     }
@@ -222,7 +226,7 @@ public class RobotState {
     }
 
     public static void updateShootingWhileMovingVirtualPose() {
-        Pose2d currentPose = RobotState.getVisionPose();
+        Pose2d currentPose = RobotState.getInstance().getVisionPose();
         Pose2d realTargetPose = getTargetPose();
         Pose2d virtualPose = getTargetPose();
         Pose2d delayedPose = getDelayedPose();

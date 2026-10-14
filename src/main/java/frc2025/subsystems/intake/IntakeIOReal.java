@@ -71,7 +71,7 @@ public class IntakeIOReal implements IntakeIO {
 
         intakeDeployMaster.setNeutralMode(NeutralModeValue.Brake);
 
-        intakeDeployMaster.setPosition(SubsystemConstants.intakeRetractPosition);
+        intakeDeployMaster.setPosition(0.0);
     }
 
     @Override
@@ -88,9 +88,6 @@ public class IntakeIOReal implements IntakeIO {
         double targetVelocity = intakeDeployMaster.getClosedLoopReferenceSlope().getValueAsDouble();
         Logger.recordOutput("Intake/targetVelocity", targetVelocity);
         Logger.recordOutput("Intake/targetPosition", targetPosition);
-
-        Logger.recordOutput("Intake/rollerVoltage", intakeRoller.getMotorVoltage().getValueAsDouble());
-        Logger.recordOutput("Intake/rollerSlaveVoltage", intakeRollerSlave.getMotorVoltage().getValueAsDouble());
 //        Logger.recordOutput("Intake/slavePosition", intakeDeploySlave.getPosition().getValueAsDouble());
 
          inputs.totalCurrent = intakeDeployMaster.getStatorCurrent().getValueAsDouble() +

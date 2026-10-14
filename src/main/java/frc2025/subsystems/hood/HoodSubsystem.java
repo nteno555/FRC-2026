@@ -90,12 +90,12 @@ public class HoodSubsystem extends SubsystemBase {
     }
 
     public Command setPositionWithShuttling() {
-        // if(RobotState.getShuttling()){
-        //     return setPosition(()->ShooterTreeMap.shuttlingHoodTreeMap.getInterpolated(RobotState.getDistanceToHub()));
-        // } else {
-        //     return setPosition(()->ShooterTreeMap.hoodTreeMap.getInterpolated(RobotState.getDistanceToHub()));
-        // }
-        return setPosition(()->ShooterTreeMap.hoodTreeMap.getInterpolated(RobotState.getDistanceToHub()));
+        if(RobotState.getShuttling()){
+            return setPosition(()->ShooterTreeMap.shuttlingHoodTreeMap.getInterpolated(RobotState.getDistanceToHub()));
+        } else {
+            return setPosition(()->ShooterTreeMap.hoodTreeMap.getInterpolated(RobotState.getDistanceToHub()));
+        }
+//
 //        return setPosition(() -> {
 //            ChassisSpeeds robotVelocity = RobotState.getInstance().getFieldRelativeSpeeds();
 //            double dt = 1.0;
@@ -149,10 +149,10 @@ public class HoodSubsystem extends SubsystemBase {
 
     public Command autoAimUnsafe() {
         return setPosition(() -> {
-            Pose2d robotPose = RobotState.getDelayedPose();
-            Pose2d targetPose = RobotState.getShootingWhileMovingVirtualPose();
+            Pose2d robotPose = RobotState.getInstance().getDelayedPose();
+            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
             double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
-            if (RobotState.getShuttling()) {
+            if (RobotState.getInstance().getShuttling()) {
                 return SubsystemConstants.hoodMaxAngleRotations;
             }
 

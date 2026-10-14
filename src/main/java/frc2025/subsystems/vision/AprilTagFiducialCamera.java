@@ -78,7 +78,7 @@ public class AprilTagFiducialCamera {
     }
 
     public void writeGyro() {
-        double omega = RobotState.getFieldRelativeSpeeds().omegaRadiansPerSecond;
+        double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
         omega = Units.radiansToDegrees(omega);
     }
 
@@ -204,13 +204,13 @@ public class AprilTagFiducialCamera {
         }
 
         // if (hasSeenFirstPose && Math.abs(pose.getRotation()
-        //         .minus(RobotState.getVisionPose().getRotation())
+        //         .minus(RobotState.getInstance().getVisionPose().getRotation())
         //         .getRadians()) > 0.5) {
         //     reject = true;
         //     rotationReject = true;
         // }
 
-        double omega = RobotState.getFieldRelativeSpeeds().omegaRadiansPerSecond;
+        double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
         if (Math.abs(omega) > maxYawRate) {
             reject = true;
             maxYawRateReject = true;
@@ -222,12 +222,12 @@ public class AprilTagFiducialCamera {
         Logger.recordOutput(prefix + "meanDistance", meanDistance);
         Logger.recordOutput(prefix + "meanAmbiguity", meanAmbiguity);
         Logger.recordOutput(prefix + "rotationDelta", Math.abs(pose.getRotation()
-                .minus(RobotState.getVisionPose().getRotation())
+                .minus(RobotState.getInstance().getVisionPose().getRotation())
                 .getRadians()));
-        Logger.recordOutput(prefix + "omega", RobotState
+        Logger.recordOutput(prefix + "omega", RobotState.getInstance()
                 .getFieldRelativeSpeeds().omegaRadiansPerSecond);
         Logger.recordOutput(prefix + "visionPoseRotation",
-                RobotState.getVisionPose().getRotation().getDegrees());
+                RobotState.getInstance().getVisionPose().getRotation().getDegrees());
         Logger.recordOutput(prefix + "estimatedRotation",
                 pose.getRotation().getDegrees());
         Logger.recordOutput(prefix + "poseAmbiguityReject", poseAmbiguityReject);
@@ -250,7 +250,7 @@ public class AprilTagFiducialCamera {
                         999999999);
                 
             }
-            RobotState.addVisionData(List.of(
+            RobotState.getInstance().addVisionData(List.of(
                     new RobotState.TimestampedVisionUpdate(
                             estimate.timestampSeconds, pose, distStdDevs)));
             hasSeenFirstPose = true;
