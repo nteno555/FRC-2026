@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class RobotState {
-    private static RobotState instance;
-
     private static DriverStation.Alliance alliance;
 
     public static record TimestampedVisionUpdate(
@@ -59,11 +57,6 @@ public class RobotState {
         latestPose = new Pose2d();
     }
 
-    public static RobotState getInstance() {
-        if (instance == null)
-            instance = new RobotState();
-        return instance;
-    }
 
     public static void setRobotRelativeSpeeds(ChassisSpeeds speeds) {
         robotRelativeSpeeds = speeds;
@@ -123,12 +116,12 @@ public class RobotState {
         visionUpdates.clear();
     }
 
-    public void setBallTargets(List<PhotonTrackedTarget> targets) {
-        this.ballTargets = targets;
+    public static void setBallTargets(List<PhotonTrackedTarget> targets) {
+        ballTargets = targets;
     }
 
-    public List<PhotonTrackedTarget> getBallTargets() {
-        return this.ballTargets;
+    public static List<PhotonTrackedTarget> getBallTargets() {
+        return ballTargets;
     }
 
     public static double getDistanceToHub() {
@@ -142,7 +135,7 @@ public class RobotState {
         ArrayList<Pose2d> ballPoses = new ArrayList<>();
         if (ballTargets == null || ballTargets.isEmpty()) return ballPoses;
 
-        Pose2d robotPose = getInstance().getVisionPose();
+        Pose2d robotPose = getVisionPose();
         if (robotPose == null) return ballPoses;
 
         Translation3d camOffset = SubsystemConstants.robotToBallCamera.getTranslation();
@@ -226,7 +219,7 @@ public class RobotState {
     }
 
     public static void updateShootingWhileMovingVirtualPose() {
-        Pose2d currentPose = RobotState.getInstance().getVisionPose();
+        Pose2d currentPose = RobotState.getVisionPose();
         Pose2d realTargetPose = getTargetPose();
         Pose2d virtualPose = getTargetPose();
         Pose2d delayedPose = getDelayedPose();

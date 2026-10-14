@@ -55,10 +55,10 @@ public class LimelightFiducialCamera {
         LimelightHelpers.setCameraPose_RobotSpace(name, this.robotToCameraForward, this.robotToCameraRight, this.robotToCameraUp,
                     this.robotToCameraRoll, this.robotToCameraPitch, this.robotToCameraYaw);
 
-        double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
+        double omega = RobotState.getFieldRelativeSpeeds().omegaRadiansPerSecond;
         omega = Units.radiansToDegrees(omega);
 
-        LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getVisionPose().getRotation().getDegrees(), omega, 0, 0, 0, 0);
+        LimelightHelpers.SetRobotOrientation(name, RobotState.getVisionPose().getRotation().getDegrees(), omega, 0, 0, 0, 0);
         Logger.recordOutput(prefix + "mt2UpdateGyroHeartbeat", Math.random());
     }
 
@@ -131,11 +131,11 @@ public class LimelightFiducialCamera {
         if(meanAmbiguity > maxMeanAmbiguity || meanDistance > maxMeanDistance || meanArea < minMeanArea) {
             reject = true;
         }
-        if (Math.abs(pose.getRotation().minus(RobotState.getInstance().getVisionPose().getRotation()).getRadians()) > 0.5) {
+        if (Math.abs(pose.getRotation().minus(RobotState.getVisionPose().getRotation()).getRadians()) > 0.5) {
             reject = true;
         }
 
-        double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
+        double omega = RobotState.getFieldRelativeSpeeds().omegaRadiansPerSecond;
 
         if(Math.abs(omega) > maxYawRate) {
             reject = true;
@@ -160,7 +160,7 @@ public class LimelightFiducialCamera {
                     poseEstimate.timestampSeconds, pose, distStdDevs
             );
 
-            RobotState.getInstance().addVisionData(List.of(update));
+            RobotState.addVisionData(List.of(update));
         }
     }
 
@@ -187,11 +187,11 @@ public class LimelightFiducialCamera {
         meanDistance /= poseEstimate.tagCount;
 
 
-        if (Math.abs(pose.getRotation().minus(RobotState.getInstance().getVisionPose().getRotation()).getRadians()) > 0.5) {
+        if (Math.abs(pose.getRotation().minus(RobotState.getVisionPose().getRotation()).getRadians()) > 0.5) {
             reject = true;
         }
 
-        double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
+        double omega = RobotState.getFieldRelativeSpeeds().omegaRadiansPerSecond;
 
 
         if(Math.abs(omega) > maxYawRate) {
@@ -214,7 +214,7 @@ public class LimelightFiducialCamera {
                     poseEstimate.timestampSeconds, pose, distStdDevs
             );
 
-            RobotState.getInstance().addVisionData(List.of(update));
+            RobotState.addVisionData(List.of(update));
         }
     }
 

@@ -45,7 +45,7 @@ public class DriveToPoseCommand extends Command {
 
     @Override
     public void execute() {
-        var currentPose = RobotState.getInstance().getVisionPose();
+        var currentPose = RobotState.getVisionPose();
         var desiredPose = poseSupplier.get();
 
         if (desiredPose == null) return;

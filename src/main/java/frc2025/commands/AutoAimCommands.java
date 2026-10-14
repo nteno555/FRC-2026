@@ -33,23 +33,23 @@ public class AutoAimCommands {
 
     public static Command driveAutoAim(RobotContainer robotContainer) {
         Supplier<Double> omegaSpeed = () -> {
-            Pose2d virtualTarget = RobotState.getInstance().getShootingWhileMovingVirtualPose();
+            Pose2d virtualTarget = RobotState.getShootingWhileMovingVirtualPose();
             if (virtualTarget == null) {
                 return 0.0;
             }
             
-            Pose2d shooterPose = RobotState.getInstance().getDelayedShooterPose();
+            Pose2d shooterPose = RobotState.getDelayedShooterPose();
 
             double desiredHeading = Math.atan2(
                     virtualTarget.getY() - shooterPose.getY(),
                     virtualTarget.getX() - shooterPose.getX()
             );
 
-            double currentHeading = RobotState.getInstance().getVisionPose().getRotation().getRadians();
+            double currentHeading = RobotState.getVisionPose().getRotation().getRadians();
             double angleError = modAngle(desiredHeading - currentHeading);
 
             double feedback = SubsystemConstants.alignRotationkP * angleError;
-            double feedforward = RobotState.getInstance().getVirtualTargetAngularVelocity();
+            double feedforward = RobotState.getVirtualTargetAngularVelocity();
 
             double omega = feedforward + feedback;
             return MathUtil.clamp(omega, -SubsystemConstants.autoAimMaxAngularVelocity, SubsystemConstants.autoAimMaxAngularVelocity);
