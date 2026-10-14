@@ -4,13 +4,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc2025.util.InterpolatingTreeMap;
 
 public class ShooterTreeMap {
-    private static ShooterTreeMap instance;
-    public InterpolatingTreeMap hoodTreeMap = new InterpolatingTreeMap();
-    public InterpolatingTreeMap lowerWheelTreeMap = new InterpolatingTreeMap();
-    public InterpolatingTreeMap tofTreeMap = new InterpolatingTreeMap();
-    public InterpolatingTreeMap radialVelocityTreeMap = new InterpolatingTreeMap();
-    public InterpolatingTreeMap shuttlingTofTreeMap = new InterpolatingTreeMap();
-    public InterpolatingTreeMap shuttlingRPSTreeMap = new InterpolatingTreeMap();
+    public static InterpolatingTreeMap hoodTreeMap = new InterpolatingTreeMap();
+    public static InterpolatingTreeMap lowerWheelTreeMap = new InterpolatingTreeMap();
+    public static InterpolatingTreeMap tofTreeMap = new InterpolatingTreeMap();
+    public static InterpolatingTreeMap radialVelocityTreeMap = new InterpolatingTreeMap();
+    public static InterpolatingTreeMap shuttlingTofTreeMap = new InterpolatingTreeMap();
+    public static InterpolatingTreeMap shuttlingRPSTreeMap = new InterpolatingTreeMap();
+    public static InterpolatingTreeMap shuttlingHoodTreeMap = new InterpolatingTreeMap();
 
 
     
@@ -48,28 +48,24 @@ public class ShooterTreeMap {
         Dist: 4.3200, rps: 30.3 hood: 0.4
 
          */
+
+        //TODO: tof tree map for shuttling and shooting, rps and hood tree map for shuttling
     }
 
-    public static ShooterTreeMap getInstance() {
-        if (instance == null) {
-            instance = new ShooterTreeMap();
-        }
-        return instance;
-    }
 
-    public void addShot(double dist, double RPM) {
-         instance.lowerWheelTreeMap.put(dist, RPM);
+    public static void addShot(double dist, double RPM) {
+         lowerWheelTreeMap.put(dist, RPM);
          updateDashboardMap();
     }
 
-    public void removeShot(double dist) {
-        if (instance.lowerWheelTreeMap.containsKey(dist)) {
-            instance.lowerWheelTreeMap.remove(dist);
+    public static void removeShot(double dist) {
+        if (lowerWheelTreeMap.containsKey(dist)) {
+            lowerWheelTreeMap.remove(dist);
             updateDashboardMap();
         }
     }
 
-    private void updateDashboardMap() {
+    private static void updateDashboardMap() {
         SmartDashboard.putString("Tuning/lowerWheelTree Map", lowerWheelTreeMap.toString());
     }
 }

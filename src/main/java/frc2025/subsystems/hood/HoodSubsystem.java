@@ -12,6 +12,7 @@ import frc2025.RobotState;
 import frc2025.config.FieldConstants;
 import frc2025.config.ShooterTreeMap;
 import frc2025.config.SubsystemConstants;
+import frc2025.util.InterpolatingTreeMap;
 import org.littletonrobotics.junction.Logger;
 
 import java.lang.reflect.Field;
@@ -88,56 +89,62 @@ public class HoodSubsystem extends SubsystemBase {
         });
     }
 
-    public Command autoAim() {
-        return setPosition(() -> {
-            ChassisSpeeds robotVelocity = RobotState.getInstance().getFieldRelativeSpeeds();
-            double dt = 1.0;
-            Pose2d robotPose = RobotState.getInstance().getDelayedShooterPose();
-            double robotXpose = robotPose.getX();
-            double robotYpose = robotPose.getY();
-
-            Pose2d futureRobotPose = new Pose2d(
-                    robotXpose + robotVelocity.vxMetersPerSecond * dt,
-                    robotYpose + robotVelocity.vyMetersPerSecond * dt,
-                    Rotation2d.kZero);
-
-            double thresh = FieldConstants.trenchThreshold;
-            if (DriverStation.isAutonomous())
-                thresh = FieldConstants.trenchThresholdAuto;
-
-            boolean nearBlueTrench = Math.abs(robotXpose - FieldConstants.blueTrenchX) < thresh;
-            boolean nearRedTrench = Math.abs(robotXpose - FieldConstants.redTrenchX) < thresh;
-            boolean nearTrenchY = robotYpose < 1.982 || robotYpose > 6.170;
-
-            boolean currentBlueTrench = (robotXpose - FieldConstants.blueTrenchX) < 0.0;
-            boolean futureBlueTrench = (futureRobotPose.getX() - FieldConstants.blueTrenchX) < 0.0;
-            boolean currentRedTrench = (robotXpose - FieldConstants.redTrenchX) < 0.0;
-            boolean futureRedTrench = (futureRobotPose.getX() - FieldConstants.redTrenchX) < 0.0;
-
-//            Logger.recordOutput("Hood/nearBlueTrench", nearBlueTrench);
-//            Logger.recordOutput("Hood/nearRedTrench", nearRedTrench);
-
-            if ((nearRedTrench || nearBlueTrench) && nearTrenchY) {
-                return 0.0;
-            }
-
-            if (DriverStation.isAutonomous()
-                    && (currentBlueTrench != futureBlueTrench || currentRedTrench != futureRedTrench)) {
-                return 0.0;
-            }
-
-            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
-            double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
-
-            if (RobotState.getInstance().getShuttling()) {
-                return SubsystemConstants.hoodMaxAngleRotations;
-            }
-
-            return ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist);
-        }, () -> {
-            return 0.0;
-            //    return RobotState.getInstance().getWantedHoodVelocity();
-        });
+    public Command setPositionWithShuttling() {
+        if(RobotState.getShuttling()){
+            return setPosition(()->ShooterTreeMap.shuttlingHoodTreeMap.getInterpolated(RobotState.getDistanceToHub()));
+        } else {
+            return setPosition(()->ShooterTreeMap.hoodTreeMap.getInterpolated(RobotState.getDistanceToHub()));
+        }
+//
+//        return setPosition(() -> {
+//            ChassisSpeeds robotVelocity = RobotState.getInstance().getFieldRelativeSpeeds();
+//            double dt = 1.0;
+//            Pose2d robotPose = RobotState.getInstance().getDelayedShooterPose();
+//            double robotXpose = robotPose.getX();
+//            double robotYpose = robotPose.getY();
+//
+//            Pose2d futureRobotPose = new Pose2d(
+//                    robotXpose + robotVelocity.vxMetersPerSecond * dt,
+//                    robotYpose + robotVelocity.vyMetersPerSecond * dt,
+//                    Rotation2d.kZero);
+//
+//            double thresh = FieldConstants.trenchThreshold;
+//            if (DriverStation.isAutonomous())
+//                thresh = FieldConstants.trenchThresholdAuto;
+//
+//            boolean nearBlueTrench = Math.abs(robotXpose - FieldConstants.blueTrenchX) < thresh;
+//            boolean nearRedTrench = Math.abs(robotXpose - FieldConstants.redTrenchX) < thresh;
+//            boolean nearTrenchY = robotYpose < 1.982 || robotYpose > 6.170;
+//
+//            boolean currentBlueTrench = (robotXpose - FieldConstants.blueTrenchX) < 0.0;
+//            boolean futureBlueTrench = (futureRobotPose.getX() - FieldConstants.blueTrenchX) < 0.0;
+//            boolean currentRedTrench = (robotXpose - FieldConstants.redTrenchX) < 0.0;
+//            boolean futureRedTrench = (futureRobotPose.getX() - FieldConstants.redTrenchX) < 0.0;
+//
+////            Logger.recordOutput("Hood/nearBlueTrench", nearBlueTrench);
+////            Logger.recordOutput("Hood/nearRedTrench", nearRedTrench);
+//
+//            if ((nearRedTrench || nearBlueTrench) && nearTrenchY) {
+//                return 0.0;
+//            }
+//
+//            if (DriverStation.isAutonomous()
+//                    && (currentBlueTrench != futureBlueTrench || currentRedTrench != futureRedTrench)) {
+//                return 0.0;
+//            }
+//
+//            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
+//            double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
+//
+//            if (RobotState.getShuttling()) {
+//                return SubsystemConstants.hoodMaxAngleRotations;
+//            }
+//
+//            return ShooterTreeMap.hoodTreeMap.getInterpolated(dist);
+//        }, () -> {
+//            return 0.0;
+//            //    return RobotState.getInstance().getWantedHoodVelocity();
+//        });
     }
 
     public Command autoAimUnsafe() {
@@ -149,7 +156,7 @@ public class HoodSubsystem extends SubsystemBase {
                 return SubsystemConstants.hoodMaxAngleRotations;
             }
 
-            return ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(dist);
+            return ShooterTreeMap.hoodTreeMap.getInterpolated(dist);
         });
     }
 

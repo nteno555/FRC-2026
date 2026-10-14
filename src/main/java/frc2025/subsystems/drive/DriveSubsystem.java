@@ -106,27 +106,35 @@ public class DriveSubsystem extends SubsystemBase {
         if(angle < -Math.PI) return angle + 2*Math.PI;
         return angle;
     }
-
+    public Pose2d getAutoAimTarget(){
+            if(RobotState.getInstance().getShuttling()){ //is shuttling
+                if(RobotState.getVisionPose().getY()<FieldConstants.yHalfLine){
+                    return Alliance.get()?FieldConstants.redShuttlePosLower:FieldConstants.blueShuttlePosLower;
+                } else {
+                    return Alliance.get()?FieldConstants.redShuttlePosUpper:FieldConstants.blueShuttlePosUpper;
+                }
+            } else { //is shooting
+                return Alliance.get()?FieldConstants.redNetPos:FieldConstants.blueNetPos;
+            }
+    }
     public Command driveAutoAim() {
         Supplier<Double> omegaSpeed = () -> {
-            Pose2d virtualTarget = null;
-            if (Alliance.get()) {
-                virtualTarget = FieldConstants.redNetPos;
-            } else {
-                virtualTarget = FieldConstants.blueNetPos;
-            }
-            if (virtualTarget == null) {
-                return 0.0;
-            }
+            Pose2d virtualTarget = getAutoAimTarget();
+
+//            if(RobotState.getInstance().getShuttling()){
+//                if(Alliance.get()) return
+//                else return
+//            }
+
             
-            Pose2d shooterPose = RobotState.getInstance().getVisionPose();
+            Pose2d shooterPose = RobotState.getVisionPose();
 
             double desiredHeading = Math.atan2(
                     virtualTarget.getY() - shooterPose.getY(),
                     virtualTarget.getX() - shooterPose.getX()
             );
 
-            double currentHeading = RobotState.getInstance().getVisionPose().getRotation().getRadians();
+            double currentHeading = RobotState.getVisionPose().getRotation().getRadians();
             double angleError = modAngle(desiredHeading - currentHeading);
 
             Logger.recordOutput("Drive/angleError", angleError);
@@ -142,21 +150,16 @@ public class DriveSubsystem extends SubsystemBase {
     
 
         return applyChassisSpeedsCommand(() -> new ChassisSpeeds(0, 0, -omegaSpeed.get())).until(() -> {
-            Pose2d virtualTarget = null;
-            if (Alliance.get()) {
-                virtualTarget = FieldConstants.redNetPos;
-            } else {
-                virtualTarget = FieldConstants.blueNetPos;
-            }
-            
-            Pose2d shooterPose = RobotState.getInstance().getVisionPose();
+            Pose2d virtualTarget = getAutoAimTarget();
+
+            Pose2d shooterPose = RobotState.getVisionPose();
 
             double desiredHeading = Math.atan2(
                     virtualTarget.getY() - shooterPose.getY(),
                     virtualTarget.getX() - shooterPose.getX()
             );
 
-            double currentHeading = RobotState.getInstance().getVisionPose().getRotation().getRadians();
+            double currentHeading = RobotState.getVisionPose().getRotation().getRadians();
             double angleError = modAngle(desiredHeading - currentHeading);
             return Math.abs(angleError) < 0.01;
         });
@@ -190,7 +193,7 @@ public class DriveSubsystem extends SubsystemBase {
         return this.applyChassisSpeedsCommand(() -> {
             return ChassisSpeeds.fromFieldRelativeSpeeds(
                     chassisSpeedsSupplier.get(),
-                    RobotState.getInstance().getVisionPose().getRotation());
+                    RobotState.getVisionPose().getRotation());
         });
     }
 
@@ -198,7 +201,7 @@ public class DriveSubsystem extends SubsystemBase {
         return this.applyChassisSpeedsCommand(() -> {
             return ChassisSpeeds.fromFieldRelativeSpeeds(
                     chassisSpeedsSupplier.get(),
-                    RobotState.getInstance().getVisionPose().getRotation());
+                    RobotState.getVisionPose().getRotation());
         });
     }
 

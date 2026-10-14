@@ -101,22 +101,26 @@ public class ShooterSubsystem extends SubsystemBase {
         }, () -> wantedVelocity = 0.0);
     }
 
-    public Command autoAim() {
-        return setSpeed(() -> {
-            Pose2d robotPose = RobotState.getInstance().getDelayedShooterPose();
-            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
-            double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
+    public Command setSpeedWithShuttling() {
+        if (RobotState.getShuttling()) {
+            return setSpeed(()->ShooterTreeMap.shuttlingRPSTreeMap.getInterpolated(RobotState.getDistanceToHub()));
+        } else {
+            return setSpeed(()->ShooterTreeMap.lowerWheelTreeMap.getInterpolated(RobotState.getDistanceToHub()));
+        }
 
-            if (RobotState.getInstance().getShuttling()) {
-                return ShooterTreeMap.getInstance().shuttlingRPSTreeMap.getInterpolated(dist);
-            }
-
-            return ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(dist);
-        }, () -> {
-            // return 0.0;
-            return RobotState.getInstance().getWantedShooterAcceleration();
-        });
+//        return setSpeed(() -> {
+//            Pose2d robotPose = RobotState.getDelayedShooterPose();
+//            Pose2d targetPose = RobotState.getShootingWhileMovingVirtualPose();
+//            double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
+//
+//            if (RobotState.getShuttling()) {
+//                return ShooterTreeMap.shuttlingRPSTreeMap.getInterpolated(dist);
+//            }
+//
+//            return ShooterTreeMap.lowerWheelTreeMap.getInterpolated(dist);
+//        });
     }
+
 
     public boolean getShotReadyAF() {
         return Math.abs(wantedVelocity - inputs.masterVelocityRPS) < 1.2 &&

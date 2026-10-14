@@ -25,7 +25,7 @@ import java.util.Optional;
 public class RobotState {
     private static RobotState instance;
 
-    private DriverStation.Alliance alliance;
+    private static DriverStation.Alliance alliance;
 
     public static record TimestampedVisionUpdate(
             double timestamp, Pose2d pose, Matrix<N3, N1> stdDevs) {
@@ -33,32 +33,27 @@ public class RobotState {
 
     private static Pose2d latestPose = new Pose2d();
 
-    private List<TimestampedVisionUpdate> visionUpdates = new ArrayList<>();
+    private static List<TimestampedVisionUpdate> visionUpdates = new ArrayList<>();
 
-    private ChassisSpeeds robotRelativeSpeeds;
+    private static ChassisSpeeds robotRelativeSpeeds, fieldRelativeSpeeds;
 
-    private ChassisSpeeds fieldRelativeSpeeds;
+    private static double pigeonAcceleration;
 
-    private double pigeonAcceleration;
+    private static Pose2d shootingWhileMovingVirtualPose;
 
-    private Pose2d shootingWhileMovingVirtualPose;
+    private static List<PhotonTrackedTarget> ballTargets;
 
-    private List<PhotonTrackedTarget> ballTargets;
+    private static double angleToVirtualTarget;
 
-    private double angleToVirtualTarget;
+    private static double prevAngleToVirtualTarget = 0.0, prevVirtualTargetTimestamp = -1.0, virtualTargetAngularVelocity = 0.0;
 
-    private double prevAngleToVirtualTarget = 0.0;
-    private double prevVirtualTargetTimestamp = -1.0;
-    private double virtualTargetAngularVelocity = 0.0;
-    private LinearFilter virtualTargetVelocityFilter = LinearFilter.singlePoleIIR(0.03, 0.02);
+    private static LinearFilter virtualTargetVelocityFilter = LinearFilter.singlePoleIIR(0.03, 0.02);
 
-    private double prevWantedShooterRPS = 0.0;
-    private double wantedShooterAcceleration = 0.0;
-    private LinearFilter shooterAccelerationFilter = LinearFilter.singlePoleIIR(0.03, 0.02);
+    private static double prevWantedShooterRPS = 0.0, wantedShooterAcceleration = 0.0;
+    private static LinearFilter shooterAccelerationFilter = LinearFilter.singlePoleIIR(0.03, 0.02);
 
-    private double prevWantedHoodRotation = 0.0;
-    private double wantedHoodVelocity = 0.0;
-    private LinearFilter hoodVelocityFilter = LinearFilter.singlePoleIIR(0.03, 0.02);
+    private static double prevWantedHoodRotation = 0.0, wantedHoodVelocity = 0.0;
+    private static LinearFilter hoodVelocityFilter = LinearFilter.singlePoleIIR(0.03, 0.02);
 
     public RobotState() {
         latestPose = new Pose2d();
@@ -70,12 +65,12 @@ public class RobotState {
         return instance;
     }
 
-    public void setRobotRelativeSpeeds(ChassisSpeeds speeds) {
+    public static void setRobotRelativeSpeeds(ChassisSpeeds speeds) {
         robotRelativeSpeeds = speeds;
         fieldRelativeSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeSpeeds, getVisionPose().getRotation());
     }
 
-    public void setPigeonAcceleration(double accel) {
+    public static void setPigeonAcceleration(double accel) {
         pigeonAcceleration = accel;
     }
 
@@ -83,11 +78,11 @@ public class RobotState {
         return pigeonAcceleration;
     }
 
-    public ChassisSpeeds getFieldRelativeSpeeds() {
+    public static ChassisSpeeds getFieldRelativeSpeeds() {
         return fieldRelativeSpeeds;
     }
 
-    public ChassisSpeeds getRobotRelativeSpeeds() {
+    public static ChassisSpeeds getRobotRelativeSpeeds() {
         return robotRelativeSpeeds;
     }
 
@@ -95,33 +90,30 @@ public class RobotState {
         return latestPose;
     }
 
-    public void setPose(Pose2d pose) {
+    public static void setPose(Pose2d pose) {
         latestPose = pose;
     }
-    public Pose2d getVisionShooterPose() {
+    public static Pose2d getVisionShooterPose() {
         Pose2d visionPose = getVisionPose();
         return visionPose.transformBy(SubsystemConstants.robotToShooter);
     }
-    public Pose2d getDelayedShooterPose(){
+    public static Pose2d getDelayedShooterPose(){
         return getDelayedPose().transformBy(SubsystemConstants.robotToShooter);
     }
-    public double getSpeed() {
+    public static double getSpeed() {
         return Math.hypot(fieldRelativeSpeeds.vxMetersPerSecond, fieldRelativeSpeeds.vyMetersPerSecond);
     }
 
-    public void rezero(Pose2d pose) {
+    public static void rezero(Pose2d pose) {
         latestPose = pose;
         visionUpdates.clear();
     }
 
-    public void addDriveData(double timestamp, Twist2d twist) {
-    }
-
-    public void addVisionData(List<TimestampedVisionUpdate> update) {
+    public static void addVisionData(List<TimestampedVisionUpdate> update) {
         visionUpdates.addAll(update);
     }
 
-    public List<TimestampedVisionUpdate> getVisionUpdates() {
+    public static List<TimestampedVisionUpdate> getVisionUpdates() {
         var updates = new ArrayList<>(visionUpdates);
         visionUpdates.clear();
         return updates;
@@ -140,15 +132,13 @@ public class RobotState {
     }
 
     public static double getDistanceToHub() {
-        double distance = 0.0;
         if (Alliance.get()) {
-            distance = Math.sqrt(Math.pow((FieldConstants.redNetPos.getY() - getVisionPose().getY()), 2) + Math.pow((FieldConstants.redNetPos.getX() - getVisionPose().getX()), 2));  
+            return Math.sqrt(Math.pow((FieldConstants.redNetPos.getY() - getVisionPose().getY()), 2) + Math.pow((FieldConstants.redNetPos.getX() - getVisionPose().getX()), 2));
         } else {
-            distance = Math.sqrt(Math.pow((FieldConstants.blueNetPos.getY() - getVisionPose().getY()), 2) + Math.pow((FieldConstants.blueNetPos.getX() - getVisionPose().getX()), 2));  
+            return Math.sqrt(Math.pow((FieldConstants.blueNetPos.getY() - getVisionPose().getY()), 2) + Math.pow((FieldConstants.blueNetPos.getX() - getVisionPose().getX()), 2));
         }
-        return distance;
     }
-    public ArrayList<Pose2d> getBallFieldPoses() {
+    public static ArrayList<Pose2d> getBallFieldPoses() {
         ArrayList<Pose2d> ballPoses = new ArrayList<>();
         if (ballTargets == null || ballTargets.isEmpty()) return ballPoses;
 
@@ -200,30 +190,30 @@ public class RobotState {
 
         return ballPoses;
     }
-    public Pose2d getDelayedPose(){
+    public static Pose2d getDelayedPose(){
         double phaseDelay = 0.02;
         Pose2d currPose = getVisionPose();
         ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeSpeeds,currPose.getRotation());
         return currPose.exp(new Twist2d(speeds.vxMetersPerSecond*phaseDelay,speeds.vyMetersPerSecond*phaseDelay,speeds.omegaRadiansPerSecond*phaseDelay));
     }
-    public Pose2d getShootingWhileMovingVirtualPose(){
+    public static Pose2d getShootingWhileMovingVirtualPose(){
         return shootingWhileMovingVirtualPose;
     }
-    public boolean getShuttling(){
+    public static boolean getShuttling(){
         if(DriverStation.isAutonomousEnabled()) return false;
 
-        double xPos = RobotState.getInstance().getVisionPose().getX();
+        double xPos = RobotState.getVisionPose().getX();
         boolean inBlue = xPos<FieldConstants.inBlueZoneX&&!Alliance.get();
         boolean inRed = xPos>FieldConstants.inRedZoneX&&Alliance.get();
         Logger.recordOutput("Drive/inBlueZone",inBlue);
         Logger.recordOutput("Drive/inRedZone",inRed);
         return !inBlue&&!inRed;
     }
-    public double getWantedShooterAcceleration() {
+    public static double getWantedShooterAcceleration() {
         return wantedShooterAcceleration;
     }
 
-    public Pose2d getTargetPose() {
+    public static Pose2d getTargetPose() {
         if (!getShuttling()) {
             return (Alliance.get()) ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
         }
@@ -235,7 +225,7 @@ public class RobotState {
         return (Alliance.get()) ? FieldConstants.redShuttlePosLower : FieldConstants.blueShuttlePosLower;
     }
 
-    public void updateShootingWhileMovingVirtualPose() {
+    public static void updateShootingWhileMovingVirtualPose() {
         Pose2d currentPose = RobotState.getInstance().getVisionPose();
         Pose2d realTargetPose = getTargetPose();
         Pose2d virtualPose = getTargetPose();
@@ -262,9 +252,9 @@ public class RobotState {
            
             double flightTime;
             if(getShuttling()) {
-                flightTime = ShooterTreeMap.getInstance().tofTreeMap.getInterpolated(distance);
+                flightTime = ShooterTreeMap.tofTreeMap.getInterpolated(distance);
             } else {
-                flightTime = ShooterTreeMap.getInstance().shuttlingTofTreeMap.getInterpolated(distance);
+                flightTime = ShooterTreeMap.shuttlingTofTreeMap.getInterpolated(distance);
             }
 
             virtualPose = new Pose2d(
@@ -284,11 +274,11 @@ public class RobotState {
         double wantedShooterRPS;
         double wantedHoodRotation;
         if (getShuttling()) {
-            wantedShooterRPS = ShooterTreeMap.getInstance().shuttlingRPSTreeMap.getInterpolated(distance);
+            wantedShooterRPS = ShooterTreeMap.shuttlingRPSTreeMap.getInterpolated(distance);
             wantedHoodRotation = SubsystemConstants.hoodMaxAngleRotations;
         } else {
-            wantedShooterRPS = ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(distance);
-            wantedHoodRotation = ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(distance);
+            wantedShooterRPS = ShooterTreeMap.lowerWheelTreeMap.getInterpolated(distance);
+            wantedHoodRotation = ShooterTreeMap.hoodTreeMap.getInterpolated(distance);
         }
 
         double currentTimestamp = Timer.getFPGATimestamp();
@@ -328,15 +318,15 @@ public class RobotState {
 //        Logger.recordOutput("Vision/wantedHoodVelocity", wantedHoodVelocity);
     }
 
-    public double getWantedHoodVelocity() {
+    public static double getWantedHoodVelocity() {
         return wantedHoodVelocity;
     }
 
-    public double getVirtualTargetAngularVelocity() {
+    public static double getVirtualTargetAngularVelocity() {
         return virtualTargetAngularVelocity;
     }
 
-    public double getAngleToRealHub() {
+    public static double getAngleToRealHub() {
         Pose2d target = (Alliance.get()) ? FieldConstants.redNetPos : FieldConstants.blueNetPos;
 
         Pose2d shooterPose = getDelayedPose().transformBy(SubsystemConstants.robotToShooter);

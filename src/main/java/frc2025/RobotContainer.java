@@ -166,17 +166,10 @@ public class RobotContainer {
                     .onFalse(intakeSubsystem.setRollerVoltage(() -> 0.0));
 
         new Trigger(() -> aiming)
-                    .whileTrue(
-                            shooterSubsystem.setSpeed(
-                                    () -> ShooterTreeMap.getInstance().lowerWheelTreeMap.getInterpolated(RobotState.getDistanceToHub())
-                                    )
-                            .alongWith(
-                                    hoodSubsystem.setPosition(
-                                            () -> ShooterTreeMap.getInstance().hoodTreeMap.getInterpolated(RobotState.getDistanceToHub())
-                                            )
-                                    .alongWith(
-                                        driveSubsystem.driveAutoAim()
-                                        )));
+                    .whileTrue(shooterSubsystem.setSpeedWithShuttling()
+                            .alongWith(hoodSubsystem.setPositionWithShuttling())
+                            .alongWith(driveSubsystem.driveAutoAim())
+                    );
         
         new Trigger(() -> aiming)
                 .whileTrue(AutoAimCommands.autoIndex(this)
@@ -184,7 +177,6 @@ public class RobotContainer {
                 .until(() -> AutoAimCommands.indexingReady(this))
                 .andThen(Commands.waitSeconds(1.5))
         );
-        
         
         // right trigger is shoot
         driverXboxController.rightTrigger()
