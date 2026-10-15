@@ -1,5 +1,7 @@
 package frc2025.config;
 
+import java.util.Map;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc2025.util.InterpolatingTreeMap;
 
@@ -12,14 +14,11 @@ public class ShooterTreeMap {
     public static InterpolatingTreeMap shuttlingRPSTreeMap = new InterpolatingTreeMap();
     public static InterpolatingTreeMap shuttlingHoodTreeMap = new InterpolatingTreeMap();
 
-
-    
-    public ShooterTreeMap() {
-
-
+    static {
         updateDashboardMap();
         SmartDashboard.putString("Tuning/lowerWheelTree Map", lowerWheelTreeMap.toString());
 
+        
         lowerWheelTreeMap.put(1.4367, 18.2); // 1
         lowerWheelTreeMap.put(1.9647,22.8); // 2
         lowerWheelTreeMap.put(2.4111, 24.0); // 3
@@ -28,7 +27,6 @@ public class ShooterTreeMap {
         lowerWheelTreeMap.put(3.8140, 27.9); // 6
         lowerWheelTreeMap.put(4.3200, 30.0); // 7
         // lowerWheelTreeMap.put(4.4185, 28.2); // 8
-        
         // default RPS is 27.0
         hoodTreeMap.put(1.4367, 0.0); // 1
         hoodTreeMap.put(1.9647, 0.0); // 2
@@ -38,6 +36,7 @@ public class ShooterTreeMap {
         hoodTreeMap.put(3.8140, 0.3); // 6
         hoodTreeMap.put(4.3200, 0.4); // 7
 
+        
         /*
          * Dist: 1.4367, rps: 18.2, hood: 0.0
         Dist: 1.9647, rps: 22.8, hood: 0.0

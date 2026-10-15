@@ -162,20 +162,19 @@ public class RobotContainer {
 
         // left trigger is intake
         driverXboxController.leftTrigger()
-                    .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage))
-                    .onFalse(intakeSubsystem.setRollerVoltage(() -> 0.0));
+                    .whileTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage))
+                    .whileFalse(intakeSubsystem.setRollerVoltage(() -> 0.0));
 
         new Trigger(() -> aiming)
                     .whileTrue(shooterSubsystem.setSpeedWithShuttling()
                             .alongWith(hoodSubsystem.setPositionWithShuttling())
                             .alongWith(driveSubsystem.driveAutoAim())
-                    );
+                    ).whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
         
         new Trigger(() -> aiming)
                 .whileTrue(AutoAimCommands.autoIndex(this)
                 .alongWith(intakeSubsystem.retractSlow())
                 .until(() -> AutoAimCommands.indexingReady(this))
-                .andThen(Commands.waitSeconds(1.5))
         );
         
         // right trigger is shoot
