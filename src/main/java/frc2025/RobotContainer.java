@@ -119,7 +119,7 @@ public class RobotContainer {
 
         public void periodic() {
                 // updateMatchTime();
-                // loggerPeriodic();
+                loggerPeriodic();
         }
 
         // shooterSubststem.setDefaultCommand( just shoot me);
@@ -848,7 +848,8 @@ public class RobotContainer {
                 // }
 
                 autoCommand = autos.getCommand(selected);
-                // autoCommand = autos.intakeJustDrivePath("LowNeutralUnderTrench", true);
+
+               // autoCommand = autos.intakeJustDrivePath("LowNeutralUnderTrench", true);
 
                 // if(!autoWarmupActive) {
                 // autoCommand.schedule();
