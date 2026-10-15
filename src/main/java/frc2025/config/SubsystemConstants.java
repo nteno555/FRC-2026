@@ -44,7 +44,7 @@ public class SubsystemConstants {
     public static double intakeRollerVoltage = 10.0;
 
     public static double intakeRetractPosition = 0.340;
-    public static double intakeDeployPosition = 17.330;
+    public static double intakeDeployPosition = -17.330;
     public static double intakeHalfPosition = -8.0;
     public static double intakeQuarterPosition = -4.0;
     
