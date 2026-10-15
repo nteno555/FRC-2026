@@ -118,7 +118,7 @@ public class RobotContainer {
                 driveSubsystem.driveTeleop(
                         () -> (driveSpeed) * handleDeadBand(driverXboxController.getLeftY() + tuningController.getLeftY() + treeMapTuningController.getLeftY(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
                         () -> (driveSpeed) * handleDeadBand(driverXboxController.getLeftX() + tuningController.getLeftX() + treeMapTuningController.getLeftX(), DEAD_BAND_DRIVER, true) * kSpeedAt12Volts.in(MetersPerSecond),
-                        () -> (-rotationSpeed) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX() + treeMapTuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
+                        () -> (rotationSpeed) * handleDeadBand(driverXboxController.getRightX() + tuningController.getRightX() + treeMapTuningController.getRightX(), DEAD_BAND_DRIVER, true) * Math.PI * 2
                 )
         );
 
@@ -169,7 +169,10 @@ public class RobotContainer {
                     .whileTrue(shooterSubsystem.setSpeedWithShuttling()
                             .alongWith(hoodSubsystem.setPositionWithShuttling())
                             .alongWith(driveSubsystem.driveAutoAim())
-                    ).whileFalse(shooterSubsystem.setVoltage(() -> 0.0));
+                    )
+                    .whileFalse(shooterSubsystem.setVoltage(() -> 0.0)
+                            .alongWith(hoodSubsystem.setVoltage(() -> 0.0))
+                    );
         
         new Trigger(() -> aiming)
                 .whileTrue(AutoAimCommands.autoIndex(this)
