@@ -383,6 +383,7 @@ public class RobotContainer {
                                 .whileTrue(intakeSubsystem.oscillateIntake())
                                 .onFalse(intakeSubsystem
                                                 .setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
+                
                 driverXboxController.leftBumper()
                                 .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeHalfPosition));
 
@@ -396,6 +397,22 @@ public class RobotContainer {
                                 .onTrue(intakeSubsystem
                                                 .setDeployPosition(() -> SubsystemConstants.intakeRetractPosition));
 
+                /*
+                 * Controls for operator:
+                 * 
+                 * Aiming modes:
+                 *  normal - left bumper
+                 *  manual - right bumper
+                 *  fixed - right trigger
+                 * 
+                 * outtake - left trigger
+                 * 
+                 * Shooter RPS fixes:
+                 *  RPS up - dpad up
+                 *  RPS down - dpad down
+                 *  RPS reset - dpad left and right
+                 */
+                
                 operatorXboxController.leftBumper()
                                 .onTrue(Commands.runOnce(() -> aimMode = AimMode.TURRET));
                 operatorXboxController.rightBumper()
@@ -419,7 +436,14 @@ public class RobotContainer {
                                         ShooterTreeMap.getInstance().changeRPS(-1.0);
                                 }));
 
+                // DPAD LEFT AND RIGHT BOTH RESET SHOOTING RPS
                 operatorXboxController.povLeft()
+                                .onTrue(Commands.runOnce(() -> {
+                                        rpsOffset = 0.0;
+                                        ShooterTreeMap.getInstance().resetRPS();
+                                }));
+
+                operatorXboxController.povRight()
                                 .onTrue(Commands.runOnce(() -> {
                                         rpsOffset = 0.0;
                                         ShooterTreeMap.getInstance().resetRPS();
