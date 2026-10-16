@@ -123,8 +123,10 @@ public class ShooterTreeMap {
         shuttlingRPSTreeMap.put(10.0, 55.0);
         shuttlingRPSTreeMap.put(13.553,60.0);
 
-        shuttlingTofTreeMap.put(8.01, 2.0);
-        shuttlingTofTreeMap.put(16.0, 3.0);
+        shuttlingTofTreeMap.put(3.939, 0.97);
+        shuttlingTofTreeMap.put(5.06, 1.09);
+        shuttlingTofTreeMap.put(10.0, 1.54);
+        shuttlingTofTreeMap.put(13.553, 1.81);
 
         updateDashboardMap();
         SmartDashboard.putString("Tuning/lowerWheelTree Map", lowerWheelTreeMap.toString());

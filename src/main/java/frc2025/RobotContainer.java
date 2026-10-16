@@ -471,6 +471,7 @@ public class RobotContainer {
                                 turretSubsystem.setVoltage(() -> 1.5));
                 testSystemsController.povRight().whileTrue(
                                 turretSubsystem.setVoltage(() -> -1.5));
+                // IMPORTANT: verify turret throughbore zeros before very match
 
                 new Trigger(() -> (testSystemsController.isConnected())).whileTrue(
                                 turretSubsystem.setVoltage(() -> 0.0)
@@ -787,7 +788,7 @@ public class RobotContainer {
                 Logger.recordOutput("Superstructure/RPS Offset", rpsOffset);
                 Logger.recordOutput("Superstructure/aiming", aiming);
                 Logger.recordOutput("Superstructure/vy", shooterSubsystem.getVelocity()*Math.sin(0.8727 - 0.08824 * hoodSubsystem.getPosition()));
-
+                SmartDashboard.putNumber("RpsOffset", this.rpsOffset);
                 if (autoWon) {
                         Logger.recordOutput("Superstructure/Won Auto", "WON");
                 } else {
