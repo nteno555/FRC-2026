@@ -208,10 +208,10 @@ public class RobotState {
            
             double flightTime;
             if(getShuttling()) {
-                flightTime = ShooterTreeMap.getInstance().getRealTofShuttling(distance);
+                flightTime = ShooterTreeMap.getInstance().shuttlingTofTreeMap.getInterpolated(distance);
 
             } else {
-                flightTime = ShooterTreeMap.getInstance().getRealTof(distance);
+                flightTime = ShooterTreeMap.getInstance().tofTreeMap.getInterpolated(distance);
                 
             }
 

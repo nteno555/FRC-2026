@@ -37,14 +37,14 @@ public class IndexerIOReal implements IndexerIO {
 
         var indexerConfigs = new TalonFXConfiguration();
         
-        indexerConfigs.CurrentLimits.SupplyCurrentLimit = SubsystemConstants.indexerSupplyCurrentLimit;
-        indexerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
-        indexerConfigs.CurrentLimits.StatorCurrentLimit = SubsystemConstants.indexerStatorCurrentLimit;
-        indexerConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+        // indexerConfigs.CurrentLimits.SupplyCurrentLimit = SubsystemConstants.indexerSupplyCurrentLimit;
+        // indexerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
+        // indexerConfigs.CurrentLimits.StatorCurrentLimit = SubsystemConstants.indexerStatorCurrentLimit;
+        // indexerConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
 
         TorqueCurrentConfigs configTorque =  new TorqueCurrentConfigs();
-        configTorque.PeakForwardTorqueCurrent = 100;
-        configTorque.PeakReverseTorqueCurrent = 100;
+        // configTorque.PeakForwardTorqueCurrent = 100;
+        // configTorque.PeakReverseTorqueCurrent = 100;
         configTorque.TorqueNeutralDeadband = SubsystemConstants.indexerTorqueNeutralDeadband;
 
         indexerConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;

@@ -14,7 +14,6 @@ import frc2025.commands.SuperstructureCommands;
 import frc2025.config.FieldConstants;
 import frc2025.config.SubsystemConstants;
 import frc2025.subsystems.drive.DriveSubsystem;
-import frc2025.subsystems.intake.IntakeSubsystem;
 import frc2025.util.Alliance;
 import org.json.simple.parser.ParseException;
 import org.littletonrobotics.junction.Logger;
@@ -115,7 +114,8 @@ public class Autos {
     /* Path Commands */
 
     private Command intakeDrive(Command driveCommand) {
-        return robotContainer.getHood().setPosition(() -> 0.0)
+        return robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition)
+                .alongWith(robotContainer.getHood().setPosition(() -> 0.0))
                 .until(() -> robotContainer.getHood().getPosition() < 0.3)
 //                .until(() -> robotContainer.getIntake().getDeployReady()
 //                        && robotContainer.getHood().getPosition() < 0.3)
@@ -244,7 +244,7 @@ public class Autos {
                                     .alongWith(robotContainer.getTurret().snapThenTrack())
                                     .alongWith(robotContainer.getHood().autoAimUnsafe())
                                     .alongWith(robotContainer.getIntake().oscillateIntake()))
-                                    .withTimeout(waitTime)).andThen(robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
+                                    .withTimeout(waitTime));
                 } else {
                     pathCommands = pathCommands.andThen(
                             AutoAimCommands.driveAutoAim(
@@ -255,7 +255,7 @@ public class Autos {
                                             .alongWith(robotContainer.getShooter().autoAim())
                                             .alongWith(robotContainer.getHood().autoAimUnsafe())
                                             .alongWith(robotContainer.getIntake().oscillateIntake()))
-                                    .withTimeout(waitTime));
+                                    .withTimeout(waitTime)).andThen(robotContainer.getIntake().setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
                 }
             } else if (paths.get(i).equals(WAIT_NO_SHOOT)) {
                 pathCommands = pathCommands.andThen(Commands.waitSeconds(1.0));

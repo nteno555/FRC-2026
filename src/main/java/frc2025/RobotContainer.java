@@ -119,7 +119,7 @@ public class RobotContainer {
 
         public void periodic() {
                 // updateMatchTime();
-                loggerPeriodic();
+                // loggerPeriodic();
         }
 
         // shooterSubststem.setDefaultCommand( just shoot me);
@@ -364,8 +364,8 @@ public class RobotContainer {
                                 .and(driverXboxController.back())
                                 .whileTrue(hoodSubsystem.homeThenRezero());
                 driverXboxController
-                                .x()
-                                .and(driverXboxController.back())
+                                .leftBumper()
+                                // .and(driverXboxController.back())
                                 .whileTrue(intakeSubsystem.homeThenRezero());
                 driverXboxController
                                 .y()
@@ -569,8 +569,9 @@ public class RobotContainer {
                                 .onTrue(
                                                 shooterSubsystem.setSpeed(
                                                                 () ->  SmartDashboard.getNumber("Tuning/RPM", 0.0), () -> 0.0)
-                                                                .alongWith(hoodSubsystem.setPosition(() -> SubsystemConstants.hoodMaxAngleRotations
-                                                                                )) // () -> SmartDashboard.getNumber("Tuning/hoodPosition",0.0)
+                                                                .alongWith(hoodSubsystem.setPosition(
+                                                                                 () -> SmartDashboard.getNumber("Tuning/hoodPosition", 0.0)))
+                                                                //() -> SubsystemConstants.hoodMaxAngleRotations
                                 // .alongWith(turretSubsystem.autoAim())
                                 );
                 tuningController.povDown()
@@ -848,6 +849,7 @@ public class RobotContainer {
                 // }
 
                 autoCommand = autos.getCommand(selected);
+                
 
                // autoCommand = autos.intakeJustDrivePath("LowNeutralUnderTrench", true);
 

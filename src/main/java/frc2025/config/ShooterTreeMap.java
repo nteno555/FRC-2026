@@ -108,16 +108,22 @@ public class ShooterTreeMap {
         // vy = rps * sin(85 - 12.28*hood)
         //vy = rps · sin(0.09805 · hood_rotation)
 
-        shuttlingRPSTreeMap.put(6.0, 25.0);
-        shuttlingRPSTreeMap.put(10.0, 70.0);
+        //10/14/26
+        // shuttlingRPSTreeMap.put(6.0, 25.0);
+        // shuttlingRPSTreeMap.put(10.0, 70.0);
         
-        shuttlingRPSTreeMap.put(13.553, 65.0);
+        // shuttlingRPSTreeMap.put(13.553, 65.0);
 
-        shuttlingTofTreeMap.put(1.0, 0.5);
+        // shuttlingTofTreeMap.put(1.0, 0.5);
+        
 
+        
+        shuttlingRPSTreeMap.put(3.939, 27.2);
+        shuttlingRPSTreeMap.put(5.060, 33.0);
+        shuttlingRPSTreeMap.put(10.0, 55.0);
+        shuttlingRPSTreeMap.put(13.553,60.0);
 
-        // shuttlingTofTreeMap.put(8.0, 2.0);
-        // shuttlingTofTreeMap.put(8.01, 0.0);
+        shuttlingTofTreeMap.put(8.01, 2.0);
         shuttlingTofTreeMap.put(16.0, 3.0);
 
         updateDashboardMap();

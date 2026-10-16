@@ -2,7 +2,9 @@ package frc2025.subsystems.intake;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc2025.config.SubsystemConstants;
 import org.littletonrobotics.junction.Logger;
 
@@ -20,6 +22,7 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic(){
         Logger.processInputs("RealOutputs/Intake", inputs);
+        Logger.recordOutput("Intake/setpoint", this.setpoint);
         io.updateInputs(inputs);
     }
 
@@ -39,21 +42,24 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public Command setDeployPosition(Supplier<Double> position) {
         return this.run(() -> {
-            if (position.get() == SubsystemConstants.intakeRetractPosition) io.setVoltage(0.0);
-            io.setDeployPosition(position.get(), true);
-            io.setVoltage(0.0);
+            double target = position.get();
+            setpoint = target;
+            if (target == SubsystemConstants.intakeRetractPosition) io.setVoltage(0.0);
+            io.setDeployPosition(target, true);
         });
     }
 
-    public Command oscillateIntake() {
-        return this.run(() -> {
-            double time = (Timer.getFPGATimestamp());
+    private Command goTo(Supplier<Double> target) {
+    return setDeployPosition(target)
+            .until(() -> Math.abs(inputs.position - target.get()) < 1.0)
+            .withTimeout(1.5);
+    }
 
-            if (time % 0.67 < 0.335) {io.setDeployPosition(SubsystemConstants.intakeDeployPosition, true); setpoint = SubsystemConstants.intakeDeployPosition;}
-            else {io.setDeployPosition(SubsystemConstants.intakeHalfPosition, true); setpoint = SubsystemConstants.intakeDeployPosition;}
-            
-            io.setVoltage(SubsystemConstants.intakeRollerVoltage);
-        });
+    public Command oscillateIntake() {
+        return Commands.sequence(
+                goTo(() -> SubsystemConstants.intakeDeployPosition),
+                goTo(() -> SubsystemConstants.intakeHalfPosition)
+        ).repeatedly();
     }
 
     public Command retractSlow() {
@@ -70,7 +76,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public Command homeThenRezero() {
         return this.run(() -> {
             io.setVoltage(0.0);
-            io.setDeployVoltage(-2.0);
+            io.setDeployVoltage(2.0);
             io.rezero(0.0);
         });
     }

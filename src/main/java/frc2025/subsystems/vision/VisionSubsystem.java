@@ -28,6 +28,7 @@ public class VisionSubsystem extends SubsystemBase {
         Pose2d target = RobotState.getInstance().getTargetPose();
         double distance = Math.hypot(pose.getX() - target.getX(), pose.getY() - target.getY());
         Logger.recordOutput("Vision/targetDistance", distance);
+        Logger.recordOutput("Vision/shuttling", RobotState.getInstance().getShuttling());
     }
 
     public Command resetOdometryCommand() {
