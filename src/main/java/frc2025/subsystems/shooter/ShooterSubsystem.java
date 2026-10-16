@@ -102,12 +102,12 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public Command setSpeedWithShuttling() {
-        // if (RobotState.getShuttling()) {
-        //     return setSpeed(()->ShooterTreeMap.shuttlingRPSTreeMap.getInterpolated(RobotState.getDistanceToHub()));
-        // } else {
-        //     return setSpeed(()->ShooterTreeMap.lowerWheelTreeMap.getInterpolated(RobotState.getDistanceToHub()));
-        // }
-        return setSpeed(()->ShooterTreeMap.lowerWheelTreeMap.getInterpolated(RobotState.getDistanceToHub()));
+         if (RobotState.getShuttling()) {
+             return setSpeed(()->ShooterTreeMap.shuttlingRPSTreeMap.getInterpolated(RobotState.getShuttleDistance()));
+         } else {
+             return setSpeed(()->ShooterTreeMap.lowerWheelTreeMap.getInterpolated(RobotState.getDistanceToHub()));
+         }
+//        return setSpeed(()->ShooterTreeMap.lowerWheelTreeMap.getInterpolated(RobotState.getDistanceToHub()));
 
 //        return setSpeed(() -> {
 //            Pose2d robotPose = RobotState.getDelayedShooterPose();
@@ -124,8 +124,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
     public boolean getShotReadyAF() {
-        return Math.abs(wantedVelocity - inputs.masterVelocityRPS) < 1.2 &&
-        Math.abs(wantedVelocity) > 1.0;
+        return Math.abs(wantedVelocity - inputs.masterVelocityRPS) < 1.2 && Math.abs(wantedVelocity) > 1.0;
     }
 
     public double getCurrent() {
@@ -135,4 +134,6 @@ public class ShooterSubsystem extends SubsystemBase {
     public double getVelocity() {
         return inputs.masterVelocityRPS;
     }
+
+
 }

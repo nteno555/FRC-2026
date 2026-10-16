@@ -36,6 +36,9 @@ public class HoodSubsystem extends SubsystemBase {
         Logger.recordOutput("Superstructure/HoodAngle", inputs.positionRotations);
         Logger.recordOutput("Hood/setpoint", setpoint);
         Logger.recordOutput("Hood/shotReady", getShotReady());
+        Logger.recordOutput("Hood/shuttleDistance",RobotState.getShuttleDistance());
+        Logger.recordOutput("Hood/shuttleDistanceInterpolated",ShooterTreeMap.shuttlingHoodTreeMap.getInterpolated(RobotState.getShuttleDistance()));
+        Logger.recordOutput("Hood/isShuttling",RobotState.getShuttling());
         io.updateInputs(inputs);
     }
 
@@ -90,11 +93,13 @@ public class HoodSubsystem extends SubsystemBase {
     }
 
     public Command setPositionWithShuttling() {
-        if(RobotState.getShuttling()){
-            return setPosition(()->ShooterTreeMap.shuttlingHoodTreeMap.getInterpolated(RobotState.getDistanceToHub()));
-        } else {
-            return setPosition(()->ShooterTreeMap.hoodTreeMap.getInterpolated(RobotState.getDistanceToHub()));
-        }
+        return setPosition(()-> {
+            if (RobotState.getShuttling()) {
+                return ShooterTreeMap.shuttlingHoodTreeMap.getInterpolated(RobotState.getShuttleDistance());
+            } else {
+                return ShooterTreeMap.hoodTreeMap.getInterpolated(RobotState.getDistanceToHub());
+            }
+        });
 //
 //        return setPosition(() -> {
 //            ChassisSpeeds robotVelocity = RobotState.getInstance().getFieldRelativeSpeeds();

@@ -106,20 +106,10 @@ public class DriveSubsystem extends SubsystemBase {
         if(angle < -Math.PI) return angle + 2*Math.PI;
         return angle;
     }
-    public Pose2d getAutoAimTarget(){
-            if(RobotState.getInstance().getShuttling()){ //is shuttling
-                if(RobotState.getVisionPose().getY()<FieldConstants.yHalfLine){
-                    return Alliance.get()?FieldConstants.redShuttlePosLower:FieldConstants.blueShuttlePosLower;
-                } else {
-                    return Alliance.get()?FieldConstants.redShuttlePosUpper:FieldConstants.blueShuttlePosUpper;
-                }
-            } else { //is shooting
-                return Alliance.get()?FieldConstants.redNetPos:FieldConstants.blueNetPos;
-            }
-    }
+
     public Command driveAutoAim() {
         Supplier<Double> omegaSpeed = () -> {
-            Pose2d virtualTarget = getAutoAimTarget();
+            Pose2d virtualTarget = RobotState.getAutoAimTarget();
 
 //            if(RobotState.getInstance().getShuttling()){
 //                if(Alliance.get()) return
@@ -140,7 +130,7 @@ public class DriveSubsystem extends SubsystemBase {
             Logger.recordOutput("Drive/angleError", angleError);
 
             double feedback = SubsystemConstants.alignRotationkP * angleError;
-            double feedforward = RobotState.getInstance().getVirtualTargetAngularVelocity();
+            double feedforward = RobotState.getVirtualTargetAngularVelocity();
 
             double omega = feedforward + feedback;
             return MathUtil.clamp(omega, -SubsystemConstants.autoAimMaxAngularVelocity, SubsystemConstants.autoAimMaxAngularVelocity);
@@ -150,7 +140,7 @@ public class DriveSubsystem extends SubsystemBase {
     
 
         return applyChassisSpeedsCommand(() -> new ChassisSpeeds(0, 0, -omegaSpeed.get())).until(() -> {
-            Pose2d virtualTarget = getAutoAimTarget();
+            Pose2d virtualTarget = RobotState.getAutoAimTarget();
 
             Pose2d shooterPose = RobotState.getVisionPose();
 
@@ -175,7 +165,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         double currentHeading = RobotState.getVisionPose().getRotation().getRadians();
         double angleError = modAngle(desiredHeading - currentHeading);
-        return (Math.abs(angleError) < 3);
+        return (Math.abs(angleError) < 0.5);
     }
 
 

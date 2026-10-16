@@ -49,6 +49,17 @@ public class ShooterTreeMap {
          */
 
         //TODO: tof tree map for shuttling and shooting, rps and hood tree map for shuttling
+        shuttlingRPSTreeMap.put(2.0,38.0);
+        shuttlingRPSTreeMap.put(6.0,48.0);
+        shuttlingRPSTreeMap.put(10.0,57.0);
+        shuttlingRPSTreeMap.put(16.0,65.0);
+        shuttlingRPSTreeMap.put(100.0,70.0);
+
+        shuttlingHoodTreeMap.put(2.0,2.0);
+        shuttlingHoodTreeMap.put(6.0,2.3);
+        shuttlingHoodTreeMap.put(10.0,2.5);
+        shuttlingHoodTreeMap.put(16.0,3.0);
+        shuttlingHoodTreeMap.put(100.0,3.3);
     }
 
 

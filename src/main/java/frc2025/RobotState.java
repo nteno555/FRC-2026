@@ -138,6 +138,22 @@ public class RobotState {
             return Math.sqrt(Math.pow((FieldConstants.blueNetPos.getY() - getVisionPose().getY()), 2) + Math.pow((FieldConstants.blueNetPos.getX() - getVisionPose().getX()), 2));
         }
     }
+    public static double getShuttleDistance(){
+        Pose2d targetPose = getAutoAimTarget();
+        return Math.hypot(targetPose.getX()-getVisionPose().getX(),targetPose.getY()-getVisionPose().getY());
+    }
+    public static Pose2d getAutoAimTarget(){
+        if(RobotState.getShuttling()){ //is shuttling
+            if(RobotState.getVisionPose().getY()<FieldConstants.yHalfLine){
+                return Alliance.get()?FieldConstants.redShuttlePosLower:FieldConstants.blueShuttlePosLower;
+            } else {
+                return Alliance.get()?FieldConstants.redShuttlePosUpper:FieldConstants.blueShuttlePosUpper;
+            }
+        } else { //is shooting
+            return Alliance.get()?FieldConstants.redNetPos:FieldConstants.blueNetPos;
+        }
+    }
+
     public static ArrayList<Pose2d> getBallFieldPoses() {
         ArrayList<Pose2d> ballPoses = new ArrayList<>();
         if (ballTargets == null || ballTargets.isEmpty()) return ballPoses;

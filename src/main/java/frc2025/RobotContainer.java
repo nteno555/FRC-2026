@@ -64,8 +64,8 @@ public class RobotContainer {
     Autos autos;
     Command autoCommand;
 
-    private double driveSpeed = 0.8;
-    private double rotationSpeed = 0.7;
+    private double driveSpeed = 1.0;
+    private double rotationSpeed = 1.0;
 
     private boolean aiming = false;
 
@@ -162,8 +162,9 @@ public class RobotContainer {
 
         // left trigger is intake
         driverXboxController.leftTrigger()
-                    .whileTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage))
-                    .whileFalse(intakeSubsystem.setRollerVoltage(() -> 0.0));
+                    .onTrue(intakeSubsystem.setRollerVoltage(() -> SubsystemConstants.intakeRollerVoltage));
+        driverXboxController.leftBumper()
+                    .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
 
         new Trigger(() -> aiming)
                     .whileTrue(shooterSubsystem.setSpeedWithShuttling()
@@ -176,7 +177,7 @@ public class RobotContainer {
         
         new Trigger(() -> aiming)
                 .whileTrue(AutoAimCommands.autoIndex(this)
-                .alongWith(intakeSubsystem.retractSlow())
+//                        .withDeadline().alongWith(intakeSubsystem.retractSlow())
                 .until(() -> AutoAimCommands.indexingReady(this))
         );
         
@@ -194,6 +195,11 @@ public class RobotContainer {
         
         driverXboxController.povUp()
                     .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeRetractPosition));
+
+        driverXboxController.povRight()
+                .onTrue(hoodSubsystem.setPosition(() -> 4.0));
+        driverXboxController.povLeft()
+                .onTrue(hoodSubsystem.setPosition(() -> 0.0));
 
         // intake is now activated on left trigger hold
         // driverXboxController.povRight()

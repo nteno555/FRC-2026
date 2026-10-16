@@ -89,13 +89,22 @@ public class ShooterIOReal implements ShooterIO {
     }
 
     public void setSpeed(double speed, double acceleration) {
-        flywheelMaster.setControl(
-            new VelocityVoltage(speed)
-                .withAcceleration(acceleration)
-                .withEnableFOC(true)
-                .withSlot(0)
-        );
+        if (bangbang(speed)){
+            flywheelMaster.setControl(
+                    new VoltageOut(12)
+            );
+        } else {
+            flywheelMaster.setControl(
+                    new VelocityVoltage(speed)
+                            .withAcceleration(acceleration)
+                            .withEnableFOC(true)
+                            .withSlot(0)
+            );
+        }
     }
 
+    public boolean bangbang(double targetRPS){
+        return Math.abs(flywheelMaster.getVelocity().getValueAsDouble()-targetRPS)>3.0;
+    }
 
 }
