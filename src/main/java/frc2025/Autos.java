@@ -44,6 +44,7 @@ public class Autos {
     public static final String HIGH_MID_BUMP = "High Mid Bump";
     public static final String HIGH_TRENCH_WAIT = "High Trench Wait";
     public static final String HIGH_BUMP_TRENCH = "High Bump Trench Wait";
+    
     public static final String ONE_METER = "One Meter";
 
     public static Command lowNeutralLoop;

@@ -118,8 +118,9 @@ public class RobotContainer {
         }
 
         public void periodic() {
-                // updateMatchTime();
-                // loggerPeriodic();
+                updateMatchTime();
+                loggerPeriodic();
+                SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
         }
 
         // shooterSubststem.setDefaultCommand( just shoot me);
@@ -162,6 +163,7 @@ public class RobotContainer {
 //                autoChooser.addOption(Autos.HIGH_MID_BUMP, Autos.HIGH_MID_BUMP);
                 autoChooser.addOption(Autos.HIGH_TRENCH_WAIT, Autos.HIGH_TRENCH_WAIT);
                 autoChooser.addOption(Autos.HIGH_BUMP_TRENCH, Autos.HIGH_BUMP_TRENCH);
+                autoChooser.addOption(Autos.LOW_MID_BUMP_STATION, Autos.LOW_MID_BUMP_STATION);
 
                 // autoChooser.addOption(Autos.ONE_METER, Autos.ONE_METER);
 
@@ -364,8 +366,8 @@ public class RobotContainer {
                                 .and(driverXboxController.back())
                                 .whileTrue(hoodSubsystem.homeThenRezero());
                 driverXboxController
-                                .leftBumper()
-                                // .and(driverXboxController.back())
+                                .x()
+                                .and(driverXboxController.back())
                                 .whileTrue(intakeSubsystem.homeThenRezero());
                 driverXboxController
                                 .y()
@@ -381,6 +383,8 @@ public class RobotContainer {
                                 .whileTrue(intakeSubsystem.oscillateIntake())
                                 .onFalse(intakeSubsystem
                                                 .setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
+                driverXboxController.leftBumper()
+                                .onTrue(intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeHalfPosition));
 
                 driverXboxController.rightTrigger()
                                 .onTrue(Commands.runOnce(() -> slowmode = !slowmode));
@@ -849,6 +853,7 @@ public class RobotContainer {
                 // }
 
                 autoCommand = autos.getCommand(selected);
+                // autoCommand = autos.LowMidBump();
                 
 
                // autoCommand = autos.intakeJustDrivePath("LowNeutralUnderTrench", true);

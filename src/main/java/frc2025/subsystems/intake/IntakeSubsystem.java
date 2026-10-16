@@ -49,17 +49,32 @@ public class IntakeSubsystem extends SubsystemBase {
         });
     }
 
-    private Command goTo(Supplier<Double> target) {
-    return setDeployPosition(target)
-            .until(() -> Math.abs(inputs.position - target.get()) < 1.0)
-            .withTimeout(1.5);
-    }
+    // private Command goTo(Supplier<Double> target) {
+    // return setDeployPosition(target)
+    //         .until(() -> Math.abs(inputs.position - target.get()) < 1.0)
+    //         .withTimeout(1.5);
+    // }
+
+    // public Command oscillateIntake() {
+    //     return Commands.sequence(
+    //             goTo(() -> SubsystemConstants.intakeDeployPosition),
+    //             goTo(() -> SubsystemConstants.intakeHalfPosition)
+    //     ).repeatedly();
+    // }
 
     public Command oscillateIntake() {
-        return Commands.sequence(
-                goTo(() -> SubsystemConstants.intakeDeployPosition),
-                goTo(() -> SubsystemConstants.intakeHalfPosition)
-        ).repeatedly();
+        Timer timer = new Timer();
+        return this.run(() -> {
+            boolean out = (((int) (timer.get() / 1.0)) % 2 == 0);
+            double target = 0.0;
+            if (out) {
+                target = SubsystemConstants.intakeDeployPosition;
+            } else {
+                target = SubsystemConstants.intakeHalfPosition;
+            }
+            setpoint = target;
+            io.setDeployPosition(target, true);
+        }).beforeStarting(timer::restart);
     }
 
     public Command retractSlow() {
