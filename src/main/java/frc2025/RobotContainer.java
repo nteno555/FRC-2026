@@ -456,6 +456,11 @@ public class RobotContainer {
                                 .and(() -> (aimMode == AimMode.MANUAL))
                                 .onTrue(Commands.runOnce(() -> manualAimState = ManualAimState.SHUTTLE));
 
+                operatorXboxController.b().whileTrue(
+                                intakeSubsystem.setDeployPosition(()-> SubsystemConstants.intakeHalfPosition));
+                operatorXboxController.a().onTrue(
+                                intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
+                
                 // new Trigger(() -> aimMode == AimMode.MANUAL || aimMode == AimMode.FIXED)
                 //                 .whileTrue(turretSubsystem.setVoltage(
                 //                                 () -> manualTurretSpeed * operatorXboxController.getRightX()));
@@ -499,7 +504,7 @@ public class RobotContainer {
                 testSystemsController.a().whileTrue(
                                 shooterSubsystem.setSpeed(() -> 15.0));
                 testSystemsController.b().whileTrue(
-                                indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 2.0, () -> 15.0));
+                                indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 3.0, () -> 15.0));
                 testSystemsController.leftTrigger().whileTrue(
                                 intakeSubsystem.homeThenRezero());
                 testSystemsController.rightTrigger().onTrue(

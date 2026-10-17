@@ -66,6 +66,7 @@ public class IntakeSubsystem extends SubsystemBase {
         Timer timer = new Timer();
         return this.run(() -> {
             boolean out = (((int) (timer.get() / 1.0)) % 2 == 0);
+            Logger.recordOutput("Intake/out", out);
             double target = 0.0;
             if (out) {
                 target = SubsystemConstants.intakeDeployPosition;
