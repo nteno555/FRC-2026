@@ -517,6 +517,9 @@ public class RobotContainer {
                                 turretSubsystem.setVoltage(() -> 1.5));
                 testSystemsController.povRight().whileTrue(
                                 turretSubsystem.setVoltage(() -> -1.5));
+                testSystemsController.povUp().onTrue(turretSubsystem.rezero());
+                                
+                
                 // IMPORTANT: verify turret throughbore zeros before very match
 
                 new Trigger(() -> (testSystemsController.isConnected())).whileTrue(

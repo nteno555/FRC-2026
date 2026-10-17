@@ -5,6 +5,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc2025.RobotState;
 import frc2025.config.SubsystemConstants;
@@ -248,7 +249,8 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     public Command rezeroCRT() {
-        return this.runOnce(() -> io.rezeroCRT());
+        return(new InstantCommand());
+        //this.runOnce(() -> io.rezeroCRT());
     }
 
     public Command rezero() {
@@ -261,7 +263,6 @@ public class TurretSubsystem extends SubsystemBase {
             io.rezero(SubsystemConstants.turretHomeAngleRotations);
         }, () -> io.setVoltage(0.0));
     }
-
     public Command aimAtHub() {
         return setPositionFieldRelative(() -> RobotState.getInstance().getAngleToRealHub(),
                 () -> 0.0, () -> true).until(this::getShotReady)

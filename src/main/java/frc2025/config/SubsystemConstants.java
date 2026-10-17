@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 
 public class SubsystemConstants {
-    // public static double translationkP = 5.0;
+    // public static double translationkP = 5.0;tu
     public static double translationkP = 1.5;
     public static double translationkI = 0.0;
     public static double translationkD = 0.0;
@@ -165,14 +165,14 @@ public class SubsystemConstants {
     public static double turretStatorCurrentLimit = 60;
     public static double turretPeakForwardTorqueCurrent = 60;
     public static double turretPeakReverseTorqueCurrent = -60;
-    public static double turretZeroOffsetRadians = Math.PI * 2;
+    public static double turretZeroOffsetRadians = 0;//-Math.PI * 2.5/2*4;
     // 8 (44-42) 26 10 110
     
     public static double turretRotationsPerRadian = 44.0 / 8.0 * 26.0 / 42.0 * 110.0 / 10.0 / (2 * Math.PI);
-    public static double turretMinAngleRadians = -7.9; 
-    public static double turretMaxAngleRadians = -1.5;
-    public static double throughBoreZero1 = 0.007; //0.987
-    public static double throughBoreZero2 = 0.394; //0.618
+    public static double turretMinAngleRadians = -4.95; 
+    public static double turretMaxAngleRadians = 2.77;
+    public static double throughBoreZero1 = 0.36; //0.987
+    public static double throughBoreZero2 = 0.20; //0.618
     public static double throughBoreRatio1 = 44.0 / 8.0 * 26.0 / 42.0; // 6.17
     public static double throughBoreRatio2 = 44.0 / 8.0; // 3.82
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop

@@ -24,8 +24,8 @@ import org.littletonrobotics.junction.Logger;
 
 public class TurretIOReal implements TurretIO{
     private final TalonFX turretMotor = new TalonFX(SubsystemConstants.turretID, CANBus.roboRIO());
-    private final CANcoder throughBore1 = new CANcoder(SubsystemConstants.turretTb1ID);
-    private final CANcoder throughBore2 = new CANcoder(SubsystemConstants.turretTb2ID);
+    private final CANcoder throughBore1 = new CANcoder(-50);
+    private final CANcoder throughBore2 = new CANcoder(-50);
 
     public TurretIOReal() {
         turretMotor.getConfigurator().apply(new TalonFXConfiguration());
