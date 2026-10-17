@@ -475,6 +475,23 @@ public class RobotContainer {
                                                                                 DEAD_BAND_DRIVER, true)
                                                                 * Math.PI * 2));
 
+                /*
+                 * hood pos - x
+                 * rezero hood - y
+                 * 
+                 * shooter speed - a
+                 * 
+                 * index - b
+                 * 
+                 * rezero intake - left trigger
+                 * deploy intake - right trigger
+                 * run intake - right bumper
+                 * stop intake - left bumper
+                 * 
+                 * turret positive - povleft
+                 * turret negative - povright
+                 */
+
                 testSystemsController.x().onTrue(
                                 hoodSubsystem.setPosition(() -> 1.5));
                 testSystemsController.y().onTrue(

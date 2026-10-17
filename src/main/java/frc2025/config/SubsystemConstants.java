@@ -171,8 +171,8 @@ public class SubsystemConstants {
     public static double turretRotationsPerRadian = 44.0 / 8.0 * 26.0 / 42.0 * 110.0 / 10.0 / (2 * Math.PI);
     public static double turretMinAngleRadians = -8.739; 
     public static double turretMaxAngleRadians = -2.916;
-    public static double throughBoreZero1 = 0.927; //0.378
-    public static double throughBoreZero2 = 0.575; //0.619
+    public static double throughBoreZero1 = 0.470; //0.378
+    public static double throughBoreZero2 = 0.916; //0.619
     public static double throughBoreRatio1 = 44.0 / 8.0 * 26.0 / 42.0; // 6.17
     public static double throughBoreRatio2 = 44.0 / 8.0; // 3.82
     public static double turretHomeAngleRotations = turretMinAngleRadians * turretRotationsPerRadian; // hard stop

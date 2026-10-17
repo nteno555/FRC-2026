@@ -60,10 +60,10 @@ public class ShooterTreeMap {
         
         lowerWheelTreeMap.put(1.526, 26.0);
         lowerWheelTreeMap.put(2.181, 29.0);
-        lowerWheelTreeMap.put(3.213, 29.9);
-        lowerWheelTreeMap.put(3.939, 30.2);
-        lowerWheelTreeMap.put(4.603, 33.6);
-        lowerWheelTreeMap.put(5.060, 36.0);
+        lowerWheelTreeMap.put(3.213, 30.9);
+        lowerWheelTreeMap.put(3.939, 32.2);
+        lowerWheelTreeMap.put(4.603, 34.6);
+        lowerWheelTreeMap.put(5.060, 37.0);
         // lowerWheelTreeMap.put(5.616, 36.0);
 
         hoodTreeMap.put(1.526, 1.82);
@@ -118,10 +118,11 @@ public class ShooterTreeMap {
         
 
         
-        shuttlingRPSTreeMap.put(3.939, 27.2);
-        shuttlingRPSTreeMap.put(5.060, 33.0);
+        shuttlingRPSTreeMap.put(3.939, 25.2);
+        shuttlingRPSTreeMap.put(5.060, 31.0);
+        shuttlingRPSTreeMap.put(6.181, 36.8);
         shuttlingRPSTreeMap.put(10.0, 55.0);
-        shuttlingRPSTreeMap.put(13.553,60.0);
+        shuttlingRPSTreeMap.put(13.553,62.0);
 
         shuttlingTofTreeMap.put(3.939, 0.97);
         shuttlingTofTreeMap.put(5.06, 1.09);
