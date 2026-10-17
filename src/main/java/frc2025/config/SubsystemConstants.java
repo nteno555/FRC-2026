@@ -123,8 +123,8 @@ public class SubsystemConstants {
     public static double intakekP = 2.7;
     public static double intakekI = 0.0;
     public static double intakekD = 0.0;
-    public static double intakeSupplyCurrentLimit = 100;
-    public static double intakeStatorCurrentLimit = 100;
+    public static double intakeSupplyCurrentLimit = 100 - 25;
+    public static double intakeStatorCurrentLimit = 100 - 25;
     public static double intakeMotionMagicCruiseVelocity = 120;
     public static double intakeMotionMagicAcceleration = 300;
     public static double intakeMotionMagicJerk = 1400;
@@ -139,10 +139,10 @@ public class SubsystemConstants {
     public static double intakeHalfPosition = -2.5;
     public static double intakeQuarterPosition = -2.0;
 
-    public static double indexerSupplyCurrentLimit = 100;
-    public static double indexerStatorCurrentLimit = 100;
-    public static double indexerPeakForwardTorqueCurrent = 120;
-    public static double indexerPeakReverseTorqueCurrent = 120;
+    public static double indexerSupplyCurrentLimit = 100 - 25;
+    public static double indexerStatorCurrentLimit = 100 - 25;
+    public static double indexerPeakForwardTorqueCurrent = 120 - 25;
+    public static double indexerPeakReverseTorqueCurrent = 120 - 25;
     public static double indexerTorqueNeutralDeadband = 1;
     public static double indexerShootVoltage = 12.0;
     public static double indexerReverseVoltage = -2.0;
