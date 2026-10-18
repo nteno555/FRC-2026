@@ -37,7 +37,7 @@ public class LimelightFiducialCamera {
                                    double robotToCameraRight, double robotToCameraUp,
                                    double robotToCameraYaw, double robotToCameraPitch, double robotToCameraRoll) {
         this.name = name;
-        this.turretMounted = turretMounted;
+        this.turretMounted = false;
 
         this.robotToCameraForward = robotToCameraForward;
         this.robotToCameraRight = robotToCameraRight;
@@ -296,13 +296,13 @@ public class LimelightFiducialCamera {
         double maxYawRate = Math.PI * 1.67; // 300 deg/s
 
 //        Logger.recordOutput(prefix + "heartbeat1", Math.random());
-
+        
         if (poseEstimate == null || poseEstimate.tagCount < 1) {
             return;
         }
 
 //        Logger.recordOutput(prefix + "heartbeat2", Math.random());
-//        Logger.recordOutput(prefix + "tagCount", poseEstimate.tagCount);
+        Logger.recordOutput(prefix + "tagCount", poseEstimate.tagCount);
 
         Pose2d pose = poseEstimate.pose;
 
@@ -323,6 +323,7 @@ public class LimelightFiducialCamera {
         if (Math.abs(
                 pose.getRotation().minus(RobotState.getInstance().getVisionPose().getRotation()).getRadians()) > 0.5) {
             reject = true;
+            Logger.recordOutput(prefix + "rotationdiffreject", true);
         }
 
 //        if (poseEstimate.timestampSeconds < resetOdometryTime + 0.5) {
@@ -345,6 +346,7 @@ public class LimelightFiducialCamera {
 
         if (Math.abs(omega) > maxYawRate) {
             reject = true;
+            Logger.recordOutput(prefix + "yawratereject", true);
         }
 
 //        Logger.recordOutput(prefix + "meanDistance", meanDistance);
@@ -353,8 +355,8 @@ public class LimelightFiducialCamera {
         Logger.recordOutput(prefix + "rejected", reject);
         Logger.recordOutput(prefix + "rawPose", pose);
 
-        if (SubsystemConstants.ignoreTurretLimelight && turretMounted)
-            reject = true;
+        // if (SubsystemConstants.ignoreTurretLimelight && turretMounted)
+        //     reject = true;
 
         // if(turretMounted && RobotState.getInstance().getTurretVelocity() > 0.1)
         // reject = true;
