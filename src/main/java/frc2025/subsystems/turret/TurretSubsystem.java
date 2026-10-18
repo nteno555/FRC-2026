@@ -21,7 +21,7 @@ public class TurretSubsystem extends SubsystemBase {
 
     public TurretSubsystem(TurretIO io) {
         this.io = io;
-        io.rezero();
+        io.rezero(0.0);
     }
 
     @Override
@@ -34,12 +34,12 @@ public class TurretSubsystem extends SubsystemBase {
         Logger.recordOutput("Turret/setpoint", setpoint);
 
         double fieldRelativeAngleRad = -inputs.positionRadians
-                + RobotState.getInstance().getVisionPose().getRotation().getRadians();
+                + RobotState.getInstance().getDelayedPose().getRotation().getRadians();
         Logger.recordOutput("Turret/fieldRelativeAngleRadians", fieldRelativeAngleRad);
         
         // Heading Error Logging
         var rs = RobotState.getInstance();
-        double heading = rs.getVisionPose().getRotation().getRadians();
+        double heading = rs.getDelayedPose().getRotation().getRadians();
         double fieldAngle = -inputs.positionRadians + heading;
 
         Logger.recordOutput("Turret/err/trackingDeg",
@@ -66,18 +66,18 @@ public class TurretSubsystem extends SubsystemBase {
 
 //        RobotState.getInstance().addTimestampedTurretAngleRadians(inputs.positionRadians, Utils.getCurrentTimeSeconds());
 
-        if (SubsystemConstants.hasTurret) {
-            if (!zeroed && inputs.throughboresConnected) {
-                io.rezeroCRT();
-                zeroed = true;
-            }
-        } else {
-            if (!zeroed) {
-                io.rezero(0.0);
-                zeroed = true;
-            }
-        }
+        // if (SubsystemConstants.hasTurret) {
+        //     if (!zeroed && inputs.throughboresConnected) {
+        //         io.rezeroCRT();
+        //         zeroed = true;
+        //     }
+        // } else {
+        // if (!zeroed) {
+        //     io.rezero(0.0);
+        //     zeroed = true;
+        // }
     }
+    
 
     public Command autoAim() {
         return setPositionFieldRelative(

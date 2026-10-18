@@ -110,7 +110,7 @@ public class SubsystemConstants {
     public static double hoodTorqueNeutralDeadband = 1;
     public static double hoodForwardSoftLimit = 2.84;
     public static double hoodReverseSoftLimit = -0.1;
-    public static double hoodRezeroVoltage = -3.5;
+    public static double hoodRezeroVoltage = 3.5;
     public static double hoodMinAngleRotations = 0;
     public static double hoodMaxAngleRotations = 8.9;
     public static double hoodMinAngleRadians = 0.0872665; // 5 degree hood and launch angle is about 85 degrees 
@@ -136,7 +136,7 @@ public class SubsystemConstants {
     public static double intakeRetractPosition = 0.0; // actual: -1.0
     public static double intakeDeployPosition = -7.56; // actual: -20.2
     public static double intakeRollerVoltage = 10.0;
-    public static double intakeHalfPosition = -2.5;
+    public static double intakeHalfPosition = -3.5;
     public static double intakeQuarterPosition = -2.0;
 
     public static double indexerSupplyCurrentLimit = 100 - 25;

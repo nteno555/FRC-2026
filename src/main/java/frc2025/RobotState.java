@@ -155,18 +155,26 @@ public class RobotState {
         return !inBlueZone && !inRedZone;
     }
 
+//     public Pose2d getDelayedPose() {
+//         double phaseDelay = 0.02;
+//         Pose2d currentPose = getVisionPose();
+//         ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(
+//                 robotRelativeSpeeds,
+//                 currentPose.getRotation());
+// //        return currentPose;
+//         return currentPose.exp(
+//                 new Twist2d(
+//                         speeds.vxMetersPerSecond * phaseDelay,
+//                         speeds.vyMetersPerSecond * phaseDelay,
+//                         speeds.omegaRadiansPerSecond * phaseDelay));
+//     }
+
     public Pose2d getDelayedPose() {
         double phaseDelay = 0.02;
-        Pose2d currentPose = getVisionPose();
-        ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(
-                robotRelativeSpeeds,
-                currentPose.getRotation());
-//        return currentPose;
-        return currentPose.exp(
-                new Twist2d(
-                        speeds.vxMetersPerSecond * phaseDelay,
-                        speeds.vyMetersPerSecond * phaseDelay,
-                        speeds.omegaRadiansPerSecond * phaseDelay));
+        return getVisionPose().exp(new Twist2d(
+                robotRelativeSpeeds.vxMetersPerSecond * phaseDelay,
+                robotRelativeSpeeds.vyMetersPerSecond * phaseDelay,
+                robotRelativeSpeeds.omegaRadiansPerSecond * phaseDelay));
     }
 
     public Pose2d getTargetPose() {

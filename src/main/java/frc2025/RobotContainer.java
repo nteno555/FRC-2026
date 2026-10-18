@@ -10,6 +10,7 @@ import static frc2025.subsystems.drive.DriveConstants.kSpeedAt12Volts;
 
 import java.util.Optional;
 
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -120,6 +121,7 @@ public class RobotContainer {
         public void periodic() {
                 updateMatchTime();
                 loggerPeriodic();
+                Logger.recordOutput("Superstructure/testB", testSystemsController.b().getAsBoolean());
                 SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
         }
 
@@ -503,7 +505,7 @@ public class RobotContainer {
                                 hoodSubsystem.homeThenRezero());
                 testSystemsController.a().whileTrue(
                                 shooterSubsystem.setSpeed(() -> 15.0));
-                testSystemsController.b().whileTrue(
+                testSystemsController.b().debounce(0.1, DebounceType.kFalling).whileTrue(
                                 indexerSubsystem.setIndexerVoltageWithTowerSpeed(() -> 3.0, () -> 15.0));
                 testSystemsController.leftTrigger().whileTrue(
                                 intakeSubsystem.homeThenRezero());
