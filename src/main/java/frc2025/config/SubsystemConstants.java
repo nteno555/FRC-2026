@@ -169,8 +169,8 @@ public class SubsystemConstants {
     // 8 (44-42) 26 10 110
     
     public static double turretRotationsPerRadian = 44.0 / 8.0 * 26.0 / 42.0 * 110.0 / 10.0 / (2 * Math.PI);
-    public static double turretMinAngleRadians = -4.95; 
-    public static double turretMaxAngleRadians = 2.77;
+    public static double turretMinAngleRadians = -4.771;//-4.333; 
+    public static double turretMaxAngleRadians = 2.157;//3.250;
     public static double throughBoreZero1 = 0.36; //0.987
     public static double throughBoreZero2 = 0.20; //0.618
     public static double throughBoreRatio1 = 44.0 / 8.0 * 26.0 / 42.0; // 6.17
@@ -242,7 +242,7 @@ public class SubsystemConstants {
     public static int intakeRollerMasterID = 17;
     public static int intakeDeploySlaveID = 23;
     public static int towerID = 20;
-    public static int turretID = 41;
+    public static int turretID = 19;
     public static int turretTb1ID = 5;
     public static int turretTb2ID = 6;
 }

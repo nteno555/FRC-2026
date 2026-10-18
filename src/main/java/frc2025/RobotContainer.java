@@ -382,8 +382,7 @@ public class RobotContainer {
                                 .onTrue(intakeSubsystem.setRollerVoltage(() -> 0.0));
 
                 driverXboxController.rightBumper()
-                                .whileTrue(intakeSubsystem.oscillateIntake())
-                                .onFalse(intakeSubsystem
+                                .onTrue(intakeSubsystem
                                                 .setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
                 
                 driverXboxController.leftBumper()
@@ -451,12 +450,17 @@ public class RobotContainer {
                                         ShooterTreeMap.getInstance().resetRPS();
                                 }));
 
-                operatorXboxController.y()
-                                .and(() -> (aimMode == AimMode.MANUAL))
-                                .onTrue(Commands.runOnce(() -> manualAimState = ManualAimState.FLUSH));
+                // operatorXboxController.y()
+                //                 .and(() -> (aimMode == AimMode.MANUAL))
+                //                 .onTrue(Commands.runOnce(() -> manualAimState = ManualAimState.FLUSH));
+                // operatorXboxController.x()
+                //                 .and(() -> (aimMode == AimMode.MANUAL))
+                //                 .onTrue(Commands.runOnce(() -> manualAimState = ManualAimState.SHUTTLE));
+
                 operatorXboxController.x()
-                                .and(() -> (aimMode == AimMode.MANUAL))
-                                .onTrue(Commands.runOnce(() -> manualAimState = ManualAimState.SHUTTLE));
+                        .onTrue(intakeSubsystem.setDeployVoltage(()-> 0.0));
+                operatorXboxController.y()
+                        .onTrue(intakeSubsystem.setDeployVoltage(()-> -2.0));
 
                 operatorXboxController.b().whileTrue(
                                 intakeSubsystem.setDeployPosition(()-> SubsystemConstants.intakeHalfPosition));
@@ -512,7 +516,7 @@ public class RobotContainer {
                 testSystemsController.rightTrigger().onTrue(
                                 intakeSubsystem.setDeployPosition(() -> SubsystemConstants.intakeDeployPosition));
                 testSystemsController.rightBumper().onTrue(
-                                intakeSubsystem.setRollerVoltage(() -> 4.0));
+                                intakeSubsystem.setRollerVoltage(() -> 10.0));
                 testSystemsController.leftBumper().onTrue(
                                 intakeSubsystem.setRollerVoltage(() -> 0.0));
                 testSystemsController.povLeft().whileTrue(

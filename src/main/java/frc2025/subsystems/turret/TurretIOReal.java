@@ -61,6 +61,8 @@ public class TurretIOReal implements TurretIO{
         talonFXConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
         talonFXConfigs.CurrentLimits.StatorCurrentLimit = SubsystemConstants.turretStatorCurrentLimit;
         talonFXConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+        talonFXConfigs.Voltage.PeakForwardVoltage = 5.0;
+        talonFXConfigs.Voltage.PeakReverseVoltage = -5.0;
 
         TorqueCurrentConfigs configTorque =  new TorqueCurrentConfigs();
         configTorque.PeakForwardTorqueCurrent = SubsystemConstants.turretPeakForwardTorqueCurrent;
@@ -137,10 +139,10 @@ public class TurretIOReal implements TurretIO{
 
     @Override
     public void setPositionFast(double position) {
-        turretMotor.setControl(
-                new PositionVoltage(position)
-                        .withSlot(1)
-        );
+        turretMotor.setControl(new PositionVoltage(position)
+                .withFeedForward(SubsystemConstants.turretFF)
+                .withSlot(0)
+                .withEnableFOC(true));
     }
 
     @Override
