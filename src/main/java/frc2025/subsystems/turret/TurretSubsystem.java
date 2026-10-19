@@ -78,6 +78,12 @@ public class TurretSubsystem extends SubsystemBase {
         // }
     }
     
+    public Command rezeroVoltageCommand(Supplier<Double> voltage) {
+        return this.run(() -> {
+            io.setVoltage(voltage.get());
+            io.rezero();
+        });
+    }
 
     public Command autoAim() {
         return setPositionFieldRelative(

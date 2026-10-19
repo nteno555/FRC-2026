@@ -436,6 +436,15 @@ public class RobotContainer {
                                         rpsOffset -= 1.0;
                                         ShooterTreeMap.getInstance().changeRPS(-1.0);
                                 }));
+                
+                // Manual Turret Rezero
+                operatorXboxController.povLeft()
+                                .and(operatorXboxController.back())
+                                .whileTrue(turretSubsystem.rezeroVoltageCommand(() -> -1.0));
+                
+                operatorXboxController.povRight()
+                                .and(operatorXboxController.back())
+                                .whileTrue(turretSubsystem.rezeroVoltageCommand(() -> 1.0));
 
                 // DPAD LEFT AND RIGHT BOTH RESET SHOOTING RPS
                 operatorXboxController.povLeft()

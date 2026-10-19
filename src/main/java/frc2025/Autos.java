@@ -44,6 +44,9 @@ public class Autos {
     public static final String HIGH_MID_BUMP = "High Mid Bump";
     public static final String HIGH_TRENCH_WAIT = "High Trench Wait";
     public static final String HIGH_BUMP_TRENCH = "High Bump Trench Wait";
+
+    public static final String LOW_MID_BUMP = "Low Mid Bump";
+
     
     public static final String ONE_METER = "One Meter";
 
@@ -432,6 +435,7 @@ public class Autos {
             case LOW_NEUTRAL_LOOP -> lowNeutralLoop;
             case LOW_MID_BUMP_STATION -> lowMidBumpStation;
             case LOW_MID_BUMP_NOSTATION -> lowMidBumpNoStation;
+            case LOW_MID_BUMP -> LowMidBump();
             case LOW_TRENCH_WAIT ->  lowTrenchWait;
             case LOW_BUMP_TRENCH_WAIT -> lowBumpTrenchWait;
             case LOW_BUMP_TRENCH -> lowBumpTrench;
