@@ -19,7 +19,7 @@ public class ShooterTreeMap {
         SmartDashboard.putString("Tuning/lowerWheelTree Map", lowerWheelTreeMap.toString());
 
         
-        lowerWheelTreeMap.put(1.4367, 18.2); // 1
+        lowerWheelTreeMap.put(1.4367, 19.2); // 1
         lowerWheelTreeMap.put(1.9647,22.8); // 2
         lowerWheelTreeMap.put(2.4111, 23.5); // 3
         lowerWheelTreeMap.put(2.8889, 23.8); // 4
