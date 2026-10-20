@@ -21,20 +21,20 @@ public class ShooterTreeMap {
         
         lowerWheelTreeMap.put(1.4367, 18.2); // 1
         lowerWheelTreeMap.put(1.9647,22.8); // 2
-        lowerWheelTreeMap.put(2.4111, 24.0); // 3
-        lowerWheelTreeMap.put(2.8889, 24.8); // 4
-        lowerWheelTreeMap.put(3.2965, 26.0); // 5
-        lowerWheelTreeMap.put(3.8140, 27.9); // 6
+        lowerWheelTreeMap.put(2.4111, 23.5); // 3
+        lowerWheelTreeMap.put(2.8889, 23.8); // 4
+        lowerWheelTreeMap.put(3.2965, 25.6); // 5
+        lowerWheelTreeMap.put(3.8140, 27.1); // 6
         lowerWheelTreeMap.put(4.3200, 30.0); // 7
         // lowerWheelTreeMap.put(4.4185, 28.2); // 8
         // default RPS is 27.0
         hoodTreeMap.put(1.4367, 0.0); // 1
         hoodTreeMap.put(1.9647, 0.0); // 2
-        hoodTreeMap.put(2.4111, 0.1); // 3
-        hoodTreeMap.put(2.8889, 0.2); // 4
-        hoodTreeMap.put(3.2965, 0.2); // 5
-        hoodTreeMap.put(3.8140, 0.3); // 6
-        hoodTreeMap.put(4.3200, 0.4); // 7
+        hoodTreeMap.put(2.4111, 0.0); // 3
+        hoodTreeMap.put(2.8889, 0.1); // 4
+        hoodTreeMap.put(3.2965, 0.1); // 5
+        hoodTreeMap.put(3.8140, 0.2); // 6
+        hoodTreeMap.put(4.3200, 0.3); // 7
 
         
         /*
