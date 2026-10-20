@@ -154,10 +154,10 @@ public class HoodSubsystem extends SubsystemBase {
 
     public Command autoAimUnsafe() {
         return setPosition(() -> {
-            Pose2d robotPose = RobotState.getInstance().getDelayedPose();
-            Pose2d targetPose = RobotState.getInstance().getShootingWhileMovingVirtualPose();
+            Pose2d robotPose = RobotState.getDelayedPose();
+            Pose2d targetPose = RobotState.getShootingWhileMovingVirtualPose();
             double dist = robotPose.getTranslation().getDistance(targetPose.getTranslation());
-            if (RobotState.getInstance().getShuttling()) {
+            if (RobotState.getShuttling()) {
                 return SubsystemConstants.hoodMaxAngleRotations;
             }
 

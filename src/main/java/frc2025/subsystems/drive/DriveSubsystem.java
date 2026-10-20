@@ -60,7 +60,7 @@ public class DriveSubsystem extends SubsystemBase {
         this.io = io;
 
         AutoBuilder.configure(
-                () -> RobotState.getInstance().getVisionPose(), // Robot pose supplier
+                () -> RobotState.getVisionPose(), // Robot pose supplier
                 this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
                 this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 (speeds, feedforwards) -> drive(speeds, feedforwards), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also outputs individual module feedforwards for things like gearbox friction and motor back-EMF compensation
@@ -86,15 +86,15 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        io.addVisionMeasurement(RobotState.getInstance().getVisionUpdates());
+        io.addVisionMeasurement(RobotState.getVisionUpdates());
         io.updateInputs(inputs);
         if (!sysIdActive) {
             io.setControl(request.withSpeeds(wantedSpeeds));
         }
 
-        RobotState.getInstance().setPose(inputs.swervePoseMeters);
-        RobotState.getInstance().setRobotRelativeSpeeds(inputs.currentChassisSpeeds);
-        RobotState.getInstance().setPigeonAcceleration(inputs.pigeonAcceleration);
+        RobotState.setPose(inputs.swervePoseMeters);
+        RobotState.setRobotRelativeSpeeds(inputs.currentChassisSpeeds);
+        RobotState.setPigeonAcceleration(inputs.pigeonAcceleration);
         Logger.recordOutput("Drive/wantedSpeeds", wantedSpeeds);
         Logger.processInputs("RealOutputs/Drive", inputs);
         Logger.recordOutput("Drive/shotReady", getShotReady());
@@ -226,7 +226,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void resetOdometry(Pose2d position) {
         io.resetOdometry(position);
-        RobotState.getInstance().rezero(position);
+        RobotState.rezero(position);
     }
 
     public static RobotConfig getPPConfig() {

@@ -78,7 +78,7 @@ public class AprilTagFiducialCamera {
     }
 
     public void writeGyro() {
-        double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
+        double omega = RobotState.getFieldRelativeSpeeds().omegaRadiansPerSecond;
         omega = Units.radiansToDegrees(omega);
     }
 
@@ -210,7 +210,7 @@ public class AprilTagFiducialCamera {
         //     rotationReject = true;
         // }
 
-        double omega = RobotState.getInstance().getFieldRelativeSpeeds().omegaRadiansPerSecond;
+        double omega = RobotState.getFieldRelativeSpeeds().omegaRadiansPerSecond;
         if (Math.abs(omega) > maxYawRate) {
             reject = true;
             maxYawRateReject = true;
@@ -222,12 +222,12 @@ public class AprilTagFiducialCamera {
         Logger.recordOutput(prefix + "meanDistance", meanDistance);
         Logger.recordOutput(prefix + "meanAmbiguity", meanAmbiguity);
         Logger.recordOutput(prefix + "rotationDelta", Math.abs(pose.getRotation()
-                .minus(RobotState.getInstance().getVisionPose().getRotation())
+                .minus(RobotState.getVisionPose().getRotation())
                 .getRadians()));
-        Logger.recordOutput(prefix + "omega", RobotState.getInstance()
+        Logger.recordOutput(prefix + "omega", RobotState
                 .getFieldRelativeSpeeds().omegaRadiansPerSecond);
         Logger.recordOutput(prefix + "visionPoseRotation",
-                RobotState.getInstance().getVisionPose().getRotation().getDegrees());
+                RobotState.getVisionPose().getRotation().getDegrees());
         Logger.recordOutput(prefix + "estimatedRotation",
                 pose.getRotation().getDegrees());
         Logger.recordOutput(prefix + "poseAmbiguityReject", poseAmbiguityReject);
@@ -250,7 +250,7 @@ public class AprilTagFiducialCamera {
                         999999999);
                 
             }
-            RobotState.getInstance().addVisionData(List.of(
+            RobotState.addVisionData(List.of(
                     new RobotState.TimestampedVisionUpdate(
                             estimate.timestampSeconds, pose, distStdDevs)));
             hasSeenFirstPose = true;
