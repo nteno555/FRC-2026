@@ -14,8 +14,8 @@ public interface ShooterIO {
         double totalCurrent;
     }
 
-    public default void setSpeed(double speed){}
-    public default void setSpeed(double speed, double acceleration){}
+    // public default void setSpeed(double speed){}
+    public void setSpeed(double speed, double acceleration);
     public void setVoltage(double voltage);
     public void updateInputs(ShooterIOInputs inputs);
     public default void setPercentOutput(double percentOutput){}

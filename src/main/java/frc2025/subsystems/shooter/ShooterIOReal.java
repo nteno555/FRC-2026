@@ -87,7 +87,7 @@ public class ShooterIOReal implements ShooterIO {
     public void setPercentOutput(double percentOutput) {
         flywheelMaster.setControl(new DutyCycleOut(percentOutput));
     }
-
+    @Override
     public void setSpeed(double speed, double acceleration) {
         if (bangbang(speed)){
             flywheelMaster.setControl(
